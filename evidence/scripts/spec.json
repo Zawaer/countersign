@@ -64,11 +64,14 @@
      "log": "evidence/2234/logs/execution_tests.build.log"
     }
    ],
+   "execution": {
+    "label": "2234",
+    "fwf": "2234-fwf",
+    "base": "base",
+    "class": "SuppressedSourceGenerationTests",
+    "filter": "FullyQualifiedName~SuppressedSourceGenerationTests."
+   },
    "not_run": [
-    {
-     "id": "tests.execution",
-     "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run."
-    },
     {
      "id": "tests.MessagePack.Tests",
      "reason": "runtime library src/MessagePack not modified by the change; suite not run"
@@ -147,6 +150,13 @@
      "src/MessagePack.Annotations (no PublicAPI.Shipped.txt/Unshipped.txt)"
     ]
    },
+   "execution": {
+    "label": "2129",
+    "fwf": "2129-fwf",
+    "base": "base",
+    "class": "GeneratedFormatterForExternalTypesTests",
+    "filter": "FullyQualifiedName~GeneratedFormatterForExternalTypesTests."
+   },
    "extra_checks": [
     {
      "id": "tests.targeted.execution",
@@ -165,10 +175,6 @@
     }
    ],
    "not_run": [
-    {
-     "id": "tests.execution",
-     "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run."
-    },
     {
      "id": "tests.MessagePack.Tests",
      "reason": "runtime library src/MessagePack not modified by the change; suite not run"

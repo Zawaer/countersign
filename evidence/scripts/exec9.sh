@@ -3,13 +3,15 @@
 # Builds and runs tests/MessagePack.SourceGenerator.{ExecutionTests,MapModeExecutionTests} with .NET SDK 9.0.321
 # (the generator references Microsoft.CodeAnalysis 4.12, which SDK 8.0.402's Roslyn 4.11 cannot load: CS9057).
 # global.json in the scratch worktree is overridden to pin 9.0.321; the repo itself pins 8.0.402.
-. /data/work/env.sh
+WORK=${WORK:-/data/work}
+SDK9_VERSION=${SDK9_VERSION:-9.0.321}
+. "${CS_ENV:-/data/work/env.sh}"
 label=$1; wt=$2; filter=$3
-L=/data/work/out/exec9-$label; rm -rf $L; mkdir -p $L; cd $wt
-cat > global.json <<'J'
+L=$WORK/out/exec9-$label; rm -rf $L; mkdir -p $L; cd $wt
+cat > global.json <<J
 {
   "sdk": {
-    "version": "9.0.321",
+    "version": "$SDK9_VERSION",
     "rollForward": "disable",
     "allowPrerelease": false
   }

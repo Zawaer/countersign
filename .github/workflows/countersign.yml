@@ -182,3 +182,64 @@ jobs:
             measurement/costs.yaml
             docs/COSTS.md
           if-no-files-found: warn
+
+  facts:
+    name: facts (stage 1 deterministic checks for one change, .NET 8 + 9)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'facts' }}
+    runs-on: craci
+    timeout-minutes: 90
+    env:
+      CHANGE: ${{ inputs.change }}
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+    steps:
+      # 8 vCPU: the builds and test runs use -m:8 / MaxCpuCount=8 like the original local run.
+      # Egress: GitHub (challenge repo, read-only), the .NET SDK download hosts and NuGet (api.nuget.org plus the
+      # repo's dotnet-tools feed on pkgs.dev.azure.com). CRACI's SBOM for this job lists the NuGet packages the
+      # build pulled in.
+      - uses: cracicorp/setup@5cbae507e2547dca6c402e413c645767fbae3534 # v1
+        with:
+          size: "8"
+          network: |
+            default: deny
+            connections:
+              - tls:
+                  serverNamePatterns: [github.com, codeload.github.com, objects.githubusercontent.com,
+                                       api.nuget.org, "*.nuget.org", pkgs.dev.azure.com, "*.vsblob.vsassets.io",
+                                       builds.dotnet.microsoft.com, dotnetcli.azureedge.net, dotnetcli.blob.core.windows.net,
+                                       "*.dot.net", dot.net, download.visualstudio.microsoft.com]
+                  ports: [443]
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: |
+            8.0.402
+            9.0.x
+      - name: Clone the challenge repo (read-only)
+        run: |
+          mkdir -p "$RUNNER_TEMP/src"
+          git clone --quiet "$CHALLENGE_REPO" "$RUNNER_TEMP/src/mp"
+          git -C "$RUNNER_TEMP/src/mp" remote set-url --push origin DISABLED
+          dotnet --list-sdks
+      - name: Reproduce stage 1 (evidence/scripts/ci-facts.sh)
+        env:
+          SRC: ${{ runner.temp }}/src
+          WORK: ${{ runner.temp }}/work
+          CS_OS_DESC: linux-x64 (CRACI runner, 8 vCPU)
+        run: evidence/scripts/ci-facts.sh "$CHANGE"
+      - name: Compare with the committed evidence
+        if: ${{ !cancelled() }}
+        run: |
+          f="$RUNNER_TEMP/work/evidence/$CHANGE/facts.json"
+          if [ -f "$f" ]; then python3 evidence/scripts/compare-facts.py "evidence/$CHANGE/facts.json" "$f" | tee -a "$GITHUB_STEP_SUMMARY"
+          else echo "::error::no facts.json produced for $CHANGE"; exit 1; fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: facts-${{ inputs.change }}
+          path: |
+            ${{ runner.temp }}/work/evidence/
+            ${{ runner.temp }}/work/out/**/meta.txt
+            ${{ runner.temp }}/work/out/**/*.log
+            ${{ runner.temp }}/work/out/**/*.trx
+          if-no-files-found: warn

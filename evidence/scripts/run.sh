@@ -1,8 +1,10 @@
 #!/bin/bash
 # usage: run.sh <label> <worktree> <build-projects (comma sep)> <targeted spec: proj=filter;proj=filter> <fullsuite:yes|no>
-. /data/work/env.sh
+# WORK (default /data/work) and CS_ENV let CI reuse this script; locally nothing changes.
+WORK=${WORK:-/data/work}
+. "${CS_ENV:-/data/work/env.sh}"
 label=$1; wt=$2; projs=$3; targeted=$4; full=$5
-L=/data/work/out/$label; mkdir -p $L; cd $wt
+L=$WORK/out/$label; mkdir -p $L; cd $wt
 echo "label=$label wt=$wt head=$(git rev-parse HEAD) dirty=$(git status --porcelain | wc -l)" > $L/meta.txt
 s=$(date +%s); rc=0; i=0
 : > $L/build.log

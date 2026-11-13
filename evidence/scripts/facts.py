@@ -2,9 +2,15 @@
 """Assemble Countersign stage-1 facts.json files from the raw run outputs in /data/work/out."""
 import json, os, re, shutil, subprocess, xml.etree.ElementTree as ET
 
-REPO = '/data/src/mp'
-OUT = '/data/work/out'
-EVID = '/data/worktrees/s_Vga5T2JJtb/evidence'
+# Paths default to the original local run; CI (evidence/scripts/ci-facts.sh) overrides them with env vars.
+SRC = os.environ.get('CS_SRC', '/data/src')
+REPO = os.environ.get('CS_REPO', SRC + '/mp')
+OUT = os.environ.get('CS_OUT', '/data/work/out')
+EVID = os.environ.get('CS_EVID', '/data/worktrees/s_Vga5T2JJtb/evidence')
+SPEC = os.environ.get('CS_SPEC', '/data/work/scripts/spec.json')
+ONLY = os.environ.get('CS_ONLY')  # one change id: build facts for that change only
+OS_DESC = os.environ.get('CS_OS_DESC', 'linux-x64 (container)')
+WT_RE = re.escape(SRC) + r'/mp-[\w-]+/'
 BASE = '32258fdbee4bcd653c79f51b4376b5103c6f4d27'
 SDK = '8.0.402'
 SG = 'tests/MessagePack.SourceGenerator.Tests'
@@ -136,7 +142,7 @@ def warnings(label):
                 l = l.strip()
                 if not l:
                     continue
-                l = re.sub(r'/data/src/mp-[\w-]+/', '', l)
+                l = re.sub(WT_RE, '', l)
                 l = re.sub(r'\(\d+,\d+(,\d+,\d+)?\)', '', l)
                 ws.add(l)
     return ws
@@ -203,9 +209,9 @@ def full_check(label, change_dir, meta, base_fail):
 
 
 # ---- ExecutionTests / MapModeExecutionTests (SDK 9, scripts/exec9.sh -> /data/work/out/exec9-<label>) ----
-SDK9 = '9.0.321'
+SDK9 = os.environ.get('SDK9_VERSION', '9.0.321')
 SDK9_NOTE = ('SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 '
-             '(global.json overridden to 9.0.321 in the scratch worktree only)')
+             f'(global.json overridden to {SDK9} in the scratch worktree only)')
 EXEC_PROJS = ['ExecutionTests', 'MapModeExecutionTests']
 
 
@@ -226,8 +232,8 @@ def exec_run(label):
         blog = open(os.path.join(d, f'{P}.build.log')).read()
         r['projects'][P] = {
             'build_rc': int(meta[f'{P}_build_rc']), 'build_s': float(meta.get(f'{P}_build_s', 0)),
-            'errors': sorted({re.sub(r'/data/src/mp-[\w-]+/', '', e) for e in re.findall(r'[^\s]+: error \w+:[^\[]*', blog)}),
-            'warnings': sorted({re.sub(r'\(\d+,\d+(,\d+,\d+)?\)', '', re.sub(r'/data/src/mp-[\w-]+/', '', w)).strip() for w in re.findall(r'[^\s]+: warning \w+:[^\[]*', blog)}),
+            'errors': sorted({re.sub(WT_RE, '', e) for e in re.findall(r'[^\s]+: error \w+:[^\[]*', blog)}),
+            'warnings': sorted({re.sub(r'\(\d+,\d+(,\d+,\d+)?\)', '', re.sub(WT_RE, '', w)).strip() for w in re.findall(r'[^\s]+: warning \w+:[^\[]*', blog)}),
             'cs9057': 'CS9057' in blog,
             'targeted': parse_trx(os.path.join(d, f'{P}.targeted.trx')),
             'full': parse_trx(os.path.join(d, f'{P}.full.trx')),
@@ -355,7 +361,7 @@ def main():
     base_full = parse_trx(os.path.join(OUT, 'base', 'full.trx')) or []
     base_fail = {t['name'] for t in base_full if t['outcome'] == 'failed'}
     base_warn = warnings('base')
-    spec = json.load(open('/data/work/scripts/spec.json'))
+    spec = json.load(open(SPEC))
     # base summary (for reference)
     bd = os.path.join(EVID, 'base')
     copy_log(os.path.join(OUT, 'base', 'build.log'), os.path.join(bd, 'logs', 'build.log'))
@@ -371,6 +377,8 @@ def main():
 
     for ch in spec['changes']:
         n = ch['change']
+        if ONLY and n != ONLY:
+            continue
         branch = f'ju26-issue-{n.split("-")[0]}'
         head = git('rev-parse', f'origin/{branch}').strip()
         cd = os.path.join(EVID, n)
@@ -466,7 +474,7 @@ def main():
         checks.extend(extra)
         facts['checks'] = checks
         facts['not_run'] = ch.get('not_run', [])
-        facts['environment'] = {'sdk': SDK, **({'sdk_execution_tests': SDK9, 'sdk_note': SDK9_NOTE} if 'execution' in ch else {}), 'os': 'linux-x64 (container)', 'configuration': 'Debug', 'max_cpu': 8}
+        facts['environment'] = {'sdk': SDK, **({'sdk_execution_tests': SDK9, 'sdk_note': SDK9_NOTE} if 'execution' in ch else {}), 'os': OS_DESC, 'configuration': 'Debug', 'max_cpu': 8}
         json.dump(facts, open(os.path.join(cd, 'facts.json'), 'w'), indent=2)
         print(n, [(c['id'], c['status']) for c in checks])
 
