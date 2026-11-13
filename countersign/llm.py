@@ -45,7 +45,7 @@ PRESETS: dict[str, dict] = {
     # Reasoning is a chat-template switch; on for reviews (deliberation is the job), off for the JSON repair turn.
     "nemotron": {"base_url": "https://integrate.api.nvidia.com/v1", "key_env": "NVIDIA_API_KEY",
                  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "vendor": "NVIDIA", "provider": "nvidia",
-                 "temperature": 0.6, "top_p": 0.95, "max_tokens": 16384,
+                 "temperature": 0.6, "top_p": 0.95, "max_tokens": 32768,  # reasoning tokens count here: 16k cut a review off
                  "thinking": {"chat_template_kwargs": {"enable_thinking": True}},
                  "no_thinking": {"chat_template_kwargs": {"enable_thinking": False}}},
     "gemini": {"base_url": "https://generativelanguage.googleapis.com/v1beta/openai/", "key_env": "GEMINI_API_KEY",
@@ -244,7 +244,8 @@ def ask_json(client: ChatClient, system: str, user: str, check, log: list) -> tu
         parsed, problems = None, [str(e)]
     if not problems:
         return parsed, False
-    messages += [{"role": "assistant", "content": res.content},
+    answer = re.sub(r"<think>.*?(</think>|$)", "", res.content, flags=re.S).strip() or "(empty answer)"
+    messages += [{"role": "assistant", "content": answer},
                  {"role": "user", "content": "That was not valid JSON for the requested schema: " + "; ".join(problems[:12])
                   + (" (the answer was cut off: finish_reason=length)" if res.finish_reason == "length" else "")
                   + ". Return only the corrected JSON object, nothing else."}]
