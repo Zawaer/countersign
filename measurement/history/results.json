@@ -1,0 +1,5039 @@
+{
+  "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp (clone at /data/src/mp)",
+  "mandate": {
+    "path": "mandate/messagepack.mandate.yaml",
+    "version": "2",
+    "sha256": "39cc2060685638e17d2ec6f88dac3ae55ad06a1c2c04534e37d57bc27aefbf81"
+  },
+  "simulated": false,
+  "labels": "measurement/history/labels.yaml",
+  "prs": [
+    {
+      "pr": 1634,
+      "title": "Union type collect",
+      "merged": "2023-08-13",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1634",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 53.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 1.0,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 24,
+      "diff-only": {
+        "tier": "ask",
+        "score": 53.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 1.0,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1667,
+      "title": "Switch from MSBuild properties to an AdditionalFiles json file",
+      "merged": "2023-08-15",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1667",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 57.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 17.0
+        },
+        "cleared": false
+      },
+      "files": 24,
+      "lines": 426,
+      "diff-only": {
+        "tier": "ask",
+        "score": 72.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 17.0,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1674,
+      "title": "Fix analyzer when only MessagePack.Annotations is referenced",
+      "merged": "2023-09-11",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1674",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 23.4,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 0.4
+        },
+        "cleared": true
+      },
+      "files": 3,
+      "lines": 11,
+      "diff-only": {
+        "tier": "ask",
+        "score": 38.4,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 0.4,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1698,
+      "title": "Support to analyze records",
+      "merged": "2023-11-07",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1698",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 29.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 5.8
+        },
+        "cleared": true
+      },
+      "files": 4,
+      "lines": 144,
+      "diff-only": {
+        "tier": "ask",
+        "score": 44.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 5.8,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1727,
+      "title": ".NET 8 Update(1): stylecop related small update",
+      "merged": "2024-01-10",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1727",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 56.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 2.0,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 4,
+      "lines": 51,
+      "diff-only": {
+        "tier": "ask",
+        "score": 56.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 2.0,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1728,
+      "title": ".NET 8 Update(2): TargetFrameworks",
+      "merged": "2024-01-10",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1728",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 120.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 33,
+      "lines": 1354,
+      "diff-only": {
+        "tier": "block",
+        "score": 135.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1729,
+      "title": ".NET 8 Update(3): Microsoft.CodeAnalysis.Analyzers v3.3.4",
+      "merged": "2024-01-11",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1729",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 53.3,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 0.3,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 3,
+      "lines": 8,
+      "diff-only": {
+        "tier": "ask",
+        "score": 53.3,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 0.3,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1730,
+      "title": ".NET 8 Update(4): System.Collections.Frozen",
+      "merged": "2024-01-12",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1730",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 96.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 12.2,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 4,
+      "lines": 304,
+      "diff-only": {
+        "tier": "ask",
+        "score": 111.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 12.2,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1736,
+      "title": "Source Generator configuration via attributes instead of .json file",
+      "merged": "2024-01-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1736",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 105,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 10,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 262,
+      "lines": 9936,
+      "diff-only": {
+        "tier": "block",
+        "score": 120,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 10,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1743,
+      "title": "AOT by default",
+      "merged": "2024-01-30",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1743",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 97.9,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 17.3,
+          "generated_files": 5.6,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 84,
+      "lines": 1857,
+      "diff-only": {
+        "tier": "block",
+        "score": 112.9,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 17.3,
+          "generated_files": 5.6,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1754,
+      "title": "Add a `[CompositeResolver]` attribute that triggers source generation",
+      "merged": "2024-01-30",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1754",
+      "escape": true,
+      "confidence": "medium",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 89.6,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 14.4,
+          "generated_files": 0.2,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 22,
+      "lines": 750,
+      "diff-only": {
+        "tier": "ask",
+        "score": 104.6,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 14.4,
+          "generated_files": 0.2,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1796,
+      "title": "Include all hand-written formatters in the source generated resolver",
+      "merged": "2024-04-11",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1796",
+      "escape": true,
+      "confidence": "medium",
+      "ci-credited": {
+        "tier": "block",
+        "score": 89.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 9.1,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 135,
+      "lines": 4051,
+      "diff-only": {
+        "tier": "block",
+        "score": 104.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 9.1,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1798,
+      "title": "Fix source generated formatters for records with string keys",
+      "merged": "2024-04-13",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1798",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 28.9,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 2.5,
+          "generated_files": 0.4
+        },
+        "cleared": true
+      },
+      "files": 6,
+      "lines": 347,
+      "diff-only": {
+        "tier": "ask",
+        "score": 43.9,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 2.5,
+          "generated_files": 0.4,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1802,
+      "title": "Source generated formatters that support private members",
+      "merged": "2024-05-07",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1802",
+      "escape": true,
+      "confidence": "medium",
+      "ci-credited": {
+        "tier": "block",
+        "score": 90,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 10,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 212,
+      "lines": 3414,
+      "diff-only": {
+        "tier": "block",
+        "score": 105,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 10,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1818,
+      "title": "Fix source generator handling of inaccessible custom formatters",
+      "merged": "2024-05-16",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1818",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 45.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 15,
+          "lines_changed": 9.8,
+          "generated_files": 0.2
+        },
+        "cleared": false
+      },
+      "files": 15,
+      "lines": 314,
+      "diff-only": {
+        "tier": "ask",
+        "score": 60.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 15,
+          "lines_changed": 9.8,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1824,
+      "title": "Add `ExcludeFormatterFromSourceGeneratedResolverAttribute`",
+      "merged": "2024-05-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1824",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 29.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: unmapped"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 3.0
+        },
+        "cleared": false
+      },
+      "files": 6,
+      "lines": 75,
+      "diff-only": {
+        "tier": "ask",
+        "score": 44.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 3.0,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1842,
+      "title": "Preserve code comments when adding attributes to fields",
+      "merged": "2024-06-06",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1842",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 23.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 1.6
+        },
+        "cleared": true
+      },
+      "files": 2,
+      "lines": 41,
+      "diff-only": {
+        "tier": "ask",
+        "score": 38.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 1.6,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1850,
+      "title": "Fix handling of formatters following the singleton pattern",
+      "merged": "2024-06-21",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1850",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 45.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 18,
+          "lines_changed": 7.2,
+          "generated_files": 0.6
+        },
+        "cleared": false
+      },
+      "files": 18,
+      "lines": 384,
+      "diff-only": {
+        "tier": "ask",
+        "score": 60.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 18,
+          "lines_changed": 7.2,
+          "generated_files": 0.6,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1859,
+      "title": "Report missing `[MessagePackObject]` attribute for generic types ",
+      "merged": "2024-06-28",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1859",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 26.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 3.7
+        },
+        "cleared": true
+      },
+      "files": 3,
+      "lines": 92,
+      "diff-only": {
+        "tier": "ask",
+        "score": 41.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 3.7,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1734,
+      "title": "Unity consumes messagepack as a nuget package instead of source",
+      "merged": "2024-07-01",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1734",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 120.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 452,
+      "lines": 17214,
+      "diff-only": {
+        "tier": "block",
+        "score": 135.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: split-large-change",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1874,
+      "title": "Fix issues about the equality of AnalyzerOptions and FormatterDescriptor",
+      "merged": "2024-07-05",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1874",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 52.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 1.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 30,
+      "diff-only": {
+        "tier": "ask",
+        "score": 52.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 1.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1873,
+      "title": "Fix some source generator issues",
+      "merged": "2024-07-17",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1873",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 66.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 12,
+          "lines_changed": 3.9,
+          "generated_files": 0.9,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 12,
+      "lines": 257,
+      "diff-only": {
+        "tier": "ask",
+        "score": 66.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 12,
+          "lines_changed": 3.9,
+          "generated_files": 0.9,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1872,
+      "title": "Faster multi-element serialization for primitive types",
+      "merged": "2024-07-18",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1872",
+      "escape": true,
+      "confidence": "high",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 106.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 20,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 6,
+      "lines": 2659,
+      "diff-only": {
+        "tier": "ask",
+        "score": 121.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 20,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1888,
+      "title": "Remove Unity related symbols from Nuget projects",
+      "merged": "2024-07-19",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1888",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 137.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 17,
+          "lines_changed": 10.0,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 17,
+      "lines": 254,
+      "diff-only": {
+        "tier": "block",
+        "score": 137.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 17,
+          "lines_changed": 10.0,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1890,
+      "title": "Simd Accelerated bool[] deserialize",
+      "merged": "2024-07-19",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1890",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 74.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 9.9,
+          "generated_files": 0.1,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 4,
+      "lines": 299,
+      "diff-only": {
+        "tier": "ask",
+        "score": 89.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 9.9,
+          "generated_files": 0.1,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1884,
+      "title": "Avoid regenerating all formatters when only one object/union/enum changes",
+      "merged": "2024-07-19",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1884",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 30.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 4.0
+        },
+        "cleared": true
+      },
+      "files": 6,
+      "lines": 100,
+      "diff-only": {
+        "tier": "ask",
+        "score": 45.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 4.0,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1893,
+      "title": "Offer code fix for MsgPack011: `partial` modifier required",
+      "merged": "2024-07-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1893",
+      "escape": true,
+      "confidence": "medium",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 67.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 11,
+          "lines_changed": 16.0,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 11,
+      "lines": 399,
+      "diff-only": {
+        "tier": "ask",
+        "score": 82.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 11,
+          "lines_changed": 16.0,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1898,
+      "title": "Offer code fix to ignore unattribute members of MessagePackObject types",
+      "merged": "2024-07-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1898",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 51.4,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 6.4,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 159,
+      "diff-only": {
+        "tier": "ask",
+        "score": 66.4,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 6.4,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1905,
+      "title": "Fix and improve generated formatters",
+      "merged": "2024-07-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1905",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 32.3,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 7,
+          "lines_changed": 4.8,
+          "generated_files": 0.5
+        },
+        "cleared": true
+      },
+      "files": 7,
+      "lines": 425,
+      "diff-only": {
+        "tier": "ask",
+        "score": 47.3,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 7,
+          "lines_changed": 4.8,
+          "generated_files": 0.5,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1907,
+      "title": "Honor `ExcludeFormatterFromSourceGeneratedResolverAttribute` by suppressing certain warnings",
+      "merged": "2024-07-29",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1907",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 28.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "trust cap: build",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 2.5,
+          "generated_files": 0.1
+        },
+        "cleared": true
+      },
+      "files": 6,
+      "lines": 126,
+      "diff-only": {
+        "tier": "ask",
+        "score": 43.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 2.5,
+          "generated_files": 0.1,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1910,
+      "title": "Fix diagnostic and code fix for MsgPack011 on nesting types",
+      "merged": "2024-07-30",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1910",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 32.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 6.5
+        },
+        "cleared": true
+      },
+      "files": 6,
+      "lines": 163,
+      "diff-only": {
+        "tier": "ask",
+        "score": 47.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 6.5,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1912,
+      "title": "Make source generation cancellable",
+      "merged": "2024-07-31",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1912",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 51.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 5,
+      "diff-only": {
+        "tier": "ask",
+        "score": 51.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1921,
+      "title": "Fix some source generator issues",
+      "merged": "2024-08-06",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1921",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 26.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 0.6,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 6,
+      "lines": 34,
+      "diff-only": {
+        "tier": "ask",
+        "score": 41.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 0.6,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1926,
+      "title": "Lower language version requirement of source generated resolver",
+      "merged": "2024-08-18",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1926",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 77.9,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 0.6,
+          "generated_files": 7.3,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 74,
+      "lines": 876,
+      "diff-only": {
+        "tier": "block",
+        "score": 77.9,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 0.6,
+          "generated_files": 7.3,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1936,
+      "title": "Add ignore case option to EnumAsStringFormatter",
+      "merged": "2024-08-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1936",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 97.4,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 8,
+          "lines_changed": 9.4,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 8,
+      "lines": 235,
+      "diff-only": {
+        "tier": "ask",
+        "score": 112.4,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 8,
+          "lines_changed": 9.4,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1960,
+      "title": "Improve handling of array types in source generation",
+      "merged": "2024-09-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1960",
+      "escape": true,
+      "confidence": "medium",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 60.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.5
+        },
+        "cleared": false
+      },
+      "files": 21,
+      "lines": 957,
+      "diff-only": {
+        "tier": "ask",
+        "score": 75.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.5,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1962,
+      "title": "Honor key name overrides in source-generated formatters",
+      "merged": "2024-09-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1962",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 62.5,
+        "primary_area": "annotations-api",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: annotations-api",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 3,
+          "lines_changed": 4.5,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 3,
+      "lines": 113,
+      "diff-only": {
+        "tier": "ask",
+        "score": 77.5,
+        "primary_area": "annotations-api",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: annotations-api",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 3,
+          "lines_changed": 4.5,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1946,
+      "title": "Adjusted MsgPack004 to support records",
+      "merged": "2024-09-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1946",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 31.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 8.7
+        },
+        "cleared": true
+      },
+      "files": 3,
+      "lines": 218,
+      "diff-only": {
+        "tier": "ask",
+        "score": 46.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 8.7,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1959,
+      "title": "Add `MessagePackSerializer.Typeless.Deserialize` overload that takes `ReadOnlyMemory<byte>`",
+      "merged": "2024-09-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1959",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 91.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 0.3,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 6,
+      "lines": 7,
+      "diff-only": {
+        "tier": "ask",
+        "score": 91.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 0.3,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1922,
+      "title": "Support formatters for CompositeResolverAttribute",
+      "merged": "2024-09-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1922",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 73.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 14,
+          "lines_changed": 4.1,
+          "generated_files": 0.2,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 14,
+      "lines": 139,
+      "diff-only": {
+        "tier": "ask",
+        "score": 88.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 14,
+          "lines_changed": 4.1,
+          "generated_files": 0.2,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1968,
+      "title": "Make `CompositeResolverAttribute` much more useful",
+      "merged": "2024-09-26",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1968",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 95.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.5,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 34,
+      "lines": 693,
+      "diff-only": {
+        "tier": "ask",
+        "score": 110.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.5,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1969,
+      "title": "Add MsgPack014 analyzer and code fix",
+      "merged": "2024-09-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1969",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 56.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 10.5,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 6,
+      "lines": 262,
+      "diff-only": {
+        "tier": "ask",
+        "score": 71.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 6,
+          "lines_changed": 10.5,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1970,
+      "title": "Avoid GetSemanticModel in analyzer",
+      "merged": "2024-09-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1970",
+      "escape": true,
+      "confidence": "high",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 55.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 3.5,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 88,
+      "diff-only": {
+        "tier": "ask",
+        "score": 55.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 3.5,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1978,
+      "title": "Update DynamicAssembly usage to honor different AssemblyLoadContext's",
+      "merged": "2024-10-02",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1978",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 96.6,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 7,
+          "lines_changed": 9.6,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 7,
+      "lines": 240,
+      "diff-only": {
+        "tier": "ask",
+        "score": 111.6,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 7,
+          "lines_changed": 9.6,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1971,
+      "title": "Fix detecting duplicate keys",
+      "merged": "2024-10-02",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1971",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 44.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 7.5
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 187,
+      "diff-only": {
+        "tier": "ask",
+        "score": 59.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 7.5,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1980,
+      "title": "Add AOT formatter support for init properties and required members",
+      "merged": "2024-10-02",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1980",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 40.9,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 13,
+          "lines_changed": 7.7,
+          "generated_files": 0.2
+        },
+        "cleared": false
+      },
+      "files": 13,
+      "lines": 288,
+      "diff-only": {
+        "tier": "ask",
+        "score": 55.9,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 13,
+          "lines_changed": 7.7,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1982,
+      "title": "Fix analyzers to not mis-interpret source generated formatters as user-defined",
+      "merged": "2024-10-03",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1982",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 51.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 6,
+      "diff-only": {
+        "tier": "ask",
+        "score": 51.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1981,
+      "title": "Replace DynamicMethod use with private-capable Ref.Emit",
+      "merged": "2024-10-07",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1981",
+      "escape": true,
+      "confidence": "high",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 109.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 9,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 9,
+      "lines": 1210,
+      "diff-only": {
+        "tier": "ask",
+        "score": 124.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 9,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1987,
+      "title": "Reader/Writer touch-ups",
+      "merged": "2024-10-07",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1987",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 85.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 1.5,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 4,
+      "lines": 38,
+      "diff-only": {
+        "tier": "ask",
+        "score": 100.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 1.5,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1990,
+      "title": "Reconcile AllowPrivate behavior",
+      "merged": "2024-10-08",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1990",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 95.4,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "trust cap: annotations-api",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.4,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 46,
+      "lines": 1236,
+      "diff-only": {
+        "tier": "ask",
+        "score": 110.4,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "trust cap: annotations-api",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.4,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2000,
+      "title": "Fix embedded types being generated in resolver",
+      "merged": "2024-10-15",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2000",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 54.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 0.2,
+          "generated_files": 0.3,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 4,
+      "lines": 89,
+      "diff-only": {
+        "tier": "ask",
+        "score": 54.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 0.2,
+          "generated_files": 0.3,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2002,
+      "title": "Migration improvements: deserializing constructors and less-frequent `partial` requirements",
+      "merged": "2024-10-15",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2002",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 29.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 7,
+          "lines_changed": 2.4,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 7,
+      "lines": 183,
+      "diff-only": {
+        "tier": "ask",
+        "score": 44.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 7,
+          "lines_changed": 2.4,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2003,
+      "title": "Add analyzers to help recognize breaking changes",
+      "merged": "2024-10-15",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2003",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 66.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 9,
+          "lines_changed": 17.6,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 9,
+      "lines": 439,
+      "diff-only": {
+        "tier": "ask",
+        "score": 81.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 9,
+          "lines_changed": 17.6,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2006,
+      "title": "Fix handling of name collisions in type hierarchies",
+      "merged": "2024-10-16",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2006",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 78.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 18.0,
+          "generated_files": 0.2,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 20,
+      "lines": 465,
+      "diff-only": {
+        "tier": "ask",
+        "score": 93.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 18.0,
+          "generated_files": 0.2,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2015,
+      "title": "Use a collision-resistant hash algorithm for untrusted data",
+      "merged": "2024-10-17",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2015",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 106.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 6,
+      "lines": 650,
+      "diff-only": {
+        "tier": "ask",
+        "score": 121.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2013,
+      "title": "Secure by default",
+      "merged": "2024-10-18",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2013",
+      "escape": true,
+      "confidence": "high",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 61.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 1.2,
+          "public_api_change": 20
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 29,
+      "diff-only": {
+        "tier": "ask",
+        "score": 76.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2016,
+      "title": "Avoid collecting members when it doesn't have [Key]",
+      "merged": "2024-10-18",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2016",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 26.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 2.3,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 4,
+      "lines": 178,
+      "diff-only": {
+        "tier": "ask",
+        "score": 41.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 2.3,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2021,
+      "title": "Add `scoped` modifier to `in` parameters of `ref struct`",
+      "merged": "2024-10-18",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2021",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 88.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 7,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 7,
+      "lines": 29,
+      "diff-only": {
+        "tier": "ask",
+        "score": 103.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 7,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2022,
+      "title": "Ignore abstract implementations of `IMessagePackFormatter<T>`",
+      "merged": "2024-10-18",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2022",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 23.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 1.2
+        },
+        "cleared": true
+      },
+      "files": 2,
+      "lines": 29,
+      "diff-only": {
+        "tier": "ask",
+        "score": 38.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 1.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2023,
+      "title": "Suppress MsgPack004 on private base members when only public is interesting",
+      "merged": "2024-10-18",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2023",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 24.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 2.0
+        },
+        "cleared": true
+      },
+      "files": 2,
+      "lines": 49,
+      "diff-only": {
+        "tier": "ask",
+        "score": 39.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 2.0,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2028,
+      "title": "Avoid collecting fields with custom formatter recusively",
+      "merged": "2024-10-21",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2028",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 37.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 9,
+          "lines_changed": 7.9,
+          "generated_files": 0.6
+        },
+        "cleared": true
+      },
+      "files": 9,
+      "lines": 568,
+      "diff-only": {
+        "tier": "ask",
+        "score": 52.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 9,
+          "lines_changed": 7.9,
+          "generated_files": 0.6,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2030,
+      "title": "Support nesting formatters within generic data types",
+      "merged": "2024-10-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2030",
+      "escape": true,
+      "confidence": "high",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 57.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: generated-files",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 14.9,
+          "generated_files": 2.1
+        },
+        "cleared": false
+      },
+      "files": 34,
+      "lines": 1229,
+      "diff-only": {
+        "tier": "ask",
+        "score": 72.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: generated-files",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "lines_changed": 14.9,
+          "generated_files": 2.1,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2029,
+      "title": "Apply scoped in more places",
+      "merged": "2024-10-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2029",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 117.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 6,
+      "lines": 30,
+      "diff-only": {
+        "tier": "ask",
+        "score": 117.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2031,
+      "title": "Use generic type argument used for custom formatters",
+      "merged": "2024-10-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2031",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 25.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 1.5,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 4,
+      "lines": 155,
+      "diff-only": {
+        "tier": "ask",
+        "score": 40.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 1.5,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2032,
+      "title": "Use simpler C# syntax for nullable value types",
+      "merged": "2024-10-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2032",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 52.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "generated_files": 0.1,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 5,
+      "diff-only": {
+        "tier": "ask",
+        "score": 52.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "generated_files": 0.1,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2033,
+      "title": "Fix simplified name for ValueTuple<T>",
+      "merged": "2024-10-23",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2033",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 25.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 1.5,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 4,
+      "lines": 185,
+      "diff-only": {
+        "tier": "ask",
+        "score": 40.7,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 1.5,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2036,
+      "title": "Avoid crashing with stack overflow on recursive generic type parameter constraints",
+      "merged": "2024-10-23",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2036",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 31.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 8,
+          "lines_changed": 2.8,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 8,
+      "lines": 172,
+      "diff-only": {
+        "tier": "ask",
+        "score": 46.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 8,
+          "lines_changed": 2.8,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2037,
+      "title": "Fix mis-fire of `MsgPack003` on use of `Collection<T>`",
+      "merged": "2024-10-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2037",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 26.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 1.9,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 4,
+      "lines": 170,
+      "diff-only": {
+        "tier": "ask",
+        "score": 41.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 1.9,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2026,
+      "title": "Refactor reading fixint, fixmap, fixarray, fixstr",
+      "merged": "2024-10-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2026",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 75.9,
+        "primary_area": "runtime-core",
+        "why": [
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 9.8,
+          "generated_files": 0.1,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 6,
+      "lines": 357,
+      "diff-only": {
+        "tier": "ask",
+        "score": 90.9,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 6,
+          "lines_changed": 9.8,
+          "generated_files": 0.1,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2044,
+      "title": "Avoid allocating an `ImmutableArray<T>.Builder` during deserialization",
+      "merged": "2024-10-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2044",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 93.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 3,
+          "lines_changed": 0.5,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 3,
+      "lines": 13,
+      "diff-only": {
+        "tier": "ask",
+        "score": 93.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 3,
+          "lines_changed": 0.5,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2043,
+      "title": "Allow SequencePool to Clear self",
+      "merged": "2024-10-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2043",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 90.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 0.5,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 13,
+      "diff-only": {
+        "tier": "ask",
+        "score": 90.5,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 0.5,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2045,
+      "title": "Revert untrusted data default",
+      "merged": "2024-10-29",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2045",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 86.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 29,
+      "diff-only": {
+        "tier": "ask",
+        "score": 101.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 1986,
+      "title": "Add `MessagePackPrimitives` class",
+      "merged": "2024-11-07",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1986",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 146.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 16,
+          "lines_changed": 20,
+          "generated_files": 0.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 16,
+      "lines": 5070,
+      "diff-only": {
+        "tier": "block",
+        "score": 146.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 16,
+          "lines_changed": 20,
+          "generated_files": 0.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2056,
+      "title": "Fix an issue about comparing generic type parameter constraints",
+      "merged": "2024-11-09",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2056",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 30.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 5.4,
+          "generated_files": 0.2
+        },
+        "cleared": true
+      },
+      "files": 5,
+      "lines": 267,
+      "diff-only": {
+        "tier": "ask",
+        "score": 45.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 5.4,
+          "generated_files": 0.2,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2057,
+      "title": "Fix issues about code analysis and code fix of MsgPack003",
+      "merged": "2024-11-09",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2057",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 33.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 11.0
+        },
+        "cleared": true
+      },
+      "files": 2,
+      "lines": 274,
+      "diff-only": {
+        "tier": "ask",
+        "score": 48.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 2,
+          "lines_changed": 11.0,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2061,
+      "title": "Fix serializing BigInteger and Decimal",
+      "merged": "2024-11-11",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2061",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 62.8,
+        "primary_area": "runtime-core",
+        "why": [
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 0.8,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 21,
+      "diff-only": {
+        "tier": "ask",
+        "score": 77.8,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 0.8,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2063,
+      "title": "SequencePool support MemoryPool.",
+      "merged": "2024-11-12",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2063",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 91.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 29,
+      "diff-only": {
+        "tier": "ask",
+        "score": 91.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 1.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2059,
+      "title": "Fix issues about Memory/ReadOnlyMemory/ReadOnlySequence in Source Generator",
+      "merged": "2024-11-12",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2059",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 39.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 10,
+          "lines_changed": 8.4,
+          "generated_files": 0.8
+        },
+        "cleared": true
+      },
+      "files": 10,
+      "lines": 694,
+      "diff-only": {
+        "tier": "ask",
+        "score": 54.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 10,
+          "lines_changed": 8.4,
+          "generated_files": 0.8,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2070,
+      "title": "Fix bugs for Hardware Intrinsics",
+      "merged": "2024-11-19",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2070",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 63.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 1.0,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 26,
+      "diff-only": {
+        "tier": "ask",
+        "score": 78.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 1.0,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2073,
+      "title": "Set MaximumObjectGraphDepth to TrustedData",
+      "merged": "2024-12-03",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2073",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 111.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 6,
+      "diff-only": {
+        "tier": "ask",
+        "score": 111.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2090,
+      "title": "Add .NET 9",
+      "merged": "2024-12-11",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2090",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 120.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 47,
+      "lines": 3212,
+      "diff-only": {
+        "tier": "block",
+        "score": 135.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2093,
+      "title": "Check IsGenericType before call ConstructUnboundGenericType()",
+      "merged": "2024-12-12",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2093",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 53.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 0.6,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 3,
+      "lines": 14,
+      "diff-only": {
+        "tier": "ask",
+        "score": 53.6,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 3,
+          "lines_changed": 0.6,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2094,
+      "title": "Remove NerdBank.GitVersioning",
+      "merged": "2024-12-12",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2094",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 33.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: unmapped"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 10,
+          "lines_changed": 3.8
+        },
+        "cleared": false
+      },
+      "files": 10,
+      "lines": 95,
+      "diff-only": {
+        "tier": "ask",
+        "score": 48.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 10,
+          "lines_changed": 3.8,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2095,
+      "title": "Current all apis to shipped.txt",
+      "merged": "2024-12-12",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2095",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 142.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 12,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 12,
+      "lines": 1421,
+      "diff-only": {
+        "tier": "block",
+        "score": 142.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 12,
+          "lines_changed": 20,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2105,
+      "title": "allow DynamicGenericResolver to StandardResolver in DynamicAssembly.AvoidDynamicCode",
+      "merged": "2024-12-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2105",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 66.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.1,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 2,
+      "diff-only": {
+        "tier": "ask",
+        "score": 66.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.1,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2103,
+      "title": "Fix source generator, don't generate when abstract/interface is not union",
+      "merged": "2024-12-25",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2103",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 45.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 20
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 895,
+      "diff-only": {
+        "tier": "ask",
+        "score": 60.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 20,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2106,
+      "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+      "merged": "2024-12-26",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2106",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "notify",
+        "score": 37.3,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "trust cap: generator-analyzer-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 9,
+          "lines_changed": 7.9,
+          "generated_files": 0.4
+        },
+        "cleared": true
+      },
+      "files": 9,
+      "lines": 530,
+      "diff-only": {
+        "tier": "ask",
+        "score": 52.3,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 9,
+          "lines_changed": 7.9,
+          "generated_files": 0.4,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2123,
+      "title": "Add missing recursion guard to `CodeAnalysisUtilities.GetTypeParameters`",
+      "merged": "2025-01-09",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2123",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 51.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.1,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 2,
+      "diff-only": {
+        "tier": "ask",
+        "score": 51.1,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.1,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2135,
+      "title": "Fix issues about Double.MaxValue",
+      "merged": "2025-01-23",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2135",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 66.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 4,
+      "diff-only": {
+        "tier": "ask",
+        "score": 66.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2119,
+      "title": "Consolidation of AssemblyBuilderAccess when generating dynamic assemblies",
+      "merged": "2025-01-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2119",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 91.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 6,
+      "diff-only": {
+        "tier": "ask",
+        "score": 91.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2134,
+      "title": "Protects the generated resolver type metadata from trimmer",
+      "merged": "2025-01-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2134",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 124.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 12.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 305,
+      "diff-only": {
+        "tier": "ask",
+        "score": 124.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 12.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2136,
+      "title": "Add PreserveAttribute to generic formatters for Unity IL2CPP",
+      "merged": "2025-01-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2136",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 110.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 15,
+          "lines_changed": 5.0,
+          "generated_files": 0.2,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 15,
+      "lines": 143,
+      "diff-only": {
+        "tier": "ask",
+        "score": 110.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 15,
+          "lines_changed": 5.0,
+          "generated_files": 0.2,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2139,
+      "title": "Change ByteListFormatter behaviour to keep binary compatibility for List<byte>",
+      "merged": "2025-01-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2139",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 91.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 6.1,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 232,
+      "diff-only": {
+        "tier": "ask",
+        "score": 106.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 5,
+          "lines_changed": 6.1,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2150,
+      "title": "Fix stackoverflow on analyzer",
+      "merged": "2025-02-04",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2150",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 54.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 0.8,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 4,
+      "lines": 21,
+      "diff-only": {
+        "tier": "ask",
+        "score": 54.8,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 4,
+          "lines_changed": 0.8,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2153,
+      "title": "Fix SkipClrVisibilityChecks to notice private fields in base classes",
+      "merged": "2025-02-09",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2153",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 41.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 4.0
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 99,
+      "diff-only": {
+        "tier": "ask",
+        "score": 56.0,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 4.0,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2172,
+      "title": "Add memory size check to `GetMemoryCheckResult`",
+      "merged": "2025-03-04",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2172",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 66.6,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.6,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 14,
+      "diff-only": {
+        "tier": "ask",
+        "score": 66.6,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.6,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2185,
+      "title": "AccessModifier was added to generated code.",
+      "merged": "2025-06-06",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2185",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 80.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "generated_files": 10,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 126,
+      "lines": 251,
+      "diff-only": {
+        "tier": "block",
+        "score": 80.0,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: split-large-change"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 20,
+          "generated_files": 10,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2206,
+      "title": "Remove unneeded GetTypeInfo() calls",
+      "merged": "2025-08-17",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2206",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "block",
+        "score": 144.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 19,
+          "lines_changed": 15.3,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 19,
+      "lines": 382,
+      "diff-only": {
+        "tier": "block",
+        "score": 144.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 19,
+          "lines_changed": 15.3,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2212,
+      "title": "Use 'Write' instead of 'WriteInt32' for union type keys",
+      "merged": "2025-08-17",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2212",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 55.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 0.1,
+          "generated_files": 0.4,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 5,
+      "lines": 10,
+      "diff-only": {
+        "tier": "ask",
+        "score": 55.5,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 5,
+          "lines_changed": 0.1,
+          "generated_files": 0.4,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2225,
+      "title": "Fix Incorrect DateTimeOffset Serializer",
+      "merged": "2025-08-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2225",
+      "escape": true,
+      "confidence": "high",
+      "ci-credited": {
+        "tier": "ask",
+        "score": 91.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.1,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 2,
+      "diff-only": {
+        "tier": "ask",
+        "score": 91.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.1,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2224,
+      "title": "Fix various disposable issues",
+      "merged": "2025-08-22",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2224",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 95.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 1.3,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 4,
+      "lines": 33,
+      "diff-only": {
+        "tier": "ask",
+        "score": 95.3,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 4,
+          "lines_changed": 1.3,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2226,
+      "title": "fix: prevent StackOverflow in Equals with recursive generic constraints",
+      "merged": "2025-08-31",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2226",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 51.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 6,
+      "diff-only": {
+        "tier": "ask",
+        "score": 51.2,
+        "primary_area": "generator-analyzer-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 20,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2235,
+      "title": "Fix LICENSE notices for BufferWriter.cs",
+      "merged": "2026-02-27",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2235",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 67.8,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 0.8,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 20,
+      "diff-only": {
+        "tier": "ask",
+        "score": 67.8,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 0.8,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2260,
+      "title": "Fix typo and ignore .lscache files",
+      "merged": "2026-05-13",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2260",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 92.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 4,
+      "diff-only": {
+        "tier": "ask",
+        "score": 92.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2256,
+      "title": "Add more types to the default disallow list of named types to be deserialized",
+      "merged": "2026-05-14",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2256",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 66.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 6,
+      "diff-only": {
+        "tier": "ask",
+        "score": 66.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2262,
+      "title": "Revert DateTimeOffset encoding change",
+      "merged": "2026-05-15",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2262",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 63.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 1.2,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 2,
+      "lines": 29,
+      "diff-only": {
+        "tier": "ask",
+        "score": 78.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 2,
+          "lines_changed": 1.2,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2270,
+      "title": "Add several known unsafe 'gadgets' to the disallow list",
+      "merged": "2026-05-21",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2270",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 66.4,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.4,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 11,
+      "diff-only": {
+        "tier": "ask",
+        "score": 66.4,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.4,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2271,
+      "title": "Add `scoped` to `MessagePackWriter.Write(ReadOnlySpan<T>)` methods",
+      "merged": "2026-06-01",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2271",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 86.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      },
+      "files": 1,
+      "lines": 4,
+      "diff-only": {
+        "tier": "ask",
+        "score": 86.2,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "mandate rule: source-without-tests",
+          "mandate rule: mandated-check-missing",
+          "trust cap: runtime-core",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 1,
+          "lines_changed": 0.2,
+          "public_api_change": 20,
+          "source_without_tests": 15,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    },
+    {
+      "pr": 2275,
+      "title": "Fix security issues in develop",
+      "merged": "2026-06-09",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2275",
+      "escape": false,
+      "confidence": null,
+      "ci-credited": {
+        "tier": "ask",
+        "score": 120.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "mandate rule: public-api-change",
+          "trust cap: runtime-core",
+          "trust cap: unmapped",
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25
+        },
+        "cleared": false
+      },
+      "files": 33,
+      "lines": 1557,
+      "diff-only": {
+        "tier": "block",
+        "score": 135.1,
+        "primary_area": "runtime-core",
+        "why": [
+          "risk score: risk"
+        ],
+        "risk_factors": {
+          "area_sensitivity": 35,
+          "files_changed": 20,
+          "lines_changed": 20,
+          "generated_files": 0.1,
+          "public_api_change": 20,
+          "security_sensitive_paths": 25,
+          "fail_without_fix_not_shown": 15
+        },
+        "cleared": false
+      }
+    }
+  ],
+  "modes": {
+    "ci-credited": {
+      "n": 109,
+      "tiers": {
+        "silent": 0,
+        "notify": 24,
+        "ask": 74,
+        "block": 11
+      },
+      "routed_to_humans": 85,
+      "share_routed_to_humans": 0.78,
+      "escapes": 11,
+      "escapes_high_confidence": 6,
+      "confusion": {
+        "escape_routed": 11,
+        "escape_cleared": 0,
+        "clean_routed": 74,
+        "clean_cleared": 24
+      },
+      "escapes_cleared": [],
+      "escape_recall": 1.0,
+      "escape_rate_routed": 0.129,
+      "escape_rate_cleared": 0.0
+    },
+    "diff-only": {
+      "n": 109,
+      "tiers": {
+        "silent": 0,
+        "notify": 0,
+        "ask": 95,
+        "block": 14
+      },
+      "routed_to_humans": 109,
+      "share_routed_to_humans": 1.0,
+      "escapes": 11,
+      "escapes_high_confidence": 6,
+      "confusion": {
+        "escape_routed": 11,
+        "escape_cleared": 0,
+        "clean_routed": 98,
+        "clean_cleared": 0
+      },
+      "escapes_cleared": [],
+      "escape_recall": 1.0,
+      "escape_rate_routed": 0.101,
+      "escape_rate_cleared": null
+    }
+  },
+  "unattributed_regressions": [
+    {
+      "issue": "#2101",
+      "what": "3.1.0 broke TypelessObjectResolver (fixed by #2103)",
+      "why_unattributed": "regression between 3.0.308 and 3.1.0; SZZ only finds adjacent lines from #1736"
+    },
+    {
+      "issue": "#2209",
+      "what": "3.1 regression with chained polymorphic types",
+      "why_unattributed": "no fix PR merged; cause not identified"
+    },
+    {
+      "issue": "#2046",
+      "what": "MsgPack003 analysis/code fix broken for Nullable and generics in 3.0 (fixed by #2057)",
+      "why_unattributed": "origin is #1599 (May 2023), before the set"
+    }
+  ]
+}

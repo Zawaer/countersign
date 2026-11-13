@@ -1,0 +1,1922 @@
+{
+ "633": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "636": [
+  {
+   "signal": "szz",
+   "by": 2224,
+   "title": "Fix various disposable issues",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "663": [
+  {
+   "signal": "szz",
+   "by": 1685,
+   "title": "Remove `long` to `int` truncation of stream position",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "681": [
+  {
+   "signal": "szz_adjacent",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 0,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 0,
+   "adjacent_lines": 2
+  }
+ ],
+ "699": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 51,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 51,
+   "adjacent_lines": 0
+  }
+ ],
+ "714": [
+  {
+   "signal": "szz",
+   "by": 2055,
+   "title": "Fix bugs in serializing long numbers",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "715": [
+  {
+   "signal": "szz",
+   "by": 1696,
+   "title": "Workaround mono runtime bug",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2172,
+   "title": "Add memory size check to `GetMemoryCheckResult`",
+   "lines": 2,
+   "adjacent_lines": 1
+  }
+ ],
+ "757": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "765": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 3,
+   "adjacent_lines": 0
+  }
+ ],
+ "767": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 5,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 5,
+   "adjacent_lines": 0
+  }
+ ],
+ "771": [
+  {
+   "signal": "szz_adjacent",
+   "by": 2287,
+   "title": "Fix OldSpec byte[] encoding emitting unsupported str8 headers",
+   "lines": 0,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 0,
+   "adjacent_lines": 2
+  }
+ ],
+ "777": [
+  {
+   "signal": "szz",
+   "by": 2055,
+   "title": "Fix bugs in serializing long numbers",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2061,
+   "title": "Fix serializing BigInteger and Decimal",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "784": [
+  {
+   "signal": "szz",
+   "by": 2055,
+   "title": "Fix bugs in serializing long numbers",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2061,
+   "title": "Fix serializing BigInteger and Decimal",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "825": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "861": [
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 3,
+   "adjacent_lines": 0
+  }
+ ],
+ "946": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "948": [
+  {
+   "signal": "szz_adjacent",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 0,
+   "adjacent_lines": 4
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 0,
+   "adjacent_lines": 4
+  }
+ ],
+ "956": [
+  {
+   "signal": "szz",
+   "by": 1932,
+   "title": "Adjusted MsgPack004 to support records",
+   "lines": 3,
+   "adjacent_lines": 0
+  }
+ ],
+ "1047": [
+  {
+   "signal": "szz",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 4,
+   "adjacent_lines": 0
+  }
+ ],
+ "1053": [
+  {
+   "signal": "szz",
+   "by": 1728,
+   "title": ".NET 8 Update(2): TargetFrameworks",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1063": [
+  {
+   "signal": "szz",
+   "by": 1687,
+   "title": "Better constrain dictionary detection",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "1083": [
+  {
+   "signal": "reference",
+   "by": 1971,
+   "title": "Fix detecting duplicate keys"
+  }
+ ],
+ "1088": [
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1089": [
+  {
+   "signal": "szz",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 5,
+   "adjacent_lines": 0
+  }
+ ],
+ "1095": [
+  {
+   "signal": "reference",
+   "by": 1654,
+   "title": "Bump NUnit3TestAdapter from 4.4.2 to 4.5.0"
+  },
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1100": [
+  {
+   "signal": "reference",
+   "by": 1654,
+   "title": "Bump NUnit3TestAdapter from 4.4.2 to 4.5.0"
+  }
+ ],
+ "1108": [
+  {
+   "signal": "szz_adjacent",
+   "by": 1728,
+   "title": ".NET 8 Update(2): TargetFrameworks",
+   "lines": 0,
+   "adjacent_lines": 2
+  }
+ ],
+ "1122": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 2,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 2,
+   "adjacent_lines": 2
+  }
+ ],
+ "1125": [
+  {
+   "signal": "szz",
+   "by": 1963,
+   "title": "MPC String Value From Key Attribute Fix",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "1137": [
+  {
+   "signal": "szz_adjacent",
+   "by": 1728,
+   "title": ".NET 8 Update(2): TargetFrameworks",
+   "lines": 0,
+   "adjacent_lines": 1
+  }
+ ],
+ "1187": [
+  {
+   "signal": "szz",
+   "by": 1687,
+   "title": "Better constrain dictionary detection",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1277": [
+  {
+   "signal": "szz",
+   "by": 1785,
+   "title": "fixing issue with backing field naming and serialization failing",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1302": [
+  {
+   "signal": "szz",
+   "by": 1971,
+   "title": "Fix detecting duplicate keys",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1440": [
+  {
+   "signal": "szz",
+   "by": 2279,
+   "title": "Fix CS8669 warning in generated MessagePack.GeneratedMessagePackResolver.g.cs",
+   "lines": 15,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 15,
+   "adjacent_lines": 0
+  }
+ ],
+ "1490": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1539": [
+  {
+   "signal": "szz",
+   "by": 1962,
+   "title": "Honor key name overrides in source-generated formatters",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 2,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 2,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2287,
+   "title": "Fix OldSpec byte[] encoding emitting unsupported str8 headers",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 3,
+   "adjacent_lines": 0
+  }
+ ],
+ "1540": [
+  {
+   "signal": "szz_adjacent",
+   "by": 2172,
+   "title": "Add memory size check to `GetMemoryCheckResult`",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 3,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 3,
+   "adjacent_lines": 1
+  }
+ ],
+ "1541": [
+  {
+   "signal": "szz",
+   "by": 1879,
+   "title": "Allow writing to init property setters of generic classes on .NET 6+",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1894,
+   "title": "Fix UnsafeBlitFormatter for the case of endianess mismatch",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1971,
+   "title": "Fix detecting duplicate keys",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1547": [
+  {
+   "signal": "szz",
+   "by": 1785,
+   "title": "fixing issue with backing field naming and serialization failing",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1557": [
+  {
+   "signal": "szz",
+   "by": 1850,
+   "title": "Fix handling of formatters following the singleton pattern",
+   "lines": 4,
+   "adjacent_lines": 0
+  }
+ ],
+ "1599": [
+  {
+   "signal": "szz",
+   "by": 1674,
+   "title": "Fix analyzer when only MessagePack.Annotations is referenced",
+   "lines": 5,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1796,
+   "title": "Include all hand-written formatters in the source generated resolver",
+   "lines": 253,
+   "adjacent_lines": 21
+  },
+  {
+   "signal": "szz",
+   "by": 1798,
+   "title": "Fix source generated formatters for records with string keys",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1818,
+   "title": "Fix source generator handling of inaccessible custom formatters",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1842,
+   "title": "Preserve code comments when adding attributes to fields",
+   "lines": 4,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1850,
+   "title": "Fix handling of formatters following the singleton pattern",
+   "lines": 20,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1859,
+   "title": "Report missing `[MessagePackObject]` attribute for generic types ",
+   "lines": 9,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1873,
+   "title": "Fix some source generator issues",
+   "lines": 14,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1884,
+   "title": "Avoid regenerating all formatters when only one object/union/enum changes",
+   "lines": 3,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1893,
+   "title": "Offer code fix for MsgPack011: `partial` modifier required",
+   "lines": 9,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1898,
+   "title": "Offer code fix to ignore unattribute members of MessagePackObject types",
+   "lines": 19,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 1905,
+   "title": "Fix and improve generated formatters",
+   "lines": 17,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1910,
+   "title": "Fix diagnostic and code fix for MsgPack011 on nesting types",
+   "lines": 9,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 1,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1962,
+   "title": "Honor key name overrides in source-generated formatters",
+   "lines": 0,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 1946,
+   "title": "Adjusted MsgPack004 to support records",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1969,
+   "title": "Add MsgPack014 analyzer and code fix",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2000,
+   "title": "Fix embedded types being generated in resolver",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2002,
+   "title": "Migration improvements: deserializing constructors and less-frequent `partial` requirements",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 21,
+   "adjacent_lines": 4
+  },
+  {
+   "signal": "szz",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 42,
+   "adjacent_lines": 3
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2037,
+   "title": "Fix mis-fire of `MsgPack003` on use of `Collection<T>`",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 73,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2059,
+   "title": "Fix issues about Memory/ReadOnlyMemory/ReadOnlySequence in Source Generator",
+   "lines": 6,
+   "adjacent_lines": 3
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2226,
+   "title": "fix: prevent StackOverflow in Equals with recursive generic constraints",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2279,
+   "title": "Fix CS8669 warning in generated MessagePack.GeneratedMessagePackResolver.g.cs",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "1605": [
+  {
+   "signal": "szz",
+   "by": 1796,
+   "title": "Include all hand-written formatters in the source generated resolver",
+   "lines": 7,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1859,
+   "title": "Report missing `[MessagePackObject]` attribute for generic types ",
+   "lines": 10,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2002,
+   "title": "Migration improvements: deserializing constructors and less-frequent `partial` requirements",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 5,
+   "adjacent_lines": 0
+  }
+ ],
+ "1667": [
+  {
+   "signal": "szz",
+   "by": 1728,
+   "title": ".NET 8 Update(2): TargetFrameworks",
+   "lines": 16,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 8,
+   "adjacent_lines": 0
+  }
+ ],
+ "1678": [
+  {
+   "signal": "revert",
+   "by": 1679,
+   "title": "Revert \"Allow applying `[MessagePackFormatter]` on parameters\""
+  },
+  {
+   "signal": "reference",
+   "by": 1679,
+   "title": "Revert \"Allow applying `[MessagePackFormatter]` on parameters\""
+  },
+  {
+   "signal": "szz",
+   "by": 1679,
+   "title": "Revert \"Allow applying `[MessagePackFormatter]` on parameters\"",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1698": [
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "1727": [
+  {
+   "signal": "szz",
+   "by": 1728,
+   "title": ".NET 8 Update(2): TargetFrameworks",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1736": [
+  {
+   "signal": "szz",
+   "by": 1796,
+   "title": "Include all hand-written formatters in the source generated resolver",
+   "lines": 117,
+   "adjacent_lines": 6
+  },
+  {
+   "signal": "szz",
+   "by": 1850,
+   "title": "Fix handling of formatters following the singleton pattern",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1893,
+   "title": "Offer code fix for MsgPack011: `partial` modifier required",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1898,
+   "title": "Offer code fix to ignore unattribute members of MessagePackObject types",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1905,
+   "title": "Fix and improve generated formatters",
+   "lines": 0,
+   "adjacent_lines": 5
+  },
+  {
+   "signal": "szz",
+   "by": 1910,
+   "title": "Fix diagnostic and code fix for MsgPack011 on nesting types",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 46,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2103,
+   "title": "Fix source generator, don't generate when abstract/interface is not union",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1743": [
+  {
+   "signal": "szz",
+   "by": 1796,
+   "title": "Include all hand-written formatters in the source generated resolver",
+   "lines": 2,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2002,
+   "title": "Migration improvements: deserializing constructors and less-frequent `partial` requirements",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 6,
+   "adjacent_lines": 0
+  }
+ ],
+ "1754": [
+  {
+   "signal": "szz",
+   "by": 1796,
+   "title": "Include all hand-written formatters in the source generated resolver",
+   "lines": 2,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 1873,
+   "title": "Fix some source generator issues",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1921,
+   "title": "Fix some source generator issues",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 19,
+   "adjacent_lines": 5
+  },
+  {
+   "signal": "szz",
+   "by": 2279,
+   "title": "Fix CS8669 warning in generated MessagePack.GeneratedMessagePackResolver.g.cs",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 3,
+   "adjacent_lines": 0
+  }
+ ],
+ "1796": [
+  {
+   "signal": "szz",
+   "by": 1818,
+   "title": "Fix source generator handling of inaccessible custom formatters",
+   "lines": 20,
+   "adjacent_lines": 7
+  },
+  {
+   "signal": "szz",
+   "by": 1850,
+   "title": "Fix handling of formatters following the singleton pattern",
+   "lines": 23,
+   "adjacent_lines": 4
+  },
+  {
+   "signal": "szz",
+   "by": 1859,
+   "title": "Report missing `[MessagePackObject]` attribute for generic types ",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1874,
+   "title": "Fix issues about the equality of AnalyzerOptions and FormatterDescriptor",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1873,
+   "title": "Fix some source generator issues",
+   "lines": 10,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1893,
+   "title": "Offer code fix for MsgPack011: `partial` modifier required",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1898,
+   "title": "Offer code fix to ignore unattribute members of MessagePackObject types",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1905,
+   "title": "Fix and improve generated formatters",
+   "lines": 3,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1907,
+   "title": "Honor `ExcludeFormatterFromSourceGeneratedResolverAttribute` by suppressing certain warnings",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1926,
+   "title": "Lower language version requirement of source generated resolver",
+   "lines": 11,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 116,
+   "adjacent_lines": 8
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 31,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1969,
+   "title": "Add MsgPack014 analyzer and code fix",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1982,
+   "title": "Fix analyzers to not mis-interpret source generated formatters as user-defined",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2022,
+   "title": "Ignore abstract implementations of `IMessagePackFormatter<T>`",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 10,
+   "adjacent_lines": 3
+  },
+  {
+   "signal": "szz",
+   "by": 2036,
+   "title": "Avoid crashing with stack overflow on recursive generic type parameter constraints",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2037,
+   "title": "Fix mis-fire of `MsgPack003` on use of `Collection<T>`",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2059,
+   "title": "Fix issues about Memory/ReadOnlyMemory/ReadOnlySequence in Source Generator",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2123,
+   "title": "Add missing recursion guard to `CodeAnalysisUtilities.GetTypeParameters`",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1798": [
+  {
+   "signal": "szz",
+   "by": 1905,
+   "title": "Fix and improve generated formatters",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1802": [
+  {
+   "signal": "szz",
+   "by": 1818,
+   "title": "Fix source generator handling of inaccessible custom formatters",
+   "lines": 20,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1850,
+   "title": "Fix handling of formatters following the singleton pattern",
+   "lines": 3,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1859,
+   "title": "Report missing `[MessagePackObject]` attribute for generic types ",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1873,
+   "title": "Fix some source generator issues",
+   "lines": 6,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1884,
+   "title": "Avoid regenerating all formatters when only one object/union/enum changes",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1893,
+   "title": "Offer code fix for MsgPack011: `partial` modifier required",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1910,
+   "title": "Fix diagnostic and code fix for MsgPack011 on nesting types",
+   "lines": 4,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1921,
+   "title": "Fix some source generator issues",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 132,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1962,
+   "title": "Honor key name overrides in source-generated formatters",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 38,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1969,
+   "title": "Add MsgPack014 analyzer and code fix",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 13,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2036,
+   "title": "Avoid crashing with stack overflow on recursive generic type parameter constraints",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2279,
+   "title": "Fix CS8669 warning in generated MessagePack.GeneratedMessagePackResolver.g.cs",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1818": [
+  {
+   "signal": "szz",
+   "by": 1850,
+   "title": "Fix handling of formatters following the singleton pattern",
+   "lines": 9,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 1874,
+   "title": "Fix issues about the equality of AnalyzerOptions and FormatterDescriptor",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1893,
+   "title": "Offer code fix for MsgPack011: `partial` modifier required",
+   "lines": 3,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1907,
+   "title": "Honor `ExcludeFormatterFromSourceGeneratedResolverAttribute` by suppressing certain warnings",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1926,
+   "title": "Lower language version requirement of source generated resolver",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1824": [
+  {
+   "signal": "szz",
+   "by": 1850,
+   "title": "Fix handling of formatters following the singleton pattern",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "1850": [
+  {
+   "signal": "szz_adjacent",
+   "by": 1874,
+   "title": "Fix issues about the equality of AnalyzerOptions and FormatterDescriptor",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 16,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1962,
+   "title": "Honor key name overrides in source-generated formatters",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 4,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 4,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2031,
+   "title": "Use generic type argument used for custom formatters",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "1859": [
+  {
+   "signal": "szz",
+   "by": 1898,
+   "title": "Offer code fix to ignore unattribute members of MessagePackObject types",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 5,
+   "adjacent_lines": 0
+  }
+ ],
+ "1872": [
+  {
+   "signal": "szz",
+   "by": 2070,
+   "title": "Fix bugs for Hardware Intrinsics",
+   "lines": 10,
+   "adjacent_lines": 0
+  }
+ ],
+ "1873": [
+  {
+   "signal": "szz",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 29,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 3,
+   "adjacent_lines": 0
+  }
+ ],
+ "1874": [
+  {
+   "signal": "reference",
+   "by": 1884,
+   "title": "Avoid regenerating all formatters when only one object/union/enum changes"
+  },
+  {
+   "signal": "szz",
+   "by": 1884,
+   "title": "Avoid regenerating all formatters when only one object/union/enum changes",
+   "lines": 3,
+   "adjacent_lines": 0
+  }
+ ],
+ "1884": [
+  {
+   "signal": "szz_adjacent",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 0,
+   "adjacent_lines": 1
+  }
+ ],
+ "1893": [
+  {
+   "signal": "szz",
+   "by": 1910,
+   "title": "Fix diagnostic and code fix for MsgPack011 on nesting types",
+   "lines": 3,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 1969,
+   "title": "Add MsgPack014 analyzer and code fix",
+   "lines": 6,
+   "adjacent_lines": 3
+  }
+ ],
+ "1894": [
+  {
+   "signal": "szz",
+   "by": 1900,
+   "title": "Fix UnsafeBlitFormatterBase",
+   "lines": 15,
+   "adjacent_lines": 0
+  }
+ ],
+ "1905": [
+  {
+   "signal": "szz",
+   "by": 2002,
+   "title": "Migration improvements: deserializing constructors and less-frequent `partial` requirements",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2036,
+   "title": "Avoid crashing with stack overflow on recursive generic type parameter constraints",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1921": [
+  {
+   "signal": "szz",
+   "by": 1960,
+   "title": "Improve handling of array types in source generation",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1922": [
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 4,
+   "adjacent_lines": 0
+  }
+ ],
+ "1932": [
+  {
+   "signal": "reference",
+   "by": 1946,
+   "title": "Adjusted MsgPack004 to support records"
+  }
+ ],
+ "1960": [
+  {
+   "signal": "szz",
+   "by": 1968,
+   "title": "Make `CompositeResolverAttribute` much more useful",
+   "lines": 18,
+   "adjacent_lines": 4
+  },
+  {
+   "signal": "szz",
+   "by": 2000,
+   "title": "Fix embedded types being generated in resolver",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 25,
+   "adjacent_lines": 7
+  },
+  {
+   "signal": "szz",
+   "by": 2036,
+   "title": "Avoid crashing with stack overflow on recursive generic type parameter constraints",
+   "lines": 8,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2150,
+   "title": "Fix stackoverflow on analyzer",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "1962": [
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 8,
+   "adjacent_lines": 0
+  }
+ ],
+ "1968": [
+  {
+   "signal": "szz",
+   "by": 2000,
+   "title": "Fix embedded types being generated in resolver",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2030,
+   "title": "Support nesting formatters within generic data types",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2150,
+   "title": "Fix stackoverflow on analyzer",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1970": [
+  {
+   "signal": "szz",
+   "by": 2093,
+   "title": "Check IsGenericType before call ConstructUnboundGenericType()",
+   "lines": 5,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2150,
+   "title": "Fix stackoverflow on analyzer",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1980": [
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 11,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2279,
+   "title": "Fix CS8669 warning in generated MessagePack.GeneratedMessagePackResolver.g.cs",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "1981": [
+  {
+   "signal": "szz",
+   "by": 2153,
+   "title": "Fix SkipClrVisibilityChecks to notice private fields in base classes",
+   "lines": 30,
+   "adjacent_lines": 0
+  }
+ ],
+ "1986": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2287,
+   "title": "Fix OldSpec byte[] encoding emitting unsupported str8 headers",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2301,
+   "title": "Merge master to develop",
+   "lines": 0,
+   "adjacent_lines": 1
+  }
+ ],
+ "1990": [
+  {
+   "signal": "szz",
+   "by": 2002,
+   "title": "Migration improvements: deserializing constructors and less-frequent `partial` requirements",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 4,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 1,
+   "adjacent_lines": 1
+  }
+ ],
+ "2002": [
+  {
+   "signal": "szz",
+   "by": 2036,
+   "title": "Avoid crashing with stack overflow on recursive generic type parameter constraints",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "2003": [
+  {
+   "signal": "szz_adjacent",
+   "by": 2006,
+   "title": "Fix handling of name collisions in type hierarchies",
+   "lines": 0,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 2023,
+   "title": "Suppress MsgPack004 on private base members when only public is interesting",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "2006": [
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 2,
+   "adjacent_lines": 0
+  }
+ ],
+ "2013": [
+  {
+   "signal": "reference",
+   "by": 2045,
+   "title": "Revert untrusted data default"
+  },
+  {
+   "signal": "szz",
+   "by": 2045,
+   "title": "Revert untrusted data default",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "2016": [
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 11,
+   "adjacent_lines": 0
+  }
+ ],
+ "2026": [
+  {
+   "signal": "szz",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 4,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 4,
+   "adjacent_lines": 0
+  }
+ ],
+ "2028": [
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 12,
+   "adjacent_lines": 0
+  }
+ ],
+ "2030": [
+  {
+   "signal": "szz",
+   "by": 2033,
+   "title": "Fix simplified name for ValueTuple<T>",
+   "lines": 1,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2036,
+   "title": "Avoid crashing with stack overflow on recursive generic type parameter constraints",
+   "lines": 8,
+   "adjacent_lines": 2
+  },
+  {
+   "signal": "szz",
+   "by": 2056,
+   "title": "Fix an issue about comparing generic type parameter constraints",
+   "lines": 1,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2185,
+   "title": "AccessModifier was added to generated code.",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2226,
+   "title": "fix: prevent StackOverflow in Equals with recursive generic constraints",
+   "lines": 0,
+   "adjacent_lines": 1
+  }
+ ],
+ "2036": [
+  {
+   "signal": "szz",
+   "by": 2056,
+   "title": "Fix an issue about comparing generic type parameter constraints",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "2037": [
+  {
+   "signal": "szz",
+   "by": 2057,
+   "title": "Fix issues about code analysis and code fix of MsgPack003",
+   "lines": 2,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz",
+   "by": 2093,
+   "title": "Check IsGenericType before call ConstructUnboundGenericType()",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "2057": [
+  {
+   "signal": "szz",
+   "by": 2059,
+   "title": "Fix issues about Memory/ReadOnlyMemory/ReadOnlySequence in Source Generator",
+   "lines": 2,
+   "adjacent_lines": 0
+  },
+  {
+   "signal": "szz",
+   "by": 2106,
+   "title": "enable analyze union / stop collect field when object marked SuppressSourceGeneration",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ],
+ "2073": [
+  {
+   "signal": "szz_adjacent",
+   "by": 2275,
+   "title": "Fix security issues in develop",
+   "lines": 0,
+   "adjacent_lines": 1
+  },
+  {
+   "signal": "szz_adjacent",
+   "by": 2274,
+   "title": "Fix security issues in master",
+   "lines": 0,
+   "adjacent_lines": 1
+  }
+ ],
+ "2225": [
+  {
+   "signal": "reference",
+   "by": 2262,
+   "title": "Revert DateTimeOffset encoding change"
+  },
+  {
+   "signal": "szz",
+   "by": 2262,
+   "title": "Revert DateTimeOffset encoding change",
+   "lines": 1,
+   "adjacent_lines": 0
+  }
+ ]
+}

@@ -1,0 +1,105 @@
+# Escape labels for the historical replay. Our judgement, made by the rule in README.md; every label has its link.
+# A PR in dataset.yaml that is not listed under `escapes` is labelled "no escape found" (absence of evidence after
+# searching reverts, references and SZZ blame: see find_escapes.py and candidates.json).
+#
+# confidence:
+#   high    the PR was reverted, or a later fix PR changes lines this PR wrote to fix a user-reported crash/wrong output
+#           and the fix's description ties the defect to this PR's change
+#   medium  a later fix PR for a user-visible defect changes lines this PR wrote (SZZ) and the description is consistent
+#           with this PR having introduced it, but other PRs also touched the code
+U: https://github.com/MessagePack-CSharp/MessagePack-CSharp
+
+excluded:
+  - {pr: 2274, why: "mirror of #2275 (same security fixes merged into master); #2275 is kept"}
+
+escapes:
+  - pr: 1872
+    title: Faster multi-element serialization for primitive types
+    confidence: high
+    evidence:
+      - "#2070 Fix bugs for Hardware Intrinsics: rewrites 10 SIMD shuffle lines this PR wrote (SZZ)"
+      - "#2139 Change ByteListFormatter behaviour to keep binary compatibility for List<byte>: removes the ByteListFormatter this PR added; body: 'due to optimization code that was introduced, the serialization results for List<byte> became different between .NET 8 and other versions' (wire-format break)"
+    links: [/pull/2070, /pull/2139, /issues/2099]
+  - pr: 1970
+    title: Avoid GetSemanticModel in analyzer
+    confidence: high
+    evidence:
+      - "#2093 Check IsGenericType before call ConstructUnboundGenericType(): fixes issue #2092 (generator crash CS8785 InvalidOperationException on upgrade to v3); the 5 lines it changes were written by this PR"
+    links: [/pull/2093, /issues/2092]
+  - pr: 1981
+    title: Replace DynamicMethod use with private-capable Ref.Emit
+    confidence: high
+    evidence:
+      - "#2153 Fix SkipClrVisibilityChecks to notice private fields in base classes: fixes issue #2152 (exception accessing private members of a parent class); rewrites 30 lines this PR wrote"
+    links: [/pull/2153, /issues/2152]
+  - pr: 2013
+    title: Secure by default
+    confidence: high
+    evidence:
+      - "#2045 Revert untrusted data default: 'effectively reverts #2013', closes #2040 (TypeAccessException deserializing dictionaries with non-hash-safe keys)"
+    links: [/pull/2045, /issues/2040]
+  - pr: 2030
+    title: Support nesting formatters within generic data types
+    confidence: high
+    evidence:
+      - "#2036 Avoid crashing with stack overflow on recursive generic type parameter constraints, the next day: fixes #2034 (stack overflow in the generator in 3.0.233-rc.1); rewrites GenericTypeParameterInfo/GetTypeParameters lines this PR wrote"
+      - "#2033 Fix simplified name for ValueTuple<T>: the ValueTuple case this PR wrote generated invalid code"
+      - "#2226 prevent StackOverflow in Equals with recursive generic constraints (#2154): same record this PR introduced (adjacent lines; supporting only)"
+    links: [/pull/2036, /issues/2034, /pull/2033, /pull/2226]
+  - pr: 2225
+    title: Fix Incorrect DateTimeOffset Serializer
+    confidence: high
+    evidence:
+      - "#2262 Revert DateTimeOffset encoding change: 'Revert #2225 which broke our tests ... would be a wire protocol breaking change'"
+    links: [/pull/2262]
+  - pr: 1754
+    title: Add a `[CompositeResolver]` attribute that triggers source generation
+    confidence: medium
+    evidence:
+      - "#1873 Fix some source generator issues (fixes #1862 item 2: composite resolver namespace incomplete): replaces `ContainingNamespace.Name`, written by this PR"
+      - "#1921 item 2: generated resolver can't be used in CompositeResolverAttribute in the same assembly (adjacent lines; supporting only)"
+    links: [/pull/1873, /issues/1862, /pull/1921]
+  - pr: 1796
+    title: Include all hand-written formatters in the source generated resolver
+    confidence: medium
+    evidence:
+      - "#2123 Add missing recursion guard to CodeAnalysisUtilities.GetTypeParameters: fixes #2121 (generator stack overflow, 3.0.308+); the unguarded array case was written by this PR"
+      - "#1905 fixes #1904 (blocker: attributed private constructors ignored): rewrites the constructor-selection lines this PR wrote"
+    links: [/pull/2123, /issues/2121, /pull/1905, /issues/1904]
+  - pr: 1802
+    title: Source generated formatters that support private members
+    confidence: medium
+    evidence:
+      - "#1910 fixes #1909 (MsgPack011 on nesting types disappears in the IDE: 'non-local analyzer diagnostic'): rewrites the MsgPack011 reporting lines this PR wrote"
+    links: [/pull/1910, /issues/1909]
+  - pr: 1893
+    title: "Offer code fix for MsgPack011: `partial` modifier required"
+    confidence: medium
+    evidence:
+      - "#1910 (8 days later) fixes #1909: the code fix this PR added is not offered for nesting types; rewrites its FormatterCodeFixProvider lines"
+    links: [/pull/1910, /issues/1909]
+  - pr: 1960
+    title: Improve handling of array types in source generation
+    confidence: medium
+    evidence:
+      - "#2000 Fix embedded types being generated in resolver: the embedded-type check this PR wrote compared FormattableType.Name.Name (Int32) with C# names (int), so it never matched"
+      - "#2150 Fix stackoverflow on analyzer (#2149): QualifiedNamedTypeName constructor recursion written by this PR"
+    links: [/pull/2000, /pull/2150, /issues/2149]
+
+# Fix PRs we examined and did NOT count as an escape of a PR in the set, and why (so the reader can disagree).
+examined_not_counted:
+  - {fix: 1798, why: "fixes #1797 (record with string keys); the ctor lookup it changes predates the set"}
+  - {fix: 1850, why: "extends #1818's singleton-formatter support to a new case; describes a feature gap, not a defect #1818 introduced"}
+  - {fix: 1874, why: "incremental-generator cache equality (performance in the IDE), not wrong output"}
+  - {fix: 2006, why: "fixes #1995 (`new` member hiding); blamed lines spread over 6 PRs and v2-era code: no single origin"}
+  - {fix: 2037, why: "MsgPack003 on Collection<T>: a missing case in a known-types table, not a regression"}
+  - {fix: 2055, why: "GetSpan size assumption written in v2 (#777/#784), outside the set"}
+  - {fix: 2057, why: "fixes #2046 (worked in v2.5); the code it rewrites is from #1599, before the set"}
+  - {fix: 2059, why: "fixes #2058 reported on 3.0.238-rc.1, before #2057 (the PR SZZ points at) shipped"}
+  - {fix: 2061, why: "BigInteger/Decimal formatter code from v2 (#777/#784)"}
+  - {fix: 2212, why: "WriteInt32 for union keys written in #1599, before the set"}
+
+unattributed:
+  - {issue: "#2101", what: "3.1.0 broke TypelessObjectResolver (fixed by #2103)", why_unattributed: "regression between 3.0.308 and 3.1.0; SZZ only finds adjacent lines from #1736"}
+  - {issue: "#2209", what: "3.1 regression with chained polymorphic types", why_unattributed: "no fix PR merged; cause not identified"}
+  - {issue: "#2046", what: "MsgPack003 analysis/code fix broken for Nullable and generics in 3.0 (fixed by #2057)", why_unattributed: "origin is #1599 (May 2023), before the set"}
