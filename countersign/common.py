@@ -78,8 +78,15 @@ class Workspace:
         return self.inputs / "evidence" / change / "facts.json"
 
     def reviews(self, change: str) -> dict[str, dict]:
+        """reviews/<change>/<reviewer>.json. Dotted names are not reviews: superseded passes (claude.v1.json) and the
+        adjudicator's output (adjudication.gemini.json) live next to them; raw/ holds raw model responses."""
         folder = self.inputs / "reviews" / change
-        return {p.stem: read_json(p) for p in sorted(folder.glob("*.json"))} if folder.is_dir() else {}
+        return {p.stem: read_json(p) for p in sorted(folder.glob("*.json")) if "." not in p.stem} if folder.is_dir() else {}
+
+    def adjudication_path(self, change: str) -> Path | None:
+        folder = self.inputs / "reviews" / change
+        found = sorted(folder.glob("adjudication.*.json")) if folder.is_dir() else []
+        return found[0] if found else None
 
     def requirements(self, change: str) -> dict:
         for c in (change, base_change(change)):

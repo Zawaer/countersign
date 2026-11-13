@@ -50,6 +50,7 @@ class Area:
     max_ai_tier: str  # the most lenient tier the AI may assign alone in this area
     checks: list[str] = field(default_factory=list)  # deterministic checks that must pass for any change here
     description: str = ""
+    confidential: bool | None = None  # None: inherit the repo-wide `confidential` setting
 
 
 class Mandate:
@@ -75,6 +76,35 @@ class Mandate:
 
     def area(self, name: str) -> Area:
         return next(a for a in self.areas if a.name == name)
+
+    @property
+    def reviewers(self) -> dict[str, dict]:
+        """The reviewer registry: name -> vendor, role (reviewer | adjudicator), self_hostable, model."""
+        return self.data.get("reviewers", {})
+
+    def panel(self, area_names: list[str]) -> dict:
+        """Who may read this change, from the registry and the confidentiality of the areas it touches.
+
+        A change is confidential if the repo is, or any touched area says `confidential: true` (an area's own
+        `false` overrides the repo default for that area only). In a confidential change only `self_hostable`
+        reviewers may read the code; everyone else is excluded and the pack says so.
+        Returns the participating reviewers (every one of them must say `met` for a clause to be proven),
+        the adjudicator (if allowed) and the excluded entries with the reason."""
+        repo_conf = bool(self.data.get("confidential", False))
+        conf_areas = [a.name for a in self.areas if a.name in area_names and (a.confidential if a.confidential is not None else repo_conf)]
+        confidential = bool(conf_areas)
+        why = (f"confidential areas touched: {', '.join(conf_areas)}" if confidential
+               else "repo and touched areas are not confidential")
+        reviewers, adjudicator, excluded = [], None, []
+        for name, r in self.reviewers.items():
+            if confidential and not r.get("self_hostable", False):
+                excluded.append({"name": name, "vendor": r.get("vendor"), "role": r.get("role"),
+                                 "reason": f"not self-hostable; may not read code in a confidential change ({why})"})
+            elif r.get("role") == "reviewer":
+                reviewers.append(name)
+            elif r.get("role") == "adjudicator" and adjudicator is None:
+                adjudicator = name
+        return {"confidential": confidential, "why": why, "reviewers": reviewers, "adjudicator": adjudicator, "excluded": excluded}
 
     def summary(self, ws: Workspace) -> dict:
         return {"path": self.path, "id": self.data["id"], "version": self.version, "owner": self.data["owner"],

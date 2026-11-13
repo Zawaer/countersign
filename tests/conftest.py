@@ -79,6 +79,7 @@ def ws(tmp_path):
     write_json(w.facts_path("9001"), make_facts(base=base, head=head))
     write_json(w.inputs / "reviews" / "9001" / "claude.json", make_review("claude"))
     write_json(w.inputs / "reviews" / "9001" / "codex.json", make_review("codex"))
+    write_json(w.inputs / "reviews" / "9001" / "nemotron.json", make_review("nemotron"))
     for name in ("Toivo", "Rene"):
         keys.keygen(w, name)
     mandate.sign(w, "Toivo")

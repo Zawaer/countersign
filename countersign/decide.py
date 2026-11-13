@@ -11,8 +11,9 @@ from .common import TIERS, strictest
 from .mandate import SENSITIVITY, Mandate, matches
 
 # When several drivers set the same tier, the most specific one is listed first.
-SOURCE_ORDER = ["mandate rule", "verified finding", "refused clause", "reviewer refusal", "trust cap", "risk score"]
-REFUSAL_REASONS = ["check_failed", "check_not_run", "missing_review", "not_met", "reviewers_disagree", "cannot_determine", "thin_evidence"]
+SOURCE_ORDER = ["mandate rule", "verified finding", "refused clause", "adjudicator", "reviewer refusal", "trust cap", "risk score"]
+REFUSAL_REASONS = ["check_failed", "check_not_run", "missing_review", "not_met", "reviewers_disagree", "cannot_determine", "thin_evidence",
+                   "adjudicator_dispute"]
 
 
 def check_status(facts: dict, check_id: str) -> str:
@@ -51,7 +52,14 @@ def primary_area(areas: list[dict]) -> dict | None:
 
 # --- requirement clauses ------------------------------------------------------
 
-def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate) -> list[dict]:
+def required_reviewers(m: Mandate, panel: dict) -> list[str]:
+    """Every participating reviewer must say met. `reviewers_required` may be `all_participating` (the default) or an
+    explicit list, which is then narrowed to the reviewers the panel allows (confidentiality can only remove names)."""
+    req = m["decision"].get("reviewers_required", "all_participating")
+    return list(panel["reviewers"]) if req == "all_participating" else [n for n in req if n in panel["reviewers"]]
+
+
+def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate, required: list[str]) -> list[dict]:
     d = m["decision"]
     out = []
     for r in reqs.get("requirements", []):
@@ -64,7 +72,7 @@ def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate) -> list[d
             elif c["status"] != "pass":
                 reasons.append({"code": "check_not_run", "detail": f"{c['id']} is {c['status']}"})
         verdicts = {}
-        for name in d["reviewers_required"]:
+        for name in required:
             v = next((v for v in reviews.get(name, {}).get("requirement_verdicts", []) if v["req"] == r["id"]), None)
             if v is None:
                 reasons.append({"code": "missing_review", "detail": f"{name} gave no verdict"})
@@ -85,6 +93,71 @@ def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate) -> list[d
         out.append({"id": r["id"], "type": r.get("type", ""), "text": r["text"], "checks": checks, "verdicts": verdicts,
                     "status": "refused" if reasons else "proven", "reasons": reasons})
     return out
+
+
+# --- disputes and the adjudicator ---------------------------------------------------
+
+def disputes(clauses: list[dict], findings: list[dict]) -> list[dict]:
+    """What the adjudicator may look at: clauses where participating reviewers gave different verdicts, and
+    blocker/major findings that no other reviewer corroborated (no shared anchor). Ids are stable across runs."""
+    out = []
+    for c in clauses:
+        said = {n: v["verdict"] for n, v in c["verdicts"].items()}
+        if len(set(said.values())) > 1:
+            out.append({"id": c["id"], "kind": "clause", "about": c["id"], "text": c["text"],
+                        "sides": [{"reviewer": n, "verdict": v["verdict"], "basis": v["basis"], "evidence": v["evidence"]}
+                                  for n, v in c["verdicts"].items()]})
+    for f in findings:
+        if f["severity"] not in ("blocker", "major"):
+            continue
+        others = [g for g in findings if g["reviewer"] != f["reviewer"]]
+        if any(_anchors(f) & _anchors(g) for g in others if g["status"] == "verified") and f["status"] == "verified":
+            continue  # corroborated by another reviewer: not in dispute
+        out.append({"id": f"finding:{f['reviewer']}:{f['id']}", "kind": "finding", "about": f"{f['reviewer']}:{f['id']}",
+                    "text": f"{f['title']}: {f['claim']}",
+                    "sides": [{"reviewer": f["reviewer"], "verdict": f"{f['severity']} finding ({f['status']})", "basis": f["claim"],
+                               "evidence": f["evidence"]}],
+                    "not_raised_by": sorted({g["reviewer"] for g in others} or [])})
+    return out
+
+
+def apply_adjudication(clauses: list[dict], adjudication: dict | None, current: list[dict]) -> list[dict]:
+    """HARD RULE: the adjudicator can only add reasons and route to a human; it can never clear anything.
+
+    - A clause's status is never moved towards `proven`: a refused clause stays refused whatever the adjudicator says
+      (even if it writes "met", "proven" or "supported" for every claim).
+    - An adjudicated dispute about a clause adds the reason `adjudicator_dispute` (so a clause that is somehow proven
+      while the adjudicator disputes it becomes refused, never the reverse).
+    - Every adjudicated dispute becomes a tier driver at `ask` (source `adjudicator`): a human looks at it.
+    Returns the tier drivers it adds. Rulings on items that are no longer in dispute are kept in the pack as `stale`."""
+    if not adjudication:
+        return []
+    before = {c["id"]: c["status"] for c in clauses}
+    live = {d["id"] for d in current}
+    drivers = []
+    for r in adjudication.get("rulings", []):
+        did = str(r.get("dispute", ""))
+        r["stale"] = did not in live
+        if r["stale"]:
+            continue
+        summary = _short_ruling(r)
+        c = next((c for c in clauses if c["id"] == did), None)
+        if c is not None:
+            c.setdefault("adjudication", r)
+            c["reasons"].append({"code": "adjudicator_dispute", "detail": f"{adjudication.get('reviewer', 'adjudicator')}: {summary}"})
+            c["status"] = "refused"
+        drivers.append({"source": "adjudicator", "id": did, "tier": "ask", "why": summary})
+    for c in clauses:  # the rule, checked: nothing the adjudicator said may turn a refused clause into proven
+        assert not (before[c["id"]] == "refused" and c["status"] == "proven"), f"adjudicator cleared {c['id']}"
+    return drivers
+
+
+def _short_ruling(r: dict) -> str:
+    sup = [x.get("reviewer", "?") for x in r.get("supported", [])]
+    uns = [x.get("reviewer", "?") for x in r.get("unsupported", [])]
+    settle = "; ".join(r.get("evidence_that_would_settle", [])[:2])
+    return (f"supported by cited evidence: {', '.join(sup) or 'none'}; not supported: {', '.join(uns) or 'none'}"
+            + (f"; would settle it: {settle}" if settle else ""))
 
 
 # --- findings -----------------------------------------------------------------
@@ -194,15 +267,22 @@ def risk_score(ctx: dict, clauses: list[dict], m: Mandate) -> dict:
 
 # --- the whole decision -------------------------------------------------------
 
-def decide(facts: dict, reviews: dict, reqs: dict, m: Mandate, mandate_sig: dict, caps: dict) -> dict:
-    """`reviews` are verified reviews; `caps` maps area -> {"cap", "reason"} from the trust ledger."""
+def decide(facts: dict, reviews: dict, reqs: dict, m: Mandate, mandate_sig: dict, caps: dict,
+           panel: dict | None = None, adjudication: dict | None = None) -> dict:
+    """`reviews` are verified reviews; `caps` maps area -> {"cap", "reason"} from the trust ledger.
+    `panel` (from Mandate.panel) says who participates; reviews from anyone else are ignored.
+    `adjudication` is the adjudicator's output: it can only add reasons and drivers (apply_adjudication)."""
     d = m["decision"]
     areas = touched_areas(facts, m)
+    panel = panel or m.panel([a["name"] for a in areas])
+    reviews = {n: r for n, r in reviews.items() if n in panel["reviewers"]}
     by_kind = lambda k: [f["path"] for f in files(facts) if f.get("kind") == k]  # noqa: E731
     ctx = {"facts": facts, "areas": areas, "mandate_sig": mandate_sig,
            "generated": by_kind("generated"), "source": by_kind("source"), "tests": by_kind("test")}
-    clauses = decide_clauses(reqs, reviews, facts, m)
+    clauses = decide_clauses(reqs, reviews, facts, m, required_reviewers(m, panel))
     findings = grade_findings(reviews, facts, m)
+    open_disputes = disputes(clauses, findings)
+    adj_drivers = apply_adjudication(clauses, adjudication, open_disputes)
     rules = fire_rules(ctx, m)
     risk = risk_score(ctx, clauses, m)
     refusals = [{**r, "reviewer": name, "model": rev.get("model")} for name, rev in reviews.items() for r in rev.get("refusals", [])]
@@ -218,6 +298,7 @@ def decide(facts: dict, reviews: dict, reqs: dict, m: Mandate, mandate_sig: dict
         drivers.append({"source": "trust cap", "id": a["name"], "tier": c["cap"], "why": f"{a['name']}: AI may clear at most to {c['cap']} ({c['reason']})"})
     drivers += [{"source": "refused clause", "id": c["id"], "tier": d["refused_clause_tier"], "codes": [r["code"] for r in c["reasons"]],
                  "why": "; ".join(f"{r['code']}: {r['detail']}" for r in c["reasons"])} for c in clauses if c["status"] == "refused"]
+    drivers += adj_drivers
     drivers += [{"source": "reviewer refusal", "id": f"{r['reviewer']}", "tier": d["reviewer_refusal_tier"],
                  "why": f"{r['topic']} ({r['reason']})"} for r in refusals]
     drivers += [{"source": "verified finding", "id": f"{f['reviewer']}:{f['id']}", "tier": f["tier"],
@@ -240,4 +321,6 @@ def decide(facts: dict, reviews: dict, reqs: dict, m: Mandate, mandate_sig: dict
         "reviewer_refusals": refusals,
         "rules_fired": rules,
         "risk": risk,
+        "panel": panel,
+        "disputes": open_disputes,
     }

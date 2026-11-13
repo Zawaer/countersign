@@ -18,6 +18,10 @@ def fws(tmp_path):
         shutil.copytree(ROOT / d, tmp_path / d, ignore=shutil.ignore_patterns("*.sig"))
     for d in ("evidence", "reviews"):  # copy, so a local fixture ledger or packs cannot leak in
         shutil.copytree(ROOT / "tests" / "fixtures" / d, tmp_path / "inputs" / d)
+    # The simulated fixtures were recorded with the two-reviewer panel (Claude, Codex); drop Nemotron from this copy's
+    # registry so they are replayed under the panel they were written for.
+    mp = tmp_path / "mandate" / "messagepack.mandate.yaml"
+    mp.write_text("\n".join(line for line in mp.read_text().splitlines() if not line.lstrip().startswith(("nemotron:", "note: \"open weights"))) + "\n")
     w = Workspace.at(tmp_path, inputs=tmp_path / "inputs")
     keys.keygen(w, "Toivo")
     mandate.sign(w, "Toivo")

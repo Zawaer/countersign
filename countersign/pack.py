@@ -7,6 +7,7 @@ sha256 identifies exactly what the owner saw. The renderers only format what is 
 from __future__ import annotations
 
 import html
+from copy import deepcopy
 from pathlib import Path
 
 from . import __version__, decide as decide_mod, ledger, mandate as mandate_mod, trust, verify
@@ -34,15 +35,28 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     state = trust.derive(m, ledger.read(ws) if use_trust else [])
 
     v = verify.Verifier(ws.repo, facts, reqs, m["decision"]["code_line_tolerance"])
-    raw_reviews = ws.reviews(change)
+    # Who may read this change (reviewer registry + confidentiality). Reviews by anyone else are not used.
+    panel = m.panel([a["name"] for a in decide_mod.touched_areas(facts, m)])
+    all_reviews = ws.reviews(change)
+    raw_reviews = {n: r for n, r in all_reviews.items() if n in panel["reviewers"]}
+    ignored = [{"name": n, "reason": next((x["reason"] for x in panel["excluded"] if x["name"] == n),
+                                          "not a participating reviewer in the mandate's registry")}
+               for n in all_reviews if n not in raw_reviews]
     reviews = {name: verify.verify_review(r, v) for name, r in raw_reviews.items()}
-    d = decide_mod.decide(facts, reviews, reqs, m, msig, trust.caps(state))
+    adj_path = ws.adjudication_path(change)
+    adj = read_json(adj_path) if adj_path else None
+    if adj and adj.get("reviewer") != panel["adjudicator"]:
+        ignored.append({"name": adj_path.name, "reason": f"{adj.get('reviewer')} is not the adjudicator allowed for this change"})
+        adj = None
+    d = decide_mod.decide(facts, reviews, reqs, m, msig, trust.caps(state), panel, deepcopy(adj))
     # What the AI would recommend under the mandate's own caps. During probation this is what spot-checks grade.
-    ai_alone = decide_mod.decide(facts, reviews, reqs, m, msig, {})["tier"]
+    ai_alone = decide_mod.decide(facts, reviews, reqs, m, msig, {}, panel, deepcopy(adj))["tier"]
 
     req_file = ws.root / reqs["_path"] if not Path(reqs["_path"]).is_absolute() else Path(reqs["_path"])
     inputs = {"facts": _file_ref(facts_path, ws.root), "requirements": _file_ref(req_file, ws.root),
               "reviews": {n: _file_ref(ws.inputs / "reviews" / change / f"{n}.json", ws.root) for n in raw_reviews}}
+    if adj:
+        inputs["adjudication"] = _file_ref(adj_path, ws.root)
     simulated = bool(facts.get("simulated")) or any(r.get("simulated") for r in raw_reviews.values())
 
     tools = [{k: c.get(k) for k in ("id", "tool", "tool_version", "status", "summary", "duration_s", "log")} for c in facts.get("checks", [])]
@@ -74,6 +88,10 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
                  for f in rejected if f["severity"] in ("blocker", "major")]
     residual += [f"{x['id']} not run ({x['reason']})" for x in not_checked if x["source"] != "mandate known gap"]
     residual += [f"Area {a['name']} is on probation: {a['cap_reason']}" for a in d["areas"] if state[a["name"]]["probation"]]
+    residual += [f"Reviewer {x['name']} ({x['vendor']}) did not read this change: {x['reason']}" for x in panel["excluded"]]
+    if d["disputes"] and not adj:
+        residual.append(f"{len(d['disputes'])} disputed item(s) were not adjudicated"
+                        + (f" (adjudicator {panel['adjudicator']} has not run)" if panel["adjudicator"] else " (no adjudicator allowed)"))
     residual.append(f"Standing gaps of this pipeline: {', '.join(g['id'] for g in m['known_gaps'])} (see not checked)")
 
     tier = d["tier"]
@@ -98,6 +116,10 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
         "notify": d["notify"],
         "areas": [{k: a[k] for k in ("name", "owner", "sensitivity", "max_ai_tier", "cap", "cap_reason", "files")} for a in d["areas"]],
         "requirements": d["clauses"],
+        "reviewer_panel": {**panel, "ignored_files": ignored,
+                           "rule": "proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass"},
+        "disputes": [{"id": x["id"], "kind": x["kind"], "about": x["about"], "reviewers": [s["reviewer"] for s in x["sides"]]} for x in d["disputes"]],
+        "adjudication": _adjudication_summary(adj, d["disputes"]),
         "checked_by": {"tools": tools, "reviewers": reviewers,
                        "engine": f"countersign {__version__} under mandate {m['id']} v{m.version} ({m.sha256[:12]})"},
         "findings": verified,
@@ -118,6 +140,18 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     }
 
 
+def _adjudication_summary(adj: dict | None, disputes: list[dict]) -> dict | None:
+    """The adjudicator's rulings as shown beside the refusals. Advisory only: decide.apply_adjudication can add
+    reasons and route to a human, it never clears anything."""
+    if not adj:
+        return None
+    live = {x["id"] for x in disputes}
+    return {"reviewer": adj.get("reviewer"), "model": adj.get("model"), "vendor": adj.get("vendor"),
+            "prompt_version": adj.get("prompt_version"), "reviewed_at": adj.get("reviewed_at"),
+            "role": "adjudicator (can add reasons and route to a human; never clears)",
+            "rulings": [{**r, "stale": str(r.get("dispute")) not in live} for r in adj.get("rulings", [])]}
+
+
 def write(ws: Workspace, pack: dict) -> Path:
     out = ws.pack_dir(pack["change"])
     write_json(out / "pack.json", pack)
@@ -132,6 +166,18 @@ def _short(text: str, n: int = 220) -> str:
     return text if len(text) <= n else text[: n - 3] + "..."
 
 
+def _rulings(p: dict) -> list[dict]:
+    return [r for r in (p.get("adjudication") or {}).get("rulings", []) if not r.get("stale")]
+
+
+def _ruling_text(r: dict) -> str:
+    sup = "; ".join(f"{x.get('reviewer')}: {x.get('claim', '')} ({x.get('why', '')})" for x in r.get("supported", []))
+    uns = "; ".join(f"{x.get('reviewer')}: {x.get('claim', '')} ({x.get('why', '')})" for x in r.get("unsupported", []))
+    settle = "; ".join(r.get("evidence_that_would_settle", []))
+    return (f"supported by the cited evidence: {sup or 'nothing'}. Not supported: {uns or 'nothing'}. "
+            f"What would settle it: {settle or 'not stated'}.")
+
+
 def _codes(c: dict) -> str:
     return "; ".join(dict.fromkeys(r["code"] for r in c["reasons"]))
 
@@ -140,7 +186,7 @@ def card(p: dict) -> str:
              f"Recommended tier: {p['tier'].upper()}   owner: {p['owner']}   risk score: {p['risk']['score']}",
              "Why:", *(f"  - [{w['source']}] {w['id']}: {_short(w['why'])}" for w in p["why"]), "",
              "Requirements:"]
-    lines += [f"  {c['id']:<14} {c['status'].upper():<8} " + (_codes(c) or "both reviewers met, checks pass")
+    lines += [f"  {c['id']:<14} {c['status'].upper():<8} " + (_codes(c) or "all reviewers met, checks pass")
               for c in p["requirements"]]
     lines += ["", "Checked by:"]
     lines += [f"  {t['id']:<24} {t['status']:<8} {t.get('tool') or ''} {t.get('tool_version') or ''}".rstrip() for t in p["checked_by"]["tools"]]
@@ -151,6 +197,12 @@ def card(p: dict) -> str:
     lines += [f"  {r['reviewer']}: {r['topic']} -> {r['who_should_decide']}" for r in p["refused"]["reviewer_refusals"]]
     if not (p["refused"]["clauses"] or p["refused"]["reviewer_refusals"]):
         lines.append("  nothing")
+    for r in _rulings(p):
+        lines.append(f"  adjudicator {p['adjudication']['reviewer']} on {r.get('dispute')}: " + _short(_ruling_text(r), 300))
+    rp = p["reviewer_panel"]
+    lines += ["", f"Reviewer panel: {', '.join(rp['reviewers']) or 'none'}" + (f"; adjudicator {rp['adjudicator']}" if rp["adjudicator"] else "")
+              + (" (CONFIDENTIAL: " + rp["why"] + ")" if rp["confidential"] else "")]
+    lines += [f"  excluded {x['name']} ({x['vendor']}): {x['reason']}" for x in rp["excluded"]]
     lines += ["", "Not checked:"] + [f"  {x['id']}: {_short(x['reason'])}" for x in p["not_checked"]]
     lines += ["", "Residual risk:"] + [f"  - {_short(r)}" for r in p["residual_risk"]]
     return "\n".join(lines)
@@ -189,6 +241,19 @@ def to_markdown(p: dict) -> str:
     out += [f"- **{r['reviewer']}** refused: {r['topic']}. Why: {r['reason']}. Who should decide: {r['who_should_decide']}" for r in p["refused"]["reviewer_refusals"]]
     if not (p["refused"]["clauses"] or p["refused"]["reviewer_refusals"]):
         out.append("- Nothing: every clause was proven and no reviewer refused a topic.")
+    if p.get("adjudication"):
+        a = p["adjudication"]
+        out += ["", f"### Adjudicator: {a['reviewer']} ({a['model']}, {a['prompt_version']}), advisory only", "",
+                "_The adjudicator only reads disputed items. It can add reasons and route to a human; it never clears a clause._", ""]
+        out += [f"- **{r.get('dispute')}**: {_ruling_text(r)}" for r in _rulings(p)] or ["- No rulings on the current disputes (stale file)."]
+    elif p.get("disputes"):
+        out += ["", f"_{len(p['disputes'])} disputed item(s), not adjudicated: {', '.join(x['id'] for x in p['disputes'])}_"]
+    rp = p["reviewer_panel"]
+    out += ["", "## Who reviewed", "",
+            f"Participating reviewers: {', '.join(rp['reviewers']) or 'none'}. Adjudicator: {rp['adjudicator'] or 'none'}. "
+            f"Confidential: {'yes (' + rp['why'] + ')' if rp['confidential'] else 'no'}. Rule: {rp['rule']}."]
+    out += [f"- Excluded **{x['name']}** ({x['vendor']}, {x['role']}): {x['reason']}" for x in rp["excluded"]]
+    out += [f"- Not used: `{x['name']}`: {x['reason']}" for x in rp["ignored_files"]]
     out += ["", "## Requirement trace", "", "| Clause | Status | Verdicts | Checks | Reasons |", "|---|---|---|---|---|"]
     out += [f"| {c['id']} | {c['status']} | {_verdicts(c)} | {', '.join(x['id'] + ': ' + x['status'] for x in c['checks']) or '-'} | "
             f"{_codes(c) or '-'} |" for c in p["requirements"]]
@@ -229,7 +294,7 @@ main{max-width:880px;margin:0 auto;padding:16px}h1{font-size:1.35em;margin:.2em 
 .mut{color:var(--mut)}.card{background:var(--card);border-radius:10px;padding:12px 14px;margin:8px 0}
 .tier{display:inline-block;color:#fff;border-radius:999px;padding:2px 12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
 .t-silent{background:var(--silent)}.t-notify{background:var(--notify)}.t-ask{background:var(--ask)}.t-block{background:var(--block)}
-.refused{border-left:5px solid var(--ask)}.rejected{border-left:5px solid var(--block)}.found{border-left:5px solid var(--notify)}
+.refused{border-left:5px solid var(--ask)}.adj{border-left:5px solid var(--notify)}.rejected{border-left:5px solid var(--block)}.found{border-left:5px solid var(--notify)}
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.92em}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 td.n{text-align:right;font-variant-numeric:tabular-nums}code{font:12.5px ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-word}
 .ok{color:var(--silent);font-weight:600}.no{color:var(--block);font-weight:600}ul{padding-left:1.2em}li{margin:.25em 0}
@@ -278,6 +343,14 @@ def to_html(p: dict) -> str:
     refused += [f'<div class="card refused"><b>{_e(r["reviewer"])}</b> ({_e(r["model"])}) refused: {_e(r["topic"])}'
                 f'<p>Why: {_e(r["reason"])}<br>Who should decide: <b>{_e(r["who_should_decide"])}</b></p></div>'
                 for r in p["refused"]["reviewer_refusals"]]
+    if p.get("adjudication"):
+        a = p["adjudication"]
+        refused += [f'<div class="card adj"><b>Adjudicator {_e(a["reviewer"])}</b> ({_e(a["model"])}, advisory only) on '
+                    f'<code>{_e(r.get("dispute"))}</code><p>{_e(_ruling_text(r))}</p></div>' for r in _rulings(p)]
+    rp = p["reviewer_panel"]
+    panel_html = (f'<p>Participating reviewers: <b>{_e(", ".join(rp["reviewers"]) or "none")}</b>; adjudicator: {_e(rp["adjudicator"] or "none")}; '
+                  f'confidential: {_e("yes (" + rp["why"] + ")" if rp["confidential"] else "no")}.</p>'
+                  + "".join(f"<p class=mut>Excluded {_e(x['name'])} ({_e(x['vendor'])}): {_e(x['reason'])}</p>" for x in rp["excluded"]))
     req_rows = [[f"<b>{_e(c['id'])}</b><br><span class=mut>{_e(c['text'])}</span>",
                  f"<span class={'ok' if c['status'] == 'proven' else 'no'}>{_e(c['status'])}</span>",
                  "<br>".join(f"{_e(n)}: {_e(v['verdict'])} ({v['verified']}/{v['cited']} verified)" for n, v in c["verdicts"].items()) or "none",
@@ -311,10 +384,11 @@ Mandate {_e(p["mandate"]["id"])} v{_e(p["mandate"]["version"])} <code>{_e(p["man
 {"".join(refused) or '<p class="card">Nothing: every clause was proven and no reviewer refused a topic.</p>'}
 
 <h2>Requirement trace</h2>
-<p class=mut>Requirement set: {_e(p["requirement_set"]["source"])} (official: {_e(p["requirement_set"]["official"])}). Proven = both reviewers say met with verified evidence and the clause's checks pass.</p>
+<p class=mut>Requirement set: {_e(p["requirement_set"]["source"])} (official: {_e(p["requirement_set"]["official"])}). Proven = every participating reviewer says met with verified evidence and the clause's checks pass.</p>
 {_table(["Clause", "Status", "Verdicts", "Checks", "Reasons"], req_rows)}
 
 <h2>What was checked, and by whom</h2>
+{panel_html}
 {_table(["Check", "Status", "Tool", "Summary"], tool_rows)}
 {_table(["Reviewer", "Model", "Prompt", "Reviewed", "Verified", "Rejected", "Refusals"], rev_rows, {4, 5, 6})}
 <p class=mut>Decision engine: {_e(p["checked_by"]["engine"])}</p>

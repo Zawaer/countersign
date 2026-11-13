@@ -9,7 +9,8 @@ This file is the contract between the pipeline's parts. Every stage reads and wr
 ```
 change (branch + requirement IDs)
   1. facts      deterministic checks: diff stats, areas touched, build, tests, "tests fail without the fix", API surface, analyzers
-  2. reviews    two independent AI reviewers (Claude, Codex/GPT) produce structured findings + per-requirement verdicts
+  2. reviews    three independent AI reviewers (Claude, Codex/GPT, Nemotron) produce structured findings + per-requirement verdicts;
+                Gemini adjudicates disputed items only (advisory; it can add reasons, never clear)
   3. verify     the engine checks every cited piece of evidence; no verifiable evidence -> finding rejected (logged)
   4. decide     per requirement clause: proven / refused (with reason); risk score (explainable, additive) -> tier
   5. pack       evidence pack (JSON + Markdown + HTML): what was checked and by whom, what wasn't and why, residual risk
@@ -25,7 +26,12 @@ mandate/messagepack.mandate.yaml   the review mandate for the MessagePack-CSharp
 mandate/messagepack.mandate.yaml.sig  owner's Ed25519 signature over sha256(mandate file)
 requirements/<change>.yaml   requirement set with IDs (from Tieto; placeholder until pasted)
 evidence/<change>/facts.json deterministic check results (+ raw logs in evidence/<change>/logs/)
-reviews/<change>/claude.json, codex.json   structured reviewer output (+ .md raw prose)
+reviews/<change>/claude.json, codex.json, nemotron.json   structured reviewer output (+ .md raw prose)
+reviews/<change>/adjudication.gemini.json   the adjudicator's rulings on disputed items (advisory)
+reviews/<change>/raw/        raw model responses and the exact context sent (review-llm / adjudicate), for audit
+reviews/<change>/*.v1.json   superseded passes (any dotted name is not read as a review)
+prompts/review-v1.md, prompts/adjudicate-v1.md   versioned prompts; `prompt_version` in every review names one
+measurement/costs.yaml       append-only spend ledger (model calls, CI); `countersign costs` renders docs/COSTS.md
 packs/<change>/pack.json, pack.md, pack.html   generated evidence pack
 packs/<change>/signoff.json  copy of the ledger entry written when the owner signed
 ledger/ledger.jsonl          append-only, hash-chained sign-off + trust events
@@ -43,6 +49,8 @@ A mutant `<n>-mutK` reuses `requirements/<n>.yaml`. A change is any `evidence/<c
 
 Policy, not code; versioned and signed by its `owner` (`countersign sign-mandate --as Toivo`, also logged as a `mandate_change` ledger entry). Every pack records its path, version, sha256 and signature status. If the file changes after signing, or the signer is not the owner, the `mandate-not-signed` rule fires and nothing clears below `ask`.
 
+- `confidential` (repo default) and per-area `confidential`: in a confidential change (repo or any touched area) only reviewers with `self_hostable: true` may read the code. The rest are excluded from the panel, their review files are ignored, the runner refuses to send them the code, and the pack lists who was excluded and why. MessagePack-CSharp is open source: `confidential: false`.
+- `reviewers`: the registry. name -> `vendor`, `model`, `role` (`reviewer` | `adjudicator`), `self_hostable`. Claude (Anthropic), Codex (OpenAI) and Nemotron (NVIDIA, open weights, so self-hostable) are reviewers; Gemini (Google) is the adjudicator.
 - `areas`: name -> `owner`, `paths` (globs; `**` crosses folders, `*` does not; **first match wins**), `sensitivity` (low/medium/high/critical), `max_ai_tier` (the AI's clearance right: the most lenient tier it may assign alone), `checks` (deterministic checks any change in the area needs). Demo owners: Toivo (generator/analyzer core, runtime, annotations, tests), Rene (docs, build).
 - The change's **owner** is the owner of the most sensitive area it touches; other area owners are listed as FYI.
 - `requirement_checks`: deterministic checks a clause needs, by clause `type`. A clause in `requirements/<change>.yaml` may add `checks: [...]` (2283/2234: N1 -> `tests.full_suite`, N2 -> `tests.fail_without_fix`).
@@ -132,12 +140,24 @@ Evidence item kinds (the engine verifies each one):
 - A `code` item is verified if `file` exists at `rev` (`git show <rev>:<file>` in `--repo`) and `quote` occurs on `line` (±`decision.code_line_tolerance`, default 3; the offset is recorded). Whitespace is normalised. For a mutant (uncommitted single-line edit), `rev: head` is the branch head with facts.json's `mutation.before -> after` applied on `mutation.line`, so quotes are checked against the mutant itself. A `test` item must exist in facts.json with the same `outcome`; a `check` item must exist, and if it states `status`/`outcome` it must match. A `requirement` quote must occur in the clause text.
 - An `issue` item is **not counted as verified**: the pipeline runs offline and cannot confirm what an issue page says. Unknown kinds are not verified either. Every item gets `verified` and a `note` saying what was checked.
 - A finding with **zero verified evidence** is rejected (kept in the pack under "rejected: unsupported claims", counted as a hallucination signal for that reviewer).
-- Per requirement clause: **proven** only if every reviewer in `decision.reviewers_required` (claude, codex) says `met` with at least `decision.min_verified_evidence` (1) verified items AND the clause's checks pass. Otherwise **refused**, with every reason that applies (a list, not just the first): `check_failed`, `check_not_run` (skipped/error/absent), `missing_review`, `not_met`, `reviewers_disagree`, `cannot_determine`, `thin_evidence`.
+- **Who participates**: `Mandate.panel()` takes the registry and the confidentiality of the touched areas. `decision.reviewers_required: all_participating` means every reviewer on that panel (today claude, codex, nemotron) is required; a required reviewer with no review file is `missing_review`, so a reviewer that failed to run can never silently drop out. An explicit list is also accepted and is narrowed by confidentiality.
+- Per requirement clause: **proven** only if every participating reviewer says `met` with at least `decision.min_verified_evidence` (1) verified items AND the clause's checks pass. Otherwise **refused**, with every reason that applies (a list, not just the first): `check_failed`, `check_not_run` (skipped/error/absent), `missing_review`, `not_met`, `reviewers_disagree`, `cannot_determine`, `thin_evidence`, `adjudicator_dispute`.
+  *Why unanimity with three reviewers, not a 2-of-3 majority:* a majority would let two reviewers outvote a third reviewer's verified objection, so the more reviewers we add, the easier it would become to clear. Unanimity means each added reviewer can only make the AI more cautious. The cost is more refusals (more human routing), which we accept: a refusal costs a few minutes of an owner's time, an escape costs an incident. (Decision D8.)
+- **Disputes and the adjudicator** (`countersign adjudicate <change>`): a dispute is a clause where participating reviewers gave different verdicts, or a blocker/major finding no other reviewer corroborated (no shared anchor). Only when disputes exist, the adjudicator (Gemini) gets each disputed item with both sides' basis and cited evidence, the engine's verification result for every item, and the code around each cited line. Per dispute it must say which claims the cited evidence supports, which it doesn't, and what evidence would settle it. Output: `reviews/<change>/adjudication.gemini.json`, shown in the pack beside the refusal. **Hard rule (`decide.apply_adjudication`, tested):** the adjudicator can only add reasons (`adjudicator_dispute`) and `ask` drivers; a refused clause stays refused whatever it writes, and rulings on items no longer in dispute are kept as `stale` and ignored.
 - Verified findings set a tier by severity (`decision.finding_tiers`: blocker/major -> `ask`, minor -> `notify`, info -> `silent`). A `blocker` verified by both reviewers (their verified evidence points at the same file within ~10 lines, or the same check/test) or backed by a failing check/test -> `block`. Rejected findings never move the tier; they are listed under residual risk if blocker/major ("rejected, not disproven").
 - Any refused clause -> `decision.refused_clause_tier` (`ask`). Any reviewer `refusals[]` entry -> `decision.reviewer_refusal_tier` (`ask`): a topic the AI declined is a topic nobody cleared.
 - Hard rules (`rules` in the mandate): >50 files -> `block` (split; counts all files, generated included), >10 generated files -> `ask`, public API changed -> `ask`, source changed without a test change -> `ask`, a mandated area check failed -> `block`, not run -> `ask`, mandate not validly signed -> `ask`.
 - **Tier drivers**: risk band, each fired rule, each touched area's current cap (mandate cap or trust-ledger cap), each refused clause, each reviewer refusal, each verified finding. Tier = strictest driver. The pack lists all drivers; "why" is the drivers at the final tier, most specific first (rule, finding, refused clause, reviewer refusal, trust cap, risk).
 - `ai_recommendation` in the pack is the tier under the mandate's own caps (ignoring trust-ledger probation); spot-checks grade that.
+
+## Model reviewers via API (`countersign review-llm <change> --reviewer nemotron|gemini`)
+
+`countersign/llm.py`, stdlib only (urllib). Presets speak OpenAI-compatible chat completions: `nemotron` (NVIDIA API catalog, `NVIDIA_API_KEY`, `nvidia/nemotron-3.5-super-vl-120b-a12b`) and `gemini` (Google's OpenAI-compatible endpoint, `GEMINI_API_KEY`, `gemini-4-hydrogen`, overridable with `COUNTERSIGN_GEMINI_MODEL`). Retries with backoff on 429/5xx/timeouts (NVIDIA's free tier is ~40 req/min).
+- The prompt is the versioned file `prompts/review-v1.md` (the same brief Claude and Codex got). The runner builds the context itself: requirement file, issue URL, facts.json, `git diff base head` of the non-generated files, and the head (and base) contents of every changed source/test file with line numbers. A character budget (`COUNTERSIGN_CONTEXT_CHARS`, default 240k) shrinks files to windows around the changed hunks, then drops them; generated files are listed but not sent. The context ends with an explicit "what you did not get" list so the model refuses those parts instead of guessing.
+- JSON only; fences and `<think>` blocks are stripped; one repair retry if the JSON does not parse or lacks the required shape. `reviewer`, `model`, `vendor`, `prompt_version`, `reviewed_at` and `inputs` are stamped by the runner, never taken from the model.
+- Writes `reviews/<change>/<reviewer>.json` + `.md`, and `raw/<reviewer>.response.json` + `raw/<reviewer>.context.md` (exactly what was sent and received). Every call appends a row to `measurement/costs.yaml` from the API's `usage` field.
+- In a confidential change the runner refuses a reviewer that is not self-hostable, and refuses even a self-hostable one on its vendor-hosted endpoint unless `COUNTERSIGN_<NAME>_BASE_URL` points at your own server.
+- Keys are only read from the environment (CI secrets); they never appear in files, logs or errors.
 
 ## Risk score (explainable, additive)
 
@@ -173,4 +193,4 @@ Runs verify + decide over every change under `--inputs` (trust events ignored, s
 
 ## CLI
 
-`review <change>...` · `route --all` · `sign` · `verify-ledger` · `trust` · `spotcheck` · `escape` · `keygen --name` · `sign-mandate --as` · `replay`. Run as `countersign ...` from the venv or `python -m countersign ...`.
+`review <change>...` · `review-llm <change> --reviewer <name>` · `adjudicate <change>` · `costs` · `route --all` · `sign` · `verify-ledger` · `trust` · `spotcheck` · `escape` · `keygen --name` · `sign-mandate --as` · `replay`. Run as `countersign ...` from the venv or `python -m countersign ...`.
