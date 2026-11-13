@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -13,7 +14,7 @@ import yaml
 
 TIERS = ["silent", "notify", "ask", "block"]  # least to most strict
 HUMAN_TIERS = {"ask", "block"}
-DEFAULT_REPO = "/data/src/mp"
+DEFAULT_REPO = os.environ.get("COUNTERSIGN_REPO", "/data/src/mp")  # the MessagePack clone; CI sets COUNTERSIGN_REPO
 
 
 def strictest(*tiers: str) -> str:

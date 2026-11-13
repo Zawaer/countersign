@@ -1,0 +1,184 @@
+name: countersign
+# The Countersign pipeline on CRACI runners. See docs/CI.md.
+#
+# CRACI notes (https://docs.craci.com):
+# - `runs-on: craci` routes a job to CRACI; size and network policy go in cracicorp/setup@v1, which CRACI reads
+#   when it schedules the job.
+# - CRACI records every outbound connection (job -> View trace) and writes an SBOM per job from the packages it saw
+#   the job download through its proxy.
+# - All actions are pinned to full commit SHAs (version in a comment).
+
+on:
+  push:
+    branches: [main, ci-wip]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Extra job to run besides the pipeline"
+        type: choice
+        options: [reviewers, facts, none]
+        default: reviewers
+      changes:
+        description: "reviewers: changes to review (space separated)"
+        type: string
+        default: "2283 2234 2129 2297"
+      gemini_review:
+        description: "reviewers: also run a full Gemini review (the engine ignores it: Gemini is the adjudicator, not a reviewer)"
+        type: boolean
+        default: false
+      change:
+        description: "facts: the change whose deterministic checks to reproduce"
+        type: string
+        default: "2234"
+
+concurrency:
+  group: countersign-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' && github.run_id || 'auto' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON_DOWNLOADS: never   # use the runner's Python; no python-build-standalone fetches
+  CHALLENGE_REPO: https://github.com/te-industry-tech-office/junction26-messagepack-csharp
+
+jobs:
+  pipeline:
+    name: pipeline (tests, ledger, routing, deterministic packs)
+    runs-on: craci
+    timeout-minutes: 15
+    steps:
+      # Egress: PyPI (uv + dependencies) and GitHub (the challenge repo, read-only, for code-quote verification).
+      - uses: cracicorp/setup@5cbae507e2547dca6c402e413c645767fbae3534 # v1
+        with:
+          size: "4"
+          network: |
+            default: deny
+            presets: [pypi]
+            connections:
+              - tls:
+                  serverNamePatterns: [github.com, codeload.github.com]
+                  ports: [443]
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # uv from PyPI (not a GitHub release download), so CRACI's PyPI preset observes it too.
+      - name: Install uv
+        run: |
+          PIPX_HOME="$HOME/.pipx" PIPX_BIN_DIR="$HOME/.local/bin" pipx install uv==0.13.6
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: uv sync --frozen --extra dev
+      - name: Clone the challenge repo (read-only; code quotes are verified against it)
+        run: |
+          git clone --quiet "$CHALLENGE_REPO" "$RUNNER_TEMP/mp"
+          git -C "$RUNNER_TEMP/mp" remote set-url --push origin DISABLED   # never push there
+          echo "MP=$RUNNER_TEMP/mp" >> "$GITHUB_ENV"
+          echo "COUNTERSIGN_REPO=$RUNNER_TEMP/mp" >> "$GITHUB_ENV"   # also lets the fixture tests run
+      - name: pytest
+        run: uv run pytest -q
+      - name: Verify the signed ledger
+        run: uv run countersign verify-ledger
+      - name: Route every change
+        run: |
+          uv run countersign route --all --repo "$MP" | tee route.txt
+          { echo "## Countersign routing"; echo; echo '```'; cat route.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Rebuild the packs and compare with the committed ones (pack.json is deterministic)
+        run: |
+          changes=$(ls packs)
+          uv run countersign review $changes --quiet --repo "$MP"
+          if ! git diff --exit-code --stat -- 'packs/*/pack.json'; then
+            git diff -- 'packs/*/pack.json' | head -200
+            echo "::error::committed packs differ from a fresh rebuild: run 'countersign review $changes' and commit packs/"
+            { echo; echo "**Committed packs are stale** (differ from a rebuild): $(git diff --name-only -- 'packs/*/pack.json' | tr '\n' ' ')"; } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "packs match a fresh rebuild" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: packs
+          path: |
+            packs/
+            route.txt
+          if-no-files-found: warn
+
+  reviewers:
+    name: reviewers (Nemotron review, Gemini adjudication)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'reviewers' }}
+    runs-on: craci
+    timeout-minutes: 60
+    env:
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      CHANGES: ${{ inputs.changes }}
+      GEMINI_REVIEW: ${{ inputs.gemini_review }}
+    steps:
+      # Egress: PyPI, GitHub (challenge repo, read-only) and the two model APIs. Nothing else: the code under
+      # review can only leave the runner towards the reviewers the mandate allows.
+      - uses: cracicorp/setup@5cbae507e2547dca6c402e413c645767fbae3534 # v1
+        with:
+          network: |
+            default: deny
+            presets: [pypi]
+            connections:
+              - tls:
+                  serverNamePatterns: [integrate.api.nvidia.com, generativelanguage.googleapis.com, github.com, codeload.github.com]
+                  ports: [443]
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        run: |
+          PIPX_HOME="$HOME/.pipx" PIPX_BIN_DIR="$HOME/.local/bin" pipx install uv==0.13.6
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: uv sync --frozen
+      - name: Clone the challenge repo (read-only)
+        run: |
+          git clone --quiet "$CHALLENGE_REPO" "$RUNNER_TEMP/mp"
+          git -C "$RUNNER_TEMP/mp" remote set-url --push origin DISABLED
+          echo "MP=$RUNNER_TEMP/mp" >> "$GITHUB_ENV"
+      - name: Nemotron reviews
+        run: |
+          if [ -z "$NVIDIA_API_KEY" ]; then echo "::error::NVIDIA_API_KEY secret is not set"; exit 1; fi
+          status=0
+          for c in $CHANGES; do
+            echo "::group::nemotron $c"
+            uv run countersign review-llm "$c" --reviewer nemotron --repo "$MP" || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+      - name: Gemini adjudication (only where reviewers disagree)
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then echo "::notice::GEMINI_API_KEY secret not set: skipping the Gemini adjudication"; exit 0; fi
+          status=0
+          for c in $CHANGES; do
+            if [ "$GEMINI_REVIEW" = true ]; then uv run countersign review-llm "$c" --reviewer gemini --repo "$MP" || status=1; fi
+            uv run countersign adjudicate "$c" --repo "$MP" || status=1
+          done
+          exit $status
+      - name: Rebuild packs with the new reviews, render costs, summary
+        if: ${{ !cancelled() }}
+        run: |
+          uv run countersign review $CHANGES --quiet --repo "$MP" || true
+          uv run countersign costs || true
+          {
+            echo "## Reviews from this run"
+            echo
+            for c in $CHANGES; do
+              f=reviews/$c/nemotron.json
+              [ -f "$f" ] || { echo "- $c: no Nemotron review"; continue; }
+              python3 -c "import json,sys; r=json.load(open(sys.argv[1])); print(f'- **{sys.argv[2]}** nemotron: ' + ', '.join(v['req']+' '+v['verdict'] for v in r['requirement_verdicts']) + f\"; {len(r['findings'])} findings, {len(r['refusals'])} refusals; tokens {r['runner']['usage']}\")" "$f" "$c"
+            done
+            echo
+            echo '```'
+            uv run countersign route $CHANGES --repo "$MP"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: reviews
+          path: |
+            reviews/
+            packs/
+            measurement/costs.yaml
+            docs/COSTS.md
+          if-no-files-found: warn
