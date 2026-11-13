@@ -48,6 +48,10 @@
       "codex": {
         "path": "reviews/2234/codex.json",
         "sha256": "df6789e29bfddffc0a569a1290dd7a92cfd3fc93de3a037c43c08b8a66fb2e35"
+      },
+      "nemotron": {
+        "path": "reviews/2234/nemotron.json",
+        "sha256": "f554f6846b2dfbef4ba0bec5602f8fd1c1a0024a706cb331c05cb70e6952784d"
       }
     }
   },
@@ -66,41 +70,13 @@
     },
     {
       "source": "refused clause",
-      "id": "REQ-2234-F1",
-      "tier": "ask",
-      "codes": [
-        "missing_review"
-      ],
-      "why": "missing_review: nemotron gave no verdict"
-    },
-    {
-      "source": "refused clause",
-      "id": "REQ-2234-F2",
-      "tier": "ask",
-      "codes": [
-        "missing_review"
-      ],
-      "why": "missing_review: nemotron gave no verdict"
-    },
-    {
-      "source": "refused clause",
       "id": "REQ-2234-N1",
       "tier": "ask",
       "codes": [
-        "missing_review",
         "not_met",
         "reviewers_disagree"
       ],
-      "why": "missing_review: nemotron gave no verdict; not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met"
-    },
-    {
-      "source": "refused clause",
-      "id": "REQ-2234-N2",
-      "tier": "ask",
-      "codes": [
-        "missing_review"
-      ],
-      "why": "missing_review: nemotron gave no verdict"
+      "why": "not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met, nemotron says met"
     },
     {
       "source": "reviewer refusal",
@@ -113,6 +89,30 @@
       "id": "claude",
       "tier": "ask",
       "why": "Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Parity with analyzer behavior in version 3.1.0 (No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Runtime library behavior (src/MessagePack) and net472/netstandard builds (Not run; the runtime library was not modified and only net8.0 was built.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Security review of analyzer deserializing untrusted input (No security-specific evidence was provided and no security analysis was performed.)"
     },
     {
       "source": "risk score",
@@ -130,41 +130,13 @@
     },
     {
       "source": "refused clause",
-      "id": "REQ-2234-F1",
-      "tier": "ask",
-      "codes": [
-        "missing_review"
-      ],
-      "why": "missing_review: nemotron gave no verdict"
-    },
-    {
-      "source": "refused clause",
-      "id": "REQ-2234-F2",
-      "tier": "ask",
-      "codes": [
-        "missing_review"
-      ],
-      "why": "missing_review: nemotron gave no verdict"
-    },
-    {
-      "source": "refused clause",
       "id": "REQ-2234-N1",
       "tier": "ask",
       "codes": [
-        "missing_review",
         "not_met",
         "reviewers_disagree"
       ],
-      "why": "missing_review: nemotron gave no verdict; not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met"
-    },
-    {
-      "source": "refused clause",
-      "id": "REQ-2234-N2",
-      "tier": "ask",
-      "codes": [
-        "missing_review"
-      ],
-      "why": "missing_review: nemotron gave no verdict"
+      "why": "not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met, nemotron says met"
     },
     {
       "source": "reviewer refusal",
@@ -179,6 +151,30 @@
       "why": "Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.)"
     },
     {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Parity with analyzer behavior in version 3.1.0 (No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Runtime library behavior (src/MessagePack) and net472/netstandard builds (Not run; the runtime library was not modified and only net8.0 was built.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Security review of analyzer deserializing untrusted input (No security-specific evidence was provided and no security analysis was performed.)"
+    },
+    {
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
@@ -189,6 +185,18 @@
       "id": "claude:C2",
       "tier": "notify",
       "why": "minor: Positional-record Key(null) still crashes the analyzer for suppressed (and other) types"
+    },
+    {
+      "source": "verified finding",
+      "id": "nemotron:N1",
+      "tier": "notify",
+      "why": "minor: Duplicate-key diagnostic reports only one diagnostic although two members share the key"
+    },
+    {
+      "source": "verified finding",
+      "id": "nemotron:N2",
+      "tier": "notify",
+      "why": "minor: New test file triggers StyleCop SA1649 warning"
     },
     {
       "source": "trust cap",
@@ -278,7 +286,8 @@
               "outcome": "passed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: passed (new test)"
+              "note": "facts.json tests.fail_without_fix: passed (new test)",
+              "ref": "ev-7f46834b36"
             },
             {
               "kind": "test",
@@ -286,7 +295,8 @@
               "outcome": "passed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: passed (new test)"
+              "note": "facts.json tests.fail_without_fix: passed (new test)",
+              "ref": "ev-ab5dfeec65"
             },
             {
               "kind": "test",
@@ -294,7 +304,8 @@
               "outcome": "passed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: passed (new test)"
+              "note": "facts.json tests.fail_without_fix: passed (new test)",
+              "ref": "ev-0cdf78bf54"
             },
             {
               "kind": "test",
@@ -302,21 +313,24 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-283a17c90c"
             },
             {
               "kind": "test",
               "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-8fd1a8fc46"
             },
             {
               "kind": "test",
               "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-25ded34e20"
             },
             {
               "kind": "code",
@@ -325,7 +339,8 @@
               "rev": "head",
               "quote": "if (!intMembers.ContainsKey(member.IntKey))",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1",
+              "ref": "ev-bc6b3dd3fa"
             },
             {
               "kind": "code",
@@ -334,13 +349,15 @@
               "rev": "head",
               "quote": "continue; // The key kind does not match the other members",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1",
+              "ref": "ev-a0957ebdbe"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+              "ref": "ev-d78b746a74"
             }
           ]
         },
@@ -355,20 +372,23 @@
               "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-8fd1a8fc46"
             },
             {
               "kind": "test",
               "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-25ded34e20"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "code",
@@ -377,18 +397,134 @@
               "rev": "head",
               "quote": "if (!intMembers.ContainsKey(member.IntKey))",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1",
+              "ref": "ev-bc6b3dd3fa"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "On head the analyzer reports missing-key, duplicate-key and mixed-key-kind diagnostics for suppressed types and all six contract tests pass; the four crash-related tests fail on base source with analyzer exceptions, showing the fix addresses the root cause (crash on invalid contracts) rather than a symptom. Parity with version 3.1.0 could not be independently verified because no 3.1.0 evidence was provided.",
+          "verified": 13,
+          "cited": 13,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-F1",
+              "quote": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.",
+              "verified": true,
+              "note": "REQ-2234-F1 text contains the quote",
+              "ref": "ev-dffe050cec"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1008,
+              "rev": "head",
+              "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1",
+              "ref": "ev-eeb0b47f0a"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1023,
+              "rev": "head",
+              "quote": "if (!intMembers.ContainsKey(member.IntKey))",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1",
+              "ref": "ev-bc6b3dd3fa"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1039,
+              "rev": "head",
+              "quote": "if (!stringMembers.ContainsKey(member.StringKey))",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1039 at head 9007cee1",
+              "ref": "ev-1d23e816db"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-02bb823660"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-d0aaf0ddcf"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-0fc5c1ea52"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-8fd1a8fc46"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-bb565b0d63"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-25ded34e20"
+            },
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+              "ref": "ev-62faeb2508"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-283a17c90c"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-99a149a316"
             }
           ]
         }
       },
-      "status": "refused",
-      "reasons": [
-        {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
-        }
-      ]
+      "status": "proven",
+      "reasons": []
     },
     {
       "id": "REQ-2234-F2",
@@ -417,14 +553,16 @@
               "outcome": "passed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: passed (new test)"
+              "note": "facts.json tests.fail_without_fix: passed (new test)",
+              "ref": "ev-165dc4a6ea"
             },
             {
               "kind": "test",
               "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-097f9caee8"
             },
             {
               "kind": "code",
@@ -433,7 +571,8 @@
               "rev": "head",
               "quote": "if (suppressSourceGeneration is true)",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1",
+              "ref": "ev-6768fd1ae3"
             },
             {
               "kind": "code",
@@ -442,7 +581,8 @@
               "rev": "head",
               "quote": "MsgPack00xMessagePackAnalyzer.PartialTypeRequired, primaryLocation",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1",
+              "ref": "ev-337b4ac064"
             },
             {
               "kind": "code",
@@ -451,7 +591,8 @@
               "rev": "head",
               "quote": "if (suppressSourceGeneration is not true && isInitOnly)",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1",
+              "ref": "ev-e5721f8767"
             }
           ]
         },
@@ -466,24 +607,74 @@
               "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-097f9caee8"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+              "ref": "ev-d78b746a74"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "Suppressed types return null from GetObjectInfo before generation-time checks are reached, and the SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed test passes on head; base-source behavior for generation-only checks is not covered by the fail_without_fix run, so the negative half rests on code inspection plus one passing head test.",
+          "verified": 5,
+          "cited": 5,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-F2",
+              "quote": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.",
+              "verified": true,
+              "note": "REQ-2234-F2 text contains the quote",
+              "ref": "ev-d3c4dd6a49"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1383,
+              "rev": "head",
+              "quote": "if (suppressSourceGeneration is true)",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1",
+              "ref": "ev-6768fd1ae3"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1386,
+              "rev": "head",
+              "quote": "return null;",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1",
+              "ref": "ev-76656896d1"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-097f9caee8"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+              "outcome": "passed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: passed (new test)",
+              "ref": "ev-165dc4a6ea"
             }
           ]
         }
       },
-      "status": "refused",
-      "reasons": [
-        {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
-        }
-      ]
+      "status": "proven",
+      "reasons": []
     },
     {
       "id": "REQ-2234-N1",
@@ -513,27 +704,31 @@
               "rev": "head",
               "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+              "ref": "ev-4c693214ba"
             },
             {
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
-              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-df050a6665"
             },
             {
               "kind": "test",
               "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-bb565b0d63"
             },
             {
               "kind": "requirement",
               "req": "REQ-2234-N1",
               "quote": "must not crash on invalid contracts (e.g. duplicate keys) in such types",
               "verified": true,
-              "note": "REQ-2234-N1 text contains the quote"
+              "note": "REQ-2234-N1 text contains the quote",
+              "ref": "ev-1ddd8d4fc0"
             }
           ]
         },
@@ -547,14 +742,64 @@
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
-              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-df050a6665"
             },
             {
               "kind": "test",
               "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-bb565b0d63"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The full suite passes with 0 failures on head, and the previously crashing duplicate-key and mixed-key tests now pass instead of throwing analyzer exceptions.",
+          "verified": 5,
+          "cited": 5,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-N1",
+              "quote": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.",
+              "verified": true,
+              "note": "REQ-2234-N1 text contains the quote",
+              "ref": "ev-ca3c3dd4f0"
+            },
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-8fd1a8fc46"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-bb565b0d63"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-25ded34e20"
             }
           ]
         }
@@ -562,16 +807,12 @@
       "status": "refused",
       "reasons": [
         {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
-        },
-        {
           "code": "not_met",
           "detail": "claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head."
         },
         {
           "code": "reviewers_disagree",
-          "detail": "claude says not_met, codex says met"
+          "detail": "claude says not_met, codex says met, nemotron says met"
         }
       ]
     },
@@ -600,25 +841,29 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
-              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-df050a6665"
             },
             {
               "kind": "check",
               "id": "tests.execution_full_suite",
               "verified": true,
-              "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base"
+              "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+              "ref": "ev-fbc74f77d6"
             },
             {
               "kind": "check",
               "id": "tests.execution_fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.execution_fail_without_fix fail: new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)"
+              "note": "facts.json: tests.execution_fail_without_fix fail: new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+              "ref": "ev-05862d94ce"
             },
             {
               "kind": "test",
@@ -626,7 +871,8 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-99a149a316"
             },
             {
               "kind": "test",
@@ -634,7 +880,8 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-987c65a3c2"
             },
             {
               "kind": "test",
@@ -642,7 +889,8 @@
               "outcome": "passed",
               "check": "tests.execution_fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.execution_fail_without_fix: passed (new test)"
+              "note": "facts.json tests.execution_fail_without_fix: passed (new test)",
+              "ref": "ev-f7ce6ac392"
             }
           ]
         },
@@ -656,24 +904,89 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
-              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-df050a6665"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "4 of 8 new analyzer tests fail on base source (analyzer exceptions AD0001), while all pass on head; the full suite shows no regressions. The two runtime execution tests do not demonstrate the change, but the analyzer tests alone satisfy the coverage requirement.",
+          "verified": 7,
+          "cited": 7,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-N2",
+              "quote": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
+              "verified": true,
+              "note": "REQ-2234-N2 text contains the quote",
+              "ref": "ev-86204fae15"
+            },
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+              "ref": "ev-62faeb2508"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-283a17c90c"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-141f235580"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-987c65a3c2"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-99a149a316"
+            },
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
             }
           ]
         }
       },
-      "status": "refused",
-      "reasons": [
-        {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
-        }
-      ]
+      "status": "proven",
+      "reasons": []
     }
   ],
   "reviewer_panel": {
@@ -696,7 +1009,8 @@
       "about": "REQ-2234-N1",
       "reviewers": [
         "claude",
-        "codex"
+        "codex",
+        "nemotron"
       ]
     },
     {
@@ -845,6 +1159,25 @@
         "verified": 0,
         "rejected": 0,
         "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T01:51:43+02:00",
+        "inputs": [
+          "requirements: requirements/2234.yaml",
+          "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+          "facts: evidence/2234/facts.json",
+          "diff 32258fdb..9007cee1 (4 non-generated files)",
+          "file contents: 4 blocks",
+          "context: 141605 chars (budget 180000)"
+        ],
+        "findings": 5,
+        "verified": 5,
+        "rejected": 0,
+        "refusals": 4
       }
     ],
     "engine": "countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)"
@@ -864,7 +1197,8 @@
           "rev": "8373710fb0ae4bb453737f773b930401d8500c31",
           "quote": "if (suppressSourceGeneration is true)",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:723 at 8373710fb0ae4bb453737f773b930401d8500c31 8373710f"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:723 at 8373710fb0ae4bb453737f773b930401d8500c31 8373710f",
+          "ref": "ev-1f3bd1cf2e"
         },
         {
           "kind": "code",
@@ -873,7 +1207,8 @@
           "rev": "base",
           "quote": "if (suppressSourceGeneration is true)",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1369 at base 32258fdb"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1369 at base 32258fdb",
+          "ref": "ev-f51a2a7c26"
         },
         {
           "kind": "test",
@@ -881,7 +1216,8 @@
           "outcome": "passed",
           "check": "tests.fail_without_fix",
           "verified": true,
-          "note": "facts.json tests.fail_without_fix: passed (new test)"
+          "note": "facts.json tests.fail_without_fix: passed (new test)",
+          "ref": "ev-7f46834b36"
         },
         {
           "kind": "test",
@@ -889,14 +1225,16 @@
           "outcome": "failed",
           "check": "tests.fail_without_fix",
           "verified": true,
-          "note": "facts.json tests.fail_without_fix: failed (new test)"
+          "note": "facts.json tests.fail_without_fix: failed (new test)",
+          "ref": "ev-141f235580"
         },
         {
           "kind": "issue",
           "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
           "quote": "This has happened since version 3.1.1. It still worked in 3.1.0.",
           "verified": false,
-          "note": "issue text cannot be verified offline (not counted as evidence)"
+          "note": "issue text cannot be verified offline (not counted as evidence)",
+          "ref": "ev-50efcd84fe"
         }
       ],
       "suggested_fix": "Retarget the fix to master: move the suppressSourceGeneration early return back below member analysis, as on develop, keep the ContainsKey guards and 'continue' (they are needed once member analysis runs again for suppressed types), and run the 8 analyzer tests on master, where the MsgPack004/003/015 ones should then fail without the fix.",
@@ -920,7 +1258,8 @@
           "rev": "head",
           "quote": "(PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+          "ref": "ev-ea86c4a3d1"
         }
       ],
       "suggested_fix": "Use (syntax as PropertyDeclarationSyntax)?.Identifier ?? (syntax as ParameterSyntax)?.Identifier, as the MemberNeedsKey path already does, and add a test.",
@@ -944,7 +1283,8 @@
           "rev": "head",
           "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1",
+          "ref": "ev-eeb0b47f0a"
         }
       ],
       "verified_count": 1,
@@ -967,14 +1307,16 @@
           "rev": "head",
           "quote": "if (!intMembers.ContainsKey(member.IntKey))",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1",
+          "ref": "ev-bc6b3dd3fa"
         },
         {
           "kind": "test",
           "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
           "outcome": "passed",
           "verified": true,
-          "note": "facts.json tests.targeted: passed (new test)"
+          "note": "facts.json tests.targeted: passed (new test)",
+          "ref": "ev-2935d06d6d"
         }
       ],
       "suggested_fix": "When a key collision is detected, have GetObjectInfo return null (no formatter) instead of dropping the member.",
@@ -983,244 +1325,194 @@
       "reviewer": "claude",
       "tier": "silent",
       "confirmed_by": []
+    },
+    {
+      "id": "N1",
+      "title": "Duplicate-key diagnostic reports only one diagnostic although two members share the key",
+      "severity": "minor",
+      "category": "correctness",
+      "claim": "For duplicate keys the code reports KeysMustBeUnique only on the second member and then skips adding it, so the first member remains in the dictionary; users see one diagnostic instead of being told both members collide. This matches the tests' expectations but may under-report the contract problem.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1014,
+          "rev": "head",
+          "quote": "if (intMembers.ContainsKey(intKey!.Value))",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1014 at head 9007cee1",
+          "ref": "ev-16adc56b18"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1016,
+          "rev": "head",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1016 at head 9007cee1",
+          "ref": "ev-9b063a4faf"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed",
+          "verified": true,
+          "note": "facts.json tests.targeted: passed (new test)",
+          "ref": "ev-8fd1a8fc46"
+        }
+      ],
+      "suggested_fix": "Consider whether both members should be flagged; no code change required unless the product owner wants the first member reported too.",
+      "verified_count": 3,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "notify",
+      "confirmed_by": []
+    },
+    {
+      "id": "N2",
+      "title": "New test file triggers StyleCop SA1649 warning",
+      "severity": "minor",
+      "category": "maintainability",
+      "claim": "SuppressedSourceGenerationTests.cs contains two public types but the file name matches neither, producing warning SA1649 in both ExecutionTests projects.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.execution_full_suite",
+          "status": "pass",
+          "verified": true,
+          "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+          "ref": "ev-98002ca52b"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+          "line": 9,
+          "rev": "head",
+          "quote": "public class SuppressedSourceGenerationType",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:9 at head 9007cee1",
+          "ref": "ev-64de3fafa7"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+          "line": 18,
+          "rev": "head",
+          "quote": "public class SuppressedSourceGenerationTests",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:18 at head 9007cee1",
+          "ref": "ev-328bd9d246"
+        }
+      ],
+      "suggested_fix": "Rename the file to SuppressedSourceGenerationType.cs or split the types into separate files.",
+      "verified_count": 3,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "notify",
+      "confirmed_by": []
+    },
+    {
+      "id": "N3",
+      "title": "Runtime execution tests do not demonstrate the fix",
+      "severity": "info",
+      "category": "tests",
+      "claim": "SuppressedSourceGenerationTests round-trip and formatter-absence tests pass on base source as well, so they add regression coverage but not fix coverage; REQ-2234-N2 is satisfied by the analyzer tests instead.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.execution_fail_without_fix",
+          "status": "fail",
+          "verified": true,
+          "note": "facts.json: tests.execution_fail_without_fix fail: new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+          "ref": "ev-2f84e19b68"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+          "outcome": "passed",
+          "check": "tests.execution_fail_without_fix",
+          "verified": true,
+          "note": "facts.json tests.execution_fail_without_fix: passed (new test)",
+          "ref": "ev-f66e73f956"
+        }
+      ],
+      "verified_count": 2,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "N4",
+      "title": "README documents behavior accurately",
+      "severity": "info",
+      "category": "docs",
+      "claim": "README additions describe which diagnostics are and are not reported for suppressed types, matching the code's early-return behavior.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 1620,
+          "rev": "head",
+          "quote": "The analyzer still validates these types, because they are serialized at run time and must still have a valid contract:",
+          "verified": false,
+          "note": "quote not on README.md:1620 ±3 at head; it does occur at line 1625, outside tolerance",
+          "ref": "ev-c204937ed1"
+        },
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 1634,
+          "rev": "head",
+          "quote": "The analyzer does not report the partial-class requirement ([MsgPack011](doc/analyzers/MsgPack011.md)) or the AOT-only checks ([MsgPack016](doc/analyzers/MsgPack016.md) and [MsgPack017](doc/analyzers/MsgPack017.md)) for these types, because they only apply when a formatter is generated.",
+          "verified": true,
+          "note": "quote matches README.md:1634 at head 9007cee1 (found at line 1632, 2 off)",
+          "ref": "ev-f94a653f7f"
+        }
+      ],
+      "verified_count": 1,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "N5",
+      "title": "Execution tests required SDK 9 override",
+      "severity": "info",
+      "category": "maintainability",
+      "claim": "The generator references Microsoft.CodeAnalysis 4.12, so ExecutionTests cannot build with the repo-pinned SDK 8.0.402; CI on SDK 8 would fail to run these tests.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.execution_fail_without_fix",
+          "status": "fail",
+          "verified": true,
+          "note": "facts.json: tests.execution_fail_without_fix fail: new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+          "ref": "ev-2f84e19b68"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+          "line": 1,
+          "rev": "head",
+          "quote": "// Copyright (c) All contributors. All rights reserved.",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:1 at head 9007cee1",
+          "ref": "ev-f77df3c0b5"
+        }
+      ],
+      "suggested_fix": "Area owner should decide whether to pin the generator to Roslyn 4.11 or update global.json/CI to SDK 9.",
+      "verified_count": 2,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "silent",
+      "confirmed_by": []
     }
   ],
   "refused": {
     "clauses": [
-      {
-        "id": "REQ-2234-F1",
-        "type": "functional",
-        "text": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.",
-        "checks": [
-          {
-            "id": "build",
-            "status": "pass"
-          },
-          {
-            "id": "tests.targeted",
-            "status": "pass"
-          }
-        ],
-        "verdicts": {
-          "claude": {
-            "verdict": "met",
-            "basis": "At head all listed contract diagnostics are reported for suppressed types (8/8 targeted tests pass). Only part of this was achieved by the change: missing [Key] (MsgPack004), member type not serializable (MsgPack003) and AllowPrivate (MsgPack015) were already reported on base, since those tests pass in tests.fail_without_fix. What the change adds is that duplicate int/string keys and mixed key kinds no longer crash the analyzer (ArgumentException from Dictionary.Add / 'Nullable object must have a value' on base) and are reported. See C1: the 3.1.1 regression the issue reports is not in this base, so this verdict says nothing about the released 3.1.x line.",
-            "verified": 9,
-            "cited": 9,
-            "evidence": [
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
-                "outcome": "passed",
-                "check": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.fail_without_fix: passed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
-                "outcome": "passed",
-                "check": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.fail_without_fix: passed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
-                "outcome": "passed",
-                "check": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.fail_without_fix: passed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
-                "outcome": "failed",
-                "check": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
-              },
-              {
-                "kind": "code",
-                "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
-                "line": 1023,
-                "rev": "head",
-                "quote": "if (!intMembers.ContainsKey(member.IntKey))",
-                "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
-              },
-              {
-                "kind": "code",
-                "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
-                "line": 1008,
-                "rev": "head",
-                "quote": "continue; // The key kind does not match the other members",
-                "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1"
-              },
-              {
-                "kind": "check",
-                "id": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
-              }
-            ]
-          },
-          "codex": {
-            "verdict": "met",
-            "basis": "The change preserves reporting for contract violations while avoiding duplicate-key dictionary insertion crashes; tests for duplicate and mixed keys fail on base source and pass with the fix.",
-            "verified": 4,
-            "cited": 4,
-            "evidence": [
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
-              },
-              {
-                "kind": "check",
-                "id": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
-              },
-              {
-                "kind": "code",
-                "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
-                "line": 1023,
-                "rev": "head",
-                "quote": "if (!intMembers.ContainsKey(member.IntKey))",
-                "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
-              }
-            ]
-          }
-        },
-        "status": "refused",
-        "reasons": [
-          {
-            "code": "missing_review",
-            "detail": "nemotron gave no verdict"
-          }
-        ]
-      },
-      {
-        "id": "REQ-2234-F2",
-        "type": "functional",
-        "text": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.",
-        "checks": [
-          {
-            "id": "build",
-            "status": "pass"
-          },
-          {
-            "id": "tests.targeted",
-            "status": "pass"
-          }
-        ],
-        "verdicts": {
-          "claude": {
-            "verdict": "met",
-            "basis": "Holds at head, but it already held on base and this change did nothing for it: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes in tests.fail_without_fix (base source). The suppression early return still sits before the partial-type check (MsgPack011), and the AOT-only diagnostics are gated on suppressSourceGeneration is not true. The diff does not touch these lines.",
-            "verified": 5,
-            "cited": 5,
-            "evidence": [
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
-                "outcome": "passed",
-                "check": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.fail_without_fix: passed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
-              },
-              {
-                "kind": "code",
-                "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
-                "line": 1383,
-                "rev": "head",
-                "quote": "if (suppressSourceGeneration is true)",
-                "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1"
-              },
-              {
-                "kind": "code",
-                "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
-                "line": 1407,
-                "rev": "head",
-                "quote": "MsgPack00xMessagePackAnalyzer.PartialTypeRequired, primaryLocation",
-                "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1"
-              },
-              {
-                "kind": "code",
-                "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
-                "line": 989,
-                "rev": "head",
-                "quote": "if (suppressSourceGeneration is not true && isInitOnly)",
-                "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1"
-              }
-            ]
-          },
-          "codex": {
-            "verdict": "met",
-            "basis": "Formatter-generation-only checks are guarded when source generation is suppressed; the dedicated test passes, and it also passed on base, showing this behavior already held before the change.",
-            "verified": 2,
-            "cited": 2,
-            "evidence": [
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
-              },
-              {
-                "kind": "check",
-                "id": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
-              }
-            ]
-          }
-        },
-        "status": "refused",
-        "reasons": [
-          {
-            "code": "missing_review",
-            "detail": "nemotron gave no verdict"
-          }
-        ]
-      },
       {
         "id": "REQ-2234-N1",
         "type": "non-functional",
@@ -1249,27 +1541,31 @@
                 "rev": "head",
                 "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+                "ref": "ev-4c693214ba"
               },
               {
                 "kind": "check",
                 "id": "tests.full_suite",
                 "verified": true,
-                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+                "ref": "ev-df050a6665"
               },
               {
                 "kind": "test",
                 "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-bb565b0d63"
               },
               {
                 "kind": "requirement",
                 "req": "REQ-2234-N1",
                 "quote": "must not crash on invalid contracts (e.g. duplicate keys) in such types",
                 "verified": true,
-                "note": "REQ-2234-N1 text contains the quote"
+                "note": "REQ-2234-N1 text contains the quote",
+                "ref": "ev-1ddd8d4fc0"
               }
             ]
           },
@@ -1283,131 +1579,77 @@
                 "kind": "check",
                 "id": "tests.full_suite",
                 "verified": true,
-                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+                "ref": "ev-df050a6665"
               },
               {
                 "kind": "test",
                 "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-bb565b0d63"
+              }
+            ]
+          },
+          "nemotron": {
+            "verdict": "met",
+            "basis": "The full suite passes with 0 failures on head, and the previously crashing duplicate-key and mixed-key tests now pass instead of throwing analyzer exceptions.",
+            "verified": 5,
+            "cited": 5,
+            "evidence": [
+              {
+                "kind": "requirement",
+                "req": "REQ-2234-N1",
+                "quote": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.",
+                "verified": true,
+                "note": "REQ-2234-N1 text contains the quote",
+                "ref": "ev-ca3c3dd4f0"
+              },
+              {
+                "kind": "check",
+                "id": "tests.full_suite",
+                "status": "pass",
+                "verified": true,
+                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+                "ref": "ev-d448f979e6"
+              },
+              {
+                "kind": "test",
+                "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+                "outcome": "passed",
+                "verified": true,
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-8fd1a8fc46"
+              },
+              {
+                "kind": "test",
+                "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+                "outcome": "passed",
+                "verified": true,
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-bb565b0d63"
+              },
+              {
+                "kind": "test",
+                "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+                "outcome": "passed",
+                "verified": true,
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-25ded34e20"
               }
             ]
           }
         },
         "status": "refused",
         "reasons": [
-          {
-            "code": "missing_review",
-            "detail": "nemotron gave no verdict"
-          },
           {
             "code": "not_met",
             "detail": "claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head."
           },
           {
             "code": "reviewers_disagree",
-            "detail": "claude says not_met, codex says met"
-          }
-        ]
-      },
-      {
-        "id": "REQ-2234-N2",
-        "type": "non-functional",
-        "text": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
-        "checks": [
-          {
-            "id": "build",
-            "status": "pass"
-          },
-          {
-            "id": "tests.fail_without_fix",
-            "status": "pass"
-          }
-        ],
-        "verdicts": {
-          "claude": {
-            "verdict": "met",
-            "basis": "tests.fail_without_fix passes on the 4 analyzer tests that cover what the change does (duplicate int/string keys, mixed kinds, duplicate keys on a non-suppressed type): they fail on base with AD0001 and pass at head. The other 4 new analyzer tests and all 4 new execution test results pass on base too (tests.execution_fail_without_fix = fail), so they are regression guards, not proof of the fix. No regressions: tests.full_suite and tests.execution_full_suite pass.",
-            "verified": 7,
-            "cited": 7,
-            "evidence": [
-              {
-                "kind": "check",
-                "id": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
-              },
-              {
-                "kind": "check",
-                "id": "tests.full_suite",
-                "verified": true,
-                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
-              },
-              {
-                "kind": "check",
-                "id": "tests.execution_full_suite",
-                "verified": true,
-                "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base"
-              },
-              {
-                "kind": "check",
-                "id": "tests.execution_fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.execution_fail_without_fix fail: new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
-                "outcome": "failed",
-                "check": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
-                "outcome": "failed",
-                "check": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
-              },
-              {
-                "kind": "test",
-                "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
-                "outcome": "passed",
-                "check": "tests.execution_fail_without_fix",
-                "verified": true,
-                "note": "facts.json tests.execution_fail_without_fix: passed (new test)"
-              }
-            ]
-          },
-          "codex": {
-            "verdict": "met",
-            "basis": "Four of the eight new analyzer tests fail on base source and all eight pass with the change; the full suite passes.",
-            "verified": 2,
-            "cited": 2,
-            "evidence": [
-              {
-                "kind": "check",
-                "id": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
-              },
-              {
-                "kind": "check",
-                "id": "tests.full_suite",
-                "verified": true,
-                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)"
-              }
-            ]
-          }
-        },
-        "status": "refused",
-        "reasons": [
-          {
-            "code": "missing_review",
-            "detail": "nemotron gave no verdict"
+            "detail": "claude says not_met, codex says met, nemotron says met"
           }
         ]
       }
@@ -1426,6 +1668,34 @@
         "who_should_decide": "docs owner",
         "reviewer": "claude",
         "model": "claude-opus-5-5"
+      },
+      {
+        "topic": "Parity with analyzer behavior in version 3.1.0",
+        "reason": "No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.",
+        "who_should_decide": "Area owner or maintainer with access to the 3.1.0 release",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      {
+        "topic": "Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types",
+        "reason": "The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.",
+        "who_should_decide": "Area owner",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      {
+        "topic": "Runtime library behavior (src/MessagePack) and net472/netstandard builds",
+        "reason": "Not run; the runtime library was not modified and only net8.0 was built.",
+        "who_should_decide": "Area owner",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      {
+        "topic": "Security review of analyzer deserializing untrusted input",
+        "reason": "No security-specific evidence was provided and no security analysis was performed.",
+        "who_should_decide": "Security reviewer",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
       }
     ]
   },
@@ -1468,12 +1738,13 @@
     }
   ],
   "residual_risk": [
-    "REQ-2234-F1 not proven: missing_review",
-    "REQ-2234-F2 not proven: missing_review",
-    "REQ-2234-N1 not proven: missing_review; not_met; reviewers_disagree",
-    "REQ-2234-N2 not proven: missing_review",
+    "REQ-2234-N1 not proven: not_met; reviewers_disagree",
     "Reviewer refusal (claude): Whether this change resolves issue #2234 for users of the released 3.1.x packages",
     "Reviewer refusal (claude): Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate",
+    "Reviewer refusal (nemotron): Parity with analyzer behavior in version 3.1.0",
+    "Reviewer refusal (nemotron): Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types",
+    "Reviewer refusal (nemotron): Runtime library behavior (src/MessagePack) and net472/netstandard builds",
+    "Reviewer refusal (nemotron): Security review of analyzer deserializing untrusted input",
     "Open major finding claude:C1: The issue's 3.1.1 regression is not on this base; the change fixes a different crash",
     "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
     "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
@@ -1553,5 +1824,2351 @@
     ],
     "command": "countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
     "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  },
+  "story": {
+    "headline": "Agent-written change for #2234: The analyzer does not work if SuppressSourceGeneration = true",
+    "what": "Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on ju26-issue-2234 by Stelian Vultur.",
+    "why": "Judged against 4 requirement clauses from #2234 (placeholder requirement set, not Tieto's official one).",
+    "touches": [
+      {
+        "area": "generator-analyzer-core",
+        "owner": "Toivo",
+        "sensitivity": "high",
+        "files": 1
+      },
+      {
+        "area": "docs",
+        "owner": "Rene",
+        "sensitivity": "low",
+        "files": 1
+      },
+      {
+        "area": "tests",
+        "owner": "Toivo",
+        "sensitivity": "low",
+        "files": 2
+      }
+    ],
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234"
+  },
+  "card": {
+    "tier": "ask",
+    "owner": "Toivo",
+    "fyi": [
+      "Rene"
+    ],
+    "risk_score": 67.6,
+    "reasons": [
+      {
+        "text": "Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a different crash",
+        "link": "#f-claude-C1"
+      },
+      {
+        "text": "1 of 4 requirement clauses not proven. Claude says not met (Codex and Nemotron: met)",
+        "link": "#chain-REQ-2234-N1"
+      },
+      {
+        "text": "The AI declined to decide 6 questions, e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages",
+        "link": "#refused"
+      }
+    ],
+    "more_drivers": 15,
+    "trace": [
+      {
+        "id": "REQ-2234-F1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (26 verified citations); build, tests.targeted pass",
+        "anchor": "chain-REQ-2234-F1"
+      },
+      {
+        "id": "REQ-2234-F2",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (12 verified citations); build, tests.targeted pass",
+        "anchor": "chain-REQ-2234-F2"
+      },
+      {
+        "id": "REQ-2234-N1",
+        "status": "refused",
+        "label": "not met",
+        "why": "Claude says not met (Codex and Nemotron: met)",
+        "anchor": "chain-REQ-2234-N1"
+      },
+      {
+        "id": "REQ-2234-N2",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (16 verified citations); build, tests.fail_without_fix pass",
+        "anchor": "chain-REQ-2234-N2"
+      }
+    ],
+    "found": [
+      {
+        "key": "claude:C1",
+        "anchor": "f-claude-C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "title": "The issue's 3.1.1 regression is not on this base; the change fixes a different crash",
+        "tier": "ask",
+        "chips": [
+          {
+            "ref": "ev-1f3bd1cf2e",
+            "label": "TypeCollector.cs:723 @8373710f"
+          },
+          {
+            "ref": "ev-f51a2a7c26",
+            "label": "TypeCollector.cs:1369 @base"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "claude:C2",
+        "anchor": "f-claude-C2",
+        "reviewer": "claude",
+        "severity": "minor",
+        "title": "Positional-record Key(null) still crashes the analyzer for suppressed (and other) types",
+        "tier": "notify",
+        "chips": [
+          {
+            "ref": "ev-ea86c4a3d1",
+            "label": "TypeCollector.cs:985 @head"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "nemotron:N1",
+        "anchor": "f-nemotron-N1",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "title": "Duplicate-key diagnostic reports only one diagnostic although two members share the key",
+        "tier": "notify",
+        "chips": [
+          {
+            "ref": "ev-16adc56b18",
+            "label": "TypeCollector.cs:1014 @head"
+          },
+          {
+            "ref": "ev-9b063a4faf",
+            "label": "TypeCollector.cs:1016 @head"
+          }
+        ],
+        "shared_with": [
+          "claude"
+        ]
+      }
+    ],
+    "found_total": 9,
+    "rejected_total": 0,
+    "refused": [
+      {
+        "topic": "Whether this change resolves issue #2234 for users of the released 3.1.x packages",
+        "why": "The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "analyzer area owner / maintainers choosing the target branch"
+        ],
+        "anchor": "refusal-1"
+      },
+      {
+        "topic": "Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate",
+        "why": "Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "docs owner"
+        ],
+        "anchor": "refusal-2"
+      },
+      {
+        "topic": "Parity with analyzer behavior in version 3.1.0",
+        "why": "No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "Area owner or maintainer with access to the 3.1.0 release"
+        ],
+        "anchor": "refusal-3"
+      },
+      {
+        "topic": "Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types",
+        "why": "The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "Area owner"
+        ],
+        "anchor": "refusal-4"
+      },
+      {
+        "topic": "Runtime library behavior (src/MessagePack) and net472/netstandard builds",
+        "why": "Not run; the runtime library was not modified and only net8.0 was built.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "Area owner"
+        ],
+        "anchor": "refusal-5"
+      },
+      {
+        "topic": "Security review of analyzer deserializing untrusted input",
+        "why": "No security-specific evidence was provided and no security analysis was performed.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "Security reviewer"
+        ],
+        "anchor": "refusal-6"
+      }
+    ],
+    "refused_clauses": [
+      "REQ-2234-N1"
+    ],
+    "not_checked": [
+      {
+        "id": "tests.MessagePack.Tests",
+        "reason": "runtime library src/MessagePack not modified by the change; suite not run"
+      },
+      {
+        "id": "build.net472/netstandard",
+        "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)"
+      },
+      {
+        "id": "benchmarks",
+        "reason": "no runtime serialization hot path touched (generator/analyzer only)"
+      }
+    ],
+    "known_gaps": [
+      "other-targets",
+      "runtime-perf",
+      "semantic-intent",
+      "provenance"
+    ],
+    "residual": [
+      {
+        "text": "Open major finding: The issue's 3.1.1 regression is not on this base; the change fixes a different crash",
+        "link": "#f-claude-C1"
+      },
+      {
+        "text": "Not proven by the AI: REQ-2234-N1. Signing means you judge them yourself.",
+        "link": "#chain-REQ-2234-N1"
+      },
+      {
+        "text": "6 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused"
+      },
+      {
+        "text": "Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
+        "link": "#not-checked"
+      },
+      {
+        "text": "2 disputed items not adjudicated",
+        "link": "#panel"
+      },
+      {
+        "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
+        "link": "#not-checked"
+      }
+    ],
+    "sign": {
+      "owner": "Toivo",
+      "required": true,
+      "decisions": [
+        "accept",
+        "reject",
+        "request-changes"
+      ],
+      "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+      "command": "countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+    },
+    "reviewers": 3
+  },
+  "trust": [
+    {
+      "id": "REQ-2234-F1",
+      "text": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (26 verified citations); build, tests.targeted pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2234/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "8 passed, 0 failed, 0 skipped (8 new tests in run)",
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "At head all listed contract diagnostics are reported for suppressed types (8/8 targeted tests pass). Only part of this was achieved by the change: missing [Key] (MsgPack004), member type not serializable (MsgPack003) and AllowPrivate (MsgPack015) were already reported on base, since those tests pass in tests.fail_without_fix. What the change adds is that duplicate int/string keys and mixed key kinds no longer crash the analyzer (ArgumentException from Dictionary.Add / 'Nullable object must have a value' on base) and are reported. See C1: the 3.1.1 regression the issue reports is not in this base, so this verdict says nothing about the released 3.1.x line.",
+          "verified": 9,
+          "cited": 9,
+          "refs": [
+            "ev-7f46834b36",
+            "ev-ab5dfeec65",
+            "ev-0cdf78bf54",
+            "ev-283a17c90c",
+            "ev-8fd1a8fc46",
+            "ev-25ded34e20",
+            "ev-bc6b3dd3fa",
+            "ev-a0957ebdbe",
+            "ev-d78b746a74"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The change preserves reporting for contract violations while avoiding duplicate-key dictionary insertion crashes; tests for duplicate and mixed keys fail on base source and pass with the fix.",
+          "verified": 4,
+          "cited": 4,
+          "refs": [
+            "ev-8fd1a8fc46",
+            "ev-25ded34e20",
+            "ev-d78b746a74",
+            "ev-bc6b3dd3fa"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "On head the analyzer reports missing-key, duplicate-key and mixed-key-kind diagnostics for suppressed types and all six contract tests pass; the four crash-related tests fail on base source with analyzer exceptions, showing the fix addresses the root cause (crash on invalid contracts) rather than a symptom. Parity with version 3.1.0 could not be independently verified because no 3.1.0 evidence was provided.",
+          "verified": 13,
+          "cited": 13,
+          "refs": [
+            "ev-dffe050cec",
+            "ev-eeb0b47f0a",
+            "ev-bc6b3dd3fa",
+            "ev-1d23e816db",
+            "ev-02bb823660",
+            "ev-d0aaf0ddcf",
+            "ev-0fc5c1ea52",
+            "ev-8fd1a8fc46",
+            "ev-bb565b0d63",
+            "ev-25ded34e20",
+            "ev-62faeb2508",
+            "ev-283a17c90c",
+            "ev-99a149a316"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-283a17c90c",
+          "without_fix": "failed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-25ded34e20",
+          "without_fix": "failed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-bb565b0d63",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "ref": "ev-7f46834b36",
+          "without_fix": "passed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "ref": "ev-ab5dfeec65",
+          "without_fix": "passed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "ref": "ev-0cdf78bf54",
+          "without_fix": "passed"
+        }
+      ],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-2234-F2",
+      "text": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (12 verified citations); build, tests.targeted pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2234/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "8 passed, 0 failed, 0 skipped (8 new tests in run)",
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "Holds at head, but it already held on base and this change did nothing for it: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes in tests.fail_without_fix (base source). The suppression early return still sits before the partial-type check (MsgPack011), and the AOT-only diagnostics are gated on suppressSourceGeneration is not true. The diff does not touch these lines.",
+          "verified": 5,
+          "cited": 5,
+          "refs": [
+            "ev-165dc4a6ea",
+            "ev-097f9caee8",
+            "ev-6768fd1ae3",
+            "ev-337b4ac064",
+            "ev-e5721f8767"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "Formatter-generation-only checks are guarded when source generation is suppressed; the dedicated test passes, and it also passed on base, showing this behavior already held before the change.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-097f9caee8",
+            "ev-d78b746a74"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "Suppressed types return null from GetObjectInfo before generation-time checks are reached, and the SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed test passes on head; base-source behavior for generation-only checks is not covered by the fail_without_fix run, so the negative half rests on code inspection plus one passing head test.",
+          "verified": 5,
+          "cited": 5,
+          "refs": [
+            "ev-d3c4dd6a49",
+            "ev-6768fd1ae3",
+            "ev-76656896d1",
+            "ev-097f9caee8",
+            "ev-165dc4a6ea"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "ref": "ev-165dc4a6ea",
+          "without_fix": "passed"
+        }
+      ],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-2234-N1",
+      "text": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.",
+      "status": "refused",
+      "label": "not met",
+      "why": "Claude says not met (Codex and Nemotron: met)",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2234/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.full_suite",
+          "status": "pass",
+          "summary": "tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+          "logs": [
+            "evidence/2234/logs/tests_full_suite.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "not_met",
+          "basis": "The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.",
+          "verified": 4,
+          "cited": 4,
+          "refs": [
+            "ev-4c693214ba",
+            "ev-df050a6665",
+            "ev-bb565b0d63",
+            "ev-1ddd8d4fc0"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The full source-generator suite passes, and duplicate-key tests demonstrate that invalid contracts no longer trigger analyzer failure.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-df050a6665",
+            "ev-bb565b0d63"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The full suite passes with 0 failures on head, and the previously crashing duplicate-key and mixed-key tests now pass instead of throwing analyzer exceptions.",
+          "verified": 5,
+          "cited": 5,
+          "refs": [
+            "ev-ca3c3dd4f0",
+            "ev-d448f979e6",
+            "ev-8fd1a8fc46",
+            "ev-bb565b0d63",
+            "ev-25ded34e20"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [
+        "claude"
+      ],
+      "missing": [],
+      "tests_fail_without_fix": [
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-bb565b0d63",
+          "without_fix": "failed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-8fd1a8fc46",
+          "without_fix": "failed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-25ded34e20",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [
+        {
+          "code": "not_met",
+          "detail": "claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head."
+        },
+        {
+          "code": "reviewers_disagree",
+          "detail": "claude says not_met, codex says met, nemotron says met"
+        }
+      ],
+      "adjudication": null,
+      "settle": [
+        "A fix, or evidence that refutes Claude's objection"
+      ]
+    },
+    {
+      "id": "REQ-2234-N2",
+      "text": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (16 verified citations); build, tests.fail_without_fix pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2234/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "summary": "new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "tests.fail_without_fix passes on the 4 analyzer tests that cover what the change does (duplicate int/string keys, mixed kinds, duplicate keys on a non-suppressed type): they fail on base with AD0001 and pass at head. The other 4 new analyzer tests and all 4 new execution test results pass on base too (tests.execution_fail_without_fix = fail), so they are regression guards, not proof of the fix. No regressions: tests.full_suite and tests.execution_full_suite pass.",
+          "verified": 7,
+          "cited": 7,
+          "refs": [
+            "ev-d78b746a74",
+            "ev-df050a6665",
+            "ev-fbc74f77d6",
+            "ev-05862d94ce",
+            "ev-99a149a316",
+            "ev-987c65a3c2",
+            "ev-f7ce6ac392"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "Four of the eight new analyzer tests fail on base source and all eight pass with the change; the full suite passes.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-d78b746a74",
+            "ev-df050a6665"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "4 of 8 new analyzer tests fail on base source (analyzer exceptions AD0001), while all pass on head; the full suite shows no regressions. The two runtime execution tests do not demonstrate the change, but the analyzer tests alone satisfy the coverage requirement.",
+          "verified": 7,
+          "cited": 7,
+          "refs": [
+            "ev-86204fae15",
+            "ev-62faeb2508",
+            "ev-283a17c90c",
+            "ev-141f235580",
+            "ev-987c65a3c2",
+            "ev-99a149a316",
+            "ev-d448f979e6"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-99a149a316",
+          "without_fix": "failed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-987c65a3c2",
+          "without_fix": "failed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "ref": "ev-283a17c90c",
+          "without_fix": "failed"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "ref": "ev-141f235580",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [
+        {
+          "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+          "ref": "ev-f7ce6ac392",
+          "without_fix": "passed"
+        }
+      ],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    }
+  ],
+  "panel": {
+    "rows": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-2234-F1": "met",
+          "REQ-2234-F2": "met",
+          "REQ-2234-N1": "not_met",
+          "REQ-2234-N2": "met"
+        },
+        "citations_verified": 33,
+        "citations_rejected": 1,
+        "findings_verified": 4,
+        "findings_rejected": 0,
+        "only_this_reviewer": [
+          {
+            "id": "C1",
+            "severity": "major",
+            "title": "The issue's 3.1.1 regression is not on this base; the change fixes a different crash",
+            "status": "verified"
+          },
+          {
+            "id": "C2",
+            "severity": "minor",
+            "title": "Positional-record Key(null) still crashes the analyzer for suppressed (and other) types",
+            "status": "verified"
+          }
+        ],
+        "refusals": 2
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-2234-F1": "met",
+          "REQ-2234-F2": "met",
+          "REQ-2234-N1": "met",
+          "REQ-2234-N2": "met"
+        },
+        "citations_verified": 10,
+        "citations_rejected": 0,
+        "findings_verified": 0,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-2234-F1": "met",
+          "REQ-2234-F2": "met",
+          "REQ-2234-N1": "met",
+          "REQ-2234-N2": "met"
+        },
+        "citations_verified": 41,
+        "citations_rejected": 1,
+        "findings_verified": 5,
+        "findings_rejected": 0,
+        "only_this_reviewer": [
+          {
+            "id": "N2",
+            "severity": "minor",
+            "title": "New test file triggers StyleCop SA1649 warning",
+            "status": "verified"
+          },
+          {
+            "id": "N3",
+            "severity": "info",
+            "title": "Runtime execution tests do not demonstrate the fix",
+            "status": "verified"
+          },
+          {
+            "id": "N4",
+            "severity": "info",
+            "title": "README documents behavior accurately",
+            "status": "verified"
+          },
+          {
+            "id": "N5",
+            "severity": "info",
+            "title": "Execution tests required SDK 9 override",
+            "status": "verified"
+          }
+        ],
+        "refusals": 4
+      }
+    ],
+    "callouts": [
+      "Codex and Nemotron said met to all 4 clauses; Claude raised a verified major finding they did not (claude:C1: The issue's 3.1.1 regression is not on this base; the change fixes a different crash). Claude also did not say met on REQ-2234-N1, so that clause is refused. Unanimity is required: one verified objection is enough to send it to Toivo.",
+      "REQ-2234-N1: Claude: not met; Codex, Nemotron: met. A split verdict is a refusal, not a vote."
+    ],
+    "adjudicator": "gemini"
+  },
+  "evidence_index": {
+    "ev-7f46834b36": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+      "outcome": "passed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-7f46834b36",
+      "label": "test MemberWithoutKeyIsReported passed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F1",
+        "claude:C1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-ab5dfeec65": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+      "outcome": "passed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-ab5dfeec65",
+      "label": "test MemberTypeMustBeMessagePackObjectIsReported passed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-0cdf78bf54": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+      "outcome": "passed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-0cdf78bf54",
+      "label": "test AllowPrivateRequiredIsReported passed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-283a17c90c": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-283a17c90c",
+      "label": "test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F1",
+        "nemotron on REQ-2234-F1",
+        "nemotron on REQ-2234-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-8fd1a8fc46": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+      "outcome": "passed",
+      "ref": "ev-8fd1a8fc46",
+      "label": "test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F1",
+        "codex on REQ-2234-F1",
+        "nemotron on REQ-2234-F1",
+        "nemotron on REQ-2234-N1",
+        "nemotron:N1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-25ded34e20": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+      "outcome": "passed",
+      "ref": "ev-25ded34e20",
+      "label": "test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F1",
+        "codex on REQ-2234-F1",
+        "nemotron on REQ-2234-F1",
+        "nemotron on REQ-2234-N1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-bc6b3dd3fa": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1023,
+      "rev": "head",
+      "quote": "if (!intMembers.ContainsKey(member.IntKey))",
+      "ref": "ev-bc6b3dd3fa",
+      "label": "TypeCollector.cs:1023 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1",
+      "cited_by": [
+        "claude on REQ-2234-F1",
+        "codex on REQ-2234-F1",
+        "nemotron on REQ-2234-F1",
+        "claude:C4"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1020,
+        "highlight": 1023,
+        "lines": [
+          "                        {",
+          "                            DeclaringType = GetDeclaringTypeIfColliding(item),",
+          "                        };",
+          "                        if (!intMembers.ContainsKey(member.IntKey))",
+          "                        {",
+          "                            intMembers.Add(member.IntKey, (member, item.Type));",
+          "                        }"
+        ]
+      }
+    },
+    "ev-a0957ebdbe": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1008,
+      "rev": "head",
+      "quote": "continue; // The key kind does not match the other members",
+      "ref": "ev-a0957ebdbe",
+      "label": "TypeCollector.cs:1008 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1",
+      "cited_by": [
+        "claude on REQ-2234-F1"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1005,
+        "highlight": 1008,
+        "lines": [
+          "                        if ((isIntKey && intKey == null) || (!isIntKey && stringKey == null))",
+          "                        {",
+          "                            this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.DoNotMixStringAndIntKeys, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));",
+          "                            continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.",
+          "                        }",
+          "                    }",
+          ""
+        ]
+      }
+    },
+    "ev-d78b746a74": {
+      "kind": "check",
+      "id": "tests.fail_without_fix",
+      "ref": "ev-d78b746a74",
+      "label": "check tests.fail_without_fix",
+      "verified": true,
+      "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+      "cited_by": [
+        "claude on REQ-2234-F1",
+        "codex on REQ-2234-F1",
+        "codex on REQ-2234-F2",
+        "claude on REQ-2234-N2",
+        "codex on REQ-2234-N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2234/logs/tests_fail_without_fix.1.log"
+        ]
+      }
+    },
+    "ev-dffe050cec": {
+      "kind": "requirement",
+      "quote": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.",
+      "req": "REQ-2234-F1",
+      "ref": "ev-dffe050cec",
+      "label": "REQ-2234-F1 text",
+      "verified": true,
+      "note": "REQ-2234-F1 text contains the quote",
+      "cited_by": [
+        "nemotron on REQ-2234-F1"
+      ],
+      "clause_text": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0."
+    },
+    "ev-eeb0b47f0a": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1008,
+      "rev": "head",
+      "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.",
+      "ref": "ev-eeb0b47f0a",
+      "label": "TypeCollector.cs:1008 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1",
+      "cited_by": [
+        "nemotron on REQ-2234-F1",
+        "claude:C3"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1005,
+        "highlight": 1008,
+        "lines": [
+          "                        if ((isIntKey && intKey == null) || (!isIntKey && stringKey == null))",
+          "                        {",
+          "                            this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.DoNotMixStringAndIntKeys, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));",
+          "                            continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.",
+          "                        }",
+          "                    }",
+          ""
+        ]
+      }
+    },
+    "ev-1d23e816db": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1039,
+      "rev": "head",
+      "quote": "if (!stringMembers.ContainsKey(member.StringKey))",
+      "ref": "ev-1d23e816db",
+      "label": "TypeCollector.cs:1039 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1039 at head 9007cee1",
+      "cited_by": [
+        "nemotron on REQ-2234-F1"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1036,
+        "highlight": 1039,
+        "lines": [
+          "                        {",
+          "                            DeclaringType = GetDeclaringTypeIfColliding(item),",
+          "                        };",
+          "                        if (!stringMembers.ContainsKey(member.StringKey))",
+          "                        {",
+          "                            stringMembers.Add(member.StringKey, (member, item.Type));",
+          "                        }"
+        ]
+      }
+    },
+    "ev-02bb823660": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+      "outcome": "passed",
+      "ref": "ev-02bb823660",
+      "label": "test MemberWithoutKeyIsReported passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2234-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-d0aaf0ddcf": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+      "outcome": "passed",
+      "ref": "ev-d0aaf0ddcf",
+      "label": "test AllowPrivateRequiredIsReported passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2234-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-0fc5c1ea52": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+      "outcome": "passed",
+      "ref": "ev-0fc5c1ea52",
+      "label": "test MemberTypeMustBeMessagePackObjectIsReported passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2234-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-bb565b0d63": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+      "outcome": "passed",
+      "ref": "ev-bb565b0d63",
+      "label": "test DuplicateStringKeysAreReportedWithoutAnalyzerFailure passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2234-F1",
+        "claude on REQ-2234-N1",
+        "codex on REQ-2234-N1",
+        "nemotron on REQ-2234-N1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-62faeb2508": {
+      "kind": "check",
+      "id": "tests.fail_without_fix",
+      "status": "pass",
+      "ref": "ev-62faeb2508",
+      "label": "check tests.fail_without_fix pass",
+      "verified": true,
+      "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+      "cited_by": [
+        "nemotron on REQ-2234-F1",
+        "nemotron on REQ-2234-N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2234/logs/tests_fail_without_fix.1.log"
+        ]
+      }
+    },
+    "ev-99a149a316": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-99a149a316",
+      "label": "test MixedKeyKindsAreReportedWithoutAnalyzerFailure failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2234-F1",
+        "claude on REQ-2234-N2",
+        "nemotron on REQ-2234-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-165dc4a6ea": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+      "outcome": "passed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-165dc4a6ea",
+      "label": "test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F2",
+        "nemotron on REQ-2234-F2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-097f9caee8": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+      "outcome": "passed",
+      "ref": "ev-097f9caee8",
+      "label": "test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-F2",
+        "codex on REQ-2234-F2",
+        "nemotron on REQ-2234-F2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-6768fd1ae3": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1383,
+      "rev": "head",
+      "quote": "if (suppressSourceGeneration is true)",
+      "ref": "ev-6768fd1ae3",
+      "label": "TypeCollector.cs:1383 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1",
+      "cited_by": [
+        "claude on REQ-2234-F2",
+        "nemotron on REQ-2234-F2"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1380,
+        "highlight": 1383,
+        "lines": [
+          "        }",
+          "",
+          "        // Do not source generate the formatter for this type if the attribute opted out.",
+          "        if (suppressSourceGeneration is true)",
+          "        {",
+          "            // Skip any source generation",
+          "            return null;"
+        ]
+      }
+    },
+    "ev-337b4ac064": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1407,
+      "rev": "head",
+      "quote": "MsgPack00xMessagePackAnalyzer.PartialTypeRequired, primaryLocation",
+      "ref": "ev-337b4ac064",
+      "label": "TypeCollector.cs:1407 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1",
+      "cited_by": [
+        "claude on REQ-2234-F2"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1404,
+        "highlight": 1407,
+        "lines": [
+          "                BaseTypeDeclarationSyntax? targetType = formattedType.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as BaseTypeDeclarationSyntax;",
+          "                Location? primaryLocation = targetType?.Identifier.GetLocation();",
+          "                Location[]? addlLocations = nonPartialTypes.Where(t => t != targetType).Select(t => t.Identifier.GetLocation()).ToArray();",
+          "                this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.PartialTypeRequired, primaryLocation, (IEnumerable<Location>?)addlLocations));",
+          "                anyNonPartialTypesFound = true;",
+          "            }",
+          ""
+        ]
+      }
+    },
+    "ev-e5721f8767": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 989,
+      "rev": "head",
+      "quote": "if (suppressSourceGeneration is not true && isInitOnly)",
+      "ref": "ev-e5721f8767",
+      "label": "TypeCollector.cs:989 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1",
+      "cited_by": [
+        "claude on REQ-2234-F2"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 986,
+        "highlight": 989,
+        "lines": [
+          "                    }",
+          "",
+          "                    // A property with an init accessor and an initializer has a default that will be discarded by the deserializer.",
+          "                    if (suppressSourceGeneration is not true && isInitOnly)",
+          "                    {",
+          "                        EqualsValueClauseSyntax? initializer = item.DeclaringSyntaxReferences.Select(s => (s.GetSyntax(this.cancellationToken) as PropertyDeclarationSyntax)?.Initializer).FirstOrDefault(i => i is not null);",
+          "                        if (initializer is not null)"
+        ]
+      }
+    },
+    "ev-d3c4dd6a49": {
+      "kind": "requirement",
+      "quote": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.",
+      "req": "REQ-2234-F2",
+      "ref": "ev-d3c4dd6a49",
+      "label": "REQ-2234-F2 text",
+      "verified": true,
+      "note": "REQ-2234-F2 text contains the quote",
+      "cited_by": [
+        "nemotron on REQ-2234-F2"
+      ],
+      "clause_text": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true."
+    },
+    "ev-76656896d1": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1386,
+      "rev": "head",
+      "quote": "return null;",
+      "ref": "ev-76656896d1",
+      "label": "TypeCollector.cs:1386 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1",
+      "cited_by": [
+        "nemotron on REQ-2234-F2"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1383,
+        "highlight": 1386,
+        "lines": [
+          "        if (suppressSourceGeneration is true)",
+          "        {",
+          "            // Skip any source generation",
+          "            return null;",
+          "        }",
+          "",
+          "        // If any property had a private setter and does not appear in the deserializing constructor signature,"
+        ]
+      }
+    },
+    "ev-4c693214ba": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "rev": "head",
+      "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
+      "ref": "ev-4c693214ba",
+      "label": "TypeCollector.cs:985 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+      "cited_by": [
+        "claude on REQ-2234-N1"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 982,
+        "highlight": 985,
+        "lines": [
+          "                    var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;",
+          "                    if (intKey == null && stringKey == null)",
+          "                    {",
+          "                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));",
+          "                    }",
+          "",
+          "                    // A property with an init accessor and an initializer has a default that will be discarded by the deserializer."
+        ]
+      }
+    },
+    "ev-df050a6665": {
+      "kind": "check",
+      "id": "tests.full_suite",
+      "ref": "ev-df050a6665",
+      "label": "check tests.full_suite",
+      "verified": true,
+      "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "cited_by": [
+        "claude on REQ-2234-N1",
+        "codex on REQ-2234-N1",
+        "claude on REQ-2234-N2",
+        "codex on REQ-2234-N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2234/logs/tests_full_suite.log"
+        ]
+      }
+    },
+    "ev-1ddd8d4fc0": {
+      "kind": "requirement",
+      "quote": "must not crash on invalid contracts (e.g. duplicate keys) in such types",
+      "req": "REQ-2234-N1",
+      "ref": "ev-1ddd8d4fc0",
+      "label": "REQ-2234-N1 text",
+      "verified": true,
+      "note": "REQ-2234-N1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-2234-N1"
+      ],
+      "clause_text": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types."
+    },
+    "ev-ca3c3dd4f0": {
+      "kind": "requirement",
+      "quote": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.",
+      "req": "REQ-2234-N1",
+      "ref": "ev-ca3c3dd4f0",
+      "label": "REQ-2234-N1 text",
+      "verified": true,
+      "note": "REQ-2234-N1 text contains the quote",
+      "cited_by": [
+        "nemotron on REQ-2234-N1"
+      ],
+      "clause_text": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types."
+    },
+    "ev-d448f979e6": {
+      "kind": "check",
+      "id": "tests.full_suite",
+      "status": "pass",
+      "ref": "ev-d448f979e6",
+      "label": "check tests.full_suite pass",
+      "verified": true,
+      "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "cited_by": [
+        "nemotron on REQ-2234-N1",
+        "nemotron on REQ-2234-N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2234/logs/tests_full_suite.log"
+        ]
+      }
+    },
+    "ev-fbc74f77d6": {
+      "kind": "check",
+      "id": "tests.execution_full_suite",
+      "ref": "ev-fbc74f77d6",
+      "label": "check tests.execution_full_suite",
+      "verified": true,
+      "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+      "cited_by": [
+        "claude on REQ-2234-N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+        "tool": "dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base",
+        "tool_version": "9.0.321",
+        "logs": [
+          "evidence/2234/logs/execution.ExecutionTests.full.log",
+          "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+        ]
+      }
+    },
+    "ev-05862d94ce": {
+      "kind": "check",
+      "id": "tests.execution_fail_without_fix",
+      "ref": "ev-05862d94ce",
+      "label": "check tests.execution_fail_without_fix",
+      "verified": true,
+      "note": "facts.json: tests.execution_fail_without_fix fail: new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+      "cited_by": [
+        "claude on REQ-2234-N2"
+      ],
+      "check_result": {
+        "status": "fail",
+        "summary": "new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+        "tool": "dotnet test (source reverted, tests kept) - ExecutionTests",
+        "tool_version": "9.0.321",
+        "logs": [
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+        ]
+      }
+    },
+    "ev-987c65a3c2": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-987c65a3c2",
+      "label": "test DuplicateStringKeysAreReportedWithoutAnalyzerFailure failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-N2",
+        "nemotron on REQ-2234-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-f7ce6ac392": {
+      "kind": "test",
+      "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+      "outcome": "passed",
+      "check": "tests.execution_fail_without_fix",
+      "ref": "ev-f7ce6ac392",
+      "label": "test SuppressedTypeRoundTripsThroughDynamicResolver passed",
+      "verified": true,
+      "note": "facts.json tests.execution_fail_without_fix: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2234-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted.execution",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/execution.ExecutionTests.build.log",
+            "evidence/2234/logs/execution.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.ExecutionTests.full.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+          ]
+        },
+        {
+          "check": "tests.targeted.execution",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/execution.ExecutionTests.build.log",
+            "evidence/2234/logs/execution.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.ExecutionTests.full.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+          ]
+        },
+        {
+          "check": "tests.execution_fail_without_fix",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+          ]
+        },
+        {
+          "check": "tests.execution_fail_without_fix",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-86204fae15": {
+      "kind": "requirement",
+      "quote": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
+      "req": "REQ-2234-N2",
+      "ref": "ev-86204fae15",
+      "label": "REQ-2234-N2 text",
+      "verified": true,
+      "note": "REQ-2234-N2 text contains the quote",
+      "cited_by": [
+        "nemotron on REQ-2234-N2"
+      ],
+      "clause_text": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite."
+    },
+    "ev-141f235580": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-141f235580",
+      "label": "test DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2234-N2",
+        "claude:C1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-1f3bd1cf2e": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 723,
+      "rev": "8373710fb0ae4bb453737f773b930401d8500c31",
+      "quote": "if (suppressSourceGeneration is true)",
+      "ref": "ev-1f3bd1cf2e",
+      "label": "TypeCollector.cs:723 @8373710f",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:723 at 8373710fb0ae4bb453737f773b930401d8500c31 8373710f",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "8373710f",
+        "start": 720,
+        "highlight": 723,
+        "lines": [
+          "        bool? suppressSourceGeneration = (bool?)contractAttr?.NamedArguments.FirstOrDefault(kvp => kvp.Key == Constants.SuppressSourceGenerationPropertyName).Value.Value;",
+          "",
+          "        // Do not source generate the formatter for this type if the attribute opted out.",
+          "        if (suppressSourceGeneration is true)",
+          "        {",
+          "            // Skip any source generation",
+          "            return null;"
+        ]
+      }
+    },
+    "ev-f51a2a7c26": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1369,
+      "rev": "base",
+      "quote": "if (suppressSourceGeneration is true)",
+      "ref": "ev-f51a2a7c26",
+      "label": "TypeCollector.cs:1369 @base",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1369 at base 32258fdb",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "32258fdb",
+        "start": 1366,
+        "highlight": 1369,
+        "lines": [
+          "        }",
+          "",
+          "        // Do not source generate the formatter for this type if the attribute opted out.",
+          "        if (suppressSourceGeneration is true)",
+          "        {",
+          "            // Skip any source generation",
+          "            return null;"
+        ]
+      }
+    },
+    "ev-50efcd84fe": {
+      "kind": "issue",
+      "quote": "This has happened since version 3.1.1. It still worked in 3.1.0.",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+      "ref": "ev-50efcd84fe",
+      "label": "issue 2234",
+      "verified": false,
+      "note": "issue text cannot be verified offline (not counted as evidence)",
+      "cited_by": [
+        "claude:C1"
+      ]
+    },
+    "ev-ea86c4a3d1": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "rev": "head",
+      "quote": "(PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()",
+      "ref": "ev-ea86c4a3d1",
+      "label": "TypeCollector.cs:985 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+      "cited_by": [
+        "claude:C2"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 982,
+        "highlight": 985,
+        "lines": [
+          "                    var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;",
+          "                    if (intKey == null && stringKey == null)",
+          "                    {",
+          "                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));",
+          "                    }",
+          "",
+          "                    // A property with an init accessor and an initializer has a default that will be discarded by the deserializer."
+        ]
+      }
+    },
+    "ev-2935d06d6d": {
+      "kind": "test",
+      "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+      "outcome": "passed",
+      "ref": "ev-2935d06d6d",
+      "label": "test DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "claude:C4"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-16adc56b18": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1014,
+      "rev": "head",
+      "quote": "if (intMembers.ContainsKey(intKey!.Value))",
+      "ref": "ev-16adc56b18",
+      "label": "TypeCollector.cs:1014 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1014 at head 9007cee1",
+      "cited_by": [
+        "nemotron:N1"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1011,
+        "highlight": 1014,
+        "lines": [
+          "",
+          "                    if (isIntKey)",
+          "                    {",
+          "                        if (intMembers.ContainsKey(intKey!.Value))",
+          "                        {",
+          "                            this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));",
+          "                        }"
+        ]
+      }
+    },
+    "ev-9b063a4faf": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1016,
+      "rev": "head",
+      "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));",
+      "ref": "ev-9b063a4faf",
+      "label": "TypeCollector.cs:1016 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1016 at head 9007cee1",
+      "cited_by": [
+        "nemotron:N1"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1013,
+        "highlight": 1016,
+        "lines": [
+          "                    {",
+          "                        if (intMembers.ContainsKey(intKey!.Value))",
+          "                        {",
+          "                            this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));",
+          "                        }",
+          "",
+          "                        var member = new MemberSerializationInfo(true, isWritable, isReadable, isInitOnly, item.IsRequired, intKey!.Value, item.Name, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)"
+        ]
+      }
+    },
+    "ev-98002ca52b": {
+      "kind": "check",
+      "id": "tests.execution_full_suite",
+      "status": "pass",
+      "ref": "ev-98002ca52b",
+      "label": "check tests.execution_full_suite pass",
+      "verified": true,
+      "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+      "cited_by": [
+        "nemotron:N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+        "tool": "dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base",
+        "tool_version": "9.0.321",
+        "logs": [
+          "evidence/2234/logs/execution.ExecutionTests.full.log",
+          "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+        ]
+      }
+    },
+    "ev-64de3fafa7": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+      "line": 9,
+      "rev": "head",
+      "quote": "public class SuppressedSourceGenerationType",
+      "ref": "ev-64de3fafa7",
+      "label": "SuppressedSourceGenerationTests.cs:9 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:9 at head 9007cee1",
+      "cited_by": [
+        "nemotron:N2"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 6,
+        "highlight": 9,
+        "lines": [
+          "/// It must still serialize correctly through the run-time (dynamic) resolver.",
+          "/// </summary>",
+          "[MessagePackObject(SuppressSourceGeneration = true)]",
+          "public class SuppressedSourceGenerationType",
+          "{",
+          "    [Key(0)]",
+          "    public int Id { get; set; }"
+        ]
+      }
+    },
+    "ev-328bd9d246": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+      "line": 18,
+      "rev": "head",
+      "quote": "public class SuppressedSourceGenerationTests",
+      "ref": "ev-328bd9d246",
+      "label": "SuppressedSourceGenerationTests.cs:18 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:18 at head 9007cee1",
+      "cited_by": [
+        "nemotron:N2"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 15,
+        "highlight": 18,
+        "lines": [
+          "    public string Name { get; set; } = string.Empty;",
+          "}",
+          "",
+          "public class SuppressedSourceGenerationTests",
+          "{",
+          "    [Fact]",
+          "    public void NoFormatterIsGeneratedForSuppressedType()"
+        ]
+      }
+    },
+    "ev-2f84e19b68": {
+      "kind": "check",
+      "id": "tests.execution_fail_without_fix",
+      "status": "fail",
+      "ref": "ev-2f84e19b68",
+      "label": "check tests.execution_fail_without_fix fail",
+      "verified": true,
+      "note": "facts.json: tests.execution_fail_without_fix fail: new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+      "cited_by": [
+        "nemotron:N3",
+        "nemotron:N5"
+      ],
+      "check_result": {
+        "status": "fail",
+        "summary": "new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+        "tool": "dotnet test (source reverted, tests kept) - ExecutionTests",
+        "tool_version": "9.0.321",
+        "logs": [
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+        ]
+      }
+    },
+    "ev-f66e73f956": {
+      "kind": "test",
+      "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+      "outcome": "passed",
+      "check": "tests.execution_fail_without_fix",
+      "ref": "ev-f66e73f956",
+      "label": "test NoFormatterIsGeneratedForSuppressedType passed",
+      "verified": true,
+      "note": "facts.json tests.execution_fail_without_fix: passed (new test)",
+      "cited_by": [
+        "nemotron:N3"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted.execution",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/execution.ExecutionTests.build.log",
+            "evidence/2234/logs/execution.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.ExecutionTests.full.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+          ]
+        },
+        {
+          "check": "tests.targeted.execution",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2234/logs/execution.ExecutionTests.build.log",
+            "evidence/2234/logs/execution.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.ExecutionTests.full.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+          ]
+        },
+        {
+          "check": "tests.execution_fail_without_fix",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+          ]
+        },
+        {
+          "check": "tests.execution_fail_without_fix",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+            "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-c204937ed1": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 1620,
+      "rev": "head",
+      "quote": "The analyzer still validates these types, because they are serialized at run time and must still have a valid contract:",
+      "ref": "ev-c204937ed1",
+      "label": "README.md:1620 @head",
+      "verified": false,
+      "note": "quote not on README.md:1620 ±3 at head; it does occur at line 1625, outside tolerance",
+      "cited_by": [
+        "nemotron:N4"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1617,
+        "highlight": null,
+        "lines": [
+          "> Note: When using Unity, dynamic code generation only works when targeting .NET Framework 4.x + mono runtime.",
+          "For all other Unity targets, AOT is required.",
+          "",
+          "### Opting out of source generation",
+          "",
+          "A `[MessagePackObject]` type can opt out of source generation with `[MessagePackObject(SuppressSourceGeneration = true)]`.",
+          "No formatter is generated for that type. It is serialized at run time by the dynamic resolvers, which use reflection, so such a type is not AOT-safe."
+        ]
+      }
+    },
+    "ev-f94a653f7f": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 1634,
+      "rev": "head",
+      "quote": "The analyzer does not report the partial-class requirement ([MsgPack011](doc/analyzers/MsgPack011.md)) or the AOT-only checks ([MsgPack016](doc/analyzers/MsgPack016.md) and [MsgPack017](doc/analyzers/MsgPack017.md)) for these types, because they only apply when a formatter is generated.",
+      "ref": "ev-f94a653f7f",
+      "label": "README.md:1634 @head",
+      "verified": true,
+      "note": "quote matches README.md:1634 at head 9007cee1 (found at line 1632, 2 off)",
+      "cited_by": [
+        "nemotron:N4"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1629,
+        "highlight": 1632,
+        "lines": [
+          "- Members have types that are themselves serializable ([MsgPack003](doc/analyzers/MsgPack003.md)).",
+          "- Types are accessible to the resolver ([MsgPack012](doc/analyzers/MsgPack012.md)).",
+          "",
+          "The analyzer does not report the partial-class requirement ([MsgPack011](doc/analyzers/MsgPack011.md)) or the AOT-only checks ([MsgPack016](doc/analyzers/MsgPack016.md) and [MsgPack017](doc/analyzers/MsgPack017.md)) for these types, because they only apply when a formatter is generated.",
+          "",
+          "### Customizations",
+          ""
+        ]
+      }
+    },
+    "ev-f77df3c0b5": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+      "line": 1,
+      "rev": "head",
+      "quote": "// Copyright (c) All contributors. All rights reserved.",
+      "ref": "ev-f77df3c0b5",
+      "label": "SuppressedSourceGenerationTests.cs:1 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:1 at head 9007cee1",
+      "cited_by": [
+        "nemotron:N5"
+      ],
+      "excerpt": {
+        "sha": "9007cee1",
+        "start": 1,
+        "highlight": 1,
+        "lines": [
+          "// Copyright (c) All contributors. All rights reserved.",
+          "// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "",
+          "/// <summary>"
+        ]
+      }
+    }
   }
 }

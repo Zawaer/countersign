@@ -1,16 +1,279 @@
-# Evidence pack: change 2297
+## Countersign: change 2297 is **BLOCK**, owner **Toivo**
 
-**Recommended tier: BLOCK** · owner **Toivo** · risk score 64.5
+**Agent-written change for #2297: Add ExcludeFromCodeCoverage attribute to generated code**
+
+Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, FormatterTemplate.tt and 4 more), 1 test file, 1 doc file, 228 generated files (+1383 -9) on ju26-issue-2297 by Stelian Vultur. Judged against 1 requirement clause from #2297 (placeholder requirement set, not Tieto's official one).
+
+**Why block**
+
+1. More than 50 files changed: split the change so each part can be reviewed [237 files changed] ([evidence](#all-drivers))
+2. Also routes to a human. Claude found a verified major issue: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise ([evidence](#f-claude-C1))
+3. Also routes to a human. 1 of 1 requirement clauses not proven. Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered) ([evidence](#chain-REQ-2297-F1))
+
+<sub>All 12 tier drivers are under Full detail.</sub>
+
+**Requirement trace**
+
+| Status | Clause | Why |
+|---|---|---|
+| **NOT MET** | [REQ-2297-F1](#chain-REQ-2297-F1) | Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered) |
+
+**What the AI found**
+
+- **major** [Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise](#f-claude-C1) (Claude C1) [`ResolverTemplate.tt:14 @head`](#ev-8a0e2d6f3d) [`ResolverTemplate.tt:31 @head`](#ev-e39874618a)
+- **info** [237-file change is dominated by regenerated test resources](#f-claude-C2) (Claude C2) [`check tests.full_suite`](#ev-df050a6665) [`TransformUtilities.cs:58 @head`](#ev-66b5ead8c5)
+
+<a id="refused"></a>**What the AI refused to decide, and who should**
+
+- <a id="refusal-1"></a>Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix. *Why:* Scoped review: not read individually. tests.full_suite passing shows they match the new generator output, not that the output is otherwise unchanged. *Who:* source-generator area owner (diff-filter the resources) (raised by Claude)
+- <a id="refusal-2"></a>Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings. *Why:* Execution tests not run for this change (tests.execution not run: SDK 8 cannot load the generator); no compile of generated code against net472/netstandard2.0 targets. *Who:* source-generator area owner (raised by Claude)
+- <a id="refusal-3"></a>The TransformUtilities brace change ('{' to '{\r\n' when constraints exist): intended fix or incidental. *Why:* Not mentioned in the issue; I did not establish what output it changes beyond the resources. *Who:* source-generator area owner (raised by Claude)
+- <a id="refusal-4"></a>Coverage of generated code not exercised by the supplied generator test fixture. *Why:* The supplied tests exercise the generated output represented by their fixture; I did not independently inspect every generation path or framework configuration beyond the cited template and facts. *Who:* area owner (raised by Codex)
+- Whether [REQ-2297-F1](#chain-REQ-2297-F1) is met: see the trace. *Who:* Toivo
+
+**Not checked, and why**
+
+- `tests.execution`: SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.
+- `tests.MessagePack.Tests`: runtime library src/MessagePack not modified by the change; suite not run
+- `build.net472/netstandard`: only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
+- `benchmarks`: no runtime serialization hot path touched (generator/analyzer only)
+- Standing pipeline gaps: `other-targets`, `runtime-perf`, `semantic-intent`, `provenance`
+
+**Residual risk you accept by signing**
+
+- Open major finding: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise
+- Not proven by the AI: REQ-2297-F1. Signing means you judge them yourself.
+- 4 questions the AI declined to decide (listed above) are yours.
+- Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks
+- 2 disputed items not adjudicated
+- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+
+**Toivo signs** (required; allowed: reject, request-changes)
+
+> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+
+```
+countersign sign 2297 --as Toivo --decision <accept|reject|request-changes> --note "..."
+```
+
+<details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
+
+<a id="chain-REQ-2297-F1"></a>
+#### REQ-2297-F1: **NOT MET**
+
+> Add ExcludeFromCodeCoverage attribute to generated code.
+
+- **Claude: not met** (6/6 verified). On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission.
+- **Codex: met** (4/4 verified). The formatter template conditionally emits ExcludeFromCodeCoverage, and tests confirm generated types receive the attribute and that its use is guarded for target frameworks lacking it.
+- **Nemotron**: no verdict
+- **Checks:** `build` pass, `tests.targeted` pass
+- **What would settle it:** A verdict from Nemotron with verified evidence; A fix, or evidence that refutes Claude's objection
+
+</details>
+
+<details><summary><b>Reviewer panel</b> (who said what)</summary>
+<a id="panel"></a>
+
+> Codex said met to all 1 clauses; Claude raised a verified major finding they did not (claude:C1: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise). Claude also did not say met on REQ-2297-F1, so that clause is refused. Unanimity is required: one verified objection is enough to send it to Toivo.
+> Nemotron is on the panel but has no review yet, so no clause can be proven until it answers.
+> REQ-2297-F1: Claude: not met; Codex: met. A split verdict is a refusal, not a vote.
+
+| Clause | Claude | Codex | Nemotron | Result |
+|---|---|---|---|---|
+| REQ-2297-F1 | not met | met | no review | **not met** |
+
+- **Claude** (claude-opus-5-5, Anthropic): citations 14 verified / 0 rejected; findings 2 verified / 0 rejected; 3 refusals. Only Claude raised: [C1](#f-claude-C1) major Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise, [C2](#f-claude-C2) info 237-file change is dominated by regenerated test resources
+- **Codex** (GPT-6, OpenAI): citations 4 verified / 0 rejected; findings 0 verified / 0 rejected; 1 refusals.
+- **Nemotron**: no review on file
+
+2 disputed item(s), not adjudicated: REQ-2297-F1, finding:claude:C1
+
+</details>
+
+<details><summary><b>Evidence</b> (findings, cited code, tests and checks)</summary>
+
+<a id="f-claude-C1"></a>
+#### Claude C1 [major, correctness]: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise
+
+The templates guard the attribute with '#if !NETSTANDARD2_0 && !NETFRAMEWORK'. ExcludeFromCodeCoverageAttribute exists in netstandard2.0 and in .NET Framework 4.0+, so the guard only removes the feature for Unity/.NET Framework/netstandard library consumers. The test ExcludeAttributeIsGuardedForTargetsWhereItIsUnavailable pins this behaviour, and the README claims 'All generated formatters and resolvers are decorated', which is false for those targets.
+
+Evidence: [`ResolverTemplate.tt:14 @head`](#ev-8a0e2d6f3d) [`ResolverTemplate.tt:31 @head`](#ev-e39874618a) [`FormatterTemplate.tt:14 @head`](#ev-ad9cf8085f) [`CodeCoverageExclusionTests.cs:19 @head`](#ev-b78a93a613) [`README.md:1639 @head`](#ev-650d2b464e) [`test ExcludeAttributeIsGuardedForTargetsWhereItIsUnavailable passed`](#ev-f588e6e008)
+
+Tier effect: ask
+
+Suggested fix: Drop the #if guard and emit [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] unconditionally; replace the guard test with one that compiles generated code against a netstandard2.0 / net472 reference set.
+
+<a id="f-claude-C2"></a>
+#### Claude C2 [info, scope]: 237-file change is dominated by regenerated test resources
+
+228 of 237 files are regenerated expected-output resources. The behavioural change is in 7 template/source files. Reviewers should read the templates and spot-check the resources, not the reverse.
+
+Evidence: [`check tests.full_suite`](#ev-df050a6665) [`TransformUtilities.cs:58 @head`](#ev-66b5ead8c5)
+
+Tier effect: silent
+
+#### Cited evidence
+
+<a id="ev-8a0e2d6f3d"></a>
+**ResolverTemplate.tt:14 @head** (verified; cited by claude on REQ-2297-F1, claude:C1): quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:14 at head a0aa5ab2
+
+```text
+// src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt @ a0aa5ab2
+  11 | <# using (TransformUtilities.EmitNestingTypesAndNamespaces(this.ResolverName, this.Write)) { #>
+  12 | 
+  13 | /// <summary>A MessagePack resolver that uses generated formatters for types in this assembly.</summary>
+> 14 | #if !NETSTANDARD2_0 && !NETFRAMEWORK
+  15 | [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+  16 | #endif
+  17 | partial class <#= ResolverName.Name #> : MsgPack::IFormatterResolver
+```
+
+<a id="ev-d81ccbccad"></a>
+**CodeCoverageExclusionTests.cs:18 @head** (verified; cited by claude on REQ-2297-F1): quote matches tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs:18 at head a0aa5ab2
+
+```text
+// tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs @ a0aa5ab2
+  15 | {
+  16 |     private const string ExcludeAttribute = "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]";
+  17 | 
+> 18 |     // The attribute is not available on netstandard2.0 or .NET Framework, so it is only emitted where it exists.
+  19 |     private const string Guard = "#if !NETSTANDARD2_0 && !NETFRAMEWORK";
+  20 | 
+  21 |     private const string TestSource = """
+```
+
+<a id="ev-1ea94bff54"></a>
+**test AllGeneratedTypesAreExcludedFromCodeCoverage passed** (verified; cited by claude on REQ-2297-F1, codex on REQ-2297-F1): facts.json tests.targeted: passed (new test)
+
+- change head (`tests.targeted`): **passed**
+- source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
+- Without the fix it **failed**: it tests the change
+
+<a id="ev-09419f4337"></a>
+**test AllGeneratedTypesAreExcludedFromCodeCoverage failed** (verified; cited by claude on REQ-2297-F1): facts.json tests.fail_without_fix: failed (new test)
+
+- change head (`tests.targeted`): **passed**
+- source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
+- Without the fix it **failed**: it tests the change
+
+<a id="ev-f588e6e008"></a>
+**test ExcludeAttributeIsGuardedForTargetsWhereItIsUnavailable passed** (verified; cited by claude on REQ-2297-F1, codex on REQ-2297-F1, claude:C1): facts.json tests.targeted: passed (new test)
+
+- change head (`tests.targeted`): **passed**
+- source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
+- Without the fix it **failed**: it tests the change
+
+<a id="ev-f03b126649"></a>
+**REQ-2297-F1 text** (verified; cited by claude on REQ-2297-F1): REQ-2297-F1 text contains the quote
+
+> Add ExcludeFromCodeCoverage attribute to generated code.
+
+<a id="ev-1de9933827"></a>
+**FormatterTemplate.tt:15 @head** (verified; cited by codex on REQ-2297-F1): quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:15 at head a0aa5ab2
+
+```text
+// src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt @ a0aa5ab2
+  12 | 
+  13 | <#  bool isFormatterResolverNecessary = GeneratorUtilities.ShouldUseFormatterResolver(Info.Members);#>
+  14 | #if !NETSTANDARD2_0 && !NETFRAMEWORK
+> 15 | 	[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+  16 | #endif
+  17 | 	internal sealed class <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : MsgPack::Formatters.IMessagePackFormatter<<#= Info.DataType.GetQualifiedName(genericStyle: GenericParameterStyle.Identifiers) #>>
+  18 | <# TransformUtilities.EmitTypeConstraints(Info.Formatter, this.Write); #>
+```
+
+<a id="ev-d78b746a74"></a>
+**check tests.fail_without_fix** (verified; cited by codex on REQ-2297-F1): facts.json: tests.fail_without_fix pass: new tests fail on base source: 2/2 failed -> tests do cover the change
+
+- `tests.fail_without_fix` **pass**: new tests fail on base source: 2/2 failed -> tests do cover the change (dotnet test (source reverted, tests kept) 8.0.402)
+- log: `evidence/2297/logs/tests_fail_without_fix.1.log`
+
+<a id="ev-e39874618a"></a>
+**ResolverTemplate.tt:31 @head** (verified; cited by claude:C1): quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:31 at head a0aa5ab2
+
+```text
+// src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt @ a0aa5ab2
+  28 | 		return FormatterCache<T>.Formatter;
+  29 | 	}
+  30 | 
+> 31 | #if !NETSTANDARD2_0 && !NETFRAMEWORK
+  32 | 	[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+  33 | #endif
+  34 | 	private static class FormatterCache<T>
+```
+
+<a id="ev-ad9cf8085f"></a>
+**FormatterTemplate.tt:14 @head** (verified; cited by claude:C1): quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2
+
+```text
+// src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt @ a0aa5ab2
+  11 | <# using (this.EmitNestingTypesAndNamespaces(this.Write)) { #>
+  12 | 
+  13 | <#  bool isFormatterResolverNecessary = GeneratorUtilities.ShouldUseFormatterResolver(Info.Members);#>
+> 14 | #if !NETSTANDARD2_0 && !NETFRAMEWORK
+  15 | 	[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+  16 | #endif
+  17 | 	internal sealed class <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : MsgPack::Formatters.IMessagePackFormatter<<#= Info.DataType.GetQualifiedName(genericStyle: GenericParameterStyle.Identifiers) #>>
+```
+
+<a id="ev-b78a93a613"></a>
+**CodeCoverageExclusionTests.cs:19 @head** (verified; cited by claude:C1): quote matches tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs:19 at head a0aa5ab2
+
+```text
+// tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs @ a0aa5ab2
+  16 |     private const string ExcludeAttribute = "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]";
+  17 | 
+  18 |     // The attribute is not available on netstandard2.0 or .NET Framework, so it is only emitted where it exists.
+> 19 |     private const string Guard = "#if !NETSTANDARD2_0 && !NETFRAMEWORK";
+  20 | 
+  21 |     private const string TestSource = """
+  22 |         using MessagePack;
+```
+
+<a id="ev-650d2b464e"></a>
+**README.md:1639 @head** (verified; cited by claude:C1): quote matches README.md:1639 at head a0aa5ab2
+
+```text
+// README.md @ a0aa5ab2
+  1636 | 
+  1637 | Learn more about using a mix of your own custom formatters and automatically generated ones in [the Analyzer section](#analyzer).
+  1638 | 
+> 1639 | All generated formatters and resolvers are decorated with `[ExcludeFromCodeCoverage]`, so generated code does not skew code coverage reports.
+  1640 | The attribute is only emitted for targets where it is available (not `netstandard2.0` or .NET Framework).
+  1641 | 
+  1642 | ### MagicOnion
+```
+
+<a id="ev-df050a6665"></a>
+**check tests.full_suite** (verified; cited by claude:C2): facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base)
+
+- `tests.full_suite` **pass**: tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base) (dotnet test 8.0.402)
+- log: `evidence/2297/logs/tests_full_suite.log`
+
+<a id="ev-66b5ead8c5"></a>
+**TransformUtilities.cs:58 @head** (verified; cited by claude:C2): quote matches src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58 at head a0aa5ab2
+
+```text
+// src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs @ a0aa5ab2
+  55 |                 writer($"partial {kind} {nestingType.GetQualifiedName(Qualifiers.None, GenericParameterStyle.Identifiers)}");
+  56 |                 bool anyConstraints = EmitTypeConstraints(nestingType, writer, leadingLineFeedIfAny: true);
+  57 | 
+> 58 |                 writer(anyConstraints ? "{\r\n" : " {\r\n");
+  59 |                 reverseAction.Push(new DisposeAction(() => writer("}\r\n")));
+  60 | 
+  61 |                 return new DisposeAction(() =>
+```
+
+</details>
+
+<details><summary><b>Full detail</b>: all tier drivers, risk score, every check, areas, not checked, residual risk</summary>
 
 Branch `ju26-issue-2297` (32258fdb..a0aa5ab2), 237 files, +1383 -9. Author Stelian Vultur (agent-written: True). Commit: implement issue #2297 : Add ExcludeFromCodeCoverage attribute to generated code
 
 Mandate `messagepack-csharp` v2 sha256 `39cc2060685638e1`, signature: valid, Toivo
 
-## Why this tier
-
-- **block** from mandate rule `split-large-change`: More than 50 files changed: split the change so each part can be reviewed [237 files changed]
-
-<details><summary>All tier drivers</summary>
+<a id="all-drivers"></a>
+#### All tier drivers (tier = strictest)
 
 - block: mandate rule `split-large-change`: More than 50 files changed: split the change so each part can be reviewed [237 files changed]
 - ask: mandate rule `generated-files`: More than 10 generated files: a human confirms the regeneration is intended [228 generated files]
@@ -25,29 +288,16 @@ Mandate `messagepack-csharp` v2 sha256 `39cc2060685638e1`, signature: valid, Toi
 - silent: trust cap `docs`: docs: AI may clear at most to silent (mandate clearance right)
 - silent: trust cap `tests`: tests: AI may clear at most to silent (mandate clearance right)
 
-</details>
-
-## What the AI refused to decide, and why
-
-- **REQ-2297-F1**: `missing_review` nemotron gave no verdict; `not_met` claude: On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission.; `reviewers_disagree` claude says not_met, codex says met
-- **claude** refused: Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix. Why: Scoped review: not read individually. tests.full_suite passing shows they match the new generator output, not that the output is otherwise unchanged.. Who should decide: source-generator area owner (diff-filter the resources)
-- **claude** refused: Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings. Why: Execution tests not run for this change (tests.execution not run: SDK 8 cannot load the generator); no compile of generated code against net472/netstandard2.0 targets.. Who should decide: source-generator area owner
-- **claude** refused: The TransformUtilities brace change ('{' to '{\r\n' when constraints exist): intended fix or incidental. Why: Not mentioned in the issue; I did not establish what output it changes beyond the resources.. Who should decide: source-generator area owner
-- **codex** refused: Coverage of generated code not exercised by the supplied generator test fixture. Why: The supplied tests exercise the generated output represented by their fixture; I did not independently inspect every generation path or framework configuration beyond the cited template and facts.. Who should decide: area owner
-
-_2 disputed item(s), not adjudicated: REQ-2297-F1, finding:claude:C1_
-
-## Who reviewed
+#### Who reviewed
 
 Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confidential: no. Rule: proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass.
 
-## Requirement trace
+| Reviewer | Model | Prompt | Verified findings | Rejected | Refusals |
+|---|---|---|---|---|---|
+| claude | claude-opus-5-5 (Anthropic) | review-v1 | 2 | 0 | 3 |
+| codex | GPT-6 (OpenAI) | review-v1 | 0 | 0 | 1 |
 
-| Clause | Status | Verdicts | Checks | Reasons |
-|---|---|---|---|---|
-| REQ-2297-F1 | refused | claude: not_met (6/6 verified), codex: met (4/4 verified) | build: pass, tests.targeted: pass | missing_review; not_met; reviewers_disagree |
-
-## What was checked, and by whom
+#### Every check
 
 | Check | Status | Tool | Summary |
 |---|---|---|---|
@@ -58,33 +308,32 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | public_api | pass | git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/  | no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/ |
 | analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
 
-| Reviewer | Model | Prompt | Verified findings | Rejected | Refusals |
-|---|---|---|---|---|---|
-| claude | claude-opus-5-5 (Anthropic) | review-v1 | 2 | 0 | 3 |
-| codex | GPT-6 (OpenAI) | review-v1 | 0 | 0 | 1 |
-
 Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)
 
-## What the AI found (verified findings)
+#### Requirement trace (engine codes)
 
-- **claude:C1** [major, correctness] Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise -> tier ask
-  The templates guard the attribute with '#if !NETSTANDARD2_0 && !NETFRAMEWORK'. ExcludeFromCodeCoverageAttribute exists in netstandard2.0 and in .NET Framework 4.0+, so the guard only removes the feature for Unity/.NET Framework/netstandard library consumers. The test ExcludeAttributeIsGuardedForTargetsWhereItIsUnavailable pins this behaviour, and the README claims 'All generated formatters and resolvers are decorated', which is false for those targets.
-    - [OK] `src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:14` @head: `#if !NETSTANDARD2_0 && !NETFRAMEWORK` (quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:14 at head a0aa5ab2)
-    - [OK] `src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:31` @head: `#if !NETSTANDARD2_0 && !NETFRAMEWORK` (quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:31 at head a0aa5ab2)
-    - [OK] `src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14` @head: `#if !NETSTANDARD2_0 && !NETFRAMEWORK` (quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2)
-    - [OK] `tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs:19` @head: `private const string Guard = "#if !NETSTANDARD2_0 && !NETFRAMEWORK";` (quote matches tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs:19 at head a0aa5ab2)
-    - [OK] `README.md:1639` @head: `All generated formatters and resolvers are decorated with `[ExcludeFromCodeCoverage]`` (quote matches README.md:1639 at head a0aa5ab2)
-    - [OK] test `CodeCoverageExclusionTests.ExcludeAttributeIsGuardedForTargetsWhereItIsUnavailable` passed (facts.json tests.targeted: passed (new test))
-- **claude:C2** [info, scope] 237-file change is dominated by regenerated test resources -> tier silent
-  228 of 237 files are regenerated expected-output resources. The behavioural change is in 7 template/source files. Reviewers should read the templates and spot-check the resources, not the reverse.
-    - [OK] check `tests.full_suite` (facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base))
-    - [OK] `src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58` @head: `writer(anyConstraints ? "{\r\n" : " {\r\n");` (quote matches src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58 at head a0aa5ab2)
+| Clause | Status | Verdicts | Checks | Reasons |
+|---|---|---|---|---|
+| REQ-2297-F1 | refused | claude: not_met (6/6), codex: met (4/4) | build: pass, tests.targeted: pass | missing_review, not_met, reviewers_disagree |
 
-## Rejected: unsupported claims
+#### What the AI refused to decide (every reviewer refusal)
 
-- None.
+- **claude** refused: Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix. Why: Scoped review: not read individually. tests.full_suite passing shows they match the new generator output, not that the output is otherwise unchanged. Who should decide: source-generator area owner (diff-filter the resources)
+- **claude** refused: Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings. Why: Execution tests not run for this change (tests.execution not run: SDK 8 cannot load the generator); no compile of generated code against net472/netstandard2.0 targets. Who should decide: source-generator area owner
+- **claude** refused: The TransformUtilities brace change ('{' to '{\r\n' when constraints exist): intended fix or incidental. Why: Not mentioned in the issue; I did not establish what output it changes beyond the resources. Who should decide: source-generator area owner
+- **codex** refused: Coverage of generated code not exercised by the supplied generator test fixture. Why: The supplied tests exercise the generated output represented by their fixture; I did not independently inspect every generation path or framework configuration beyond the cited template and facts. Who should decide: area owner
 
-## What was not checked, and why
+<a id="areas"></a>
+#### Areas
+
+| Area | Owner | Sensitivity | AI cap | Files |
+|---|---|---|---|---:|
+| generator-analyzer-core | Toivo | high | notify (mandate clearance right) | 13 |
+| docs | Rene | low | silent (mandate clearance right) | 1 |
+| tests | Toivo | low | silent (mandate clearance right) | 223 |
+
+<a id="not-checked"></a>
+#### What was not checked, and why
 
 - `tests.execution` (facts.json not_run): SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.
 - `tests.MessagePack.Tests` (facts.json not_run): runtime library src/MessagePack not modified by the change; suite not run
@@ -95,7 +344,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc2060
 - `semantic-intent` (mandate known gap): Correctness beyond what tests and cited evidence show is not established by the AI
 - `provenance` (mandate known gap): Licensing and provenance of agent-written code are not checked
 
-## Residual risk
+#### Residual risk (every item)
 
 - REQ-2297-F1 not proven: missing_review; not_met; reviewers_disagree
 - Reviewer refusal (claude): Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix
@@ -110,7 +359,8 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc2060
 - 2 disputed item(s) were not adjudicated (adjudicator gemini has not run)
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
-## Risk score: 64.5 -> ask
+<a id="risk"></a>
+#### Risk score: 64.5 -> ask
 
 | Factor | Points | Reason |
 |---|---:|---|
@@ -126,13 +376,6 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc2060
 | failed_checks | 0 | 0 failed check(s) x 25 |
 | **total** | **64.5** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
-## Sign-off
+Inputs: facts `evidence/2297/facts.json`, requirements `requirements/2297.yaml`, reviews `reviews/2297/claude.json`, `reviews/2297/codex.json`
 
-Owner: **Toivo** (FYI: Rene)
-Sign-off required: yes; allowed decisions: reject, request-changes
-
-> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
-
-```
-countersign sign 2297 --as Toivo --decision <accept|reject|request-changes> --note "..."
-```
+</details>

@@ -309,7 +309,8 @@
               "rev": "base",
               "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation()",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at base 32258fdb"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at base 32258fdb",
+              "ref": "ev-600c5196b9"
             },
             {
               "kind": "code",
@@ -318,7 +319,8 @@
               "rev": "head",
               "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
+              "ref": "ev-e2b1723b1a"
             },
             {
               "kind": "code",
@@ -327,7 +329,8 @@
               "rev": "head",
               "quote": "this.GetObjectInfo(type, callerSymbol);",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38",
+              "ref": "ev-8dd72e446f"
             },
             {
               "kind": "code",
@@ -336,14 +339,16 @@
               "rev": "head",
               "quote": "Assert.Contains(expectedResolverHintName, hintNames);",
               "verified": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:658 at head 9df83c38"
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:658 at head 9df83c38",
+              "ref": "ev-e27f824d96"
             },
             {
               "kind": "test",
               "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-751fd9609c"
             },
             {
               "kind": "test",
@@ -351,20 +356,23 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-bf91cd8726"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "requirement",
               "req": "REQ-2283-F1",
               "quote": "must not crash the source generator (no CS8785) and must produce a generated resolver",
               "verified": true,
-              "note": "REQ-2283-F1 text contains the quote"
+              "note": "REQ-2283-F1 text contains the quote",
+              "ref": "ev-19107a84ed"
             }
           ]
         },
@@ -379,13 +387,15 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-f073740910"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "code",
@@ -394,7 +404,8 @@
               "rev": "head",
               "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+              "ref": "ev-6afda546ae"
             }
           ]
         }
@@ -434,14 +445,16 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-cb2de557cf"
             },
             {
               "kind": "test",
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-f073740910"
             },
             {
               "kind": "code",
@@ -450,7 +463,8 @@
               "rev": "head",
               "quote": "GetPropertyIdentifierLocation(item)",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38",
+              "ref": "ev-46dc7a6309"
             },
             {
               "kind": "code",
@@ -459,13 +473,15 @@
               "rev": "base",
               "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at base 32258fdb"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at base 32258fdb",
+              "ref": "ev-73cd23393f"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+              "ref": "ev-d78b746a74"
             }
           ]
         },
@@ -480,13 +496,15 @@
               "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-751fd9609c"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "code",
@@ -495,7 +513,8 @@
               "rev": "head",
               "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
+              "ref": "ev-ce1eecc974"
             }
           ]
         }
@@ -536,7 +555,8 @@
               "rev": "head",
               "quote": "diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic)",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
+              "ref": "ev-7876fdb7f1"
             },
             {
               "kind": "code",
@@ -545,14 +565,16 @@
               "rev": "head",
               "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+              "ref": "ev-6afda546ae"
             },
             {
               "kind": "test",
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-72235a3098"
             },
             {
               "kind": "test",
@@ -560,7 +582,8 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9b34c726e9"
             }
           ]
         },
@@ -577,7 +600,8 @@
               "rev": "head",
               "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+              "ref": "ev-6afda546ae"
             },
             {
               "kind": "code",
@@ -586,13 +610,15 @@
               "rev": "head",
               "quote": "private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
+              "ref": "ev-a7d205a394"
             },
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+              "ref": "ev-d78b746a74"
             }
           ]
         }
@@ -633,7 +659,8 @@
               "rev": "head",
               "quote": "Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+              "ref": "ev-d1a7e0fbac"
             },
             {
               "kind": "code",
@@ -642,27 +669,31 @@
               "rev": "head",
               "quote": "diagnostic.Location.IsInSource",
               "verified": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+              "ref": "ev-94826533c2"
             },
             {
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
-              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-df050a6665"
             },
             {
               "kind": "requirement",
               "req": "REQ-2283-N1",
               "quote": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged",
               "verified": true,
-              "note": "REQ-2283-N1 text contains the quote"
+              "note": "REQ-2283-N1 text contains the quote",
+              "ref": "ev-6d378cb38b"
             },
             {
               "kind": "issue",
               "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
               "quote": "| `class Item<T>` | ok |",
               "verified": false,
-              "note": "issue text cannot be verified offline (not counted as evidence)"
+              "note": "issue text cannot be verified offline (not counted as evidence)",
+              "ref": "ev-23c90ec85d"
             }
           ]
         },
@@ -676,7 +707,8 @@
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
-              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-df050a6665"
             }
           ]
         }
@@ -722,7 +754,8 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "test",
@@ -730,7 +763,8 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9b34c726e9"
             },
             {
               "kind": "test",
@@ -738,7 +772,8 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-bf91cd8726"
             },
             {
               "kind": "test",
@@ -746,7 +781,8 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json tests.fail_without_fix: failed (new test)"
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-cb2de557cf"
             }
           ]
         },
@@ -760,14 +796,16 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
-              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+              "ref": "ev-d78b746a74"
             },
             {
               "kind": "test",
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
               "outcome": "passed",
               "verified": true,
-              "note": "facts.json tests.targeted: passed (new test)"
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-72235a3098"
             }
           ]
         }
@@ -924,7 +962,8 @@
           "rev": "head",
           "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+          "ref": "ev-6afda546ae"
         },
         {
           "kind": "code",
@@ -933,7 +972,8 @@
           "rev": "head",
           "quote": "callerSymbol.Locations[0]",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+          "ref": "ev-03c1f89f96"
         },
         {
           "kind": "code",
@@ -942,13 +982,15 @@
           "rev": "head",
           "quote": "which analyzers are not permitted to do",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1442 at head 9df83c38"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1442 at head 9df83c38",
+          "ref": "ev-5a604cf84d"
         },
         {
           "kind": "check",
           "id": "tests.full_suite",
           "verified": true,
-          "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+          "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+          "ref": "ev-df050a6665"
         }
       ],
       "suggested_fix": "Instead of dropping, relocate: when a diagnostic's location is not in this compilation, re-report it at the nearest in-compilation location (the member of the type being analyzed that led to the metadata type, i.e. the outermost callerSymbol), or keep dropping only diagnostics about the metadata type's own members (MsgPack004/005) and let MsgPack003 for in-compilation types through. Add a test with a metadata generic class and an unattributed app type argument.",
@@ -972,7 +1014,8 @@
           "rev": "head",
           "quote": "(property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation()",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
+          "ref": "ev-532df5c2da"
         },
         {
           "kind": "code",
@@ -981,7 +1024,8 @@
           "rev": "head",
           "quote": "BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item)",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38",
+          "ref": "ev-ddf4848149"
         }
       ],
       "suggested_fix": "Fall back to ParameterSyntax.Identifier (as the MemberNeedsKey path at line 926 already does) and add a test for a positional record with Key(null).",
@@ -1005,14 +1049,16 @@
           "rev": "head",
           "quote": "item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()",
           "verified": true,
-          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38"
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
+          "ref": "ev-cf1d452cfa"
         },
         {
           "kind": "issue",
           "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
           "quote": "So it needs all three of: **generic**, **value type**, **from a referenced assembly**.",
           "verified": false,
-          "note": "issue text cannot be verified offline (not counted as evidence)"
+          "note": "issue text cannot be verified offline (not counted as evidence)",
+          "ref": "ev-c6793f8043"
         }
       ],
       "verified_count": 1,
@@ -1052,7 +1098,8 @@
                 "rev": "base",
                 "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation()",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at base 32258fdb"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at base 32258fdb",
+                "ref": "ev-600c5196b9"
               },
               {
                 "kind": "code",
@@ -1061,7 +1108,8 @@
                 "rev": "head",
                 "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
+                "ref": "ev-e2b1723b1a"
               },
               {
                 "kind": "code",
@@ -1070,7 +1118,8 @@
                 "rev": "head",
                 "quote": "this.GetObjectInfo(type, callerSymbol);",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38",
+                "ref": "ev-8dd72e446f"
               },
               {
                 "kind": "code",
@@ -1079,14 +1128,16 @@
                 "rev": "head",
                 "quote": "Assert.Contains(expectedResolverHintName, hintNames);",
                 "verified": true,
-                "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:658 at head 9df83c38"
+                "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:658 at head 9df83c38",
+                "ref": "ev-e27f824d96"
               },
               {
                 "kind": "test",
                 "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-751fd9609c"
               },
               {
                 "kind": "test",
@@ -1094,20 +1145,23 @@
                 "outcome": "failed",
                 "check": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
+                "note": "facts.json tests.fail_without_fix: failed (new test)",
+                "ref": "ev-bf91cd8726"
               },
               {
                 "kind": "check",
                 "id": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+                "ref": "ev-d78b746a74"
               },
               {
                 "kind": "requirement",
                 "req": "REQ-2283-F1",
                 "quote": "must not crash the source generator (no CS8785) and must produce a generated resolver",
                 "verified": true,
-                "note": "REQ-2283-F1 text contains the quote"
+                "note": "REQ-2283-F1 text contains the quote",
+                "ref": "ev-19107a84ed"
               }
             ]
           },
@@ -1122,13 +1176,15 @@
                 "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-f073740910"
               },
               {
                 "kind": "check",
                 "id": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+                "ref": "ev-d78b746a74"
               },
               {
                 "kind": "code",
@@ -1137,7 +1193,8 @@
                 "rev": "head",
                 "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+                "ref": "ev-6afda546ae"
               }
             ]
           }
@@ -1177,14 +1234,16 @@
                 "outcome": "failed",
                 "check": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
+                "note": "facts.json tests.fail_without_fix: failed (new test)",
+                "ref": "ev-cb2de557cf"
               },
               {
                 "kind": "test",
                 "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-f073740910"
               },
               {
                 "kind": "code",
@@ -1193,7 +1252,8 @@
                 "rev": "head",
                 "quote": "GetPropertyIdentifierLocation(item)",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38",
+                "ref": "ev-46dc7a6309"
               },
               {
                 "kind": "code",
@@ -1202,13 +1262,15 @@
                 "rev": "base",
                 "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at base 32258fdb"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at base 32258fdb",
+                "ref": "ev-73cd23393f"
               },
               {
                 "kind": "check",
                 "id": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+                "ref": "ev-d78b746a74"
               }
             ]
           },
@@ -1223,13 +1285,15 @@
                 "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-751fd9609c"
               },
               {
                 "kind": "check",
                 "id": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+                "ref": "ev-d78b746a74"
               },
               {
                 "kind": "code",
@@ -1238,7 +1302,8 @@
                 "rev": "head",
                 "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
+                "ref": "ev-ce1eecc974"
               }
             ]
           }
@@ -1279,7 +1344,8 @@
                 "rev": "head",
                 "quote": "diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic)",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
+                "ref": "ev-7876fdb7f1"
               },
               {
                 "kind": "code",
@@ -1288,14 +1354,16 @@
                 "rev": "head",
                 "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+                "ref": "ev-6afda546ae"
               },
               {
                 "kind": "test",
                 "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-72235a3098"
               },
               {
                 "kind": "test",
@@ -1303,7 +1371,8 @@
                 "outcome": "failed",
                 "check": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
+                "note": "facts.json tests.fail_without_fix: failed (new test)",
+                "ref": "ev-9b34c726e9"
               }
             ]
           },
@@ -1320,7 +1389,8 @@
                 "rev": "head",
                 "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+                "ref": "ev-6afda546ae"
               },
               {
                 "kind": "code",
@@ -1329,13 +1399,15 @@
                 "rev": "head",
                 "quote": "private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
+                "ref": "ev-a7d205a394"
               },
               {
                 "kind": "check",
                 "id": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+                "ref": "ev-d78b746a74"
               }
             ]
           }
@@ -1376,7 +1448,8 @@
                 "rev": "head",
                 "quote": "Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+                "ref": "ev-d1a7e0fbac"
               },
               {
                 "kind": "code",
@@ -1385,27 +1458,31 @@
                 "rev": "head",
                 "quote": "diagnostic.Location.IsInSource",
                 "verified": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38"
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+                "ref": "ev-94826533c2"
               },
               {
                 "kind": "check",
                 "id": "tests.full_suite",
                 "verified": true,
-                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+                "ref": "ev-df050a6665"
               },
               {
                 "kind": "requirement",
                 "req": "REQ-2283-N1",
                 "quote": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged",
                 "verified": true,
-                "note": "REQ-2283-N1 text contains the quote"
+                "note": "REQ-2283-N1 text contains the quote",
+                "ref": "ev-6d378cb38b"
               },
               {
                 "kind": "issue",
                 "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
                 "quote": "| `class Item<T>` | ok |",
                 "verified": false,
-                "note": "issue text cannot be verified offline (not counted as evidence)"
+                "note": "issue text cannot be verified offline (not counted as evidence)",
+                "ref": "ev-23c90ec85d"
               }
             ]
           },
@@ -1419,7 +1496,8 @@
                 "kind": "check",
                 "id": "tests.full_suite",
                 "verified": true,
-                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+                "ref": "ev-df050a6665"
               }
             ]
           }
@@ -1465,7 +1543,8 @@
                 "kind": "check",
                 "id": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+                "ref": "ev-d78b746a74"
               },
               {
                 "kind": "test",
@@ -1473,7 +1552,8 @@
                 "outcome": "failed",
                 "check": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
+                "note": "facts.json tests.fail_without_fix: failed (new test)",
+                "ref": "ev-9b34c726e9"
               },
               {
                 "kind": "test",
@@ -1481,7 +1561,8 @@
                 "outcome": "failed",
                 "check": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
+                "note": "facts.json tests.fail_without_fix: failed (new test)",
+                "ref": "ev-bf91cd8726"
               },
               {
                 "kind": "test",
@@ -1489,7 +1570,8 @@
                 "outcome": "failed",
                 "check": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json tests.fail_without_fix: failed (new test)"
+                "note": "facts.json tests.fail_without_fix: failed (new test)",
+                "ref": "ev-cb2de557cf"
               }
             ]
           },
@@ -1503,14 +1585,16 @@
                 "kind": "check",
                 "id": "tests.fail_without_fix",
                 "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change"
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+                "ref": "ev-d78b746a74"
               },
               {
                 "kind": "test",
                 "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
                 "outcome": "passed",
                 "verified": true,
-                "note": "facts.json tests.targeted: passed (new test)"
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-72235a3098"
               }
             ]
           }
@@ -1680,5 +1764,1560 @@
     ],
     "command": "countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
     "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  },
+  "story": {
+    "headline": "Agent-written change for #2283: implementation for #2283",
+    "what": "Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on ju26-issue-2283 by Stelian Vultur.",
+    "why": "Judged against 5 requirement clauses from #2283 (placeholder requirement set, not Tieto's official one).",
+    "touches": [
+      {
+        "area": "generator-analyzer-core",
+        "owner": "Toivo",
+        "sensitivity": "high",
+        "files": 1
+      },
+      {
+        "area": "docs",
+        "owner": "Rene",
+        "sensitivity": "low",
+        "files": 2
+      },
+      {
+        "area": "tests",
+        "owner": "Toivo",
+        "sensitivity": "low",
+        "files": 1
+      }
+    ],
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283"
+  },
+  "card": {
+    "tier": "ask",
+    "owner": "Toivo",
+    "fyi": [
+      "Rene"
+    ],
+    "risk_score": 41.1,
+    "reasons": [
+      {
+        "text": "Claude found a verified major issue: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
+        "link": "#f-claude-C1"
+      },
+      {
+        "text": "5 of 5 requirement clauses not proven. REQ-2283-F1: No verdict from Nemotron (2 of 3 reviewers answered) (+4 more)",
+        "link": "#chain-REQ-2283-F1"
+      },
+      {
+        "text": "The AI declined to decide 3 questions, e.g. Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended)",
+        "link": "#refused"
+      }
+    ],
+    "more_drivers": 14,
+    "trace": [
+      {
+        "id": "REQ-2283-F1",
+        "status": "refused",
+        "label": "refused",
+        "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+        "anchor": "chain-REQ-2283-F1"
+      },
+      {
+        "id": "REQ-2283-F2",
+        "status": "refused",
+        "label": "refused",
+        "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+        "anchor": "chain-REQ-2283-F2"
+      },
+      {
+        "id": "REQ-2283-F3",
+        "status": "refused",
+        "label": "refused",
+        "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+        "anchor": "chain-REQ-2283-F3"
+      },
+      {
+        "id": "REQ-2283-N1",
+        "status": "refused",
+        "label": "not met",
+        "why": "Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered)",
+        "anchor": "chain-REQ-2283-N1"
+      },
+      {
+        "id": "REQ-2283-N2",
+        "status": "refused",
+        "label": "refused",
+        "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+        "anchor": "chain-REQ-2283-N2"
+      }
+    ],
+    "found": [
+      {
+        "key": "claude:C1",
+        "anchor": "f-claude-C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "title": "Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
+        "tier": "ask",
+        "chips": [
+          {
+            "ref": "ev-6afda546ae",
+            "label": "TypeCollector.cs:1446 @head"
+          },
+          {
+            "ref": "ev-03c1f89f96",
+            "label": "TypeCollector.cs:1341 @head"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "claude:C2",
+        "anchor": "f-claude-C2",
+        "reviewer": "claude",
+        "severity": "minor",
+        "title": "BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source",
+        "tier": "notify",
+        "chips": [
+          {
+            "ref": "ev-532df5c2da",
+            "label": "TypeCollector.cs:1434 @head"
+          },
+          {
+            "ref": "ev-ddf4848149",
+            "label": "TypeCollector.cs:985 @head"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "claude:C3",
+        "anchor": "f-claude-C3",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Fix treats the symptom location; metadata struct backing fields are still walked as members",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-cf1d452cfa",
+            "label": "TypeCollector.cs:1077 @head"
+          }
+        ],
+        "shared_with": []
+      }
+    ],
+    "found_total": 3,
+    "rejected_total": 0,
+    "refused": [
+      {
+        "topic": "Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended)",
+        "why": "tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "source-generator area owner (run the execution tests under SDK 9 or a two-project repro)"
+        ],
+        "anchor": "refusal-1"
+      },
+      {
+        "topic": "Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour",
+        "why": "It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "MessagePack-CSharp maintainers / analyzer area owner"
+        ],
+        "anchor": "refusal-2"
+      },
+      {
+        "topic": "Execution-test behavior under a compiler that loads the generator",
+        "why": "The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change.",
+        "raised_by": [
+          "codex"
+        ],
+        "who_should_decide": [
+          "area owner"
+        ],
+        "anchor": "refusal-3"
+      }
+    ],
+    "refused_clauses": [
+      "REQ-2283-F1",
+      "REQ-2283-F2",
+      "REQ-2283-F3",
+      "REQ-2283-N1",
+      "REQ-2283-N2"
+    ],
+    "not_checked": [
+      {
+        "id": "tests.execution",
+        "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run."
+      },
+      {
+        "id": "tests.MessagePack.Tests",
+        "reason": "runtime library src/MessagePack not modified by the change; suite not run"
+      },
+      {
+        "id": "build.net472/netstandard",
+        "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)"
+      },
+      {
+        "id": "benchmarks",
+        "reason": "no runtime serialization hot path touched (generator/analyzer only)"
+      }
+    ],
+    "known_gaps": [
+      "other-targets",
+      "runtime-perf",
+      "semantic-intent",
+      "provenance"
+    ],
+    "residual": [
+      {
+        "text": "Open major finding: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
+        "link": "#f-claude-C1"
+      },
+      {
+        "text": "Not proven by the AI: REQ-2283-F1, REQ-2283-F2, REQ-2283-F3, REQ-2283-N1, REQ-2283-N2. Signing means you judge them yourself.",
+        "link": "#chain-REQ-2283-F1"
+      },
+      {
+        "text": "3 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused"
+      },
+      {
+        "text": "Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
+        "link": "#not-checked"
+      },
+      {
+        "text": "2 disputed items not adjudicated",
+        "link": "#panel"
+      },
+      {
+        "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
+        "link": "#not-checked"
+      }
+    ],
+    "sign": {
+      "owner": "Toivo",
+      "required": true,
+      "decisions": [
+        "accept",
+        "reject",
+        "request-changes"
+      ],
+      "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+      "command": "countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+    },
+    "reviewers": 3
+  },
+  "trust": [
+    {
+      "id": "REQ-2283-F1",
+      "text": "Building a project whose [MessagePackObject] type has a member of a closed generic value type defined in a referenced assembly must not crash the source generator (no CS8785) and must produce a generated resolver.",
+      "status": "refused",
+      "label": "refused",
+      "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2283/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "19 passed, 0 failed, 0 skipped (3 new tests in run)",
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "Root cause confirmed: Roslyn imports private fields of metadata structs, so the compiler-generated backing field of Item<T> looks like an unkeyed member and the base field path indexed DeclaringSyntaxReferences[0] unconditionally (outside the ?.Invoke), crashing the generator as well as the analyzer; head uses FirstOrDefault there, the three new tests (which also run the generator and assert the resolver hint name and no warnings) pass at head and all 3 fail on base source; my own probe of the exact issue repro (record struct Item<T> in a metadata reference) gave CS8785 + no files on base and App.R.g.cs with no generator diagnostics on head. Runtime round-trip of the generated resolver was not executed (tests.execution not run for this change), so only 'produces a resolver' is established, not that it serializes Item<int> correctly.",
+          "verified": 8,
+          "cited": 8,
+          "refs": [
+            "ev-600c5196b9",
+            "ev-e2b1723b1a",
+            "ev-8dd72e446f",
+            "ev-e27f824d96",
+            "ev-751fd9609c",
+            "ev-bf91cd8726",
+            "ev-d78b746a74",
+            "ev-19107a84ed"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The new metadata-reference tests pass with the change and fail when the source is reverted; the added collector logic handles missing source declarations and drops diagnostics outside the analyzed compilation.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-f073740910",
+            "ev-d78b746a74",
+            "ev-6afda546ae"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex"
+      ],
+      "disagree": [],
+      "missing": [
+        "nemotron"
+      ],
+      "tests_fail_without_fix": [
+        {
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "ref": "ev-751fd9609c",
+          "without_fix": "failed"
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "ref": "ev-f073740910",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [
+        {
+          "code": "missing_review",
+          "detail": "nemotron gave no verdict"
+        }
+      ],
+      "adjudication": null,
+      "settle": [
+        "A verdict from Nemotron with verified evidence"
+      ]
+    },
+    {
+      "id": "REQ-2283-F2",
+      "text": "The MsgPack00x analyzer must not throw (no AD0001) for the same input.",
+      "status": "refused",
+      "label": "refused",
+      "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2283/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "19 passed, 0 failed, 0 skipped (3 new tests in run)",
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "The new tests run MsgPack00xMessagePackAnalyzer through VerifyCS expecting zero diagnostics; on base all three fail with AD0001 IndexOutOfRangeException at TypeCollector.GetObjectInfo (facts fail_without_fix errors), at head they pass. The other hard index the issue names (BothStringAndIntKeyAreNull cast) is also replaced by a null-safe helper.",
+          "verified": 5,
+          "cited": 5,
+          "refs": [
+            "ev-cb2de557cf",
+            "ev-f073740910",
+            "ev-46dc7a6309",
+            "ev-73cd23393f",
+            "ev-d78b746a74"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The failing-without-fix evidence records AD0001 for the new metadata-reference cases on base source, while all three cases pass with the fix.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-751fd9609c",
+            "ev-d78b746a74",
+            "ev-ce1eecc974"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex"
+      ],
+      "disagree": [],
+      "missing": [
+        "nemotron"
+      ],
+      "tests_fail_without_fix": [
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "ref": "ev-cb2de557cf",
+          "without_fix": "failed"
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "ref": "ev-751fd9609c",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [
+        {
+          "code": "missing_review",
+          "detail": "nemotron gave no verdict"
+        }
+      ],
+      "adjudication": null,
+      "settle": [
+        "A verdict from Nemotron with verified evidence"
+      ]
+    },
+    {
+      "id": "REQ-2283-F3",
+      "text": "Diagnostics about members of a type declared in a referenced assembly must not be reported at locations outside the compilation being analyzed.",
+      "status": "refused",
+      "label": "refused",
+      "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2283/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "19 passed, 0 failed, 0 skipped (3 new tests in run)",
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "Every analyzer diagnostic now passes through ReportIfLocatedInCompilation, which only forwards diagnostics whose location is in a syntax tree of the current compilation. I checked that this filter is what makes ClosedGenericStruct_FromMetadataReference_UnkeyedMember pass: with only the filter reverted (FirstOrDefault kept) that test fails with two location-less MsgPack004 diagnostics for MyGenericStruct.Unkeyed (my own run, not in facts.json). So the clause is enforced. It is over-enforced, though: see finding C1.",
+          "verified": 4,
+          "cited": 4,
+          "refs": [
+            "ev-7876fdb7f1",
+            "ev-6afda546ae",
+            "ev-72235a3098",
+            "ev-9b34c726e9"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The change filters analyzer diagnostics to source locations belonging to this compilation and uses nullable syntax-reference lookups for members that may come from metadata.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-6afda546ae",
+            "ev-a7d205a394",
+            "ev-d78b746a74"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex"
+      ],
+      "disagree": [],
+      "missing": [
+        "nemotron"
+      ],
+      "tests_fail_without_fix": [
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "ref": "ev-72235a3098",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [
+        {
+          "code": "missing_review",
+          "detail": "nemotron gave no verdict"
+        }
+      ],
+      "adjudication": null,
+      "settle": [
+        "A verdict from Nemotron with verified evidence"
+      ]
+    },
+    {
+      "id": "REQ-2283-N1",
+      "text": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite).",
+      "status": "refused",
+      "label": "not met",
+      "why": "Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered)",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2283/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.full_suite",
+          "status": "pass",
+          "summary": "tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+          "logs": [
+            "evidence/2283/logs/tests_full_suite.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "not_met",
+          "basis": "The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
+          "verified": 4,
+          "cited": 5,
+          "refs": [
+            "ev-d1a7e0fbac",
+            "ev-94826533c2",
+            "ev-df050a6665",
+            "ev-6d378cb38b"
+          ],
+          "unverified_refs": [
+            "ev-23c90ec85d"
+          ]
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The source-generator test suite passes in full after the change.",
+          "verified": 1,
+          "cited": 1,
+          "refs": [
+            "ev-df050a6665"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "codex"
+      ],
+      "disagree": [
+        "claude"
+      ],
+      "missing": [
+        "nemotron"
+      ],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [
+        {
+          "code": "missing_review",
+          "detail": "nemotron gave no verdict"
+        },
+        {
+          "code": "not_met",
+          "detail": "claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it."
+        },
+        {
+          "code": "reviewers_disagree",
+          "detail": "claude says not_met, codex says met"
+        }
+      ],
+      "adjudication": null,
+      "settle": [
+        "A verdict from Nemotron with verified evidence",
+        "A fix, or evidence that refutes Claude's objection"
+      ]
+    },
+    {
+      "id": "REQ-2283-N2",
+      "text": "The fix is covered by automated tests that fail without it.",
+      "status": "refused",
+      "label": "refused",
+      "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/2283/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "summary": "new tests fail on base source: 3/3 failed -> tests do cover the change",
+          "logs": [
+            "evidence/2283/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "tests.fail_without_fix: 3/3 new tests fail on base source with AD0001 IndexOutOfRangeException in GetObjectInfo (the issue's exact exception) and pass at head; one of them (UnkeyedMember) also pins the location filter, as I checked by reverting just that line. Not covered by any failing-without-fix test: the BothStringAndIntKeyAreNull change at line 985 (no test reaches it with a metadata or positional-record property).",
+          "verified": 4,
+          "cited": 4,
+          "refs": [
+            "ev-d78b746a74",
+            "ev-9b34c726e9",
+            "ev-bf91cd8726",
+            "ev-cb2de557cf"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "All three added metadata-reference tests pass with the fix and fail with the source reverted.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-d78b746a74",
+            "ev-72235a3098"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex"
+      ],
+      "disagree": [],
+      "missing": [
+        "nemotron"
+      ],
+      "tests_fail_without_fix": [
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "ref": "ev-9b34c726e9",
+          "without_fix": "failed"
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "ref": "ev-bf91cd8726",
+          "without_fix": "failed"
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "ref": "ev-cb2de557cf",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [
+        {
+          "code": "missing_review",
+          "detail": "nemotron gave no verdict"
+        }
+      ],
+      "adjudication": null,
+      "settle": [
+        "A verdict from Nemotron with verified evidence"
+      ]
+    }
+  ],
+  "panel": {
+    "rows": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-2283-F1": "met",
+          "REQ-2283-F2": "met",
+          "REQ-2283-F3": "met",
+          "REQ-2283-N1": "not_met",
+          "REQ-2283-N2": "met"
+        },
+        "citations_verified": 32,
+        "citations_rejected": 2,
+        "findings_verified": 3,
+        "findings_rejected": 0,
+        "only_this_reviewer": [
+          {
+            "id": "C1",
+            "severity": "major",
+            "title": "Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
+            "status": "verified"
+          },
+          {
+            "id": "C2",
+            "severity": "minor",
+            "title": "BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source",
+            "status": "verified"
+          },
+          {
+            "id": "C3",
+            "severity": "info",
+            "title": "Fix treats the symptom location; metadata struct backing fields are still walked as members",
+            "status": "verified"
+          }
+        ],
+        "refusals": 2
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-2283-F1": "met",
+          "REQ-2283-F2": "met",
+          "REQ-2283-F3": "met",
+          "REQ-2283-N1": "met",
+          "REQ-2283-N2": "met"
+        },
+        "citations_verified": 12,
+        "citations_rejected": 0,
+        "findings_verified": 0,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 1
+      },
+      {
+        "reviewer": "nemotron",
+        "missing": true,
+        "verdicts": {
+          "REQ-2283-F1": null,
+          "REQ-2283-F2": null,
+          "REQ-2283-F3": null,
+          "REQ-2283-N1": null,
+          "REQ-2283-N2": null
+        }
+      }
+    ],
+    "callouts": [
+      "Codex said met to all 5 clauses; Claude raised a verified major finding they did not (claude:C1: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic). Claude also did not say met on REQ-2283-N1, so that clause is refused. Unanimity is required: one verified objection is enough to send it to Toivo.",
+      "Nemotron is on the panel but has no review yet, so no clause can be proven until it answers.",
+      "REQ-2283-N1: Claude: not met; Codex: met. A split verdict is a refusal, not a vote."
+    ],
+    "adjudicator": "gemini"
+  },
+  "evidence_index": {
+    "ev-600c5196b9": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1077,
+      "rev": "base",
+      "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation()",
+      "ref": "ev-600c5196b9",
+      "label": "TypeCollector.cs:1077 @base",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at base 32258fdb",
+      "cited_by": [
+        "claude on REQ-2283-F1"
+      ],
+      "excerpt": {
+        "sha": "32258fdb",
+        "start": 1074,
+        "highlight": 1077,
+        "lines": [
+          "                            {",
+          "                                Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true",
+          "                                    ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())",
+          "                                    : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);",
+          "                                if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)",
+          "                                {",
+          "                                    this.reportDiagnostic?.Invoke(diagnostic);"
+        ]
+      }
+    },
+    "ev-e2b1723b1a": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1077,
+      "rev": "head",
+      "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()",
+      "ref": "ev-e2b1723b1a",
+      "label": "TypeCollector.cs:1077 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
+      "cited_by": [
+        "claude on REQ-2283-F1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1074,
+        "highlight": 1077,
+        "lines": [
+          "                            {",
+          "                                Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true",
+          "                                    ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())",
+          "                                    : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);",
+          "                                if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)",
+          "                                {",
+          "                                    this.reportDiagnostic?.Invoke(diagnostic);"
+        ]
+      }
+    },
+    "ev-8dd72e446f": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 651,
+      "rev": "head",
+      "quote": "this.GetObjectInfo(type, callerSymbol);",
+      "ref": "ev-8dd72e446f",
+      "label": "TypeCollector.cs:651 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38",
+      "cited_by": [
+        "claude on REQ-2283-F1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 648,
+        "highlight": 651,
+        "lines": [
+          "            // Collect substituted types for the properties and fields.",
+          "            // NOTE: It is used to register formatters from nested generic type.",
+          "            //       However, closed generic types such as `Foo<string>` are not registered as a formatter.",
+          "            this.GetObjectInfo(type, callerSymbol);",
+          "",
+          "            // Collect generic type definition, that is not collected when it is defined outside target project.",
+          "            this.CollectCore(type.OriginalDefinition, callerSymbol);"
+        ]
+      }
+    },
+    "ev-e27f824d96": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "line": 658,
+      "rev": "head",
+      "quote": "Assert.Contains(expectedResolverHintName, hintNames);",
+      "ref": "ev-e27f824d96",
+      "label": "GenericsFormatterTests.cs:658 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:658 at head 9df83c38",
+      "cited_by": [
+        "claude on REQ-2283-F1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 655,
+        "highlight": 658,
+        "lines": [
+          "            .GetRunResult();",
+          "        Assert.Empty(runResult.Diagnostics.Where(d => d.Severity >= DiagnosticSeverity.Warning));",
+          "        var hintNames = runResult.Results.SelectMany(r => r.GeneratedSources).Select(s => s.HintName).ToList();",
+          "        Assert.Contains(expectedResolverHintName, hintNames);",
+          "    }",
+          "",
+          "    private static async Task<MetadataReference> CompileToMetadataReferenceAsync(string assemblyName, string source, LanguageVersion languageVersion)"
+        ]
+      }
+    },
+    "ev-751fd9609c": {
+      "kind": "test",
+      "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+      "outcome": "passed",
+      "ref": "ev-751fd9609c",
+      "label": "test ClosedGenericRecordStruct_FromMetadataReference passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2283-F1",
+        "codex on REQ-2283-F2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2283/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-bf91cd8726": {
+      "kind": "test",
+      "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-bf91cd8726",
+      "label": "test ClosedGenericRecordStruct_FromMetadataReference failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "claude on REQ-2283-F1",
+        "claude on REQ-2283-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2283/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-d78b746a74": {
+      "kind": "check",
+      "id": "tests.fail_without_fix",
+      "ref": "ev-d78b746a74",
+      "label": "check tests.fail_without_fix",
+      "verified": true,
+      "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
+      "cited_by": [
+        "claude on REQ-2283-F1",
+        "codex on REQ-2283-F1",
+        "claude on REQ-2283-F2",
+        "codex on REQ-2283-F2",
+        "codex on REQ-2283-F3",
+        "claude on REQ-2283-N2",
+        "codex on REQ-2283-N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "new tests fail on base source: 3/3 failed -> tests do cover the change",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2283/logs/tests_fail_without_fix.1.log"
+        ]
+      }
+    },
+    "ev-19107a84ed": {
+      "kind": "requirement",
+      "quote": "must not crash the source generator (no CS8785) and must produce a generated resolver",
+      "req": "REQ-2283-F1",
+      "ref": "ev-19107a84ed",
+      "label": "REQ-2283-F1 text",
+      "verified": true,
+      "note": "REQ-2283-F1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-2283-F1"
+      ],
+      "clause_text": "Building a project whose [MessagePackObject] type has a member of a closed generic value type defined in a referenced assembly must not crash the source generator (no CS8785) and must produce a generated resolver."
+    },
+    "ev-f073740910": {
+      "kind": "test",
+      "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+      "outcome": "passed",
+      "ref": "ev-f073740910",
+      "label": "test ClosedGenericStruct_FromMetadataReference passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "codex on REQ-2283-F1",
+        "claude on REQ-2283-F2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2283/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-6afda546ae": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1446,
+      "rev": "head",
+      "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+      "ref": "ev-6afda546ae",
+      "label": "TypeCollector.cs:1446 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+      "cited_by": [
+        "codex on REQ-2283-F1",
+        "claude on REQ-2283-F3",
+        "codex on REQ-2283-F3",
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1443,
+        "highlight": 1446,
+        "lines": [
+          "    /// </remarks>",
+          "    private void ReportIfLocatedInCompilation(Action<Diagnostic> report, Diagnostic diagnostic)",
+          "    {",
+          "        if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+          "        {",
+          "            report(diagnostic);",
+          "        }"
+        ]
+      }
+    },
+    "ev-cb2de557cf": {
+      "kind": "test",
+      "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-cb2de557cf",
+      "label": "test ClosedGenericStruct_FromMetadataReference failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "claude on REQ-2283-F2",
+        "claude on REQ-2283-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2283/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-46dc7a6309": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "rev": "head",
+      "quote": "GetPropertyIdentifierLocation(item)",
+      "ref": "ev-46dc7a6309",
+      "label": "TypeCollector.cs:985 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38",
+      "cited_by": [
+        "claude on REQ-2283-F2"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 982,
+        "highlight": 985,
+        "lines": [
+          "                    var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;",
+          "                    if (intKey == null && stringKey == null)",
+          "                    {",
+          "                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));",
+          "                    }",
+          "",
+          "                    // A property with an init accessor and an initializer has a default that will be discarded by the deserializer."
+        ]
+      }
+    },
+    "ev-73cd23393f": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "rev": "base",
+      "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
+      "ref": "ev-73cd23393f",
+      "label": "TypeCollector.cs:985 @base",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at base 32258fdb",
+      "cited_by": [
+        "claude on REQ-2283-F2"
+      ],
+      "excerpt": {
+        "sha": "32258fdb",
+        "start": 982,
+        "highlight": 985,
+        "lines": [
+          "                    var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;",
+          "                    if (intKey == null && stringKey == null)",
+          "                    {",
+          "                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));",
+          "                    }",
+          "",
+          "                    // A property with an init accessor and an initializer has a default that will be discarded by the deserializer."
+        ]
+      }
+    },
+    "ev-ce1eecc974": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 239,
+      "rev": "head",
+      "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
+      "ref": "ev-ce1eecc974",
+      "label": "TypeCollector.cs:239 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
+      "cited_by": [
+        "codex on REQ-2283-F2"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 236,
+        "highlight": 239,
+        "lines": [
+          "    private TypeCollector(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, ITypeSymbol targetType, Action<Diagnostic>? reportAnalyzerDiagnostic, CancellationToken cancellationToken)",
+          "    {",
+          "        this.typeReferences = referenceSymbols;",
+          "        this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
+          "        this.options = options;",
+          "        this.compilation = compilation;",
+          "        this.cancellationToken = cancellationToken;"
+        ]
+      }
+    },
+    "ev-7876fdb7f1": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 239,
+      "rev": "head",
+      "quote": "diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic)",
+      "ref": "ev-7876fdb7f1",
+      "label": "TypeCollector.cs:239 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
+      "cited_by": [
+        "claude on REQ-2283-F3"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 236,
+        "highlight": 239,
+        "lines": [
+          "    private TypeCollector(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, ITypeSymbol targetType, Action<Diagnostic>? reportAnalyzerDiagnostic, CancellationToken cancellationToken)",
+          "    {",
+          "        this.typeReferences = referenceSymbols;",
+          "        this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
+          "        this.options = options;",
+          "        this.compilation = compilation;",
+          "        this.cancellationToken = cancellationToken;"
+        ]
+      }
+    },
+    "ev-72235a3098": {
+      "kind": "test",
+      "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+      "outcome": "passed",
+      "ref": "ev-72235a3098",
+      "label": "test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "claude on REQ-2283-F3",
+        "codex on REQ-2283-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2283/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-9b34c726e9": {
+      "kind": "test",
+      "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-9b34c726e9",
+      "label": "test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "claude on REQ-2283-F3",
+        "claude on REQ-2283-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2283/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2283/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-a7d205a394": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1434,
+      "rev": "head",
+      "quote": "private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
+      "ref": "ev-a7d205a394",
+      "label": "TypeCollector.cs:1434 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
+      "cited_by": [
+        "codex on REQ-2283-F3"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1431,
+        "highlight": 1434,
+        "lines": [
+          "    /// </summary>",
+          "    /// <param name=\"property\">The property symbol. It may be declared in metadata, in which case <see langword=\"null\" /> is returned.</param>",
+          "    /// <returns>The location of the identifier, or <see langword=\"null\" /> if the property has no declaration in source.</returns>",
+          "    private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
+          "",
+          "    /// <summary>",
+          "    /// Reports a diagnostic only when its location belongs to the compilation being analyzed."
+        ]
+      }
+    },
+    "ev-d1a7e0fbac": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1341,
+      "rev": "head",
+      "quote": "Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
+      "ref": "ev-d1a7e0fbac",
+      "label": "TypeCollector.cs:1341 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+      "cited_by": [
+        "claude on REQ-2283-N1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1338,
+        "highlight": 1341,
+        "lines": [
+          "        {",
+          "            if (formattedType.IsDefinition)",
+          "            {",
+          "                Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
+          "                var targetName = callerSymbol is not null ? callerSymbol.ContainingType.Name + \".\" + callerSymbol.Name : formattedType.Name;",
+          "",
+          "                ImmutableDictionary<string, string?> typeInfo = ImmutableDictionary.Create<string, string?>().Add(\"type\", formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));"
+        ]
+      }
+    },
+    "ev-94826533c2": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1446,
+      "rev": "head",
+      "quote": "diagnostic.Location.IsInSource",
+      "ref": "ev-94826533c2",
+      "label": "TypeCollector.cs:1446 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
+      "cited_by": [
+        "claude on REQ-2283-N1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1443,
+        "highlight": 1446,
+        "lines": [
+          "    /// </remarks>",
+          "    private void ReportIfLocatedInCompilation(Action<Diagnostic> report, Diagnostic diagnostic)",
+          "    {",
+          "        if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+          "        {",
+          "            report(diagnostic);",
+          "        }"
+        ]
+      }
+    },
+    "ev-df050a6665": {
+      "kind": "check",
+      "id": "tests.full_suite",
+      "ref": "ev-df050a6665",
+      "label": "check tests.full_suite",
+      "verified": true,
+      "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "cited_by": [
+        "claude on REQ-2283-N1",
+        "codex on REQ-2283-N1",
+        "claude:C1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2283/logs/tests_full_suite.log"
+        ]
+      }
+    },
+    "ev-6d378cb38b": {
+      "kind": "requirement",
+      "quote": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged",
+      "req": "REQ-2283-N1",
+      "ref": "ev-6d378cb38b",
+      "label": "REQ-2283-N1 text",
+      "verified": true,
+      "note": "REQ-2283-N1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-2283-N1"
+      ],
+      "clause_text": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite)."
+    },
+    "ev-23c90ec85d": {
+      "kind": "issue",
+      "quote": "| `class Item<T>` | ok |",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+      "ref": "ev-23c90ec85d",
+      "label": "issue 2283",
+      "verified": false,
+      "note": "issue text cannot be verified offline (not counted as evidence)",
+      "cited_by": [
+        "claude on REQ-2283-N1"
+      ]
+    },
+    "ev-03c1f89f96": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1341,
+      "rev": "head",
+      "quote": "callerSymbol.Locations[0]",
+      "ref": "ev-03c1f89f96",
+      "label": "TypeCollector.cs:1341 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1338,
+        "highlight": 1341,
+        "lines": [
+          "        {",
+          "            if (formattedType.IsDefinition)",
+          "            {",
+          "                Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
+          "                var targetName = callerSymbol is not null ? callerSymbol.ContainingType.Name + \".\" + callerSymbol.Name : formattedType.Name;",
+          "",
+          "                ImmutableDictionary<string, string?> typeInfo = ImmutableDictionary.Create<string, string?>().Add(\"type\", formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));"
+        ]
+      }
+    },
+    "ev-5a604cf84d": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1442,
+      "rev": "head",
+      "quote": "which analyzers are not permitted to do",
+      "ref": "ev-5a604cf84d",
+      "label": "TypeCollector.cs:1442 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1442 at head 9df83c38",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1439,
+        "highlight": 1442,
+        "lines": [
+          "    /// <remarks>",
+          "    /// Types and members that come from metadata (or from another compilation) have no location in the compilation being analyzed.",
+          "    /// Their problems are reported by the compilation that defines them, so they are dropped here rather than being reported",
+          "    /// against a location that does not exist, which analyzers are not permitted to do.",
+          "    /// </remarks>",
+          "    private void ReportIfLocatedInCompilation(Action<Diagnostic> report, Diagnostic diagnostic)",
+          "    {"
+        ]
+      }
+    },
+    "ev-532df5c2da": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1434,
+      "rev": "head",
+      "quote": "(property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation()",
+      "ref": "ev-532df5c2da",
+      "label": "TypeCollector.cs:1434 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
+      "cited_by": [
+        "claude:C2"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1431,
+        "highlight": 1434,
+        "lines": [
+          "    /// </summary>",
+          "    /// <param name=\"property\">The property symbol. It may be declared in metadata, in which case <see langword=\"null\" /> is returned.</param>",
+          "    /// <returns>The location of the identifier, or <see langword=\"null\" /> if the property has no declaration in source.</returns>",
+          "    private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
+          "",
+          "    /// <summary>",
+          "    /// Reports a diagnostic only when its location belongs to the compilation being analyzed."
+        ]
+      }
+    },
+    "ev-ddf4848149": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "rev": "head",
+      "quote": "BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item)",
+      "ref": "ev-ddf4848149",
+      "label": "TypeCollector.cs:985 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38",
+      "cited_by": [
+        "claude:C2"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 982,
+        "highlight": 985,
+        "lines": [
+          "                    var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;",
+          "                    if (intKey == null && stringKey == null)",
+          "                    {",
+          "                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));",
+          "                    }",
+          "",
+          "                    // A property with an init accessor and an initializer has a default that will be discarded by the deserializer."
+        ]
+      }
+    },
+    "ev-cf1d452cfa": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1077,
+      "rev": "head",
+      "quote": "item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()",
+      "ref": "ev-cf1d452cfa",
+      "label": "TypeCollector.cs:1077 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
+      "cited_by": [
+        "claude:C3"
+      ],
+      "excerpt": {
+        "sha": "9df83c38",
+        "start": 1074,
+        "highlight": 1077,
+        "lines": [
+          "                            {",
+          "                                Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true",
+          "                                    ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())",
+          "                                    : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);",
+          "                                if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)",
+          "                                {",
+          "                                    this.reportDiagnostic?.Invoke(diagnostic);"
+        ]
+      }
+    },
+    "ev-c6793f8043": {
+      "kind": "issue",
+      "quote": "So it needs all three of: **generic**, **value type**, **from a referenced assembly**.",
+      "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+      "ref": "ev-c6793f8043",
+      "label": "issue 2283",
+      "verified": false,
+      "note": "issue text cannot be verified offline (not counted as evidence)",
+      "cited_by": [
+        "claude:C3"
+      ]
+    }
   }
 }
