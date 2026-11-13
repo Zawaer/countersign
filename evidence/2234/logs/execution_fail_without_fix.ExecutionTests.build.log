@@ -1,0 +1,23 @@
+
+  Determining projects to restore...
+  Restored /data/src/mp-2234-fwf/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj (in 134 ms).
+  Restored /data/src/mp-2234-fwf/src/MessagePack.Analyzers.CodeFixes/MessagePack.Analyzers.CodeFixes.csproj (in 134 ms).
+  Restored /data/src/mp-2234-fwf/src/MessagePack.Annotations/MessagePack.Annotations.csproj (in 134 ms).
+  Restored /data/src/mp-2234-fwf/src/MessagePack.Analyzers/MessagePack.Analyzers.csproj (in 134 ms).
+  Restored /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/MessagePack.SourceGenerator.csproj (in 134 ms).
+  Restored /data/src/mp-2234-fwf/src/MessagePack/MessagePack.csproj (in 134 ms).
+  MessagePack.SourceGenerator -> /data/src/mp-2234-fwf/bin/MessagePack.SourceGenerator/Debug/netstandard2.0/MessagePack.SourceGenerator.dll
+  MessagePack.Analyzers.CodeFixes -> /data/src/mp-2234-fwf/bin/MessagePack.Analyzers.CodeFixes/Debug/netstandard2.0/MessagePack.Analyzers.CodeFixes.dll
+  MessagePack.Analyzers -> /data/src/mp-2234-fwf/bin/MessagePack.Analyzers/Debug/netstandard2.0/MessagePack.Analyzers.dll
+  MessagePack.Annotations -> /data/src/mp-2234-fwf/bin/MessagePack.Annotations/Debug/netstandard2.0/MessagePack.Annotations.dll
+  MessagePack -> /data/src/mp-2234-fwf/bin/MessagePack/Debug/net8.0/MessagePack.dll
+/data/src/mp-2234-fwf/tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs(9,14): warning SA1649: File name should match first type name (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1649.md) [/data/src/mp-2234-fwf/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+  MessagePack.SourceGenerator.ExecutionTests -> /data/src/mp-2234-fwf/bin/MessagePack.SourceGenerator.ExecutionTests/Debug/net8.0/MessagePack.SourceGenerator.ExecutionTests.dll
+
+Build succeeded.
+
+/data/src/mp-2234-fwf/tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs(9,14): warning SA1649: File name should match first type name (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1649.md) [/data/src/mp-2234-fwf/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+    1 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.36

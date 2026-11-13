@@ -1,0 +1,30 @@
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  MessagePack.SourceGenerator -> /data/src/mp-2234/bin/MessagePack.SourceGenerator/Debug/netstandard2.0/MessagePack.SourceGenerator.dll
+  MessagePack.Analyzers.CodeFixes -> /data/src/mp-2234/bin/MessagePack.Analyzers.CodeFixes/Debug/netstandard2.0/MessagePack.Analyzers.CodeFixes.dll
+  MessagePack.Analyzers -> /data/src/mp-2234/bin/MessagePack.Analyzers/Debug/netstandard2.0/MessagePack.Analyzers.dll
+  MessagePack.Annotations -> /data/src/mp-2234/bin/MessagePack.Annotations/Debug/netstandard2.0/MessagePack.Annotations.dll
+  MessagePack -> /data/src/mp-2234/bin/MessagePack/Debug/net8.0/MessagePack.dll
+CSC : warning CS9057: The analyzer assembly '/data/src/mp-2234/bin/MessagePack.SourceGenerator/Debug/netstandard2.0/MessagePack.SourceGenerator.dll' references version '4.12.0.0' of the compiler, which is newer than the currently running version '4.11.0.0'. [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs(23,50): error CS0117: 'GeneratedMessagePackResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(12,53): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(13,53): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(14,53): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(15,50): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs(9,14): warning SA1649: File name should match first type name (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1649.md) [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+
+Build FAILED.
+
+CSC : warning CS9057: The analyzer assembly '/data/src/mp-2234/bin/MessagePack.SourceGenerator/Debug/netstandard2.0/MessagePack.SourceGenerator.dll' references version '4.12.0.0' of the compiler, which is newer than the currently running version '4.11.0.0'. [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs(9,14): warning SA1649: File name should match first type name (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1649.md) [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs(23,50): error CS0117: 'GeneratedMessagePackResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(12,53): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(13,53): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(14,53): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedCompositeResolverTests.cs(15,50): error CS0117: 'MyGeneratedCompositeResolver' does not contain a definition for 'Instance' [/data/src/mp-2234/tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj]
+    2 Warning(s)
+    5 Error(s)
+
+Time Elapsed 00:00:02.84
+rc=1

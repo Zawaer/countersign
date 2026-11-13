@@ -9,6 +9,11 @@ def exec_check(n, cls):
     return {'id':'tests.targeted.execution','tool':'dotnet build/test tests/MessagePack.SourceGenerator.ExecutionTests','tool_version':'8.0.402','status':'error',
             'summary':f'could not run {cls}: ExecutionTests project does not compile with SDK 8.0.402 (generator needs Roslyn 4.12; CS9057). Same failure on base.',
             'reason':EXEC_REASON,'log':f'evidence/{n}/logs/execution_tests.build.log'}
+# ExecutionTests / MapModeExecutionTests are run with SDK 9.0.321 (scripts/exec9.sh); facts.py turns the run in
+# /data/work/out/exec9-<label> into tests.targeted.execution (+ tests.execution_fail_without_fix, tests.execution_full_suite).
+# exec_check() is kept as the fallback that facts.py emits if that run is missing.
+def execution(label, cls, filt, fwf):
+    return {'label':label,'fwf':fwf,'base':'base','class':cls,'filter':filt}
 common_not_run=[
   {'id':'tests.execution','reason':EXEC_REASON},
   {'id':'tests.MessagePack.Tests','reason':'runtime library src/MessagePack not modified by the change; suite not run'},
@@ -26,7 +31,8 @@ changes=[
   'not_run':common_not_run},
  {'change':'2234','label':'2234','filters':['FullyQualifiedName~SuppressSourceGenerationAnalyzerTests.'],'fwf':'2234-fwf','reverted':[F],'public_api':pa_none,
   'extra_checks':[exec_check('2234','SuppressedSourceGenerationTests (2 new tests: NoFormatterIsGeneratedForSuppressedType, SuppressedTypeRoundTripsThroughDynamicResolver)')],
-  'not_run':common_not_run},
+  'execution':execution('2234','SuppressedSourceGenerationTests','FullyQualifiedName~SuppressedSourceGenerationTests.','2234-fwf'),
+  'not_run':common_not_run[1:]},
  {'change':'2297','label':'2297','filters':['FullyQualifiedName~CodeCoverageExclusionTests.'],'fwf':'2297-fwf',
   'reverted':['src/MessagePack.SourceGenerator/Transforms/*Template.{tt,cs}','src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs (13 files)'],'public_api':pa_none,
   'not_run':common_not_run},
@@ -35,9 +41,10 @@ changes=[
   'public_api':pa('fail','public API added: new public class MessagePack.GeneratedMessagePackFormatterAttribute (with public Type? SurrogateType) in src/MessagePack.Annotations/Attributes.cs; MessagePack.Annotations has no PublicAPI.*.txt tracking so PublicApiAnalyzers did not flag it. Also 4 new public DiagnosticDescriptors MsgPack019-022 (analyzer assembly) and 4 rows added to AnalyzerReleases.Unshipped.md',
      publicapi_files_changed=[], added_public_declarations=['src/MessagePack.Annotations/Attributes.cs: public class GeneratedMessagePackFormatterAttribute : Attribute','src/MessagePack.Annotations/Attributes.cs: public Type? SurrogateType { get; set; }','src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs: public const string / public static readonly DiagnosticDescriptor for MsgPack019, MsgPack020, MsgPack021, MsgPack022','src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterRequest.cs: public sealed record GeneratedFormatterRequest','src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs: public bool IsUserDeclaredFormatter'],
      untracked_projects=['src/MessagePack.Annotations (no PublicAPI.Shipped.txt/Unshipped.txt)']),
+  'execution':execution('2129','GeneratedFormatterForExternalTypesTests','FullyQualifiedName~GeneratedFormatterForExternalTypesTests.','2129-fwf'),
   'extra_checks':[exec_check('2129','GeneratedFormatterForExternalTypesTests (the runtime round-trip tests for the feature)'),
      {'id':'solution_membership','tool':'grep MessagePack.sln','status':'fail','summary':'new project tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj is not added to MessagePack.sln (only referenced from ExecutionTests.csproj)'}],
-  'not_run':common_not_run},
+  'not_run':common_not_run[1:]},
  {'change':'2283-mut1','label':'2283-mut1','filters':['FullyQualifiedName~GenericsFormatterTests.'],'mutation':mut('2283-mut1','remove the ContainsSyntaxTree guard in ReportIfLocatedInCompilation, so in-source diagnostics located in another compilation\'s syntax tree are reported again','REQ-2283-F3: a type from a project reference (CompilationReference, e.g. IDE/project-to-project) has source locations outside the analyzed compilation; reporting there makes Roslyn throw (AD0001)'),
   'not_run':[{'id':'public_api','reason':'mutant run: only build + targeted tests (+ full suite recorded as extra check)'},{'id':'analyzers','reason':'mutant run'}]},
  {'change':'2283-mut2','label':'2283-mut2','filters':['FullyQualifiedName~GenericsFormatterTests.'],'mutation':mut('2283-mut2','reintroduce the unguarded DeclaringSyntaxReferences[0] index for the MemberNeedsKey (MsgPack004) location','metadata-only member has no syntax reference -> IndexOutOfRangeException in generator/analyzer (CS8785/AD0001), REQ-2283-F1/F2'),

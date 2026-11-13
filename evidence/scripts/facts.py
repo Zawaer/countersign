@@ -202,6 +202,153 @@ def full_check(label, change_dir, meta, base_fail):
             'failures_also_on_base': pre, 'log': log, 'duration_s': float(meta.get('full_s', 0))}
 
 
+# ---- ExecutionTests / MapModeExecutionTests (SDK 9, scripts/exec9.sh -> /data/work/out/exec9-<label>) ----
+SDK9 = '9.0.321'
+SDK9_NOTE = ('SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 '
+             '(global.json overridden to 9.0.321 in the scratch worktree only)')
+EXEC_PROJS = ['ExecutionTests', 'MapModeExecutionTests']
+
+
+def exec_proj(P):
+    return f'tests/MessagePack.SourceGenerator.{P}'
+
+
+def exec_run(label):
+    """Parsed results of exec9.sh for one worktree label, or None if it was not run."""
+    d = os.path.join(OUT, 'exec9-' + label)
+    meta = read_meta('exec9-' + label)
+    if meta is None or 'DONE' not in open(os.path.join(d, 'meta.txt')).read():
+        return None
+    r = {'meta': meta, 'dir': d, 'projects': {}}
+    for P in EXEC_PROJS:
+        if f'{P}_build_rc' not in meta:
+            continue
+        blog = open(os.path.join(d, f'{P}.build.log')).read()
+        r['projects'][P] = {
+            'build_rc': int(meta[f'{P}_build_rc']), 'build_s': float(meta.get(f'{P}_build_s', 0)),
+            'errors': sorted({re.sub(r'/data/src/mp-[\w-]+/', '', e) for e in re.findall(r'[^\s]+: error \w+:[^\[]*', blog)}),
+            'warnings': sorted({re.sub(r'\(\d+,\d+(,\d+,\d+)?\)', '', re.sub(r'/data/src/mp-[\w-]+/', '', w)).strip() for w in re.findall(r'[^\s]+: warning \w+:[^\[]*', blog)}),
+            'cs9057': 'CS9057' in blog,
+            'targeted': parse_trx(os.path.join(d, f'{P}.targeted.trx')),
+            'full': parse_trx(os.path.join(d, f'{P}.full.trx')),
+            'targeted_s': float(meta.get(f'{P}_targeted_s', 0)), 'full_s': float(meta.get(f'{P}_full_s', 0)),
+        }
+    return r
+
+
+def exec_logs(label, run, change_dir, prefix, kinds=('build', 'targeted', 'full')):
+    logs = []
+    for P in run['projects']:
+        for k in kinds:
+            l = copy_log(os.path.join(run['dir'], f'{P}.{k}.log'), os.path.join(change_dir, 'logs', f'{prefix}.{P}.{k}.log'))
+            if l:
+                logs.append(l)
+    return logs
+
+
+def exec_checks(ex, change_dir, newset):
+    """tests.targeted.execution, tests.execution_fail_without_fix, tests.execution_full_suite for one change."""
+    head, fwf, base = exec_run(ex['label']), exec_run(ex['fwf']), exec_run(ex['base'])
+    if head is None:
+        return None
+    out = []
+    common = {'tool_version': SDK9, 'tool_version_note': SDK9_NOTE, 'filter': ex['filter'],
+              'projects': [exec_proj(P) for P in head['projects']]}
+    # -- head: targeted
+    tests, notes = [], []
+    for P, pr in head['projects'].items():
+        if pr['build_rc'] != 0:
+            notes.append(f'{exec_proj(P)} did not build: ' + '; '.join(pr['errors'][:5]))
+            continue
+        if not pr['targeted']:
+            notes.append(f'{exec_proj(P)}: no tests match the filter (the test file is excluded from this project)')
+        for t in pr['targeted'] or []:
+            t2 = {'name': t['name'], 'project': exec_proj(P), 'outcome': t['outcome'], 'new': method_of(t['name']) in newset}
+            if t['outcome'] == 'failed':
+                t2['error'] = t['error']
+            tests.append(t2)
+    p = sum(t['outcome'] == 'passed' for t in tests)
+    f = sum(t['outcome'] == 'failed' for t in tests)
+    n = sum(t['new'] for t in tests)
+    st = 'error' if not tests else ('pass' if f == 0 else 'fail')
+    chk = {'id': 'tests.targeted.execution', 'tool': 'dotnet build + dotnet test (ExecutionTests, MapModeExecutionTests)', **common,
+           'status': st, 'summary': f'{ex["class"]}: {p} passed, {f} failed ({n} new test results; runtime: generator runs inside csc, no CS9057)'
+           + ('' if not notes else '; ' + '; '.join(notes)),
+           'tests': tests, 'cs9057': any(pr['cs9057'] for pr in head['projects'].values()),
+           'log': exec_logs(ex['label'], head, change_dir, 'execution'),
+           'duration_s': sum(pr['build_s'] + pr['targeted_s'] for pr in head['projects'].values())}
+    if base is not None:
+        chk['on_base'] = 'tests do not exist on base (new in this change): ' + ', '.join(
+            f'{exec_proj(P)} built={pr["build_rc"] == 0}, {len(pr["targeted"] or [])} matching tests' for P, pr in base['projects'].items())
+    out.append(chk)
+    # -- fwf: same tests with src/ reverted to base
+    if fwf is not None:
+        ftests, fnotes, compile_fail = [], [], []
+        for P, pr in fwf['projects'].items():
+            if pr['build_rc'] != 0:
+                compile_fail.append({'project': exec_proj(P), 'errors': pr['errors']})
+                continue
+            for t in pr['targeted'] or []:
+                t2 = {'name': t['name'], 'project': exec_proj(P), 'outcome': t['outcome'], 'new': method_of(t['name']) in newset}
+                if t['outcome'] == 'failed':
+                    t2['error'] = t['error']
+                ftests.append(t2)
+        head_names = {(t['project'], t['name']) for t in tests}
+        fw = {'id': 'tests.execution_fail_without_fix', 'tool': 'dotnet test (source reverted, tests kept) - ExecutionTests', **common,
+              'tests': ftests, 'log': exec_logs(ex['fwf'], fwf, change_dir, 'execution_fail_without_fix')}
+        newt = [t for t in ftests if t['new']]
+        nf = sum(t['outcome'] == 'failed' for t in newt)
+        if compile_fail:
+            missing = sorted({t['name'] for t in tests if t['project'] in {c['project'] for c in compile_fail}})
+            fw['compile_failure'] = compile_fail
+            fw['tests_not_compiled'] = missing
+            fw['status'] = 'pass'
+            fw['summary'] = (f'new runtime tests do not compile with the source reverted ({", ".join(c["project"] for c in compile_fail)}): '
+                             f'{len(missing)} tests cannot exist without the fix; errors are the missing feature itself '
+                             '(see compile_failure) -> tests depend on the change')
+            fw['caveat'] = ('compile-time, not a runtime comparison: the tests cannot be built, so no serialization behaviour was compared. '
+                            'Read compile_failure to see which part of the reverted source each error comes from '
+                            '(e.g. CS0246 = an attribute/type from the change is missing; CS0535 = the generator emitted no members for a partial formatter).')
+        elif nf > 0:
+            fw['status'] = 'pass'
+            fw['summary'] = f'new runtime tests fail on base source: {nf}/{len(newt)} failed -> tests do cover the change'
+        else:
+            fw['status'] = 'fail'
+            fw['summary'] = (f'new runtime tests pass on base source: 0/{len(newt)} failed -> these runtime tests do NOT demonstrate the change '
+                             '(runtime behaviour they check is identical with and without the fix)')
+        fw['new_failed'] = nf
+        fw['new_total'] = len(newt)
+        out.append(fw)
+    # -- whole projects vs base (regression)
+    if base is not None:
+        projs, bad = [], 0
+        for P, pr in head['projects'].items():
+            bp = base['projects'].get(P)
+            if pr['full'] is None:
+                projs.append({'project': exec_proj(P), 'status': 'error', 'reason': 'did not build/run'})
+                bad += 1
+                continue
+            bfail = {t['name'] for t in (bp and bp['full'] or []) if t['outcome'] == 'failed'}
+            failed = [t for t in pr['full'] if t['outcome'] == 'failed']
+            newf = [t['name'] for t in failed if t['name'] not in bfail]
+            bad += len(newf)
+            bnames = {t['name'] for t in (bp and bp['full'] or [])}
+            projs.append({'project': exec_proj(P), 'total': len(pr['full']), 'passed': sum(t['outcome'] == 'passed' for t in pr['full']),
+                          'failed': len(failed), 'failures_not_on_base': newf,
+                          'base_total': len(bp['full']) if bp and bp['full'] else None,
+                          'base_passed': sum(t['outcome'] == 'passed' for t in bp['full']) if bp and bp['full'] else None,
+                          'tests_added_vs_base': sorted(t['name'] for t in pr['full'] if t['name'] not in bnames),
+                          'tests_missing_vs_base': sorted(bnames - {t['name'] for t in pr['full']}),
+                          'new_build_warnings_vs_base': sorted(set(pr['warnings']) - set(bp['warnings'] if bp else []))})
+        out.append({'id': 'tests.execution_full_suite', 'tool': 'dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base', 'tool_version': SDK9,
+                    'tool_version_note': SDK9_NOTE, 'status': 'pass' if bad == 0 else 'fail',
+                    'summary': '; '.join(f'{x["project"]}: {x.get("passed")}/{x.get("total")} passed (base {x.get("base_passed")}/{x.get("base_total")}), '
+                                         f'{len(x.get("failures_not_on_base", []))} failures not on base' for x in projs),
+                    'projects': projs, 'log': exec_logs(ex['label'], head, change_dir, 'execution', kinds=('full',)),
+                    'duration_s': sum(pr['full_s'] for pr in head['projects'].values())})
+    return out
+
+
 def main():
     os.makedirs(EVID, exist_ok=True)
     base_meta = read_meta('base')
@@ -213,8 +360,10 @@ def main():
     bd = os.path.join(EVID, 'base')
     copy_log(os.path.join(OUT, 'base', 'build.log'), os.path.join(bd, 'logs', 'build.log'))
     copy_log(os.path.join(OUT, 'base', 'full.log'), os.path.join(bd, 'logs', 'tests_full_suite.log'))
-    for k in ('base', '2234', '2129'):
-        copy_log(os.path.join(OUT, 'exec-' + k, 'build.log'), os.path.join(EVID, k, 'logs', 'execution_tests.build.log'))
+    copy_log(os.path.join(OUT, 'exec-base', 'build.log'), os.path.join(bd, 'logs', 'execution_tests.build.log'))
+    bx = exec_run('base')
+    if bx is not None:
+        exec_logs('base', bx, bd, 'execution_sdk9')
     json.dump({'label': 'base', 'sha': BASE, 'build_rc': base_meta.get('build_rc'),
                'full_suite': {'total': len(base_full), 'passed': sum(t['outcome'] == 'passed' for t in base_full), 'failed': sorted(base_fail)},
                'warnings': sorted(base_warn), 'tests': base_full and [{'name': t['name'], 'outcome': t['outcome']} for t in base_full]},
@@ -300,10 +449,24 @@ def main():
             checks.append({'id': 'analyzers', 'tool': 'dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base', 'status': 'pass' if not newwarn else 'fail',
                            'summary': 'no new warnings' if not newwarn else f'{len(newwarn)} new warnings vs base',
                            'new_warnings': newwarn, 'resolved_warnings': gone, 'base_warning_count': len(base_warn)})
-        checks.extend(ch.get('extra_checks', []))
+        if os.path.exists(os.path.join(OUT, 'exec-' + n, 'build.log')):
+            # SDK 8.0.402 attempt (CS9057), kept for the record
+            copy_log(os.path.join(OUT, 'exec-' + n, 'build.log'), os.path.join(cd, 'logs', 'execution_tests.sdk8.build.log'))
+        extra = [dict(c) for c in ch.get('extra_checks', [])]
+        for c in extra:
+            if c['id'] == 'tests.targeted.execution' and 'log' in c:
+                c['log'] = f'evidence/{n}/logs/execution_tests.sdk8.build.log'
+        if 'execution' in ch:
+            ec = exec_checks(ch['execution'], cd, newset)
+            if ec:
+                ec[0]['sdk8_attempt'] = {'tool_version': SDK, 'status': 'error', 'reason': 'CS9057: generator references Microsoft.CodeAnalysis 4.12, SDK 8.0.402 ships Roslyn 4.11',
+                                         'log': f'evidence/{n}/logs/execution_tests.sdk8.build.log'}
+                extra = [c for c in extra if c['id'] != 'tests.targeted.execution']
+                checks.extend(ec)
+        checks.extend(extra)
         facts['checks'] = checks
         facts['not_run'] = ch.get('not_run', [])
-        facts['environment'] = {'sdk': SDK, 'os': 'linux-x64 (container)', 'configuration': 'Debug', 'max_cpu': 8}
+        facts['environment'] = {'sdk': SDK, **({'sdk_execution_tests': SDK9, 'sdk_note': SDK9_NOTE} if 'execution' in ch else {}), 'os': 'linux-x64 (container)', 'configuration': 'Debug', 'max_cpu': 8}
         json.dump(facts, open(os.path.join(cd, 'facts.json'), 'w'), indent=2)
         print(n, [(c['id'], c['status']) for c in checks])
 

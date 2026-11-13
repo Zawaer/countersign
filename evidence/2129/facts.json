@@ -379,12 +379,178 @@
     },
     {
       "id": "tests.targeted.execution",
-      "tool": "dotnet build/test tests/MessagePack.SourceGenerator.ExecutionTests",
-      "tool_version": "8.0.402",
-      "status": "error",
-      "summary": "could not run GeneratedFormatterForExternalTypesTests (the runtime round-trip tests for the feature): ExecutionTests project does not compile with SDK 8.0.402 (generator needs Roslyn 4.12; CS9057). Same failure on base.",
-      "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.",
-      "log": "evidence/2129/logs/execution_tests.build.log"
+      "tool": "dotnet build + dotnet test (ExecutionTests, MapModeExecutionTests)",
+      "tool_version": "9.0.321",
+      "tool_version_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
+      "filter": "FullyQualifiedName~GeneratedFormatterForExternalTypesTests.",
+      "projects": [
+        "tests/MessagePack.SourceGenerator.ExecutionTests",
+        "tests/MessagePack.SourceGenerator.MapModeExecutionTests"
+      ],
+      "status": "pass",
+      "summary": "GeneratedFormatterForExternalTypesTests: 7 passed, 0 failed (7 new test results; runtime: generator runs inside csc, no CS9057); tests/MessagePack.SourceGenerator.MapModeExecutionTests: no tests match the filter (the test file is excluded from this project)",
+      "tests": [
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.ContractlessClassNullRoundTrips",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.ContractlessClassRoundTrips",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.ContractlessClassUsesStringKeysForPublicReadWriteMembers",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.ContractlessStructRoundTrips",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.GeneratedFormattersAreRegisteredInGeneratedResolver",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.MessagePackObjectCanContainExternalTypes",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        }
+      ],
+      "cs9057": false,
+      "log": [
+        "evidence/2129/logs/execution.ExecutionTests.build.log",
+        "evidence/2129/logs/execution.ExecutionTests.targeted.log",
+        "evidence/2129/logs/execution.ExecutionTests.full.log",
+        "evidence/2129/logs/execution.MapModeExecutionTests.build.log",
+        "evidence/2129/logs/execution.MapModeExecutionTests.targeted.log",
+        "evidence/2129/logs/execution.MapModeExecutionTests.full.log"
+      ],
+      "duration_s": 12.0,
+      "on_base": "tests do not exist on base (new in this change): tests/MessagePack.SourceGenerator.ExecutionTests built=True, 0 matching tests, tests/MessagePack.SourceGenerator.MapModeExecutionTests built=True, 0 matching tests",
+      "sdk8_attempt": {
+        "tool_version": "8.0.402",
+        "status": "error",
+        "reason": "CS9057: generator references Microsoft.CodeAnalysis 4.12, SDK 8.0.402 ships Roslyn 4.11",
+        "log": "evidence/2129/logs/execution_tests.sdk8.build.log"
+      }
+    },
+    {
+      "id": "tests.execution_fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept) - ExecutionTests",
+      "tool_version": "9.0.321",
+      "tool_version_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
+      "filter": "FullyQualifiedName~GeneratedFormatterForExternalTypesTests.",
+      "projects": [
+        "tests/MessagePack.SourceGenerator.ExecutionTests",
+        "tests/MessagePack.SourceGenerator.MapModeExecutionTests"
+      ],
+      "tests": [],
+      "log": [
+        "evidence/2129/logs/execution_fail_without_fix.ExecutionTests.build.log",
+        "evidence/2129/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+        "evidence/2129/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+        "evidence/2129/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+      ],
+      "compile_failure": [
+        {
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "errors": [
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(10,48): error CS0535: 'ExternalPersonFormatter' does not implement interface member 'IMessagePackFormatter<ExternalPerson>.Deserialize(ref MessagePackReader, MessagePackSerializerOptions)' ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(10,48): error CS0535: 'ExternalPersonFormatter' does not implement interface member 'IMessagePackFormatter<ExternalPerson>.Serialize(ref MessagePackWriter, ExternalPerson, MessagePackSerializerOptions)' ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(14,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatter' could not be found (are you missing a using directive or an assembly reference?) ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(14,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatterAttribute' could not be found (are you missing a using directive or an assembly reference?) ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(15,47): error CS0535: 'ExternalPointFormatter' does not implement interface member 'IMessagePackFormatter<ExternalPoint>.Deserialize(ref MessagePackReader, MessagePackSerializerOptions)' ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(15,47): error CS0535: 'ExternalPointFormatter' does not implement interface member 'IMessagePackFormatter<ExternalPoint>.Serialize(ref MessagePackWriter, ExternalPoint, MessagePackSerializerOptions)' ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(19,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatter' could not be found (are you missing a using directive or an assembly reference?) ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(19,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatterAttribute' could not be found (are you missing a using directive or an assembly reference?) ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(20,48): error CS0535: 'ExternalWidgetFormatter' does not implement interface member 'IMessagePackFormatter<ExternalWidget>.Deserialize(ref MessagePackReader, MessagePackSerializerOptions)' ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(20,48): error CS0535: 'ExternalWidgetFormatter' does not implement interface member 'IMessagePackFormatter<ExternalWidget>.Serialize(ref MessagePackWriter, ExternalWidget, MessagePackSerializerOptions)' ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(9,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatter' could not be found (are you missing a using directive or an assembly reference?) ",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs(9,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatterAttribute' could not be found (are you missing a using directive or an assembly reference?) "
+          ]
+        }
+      ],
+      "tests_not_compiled": [
+        "GeneratedFormatterForExternalTypesTests.ContractlessClassNullRoundTrips",
+        "GeneratedFormatterForExternalTypesTests.ContractlessClassRoundTrips",
+        "GeneratedFormatterForExternalTypesTests.ContractlessClassUsesStringKeysForPublicReadWriteMembers",
+        "GeneratedFormatterForExternalTypesTests.ContractlessStructRoundTrips",
+        "GeneratedFormatterForExternalTypesTests.GeneratedFormattersAreRegisteredInGeneratedResolver",
+        "GeneratedFormatterForExternalTypesTests.MessagePackObjectCanContainExternalTypes",
+        "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership"
+      ],
+      "status": "pass",
+      "summary": "new runtime tests do not compile with the source reverted (tests/MessagePack.SourceGenerator.ExecutionTests): 7 tests cannot exist without the fix; errors are the missing feature itself (see compile_failure) -> tests depend on the change",
+      "caveat": "compile-time, not a runtime comparison: the tests cannot be built, so no serialization behaviour was compared. Read compile_failure to see which part of the reverted source each error comes from (e.g. CS0246 = an attribute/type from the change is missing; CS0535 = the generator emitted no members for a partial formatter).",
+      "new_failed": 0,
+      "new_total": 0
+    },
+    {
+      "id": "tests.execution_full_suite",
+      "tool": "dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base",
+      "tool_version": "9.0.321",
+      "tool_version_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
+      "status": "pass",
+      "summary": "tests/MessagePack.SourceGenerator.ExecutionTests: 21/21 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 20/20 passed (base 20/20), 0 failures not on base",
+      "projects": [
+        {
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "total": 21,
+          "passed": 21,
+          "failed": 0,
+          "failures_not_on_base": [],
+          "base_total": 14,
+          "base_passed": 14,
+          "tests_added_vs_base": [
+            "GeneratedFormatterForExternalTypesTests.ContractlessClassNullRoundTrips",
+            "GeneratedFormatterForExternalTypesTests.ContractlessClassRoundTrips",
+            "GeneratedFormatterForExternalTypesTests.ContractlessClassUsesStringKeysForPublicReadWriteMembers",
+            "GeneratedFormatterForExternalTypesTests.ContractlessStructRoundTrips",
+            "GeneratedFormatterForExternalTypesTests.GeneratedFormattersAreRegisteredInGeneratedResolver",
+            "GeneratedFormatterForExternalTypesTests.MessagePackObjectCanContainExternalTypes",
+            "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership"
+          ],
+          "tests_missing_vs_base": [],
+          "new_build_warnings_vs_base": [
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs: warning CS8618: Non-nullable property 'Person' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable.",
+            "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs: warning CS8618: Non-nullable property 'Widget' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable."
+          ]
+        },
+        {
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "total": 20,
+          "passed": 20,
+          "failed": 0,
+          "failures_not_on_base": [],
+          "base_total": 20,
+          "base_passed": 20,
+          "tests_added_vs_base": [],
+          "tests_missing_vs_base": [],
+          "new_build_warnings_vs_base": []
+        }
+      ],
+      "log": [
+        "evidence/2129/logs/execution.ExecutionTests.full.log",
+        "evidence/2129/logs/execution.MapModeExecutionTests.full.log"
+      ],
+      "duration_s": 0.0
     },
     {
       "id": "solution_membership",
@@ -394,10 +560,6 @@
     }
   ],
   "not_run": [
-    {
-      "id": "tests.execution",
-      "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run."
-    },
     {
       "id": "tests.MessagePack.Tests",
       "reason": "runtime library src/MessagePack not modified by the change; suite not run"
@@ -413,6 +575,8 @@
   ],
   "environment": {
     "sdk": "8.0.402",
+    "sdk_execution_tests": "9.0.321",
+    "sdk_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
     "os": "linux-x64 (container)",
     "configuration": "Debug",
     "max_cpu": 8

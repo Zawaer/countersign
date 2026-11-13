@@ -4,7 +4,7 @@ Everything here is deterministic and can be re-run. Each `evidence/<change>/fact
 
 - Repo: clone of MessagePack-CSharp at `/data/src/mp`. Base `32258fdbee4bcd653c79f51b4376b5103c6f4d27`.
 - Branches: `origin/ju26-issue-{2283,2234,2129,2297}`, each a single commit on top of the base.
-- Toolchain: .NET SDK 8.0.402 (`/data/dotnet`), Linux x64 container, Debug, at most 8 CPUs (`-m:8`, `RunConfiguration.MaxCpuCount=8`).
+- Toolchain: .NET SDK 8.0.402 (`/data/dotnet`); ExecutionTests/MapModeExecutionTests with SDK 9.0.321 (same directory, see 3b); Linux x64 container, Debug, at most 8 CPUs (`-m:8`, `RunConfiguration.MaxCpuCount=8`).
 
 ## 1. Environment
 
@@ -65,18 +65,47 @@ Targeted filters:
 | 2297 | `FullyQualifiedName~CodeCoverageExclusionTests.` |
 | 2129 | `FullyQualifiedName~GeneratedMessagePackFormatterTests.` |
 
-ExecutionTests (attempted for base, 2234 and 2129):
+ExecutionTests, first attempt with SDK 8.0.402 (base, 2234 and 2129):
 
 ```bash
 dotnet build tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj -m:8 -v:m -clp:Summary
 ```
 
-These fail to compile, **on base too**: the generator references Microsoft.CodeAnalysis 4.12.0 but SDK 8.0.402 ships Roslyn 4.11 (CS9057), so the generator never runs inside csc. They are recorded as `status: "error"` (`tests.targeted.execution`) with the reason. That affects `SuppressedSourceGenerationTests` (2234) and `GeneratedFormatterForExternalTypesTests` (2129). Swapping in a Roslyn 4.12 compiler toolset was not permitted in this run, so it was not done.
+This fails to compile, **on base too**: the generator references Microsoft.CodeAnalysis 4.12.0 but SDK 8.0.402 ships Roslyn 4.11 (CS9057), so the generator never runs inside csc. The logs are kept as `evidence/<n>/logs/execution_tests.sdk8.build.log` (`evidence/base/logs/execution_tests.build.log`).
+
+### 3b. ExecutionTests with SDK 9.0.321 (scripts/exec9.sh, driven by scripts/exec9-all.sh)
+
+SDK 9.0.321 is installed side by side in `/data/dotnet`. **SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402.** In the scratch worktrees only (`mp-base`, `mp-2234`, `mp-2234-fwf`, `mp-2129`, `mp-2129-fwf`; never `/data/src/mp`) `global.json` is overwritten to pin `9.0.321` (`rollForward: disable`); this is the only extra edit in those worktrees, and `exec9.sh` restores it (`command git checkout -- global.json`) when it finishes. For each worktree and each of `tests/MessagePack.SourceGenerator.ExecutionTests` and `tests/MessagePack.SourceGenerator.MapModeExecutionTests` (MapMode compiles the same test files, minus `GeneratedFormatterForExternalTypes*.cs` on 2129):
+
+```bash
+cat > global.json <<'J'
+{ "sdk": { "version": "9.0.321", "rollForward": "disable", "allowPrerelease": false } }
+J
+P=tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj   # and ...MapModeExecutionTests
+dotnet build $P --no-incremental -m:8 -c Debug -v:m -clp:Summary
+dotnet test $P --no-build -c Debug --filter "<filter>" --logger "trx;LogFileName=<out>/<proj>.targeted.trx" -- RunConfiguration.MaxCpuCount=8
+dotnet test $P --no-build -c Debug --logger "trx;LogFileName=<out>/<proj>.full.trx" -- RunConfiguration.MaxCpuCount=8
+```
+
+| label (worktree) | filter |
+|---|---|
+| 2234, 2234-fwf | `FullyQualifiedName~SuppressedSourceGenerationTests.` |
+| 2129, 2129-fwf | `FullyQualifiedName~GeneratedFormatterForExternalTypesTests.` |
+| base | both (matches nothing: the tests are new) |
+
+Output goes to `/data/work/out/exec9-<label>/` (`meta.txt`, `*.build.log`, `*.targeted.{log,trx}`, `*.full.{log,trx}`). The whole run takes about a minute. No build showed CS9057 with SDK 9.
+
+`facts.py` turns this into three checks (only for changes with an `execution` entry in spec.json, i.e. 2234 and 2129):
+
+- **tests.targeted.execution** (replaces the earlier `status: "error"` placeholder, whose SDK 8 failure is kept under `sdk8_attempt`): per-test outcomes with `project` and `new`, from the targeted TRX of both projects. `pass` = all matching tests passed.
+- **tests.execution_fail_without_fix**: the same filter in the `-fwf` worktree. `pass` = at least one new test fails, or the new tests do not compile against the reverted source (recorded under `compile_failure` / `tests_not_compiled`, with a `caveat` that this is not a runtime comparison). `fail` = all new tests pass without the fix.
+- **tests.execution_full_suite**: both whole projects at head vs base (totals, failures not on base, tests added/missing, new build warnings in those projects vs base).
 
 ## 4. Assemble facts.json
 
 ```bash
-python3 -I scripts/mkspec.py     # writes scripts/spec.json (per-change filters, public_api findings, mutation records)
+/data/work/scripts/exec9-all.sh  # section 3b (SDK 9 ExecutionTests); needs the worktrees from section 2
+python3 -I scripts/mkspec.py     # writes scripts/spec.json (per-change filters, public_api findings, mutation records, execution runs)
 python3 -I scripts/facts.py      # reads TRX/logs, git diff; writes evidence/<change>/facts.json and copies trimmed logs
 ```
 

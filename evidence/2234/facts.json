@@ -234,19 +234,160 @@
     },
     {
       "id": "tests.targeted.execution",
-      "tool": "dotnet build/test tests/MessagePack.SourceGenerator.ExecutionTests",
-      "tool_version": "8.0.402",
-      "status": "error",
-      "summary": "could not run SuppressedSourceGenerationTests (2 new tests: NoFormatterIsGeneratedForSuppressedType, SuppressedTypeRoundTripsThroughDynamicResolver): ExecutionTests project does not compile with SDK 8.0.402 (generator needs Roslyn 4.12; CS9057). Same failure on base.",
-      "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.",
-      "log": "evidence/2234/logs/execution_tests.build.log"
+      "tool": "dotnet build + dotnet test (ExecutionTests, MapModeExecutionTests)",
+      "tool_version": "9.0.321",
+      "tool_version_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
+      "filter": "FullyQualifiedName~SuppressedSourceGenerationTests.",
+      "projects": [
+        "tests/MessagePack.SourceGenerator.ExecutionTests",
+        "tests/MessagePack.SourceGenerator.MapModeExecutionTests"
+      ],
+      "status": "pass",
+      "summary": "SuppressedSourceGenerationTests: 4 passed, 0 failed (4 new test results; runtime: generator runs inside csc, no CS9057)",
+      "tests": [
+        {
+          "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "outcome": "passed",
+          "new": true
+        }
+      ],
+      "cs9057": false,
+      "log": [
+        "evidence/2234/logs/execution.ExecutionTests.build.log",
+        "evidence/2234/logs/execution.ExecutionTests.targeted.log",
+        "evidence/2234/logs/execution.ExecutionTests.full.log",
+        "evidence/2234/logs/execution.MapModeExecutionTests.build.log",
+        "evidence/2234/logs/execution.MapModeExecutionTests.targeted.log",
+        "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+      ],
+      "duration_s": 49.0,
+      "on_base": "tests do not exist on base (new in this change): tests/MessagePack.SourceGenerator.ExecutionTests built=True, 0 matching tests, tests/MessagePack.SourceGenerator.MapModeExecutionTests built=True, 0 matching tests",
+      "sdk8_attempt": {
+        "tool_version": "8.0.402",
+        "status": "error",
+        "reason": "CS9057: generator references Microsoft.CodeAnalysis 4.12, SDK 8.0.402 ships Roslyn 4.11",
+        "log": "evidence/2234/logs/execution_tests.sdk8.build.log"
+      }
+    },
+    {
+      "id": "tests.execution_fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept) - ExecutionTests",
+      "tool_version": "9.0.321",
+      "tool_version_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
+      "filter": "FullyQualifiedName~SuppressedSourceGenerationTests.",
+      "projects": [
+        "tests/MessagePack.SourceGenerator.ExecutionTests",
+        "tests/MessagePack.SourceGenerator.MapModeExecutionTests"
+      ],
+      "tests": [
+        {
+          "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "outcome": "passed",
+          "new": true
+        }
+      ],
+      "log": [
+        "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+        "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+        "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+        "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+        "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+        "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+      ],
+      "status": "fail",
+      "summary": "new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+      "new_failed": 0,
+      "new_total": 4
+    },
+    {
+      "id": "tests.execution_full_suite",
+      "tool": "dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base",
+      "tool_version": "9.0.321",
+      "tool_version_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
+      "status": "pass",
+      "summary": "tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+      "projects": [
+        {
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "total": 16,
+          "passed": 16,
+          "failed": 0,
+          "failures_not_on_base": [],
+          "base_total": 14,
+          "base_passed": 14,
+          "tests_added_vs_base": [
+            "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+            "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver"
+          ],
+          "tests_missing_vs_base": [],
+          "new_build_warnings_vs_base": [
+            "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs: warning SA1649: File name should match first type name (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1649.md)"
+          ]
+        },
+        {
+          "project": "tests/MessagePack.SourceGenerator.MapModeExecutionTests",
+          "total": 22,
+          "passed": 22,
+          "failed": 0,
+          "failures_not_on_base": [],
+          "base_total": 20,
+          "base_passed": 20,
+          "tests_added_vs_base": [
+            "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+            "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver"
+          ],
+          "tests_missing_vs_base": [],
+          "new_build_warnings_vs_base": [
+            "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs: warning SA1649: File name should match first type name (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1649.md)"
+          ]
+        }
+      ],
+      "log": [
+        "evidence/2234/logs/execution.ExecutionTests.full.log",
+        "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+      ],
+      "duration_s": 1.0
     }
   ],
   "not_run": [
-    {
-      "id": "tests.execution",
-      "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run."
-    },
     {
       "id": "tests.MessagePack.Tests",
       "reason": "runtime library src/MessagePack not modified by the change; suite not run"
@@ -262,6 +403,8 @@
   ],
   "environment": {
     "sdk": "8.0.402",
+    "sdk_execution_tests": "9.0.321",
+    "sdk_note": "SDK 9 used because the generator needs Roslyn 4.12; repo pins 8.0.402 (global.json overridden to 9.0.321 in the scratch worktree only)",
     "os": "linux-x64 (container)",
     "configuration": "Debug",
     "max_cpu": 8
