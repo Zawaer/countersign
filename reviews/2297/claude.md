@@ -1,21 +1,19 @@
-# Review of #2297 by claude (claude-opus-5-5, review-v1), scoped
+# Review of #2297 by claude (claude-opus-5-5, review-v1, second pass, scoped)
 
-**Verdict:** REQ-2297-F1 is not met. The attribute is fenced off from netstandard2.0 and .NET Framework, based on a false claim that it is unavailable there. Putting it on user-declared partial resolvers can also break existing builds (CS0579).
+**Verdict:** The requirement is not met for netstandard2.0 and .NET Framework consumers. Every emitted `[ExcludeFromCodeCoverage]` is wrapped in `#if !NETSTANDARD2_0 && !NETFRAMEWORK`, justified as "not available" there. That is false: the attribute is in the netstandard 2.0 reference assembly (checked in netstandard.library 2.0.3) and has been in .NET Framework since 4.0. A test (`ExcludeAttributeIsGuardedForTargetsWhereItIsUnavailable`) pins the omission, and the README overclaims "All generated ... are decorated".
 
-## Scope covered
-I read the 7 template pairs (.tt and generated .cs), TransformUtilities.cs, the README and CodeCoverageExclusionTests.cs. The 222 `*.g.cs` snapshots were not read individually; I relied on the snapshot comparison in the test suite.
-
-Ran (net8.0, /tmp/claude-review-2297):
-- `MessagePack.SourceGenerator.Tests`: 169/169 pass on head (snapshots match the templates).
-- CodeCoverageExclusionTests against base templates: 2/2 fail, so the tests cover the change.
-- Checked `ExcludeFromCodeCoverageAttribute` in the netstandard.library 2.0.3 `netstandard.dll` and the .NET Framework 4.7.2 `System.dll`: it is present in both. A netstandard2.0 project using it compiles. Two partial declarations each carrying it produce CS0579.
+| Req | Verdict | Basis |
+|---|---|---|
+| F1 | **not_met** | Emitted on net5+ only (test passes at head, fails on base); omitted for supported targets on a false premise |
 
 ## Findings
-- **C1 (major, correctness):** The `#if !NETSTANDARD2_0 && !NETFRAMEWORK` guard leaves out targets where the attribute exists (.NET Framework 4.0+, netstandard2.0). The README and the test comment state the false premise, and the second test locks the guard in.
-- **C2 (major, correctness):** The resolver and composite-resolver templates put the attribute on the generated half of a user-declared `partial class`. The attribute has `AllowMultiple = false`, so a user who already put `[ExcludeFromCodeCoverage]` on their resolver gets CS0579 after upgrading. Even without that conflict, the user's own members in that class are excluded from coverage.
-- **C3 (info, scope):** The TransformUtilities `{` to `{\r\n` change is needed for `#if` placement, but it changes output for nested generic types.
+- **C1 (major):** The guard should be removed; test against netstandard2.0/net472 references instead.
+- **C2 (info):** 228 of 237 files are regenerated resources; the behaviour lives in 7 template files.
 
-## Refused
-- Contents of the individual snapshot files.
-- Whether maintainers want this (and `[GeneratedCode]`) at all: there is no maintainer answer in the issue.
-- Real coverage-tool behaviour.
+## Refused (scoped review)
+- Individual review of the 228 regenerated resources.
+- Behaviour when generated code is compiled for older targets (execution tests not run for this change).
+- Intent of the TransformUtilities brace/newline change.
+
+## Changes from v1
+- Same verdict (not_met) and same top finding. I did not re-verify v1's C2 (CS0579 risk on user-declared partial resolvers that already carry the attribute) in this scoped pass, so it is not re-asserted here. It should be re-checked by the area owner.

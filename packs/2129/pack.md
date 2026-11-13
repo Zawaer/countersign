@@ -4,7 +4,7 @@
 
 Branch `ju26-issue-2129` (32258fdb..083afd99), 28 files, +1034 -9. Author Stelian Vultur (agent-written: True). Commit: Agentic implementation of #2129 Feature Request: Allow generation of Formatter for a type in a referenced assembly
 
-Mandate `messagepack-csharp` v1 sha256 `ef0e95521f7e364a`, signature: valid, Toivo
+Mandate `messagepack-csharp` v2 sha256 `39cc2060685638e1`, signature: valid, Toivo
 
 ## Why this tier
 
@@ -14,16 +14,15 @@ Mandate `messagepack-csharp` v1 sha256 `ef0e95521f7e364a`, signature: valid, Toi
 
 - block: risk score `risk`: score 145.2 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 35 + files_changed 20
 - ask: mandate rule `public-api-change`: Public API changed: the owner decides on compatibility [public API added: new public class MessagePack.GeneratedMessagePackFormatterAttribute (with public Type? SurrogateType) in src/MessagePack.Annotations/Attributes.cs; MessagePack.Annotations has no PublicAPI.*.txt tracking so PublicApiAnalyzers did not flag it. Also 4 new public DiagnosticDescriptors MsgPack019-022 (analyzer assembly) and 4 rows added to AnalyzerReleases.Unshipped.md]
-- ask: refused clause `REQ-2129-F1`: cannot_determine: claude: The feature is implemented: a [GeneratedMessagePackFormatter] attribute, a generator pipeline that writes the partial formatter body, and a surrogate mode. But the only tests I could run are 6 diagnostic tests. The successful path (generated formatter compiles, is registered, round-trips) is covered only by ExecutionTests, which did not build in my environment, and there is no generator snapshot test of the emitted code.; cannot_determine: codex: This scoped review did not trace the new referenced-type formatter request path end to end or establish the supported type and assembly cases.
-- ask: reviewer refusal `claude`: Correctness of the generated formatter code (partial class emission in FormatterTemplate/StringKeyFormatterTemplate, structs, init-only and required members, callback receivers) (Needs the ExecutionTests to build and run; they failed to compile in my environment (CS0117 in pre-existing files too), and there is no snapshot test. I did not read the regenerated template .cs files line by line.)
-- ask: reviewer refusal `claude`: Interaction with TypeCollector/analyzer when a [MessagePackObject] type has a member of the externally formatted type (MsgPack003 risk, double registration when T is in the same compilation) (The generator excludes [GeneratedMessagePackFormatter] classes from custom formatters (GeneratorUtilities) while the analyzer discovers formatters separately. Whether this yields the right diagnostics and a single registration needs a build I could not run.)
-- ask: reviewer refusal `claude`: API and feature design (surrogate type, contractless default, diagnostic IDs MsgPack019-022) (Product and API design decision; the issue thread shows maintainers had not settled the design.)
-- ask: reviewer refusal `claude`: Remaining files of the 28 (doc/analyzers/MsgPack019-022.md content, AnalyzerReleases.Unshipped.md, test project wiring) (Scoped review by instruction; read once for consistency but not verified against behaviour.)
-- ask: reviewer refusal `codex`: Whether formatter generation for referenced-assembly types fully meets the feature request (Only the diff summary and requirement were reviewed; the implementation path, edge cases, and execution tests were not traced.)
+- ask: verified finding `claude:C1`: major: New public API in MessagePack.Annotations is not tracked by any PublicAPI file
+- ask: refused clause `REQ-2129-F1`: missing_review: nemotron gave no verdict
+- ask: reviewer refusal `claude`: Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching) (Scoped review: I did not read these 300+ lines line by line. Tests show only the happy paths and the 4 diagnostics.)
+- ask: reviewer refusal `claude`: Whether the API design (SurrogateType, contractless default for external types) is the right answer to the issue, which also asks for Union and other attribute-driven settings (Product/API design decision with permanent public surface; the issue proposes three alternatives and the change picks a fourth (surrogate type).)
+- ask: reviewer refusal `claude`: Security/trust implications of generating formatters that access members of external types (e.g. non-public members) (Not examined in this scoped review.)
+- ask: reviewer refusal `codex`: Full acceptance and compatibility review of the external formatter feature (This is a scoped review. The placeholder requirement contains only a broad feature statement; I did not comprehensively review all generator paths, API compatibility, or serialization contracts. The supplied facts also record a public API check failure, analyzer warning, and missing solution membership for the new test project.)
 - ask: trust cap `annotations-api`: annotations-api: AI may clear at most to ask (mandate clearance right)
-- notify: verified finding `claude:C1`: minor: New diagnostics are reported by the source generator, not the analyzer, against the repo's convention
-- notify: verified finding `claude:C2`: minor: Contractless mode ignores any serialization attributes already on the formatted type
-- notify: verified finding `claude:C3`: minor: Successful path has no generator-level test
+- notify: verified finding `claude:C2`: minor: New test-support project is not in MessagePack.sln
+- notify: verified finding `claude:C3`: minor: New StyleCop warning SA1203 in the new test file
 - notify: trust cap `generator-analyzer-core`: generator-analyzer-core: AI may clear at most to notify (mandate clearance right)
 - notify: trust cap `build`: build: AI may clear at most to notify (mandate clearance right)
 - silent: trust cap `docs`: docs: AI may clear at most to silent (mandate clearance right)
@@ -33,18 +32,23 @@ Mandate `messagepack-csharp` v1 sha256 `ef0e95521f7e364a`, signature: valid, Toi
 
 ## What the AI refused to decide, and why
 
-- **REQ-2129-F1**: `cannot_determine` claude: The feature is implemented: a [GeneratedMessagePackFormatter] attribute, a generator pipeline that writes the partial formatter body, and a surrogate mode. But the only tests I could run are 6 diagnostic tests. The successful path (generated formatter compiles, is registered, round-trips) is covered only by ExecutionTests, which did not build in my environment, and there is no generator snapshot test of the emitted code.; `cannot_determine` codex: This scoped review did not trace the new referenced-type formatter request path end to end or establish the supported type and assembly cases.
-- **claude** refused: Correctness of the generated formatter code (partial class emission in FormatterTemplate/StringKeyFormatterTemplate, structs, init-only and required members, callback receivers). Why: Needs the ExecutionTests to build and run; they failed to compile in my environment (CS0117 in pre-existing files too), and there is no snapshot test. I did not read the regenerated template .cs files line by line.. Who should decide: source generator area owner, with CI results
-- **claude** refused: Interaction with TypeCollector/analyzer when a [MessagePackObject] type has a member of the externally formatted type (MsgPack003 risk, double registration when T is in the same compilation). Why: The generator excludes [GeneratedMessagePackFormatter] classes from custom formatters (GeneratorUtilities) while the analyzer discovers formatters separately. Whether this yields the right diagnostics and a single registration needs a build I could not run.. Who should decide: source generator area owner
-- **claude** refused: API and feature design (surrogate type, contractless default, diagnostic IDs MsgPack019-022). Why: Product and API design decision; the issue thread shows maintainers had not settled the design.. Who should decide: maintainer (API review)
-- **claude** refused: Remaining files of the 28 (doc/analyzers/MsgPack019-022.md content, AnalyzerReleases.Unshipped.md, test project wiring). Why: Scoped review by instruction; read once for consistency but not verified against behaviour.. Who should decide: area owner
-- **codex** refused: Whether formatter generation for referenced-assembly types fully meets the feature request. Why: Only the diff summary and requirement were reviewed; the implementation path, edge cases, and execution tests were not traced.. Who should decide: MessagePack source generator maintainer
+- **REQ-2129-F1**: `missing_review` nemotron gave no verdict
+- **claude** refused: Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching). Why: Scoped review: I did not read these 300+ lines line by line. Tests show only the happy paths and the 4 diagnostics.. Who should decide: source-generator area owner
+- **claude** refused: Whether the API design (SurrogateType, contractless default for external types) is the right answer to the issue, which also asks for Union and other attribute-driven settings. Why: Product/API design decision with permanent public surface; the issue proposes three alternatives and the change picks a fourth (surrogate type).. Who should decide: MessagePack-CSharp maintainers
+- **claude** refused: Security/trust implications of generating formatters that access members of external types (e.g. non-public members). Why: Not examined in this scoped review.. Who should decide: security champion
+- **codex** refused: Full acceptance and compatibility review of the external formatter feature. Why: This is a scoped review. The placeholder requirement contains only a broad feature statement; I did not comprehensively review all generator paths, API compatibility, or serialization contracts. The supplied facts also record a public API check failure, analyzer warning, and missing solution membership for the new test project.. Who should decide: area owner
+
+_1 disputed item(s), not adjudicated: finding:claude:C1_
+
+## Who reviewed
+
+Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confidential: no. Rule: proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass.
 
 ## Requirement trace
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-2129-F1 | refused | claude: cannot_determine (4/6 verified), codex: cannot_determine (1/1 verified) | build: pass, tests.targeted: pass | cannot_determine |
+| REQ-2129-F1 | refused | claude: met (9/9 verified), codex: met (3/3 verified) | build: pass, tests.targeted: pass | missing_review |
 
 ## What was checked, and by whom
 
@@ -63,30 +67,28 @@ Mandate `messagepack-csharp` v1 sha256 `ef0e95521f7e364a`, signature: valid, Toi
 
 | Reviewer | Model | Prompt | Verified findings | Rejected | Refusals |
 |---|---|---|---|---|---|
-| claude | claude-opus-5-5 (Anthropic) | review-v1 | 4 | 0 | 4 |
-| codex | GPT-6 Codex (OpenAI) | review-v1 | 0 | 0 | 1 |
+| claude | claude-opus-5-5 (Anthropic) | review-v1 | 4 | 0 | 3 |
+| codex | GPT-6 (OpenAI) | review-v1 | 0 | 0 | 1 |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v1 (ef0e95521f7e)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)
 
 ## What the AI found (verified findings)
 
-- **claude:C1** [minor, maintainability] New diagnostics are reported by the source generator, not the analyzer, against the repo's convention -> tier notify
-  MsgPack019-022 are declared in MsgPack00xMessagePackAnalyzer and listed in its SupportedDiagnostics, but the analyzer never reports them. They are only reported by a separate generator pipeline. The generator also reuses analyzer descriptors (MsgPack004, MsgPack005, MsgPack010) for surrogate errors. The existing design deliberately keeps diagnostics out of the generator ('null when running in the context of a source generator so as to avoid duplicate diagnostics'). Generator diagnostics do not take part in analyzer configuration and run on every generator pass.
-    - [OK] `src/MessagePack.SourceGenerator/MessagePackGenerator.cs:131` @head: `context.RegisterSourceOutput(generatedFormatterDiagnostics, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));` (quote matches src/MessagePack.SourceGenerator/MessagePackGenerator.cs:131 at head 083afd99)
-    - [OK] `src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:385` @head: `SurrogateMemberNotFound);` (quote matches src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:385 at head 083afd99)
-    - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:218` @base: `This will be <see langword="null" /> when running in the context of a source generator so as to avoid duplicate diagnostics.` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:218 at base 32258fdb)
-- **claude:C2** [minor, correctness] Contractless mode ignores any serialization attributes already on the formatted type -> tier notify
-  Without a surrogate, members are chosen only by 'public read-write' and sorted by name. [IgnoreMember], [IgnoreDataMember], [DataMember]/[Key] and [MessagePackObject] on T are never consulted. The maintainer's direction in the issue was to use attributes if present and fall back to contractless otherwise. For a referenced type that does carry such attributes, the generated wire contract can differ from what the dynamic resolver produces for the same type.
-    - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs:133` @head: `List<ISymbol> targets = GetInstanceMembers(type).Where(IsPublicReadWrite).OrderBy(m => m.Name, StringComparer.Ordinal).ToList();` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs:133 at head 083afd99)
-    - [OK] `README.md:1655` @head: `By default the formatter serializes the type in *contractless* mode` (quote matches README.md:1655 at head 083afd99)
-    - [REJECTED] https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2129 (issue text cannot be verified offline (not counted as evidence))
-- **claude:C3** [minor, tests] Successful path has no generator-level test -> tier notify
-  All 6 new SourceGenerator.Tests are negative diagnostic tests that hand-write the formatter members. No test snapshots or compiles the generated 'partial class' formatter body and resolver registration. The successful path is only covered by the ExecutionTests project (which also adds a new ExternalTypes project and edits MapModeExecutionTests to exclude the files).
-    - [OK] `tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:20` @head: `// Formatter members are written by hand in the diagnostic tests, so the compiler accepts the source` (quote matches tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:20 at head 083afd99)
-    - [OK] `tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:29` @head: `public async Task FormatterMustBePartial()` (quote matches tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:29 at head 083afd99)
-- **claude:C4** [info, scope] New public API in MessagePack.Annotations -> tier silent
-  The change adds a public attribute type with a public SurrogateType property to the shipped Annotations assembly. This is a permanent API commitment, and the design (surrogate vs. other options discussed in the issue) needs maintainer sign-off.
-    - [OK] `src/MessagePack.Annotations/Attributes.cs:176` @head: `public Type? SurrogateType { get; set; }` (quote matches src/MessagePack.Annotations/Attributes.cs:176 at head 083afd99)
+- **claude:C1** [major, maintainability] New public API in MessagePack.Annotations is not tracked by any PublicAPI file -> tier ask
+  The change adds a public GeneratedMessagePackFormatterAttribute (with a public SurrogateType property) to a shipping assembly, plus public analyzer descriptors MsgPack019-022. MessagePack.Annotations has no PublicAPI.*.txt, so the PublicApiAnalyzers gate never saw it (public_api check = fail). Once shipped, this API is permanent, so a maintainer has to approve its name and shape explicitly.
+    - [OK] check `public_api` (facts.json: public_api fail: public API added: new public class MessagePack.GeneratedMessagePackFormatterAttribute (with public Type? SurrogateType) in src/MessagePack.Annotations/Attributes.cs; MessagePack.Annotations has no PublicAPI.*.txt tracking so PublicApiAnalyzers did not flag it. Also 4 new public DiagnosticDescriptors MsgPack019-022 (analyzer assembly) and 4 rows added to AnalyzerReleases.Unshipped.md)
+    - [OK] `src/MessagePack.Annotations/Attributes.cs:166` @head: `public class GeneratedMessagePackFormatterAttribute : Attribute` (quote matches src/MessagePack.Annotations/Attributes.cs:166 at head 083afd99)
+- **claude:C2** [minor, maintainability] New test-support project is not in MessagePack.sln -> tier notify
+  tests/MessagePack.SourceGenerator.ExternalTypes is only reachable through a ProjectReference from ExecutionTests. It is missing from the solution (solution_membership = fail), so IDE and solution-level builds don't show or build it directly.
+    - [OK] check `solution_membership` (facts.json: solution_membership fail: new project tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj is not added to MessagePack.sln (only referenced from ExecutionTests.csproj))
+- **claude:C3** [minor, maintainability] New StyleCop warning SA1203 in the new test file -> tier notify
+  GeneratedMessagePackFormatterTests declares a const field after an instance field, adding 1 build warning vs base (analyzers = fail).
+    - [OK] check `analyzers` (facts.json: analyzers fail: 1 new warnings vs base)
+    - [OK] `tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:22` @head: `private const string Members = """` (quote matches tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:22 at head 083afd99)
+- **claude:C4** [info, tests] External-type execution tests are excluded from the MapMode execution suite -> tier silent
+  MapModeExecutionTests now excludes GeneratedFormatterForExternalTypes*.cs, so the new feature is never tested with map mode (tests.targeted.execution reports no matching tests there).
+    - [OK] `tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj:14` @head: `GeneratedFormatterForExternalTypes*.cs` (quote matches tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj:14 at head 083afd99)
+    - [OK] check `tests.targeted.execution` (facts.json: tests.targeted.execution pass: GeneratedFormatterForExternalTypesTests: 7 passed, 0 failed (7 new test results; runtime: generator runs inside csc, no CS9057); tests/MessagePack.SourceGenerator.MapModeExecutionTests: no tests match the filter (the test file is excluded from this project))
 
 ## Rejected: unsupported claims
 
@@ -104,15 +106,16 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v1 (ef0e9552
 
 ## Residual risk
 
-- REQ-2129-F1 not proven: cannot_determine
-- Reviewer refusal (claude): Correctness of the generated formatter code (partial class emission in FormatterTemplate/StringKeyFormatterTemplate, structs, init-only and required members, callback receivers)
-- Reviewer refusal (claude): Interaction with TypeCollector/analyzer when a [MessagePackObject] type has a member of the externally formatted type (MsgPack003 risk, double registration when T is in the same compilation)
-- Reviewer refusal (claude): API and feature design (surrogate type, contractless default, diagnostic IDs MsgPack019-022)
-- Reviewer refusal (claude): Remaining files of the 28 (doc/analyzers/MsgPack019-022.md content, AnalyzerReleases.Unshipped.md, test project wiring)
-- Reviewer refusal (codex): Whether formatter generation for referenced-assembly types fully meets the feature request
+- REQ-2129-F1 not proven: missing_review
+- Reviewer refusal (claude): Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching)
+- Reviewer refusal (claude): Whether the API design (SurrogateType, contractless default for external types) is the right answer to the issue, which also asks for Union and other attribute-driven settings
+- Reviewer refusal (claude): Security/trust implications of generating formatters that access members of external types (e.g. non-public members)
+- Reviewer refusal (codex): Full acceptance and compatibility review of the external formatter feature
+- Open major finding claude:C1: New public API in MessagePack.Annotations is not tracked by any PublicAPI file
 - tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)
 - build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))
 - benchmarks not run (no runtime serialization hot path touched (generator/analyzer only))
+- 1 disputed item(s) were not adjudicated (adjudicator gemini has not run)
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 ## Risk score: 145.2 -> block

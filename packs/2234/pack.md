@@ -1,32 +1,33 @@
 # Evidence pack: change 2234
 
-**Recommended tier: ASK** · owner **Toivo** · risk score 59.6
+**Recommended tier: ASK** · owner **Toivo** · risk score 67.6
 
 Branch `ju26-issue-2234` (32258fdb..9007cee1), 4 files, +262 -4. Author Stelian Vultur (agent-written: True). Commit: Implementation for #2234 The analyzer does not work if SuppressSourceGeneration = true
 
-Mandate `messagepack-csharp` v1 sha256 `ef0e95521f7e364a`, signature: valid, Toivo
+Mandate `messagepack-csharp` v2 sha256 `39cc2060685638e1`, signature: valid, Toivo
 
 ## Why this tier
 
-- **ask** from verified finding `claude:C1`: major: Change does not address the regression the issue reports; it fixes a different, pre-existing crash
-- **ask** from refused clause `REQ-2234-N2`: cannot_determine: claude: 4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'.; cannot_determine: codex: The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions.
-- **ask** from reviewer refusal `claude`: Which branch this change targets, and therefore whether it resolves issue #2234 for users (The reported regression lives on master/v3.1.x, not on the base of this change. Whether the change is meant for that line, or whether a separate fix is needed there, is a release-management decision I cannot make from the code.)
-- **ask** from reviewer refusal `claude`: No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests) (ExecutionTests and MapModeExecutionTests failed to compile in my environment (CS0117 on GeneratedMessagePackResolver/MyGeneratedCompositeResolver 'Instance', also in pre-existing files), so I could not run them.)
-- **ask** from reviewer refusal `claude`: Generator behaviour (no CS8785) on duplicate/mixed keys (Established only by code reading; the new tests run the analyzer alone (CSharpCodeFixVerifier), not the generator.)
-- **ask** from reviewer refusal `codex`: Whether the new tests fail on base and whether the existing suite is regression-free (No facts.json checks or executed test outcomes were available to inspect.)
-- **ask** from risk score `risk`: score 59.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6
+- **ask** from verified finding `claude:C1`: major: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
+- **ask** from refused clause `REQ-2234-F1`: missing_review: nemotron gave no verdict
+- **ask** from refused clause `REQ-2234-F2`: missing_review: nemotron gave no verdict
+- **ask** from refused clause `REQ-2234-N1`: missing_review: nemotron gave no verdict; not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met
+- **ask** from refused clause `REQ-2234-N2`: missing_review: nemotron gave no verdict
+- **ask** from reviewer refusal `claude`: Whether this change resolves issue #2234 for users of the released 3.1.x packages (The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).)
+- **ask** from reviewer refusal `claude`: Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.)
+- **ask** from risk score `risk`: score 67.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6
 
 <details><summary>All tier drivers</summary>
 
-- ask: verified finding `claude:C1`: major: Change does not address the regression the issue reports; it fixes a different, pre-existing crash
-- ask: refused clause `REQ-2234-N2`: cannot_determine: claude: 4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'.; cannot_determine: codex: The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions.
-- ask: reviewer refusal `claude`: Which branch this change targets, and therefore whether it resolves issue #2234 for users (The reported regression lives on master/v3.1.x, not on the base of this change. Whether the change is meant for that line, or whether a separate fix is needed there, is a release-management decision I cannot make from the code.)
-- ask: reviewer refusal `claude`: No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests) (ExecutionTests and MapModeExecutionTests failed to compile in my environment (CS0117 on GeneratedMessagePackResolver/MyGeneratedCompositeResolver 'Instance', also in pre-existing files), so I could not run them.)
-- ask: reviewer refusal `claude`: Generator behaviour (no CS8785) on duplicate/mixed keys (Established only by code reading; the new tests run the analyzer alone (CSharpCodeFixVerifier), not the generator.)
-- ask: reviewer refusal `codex`: Whether the new tests fail on base and whether the existing suite is regression-free (No facts.json checks or executed test outcomes were available to inspect.)
-- ask: risk score `risk`: score 59.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6
-- notify: verified finding `claude:C2`: minor: Half of the new tests do not fail without the fix
-- notify: verified finding `claude:C3`: minor: Generator now silently drops the duplicate/mismatched member instead of failing
+- ask: verified finding `claude:C1`: major: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
+- ask: refused clause `REQ-2234-F1`: missing_review: nemotron gave no verdict
+- ask: refused clause `REQ-2234-F2`: missing_review: nemotron gave no verdict
+- ask: refused clause `REQ-2234-N1`: missing_review: nemotron gave no verdict; not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met
+- ask: refused clause `REQ-2234-N2`: missing_review: nemotron gave no verdict
+- ask: reviewer refusal `claude`: Whether this change resolves issue #2234 for users of the released 3.1.x packages (The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).)
+- ask: reviewer refusal `claude`: Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.)
+- ask: risk score `risk`: score 67.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6
+- notify: verified finding `claude:C2`: minor: Positional-record Key(null) still crashes the analyzer for suppressed (and other) types
 - notify: trust cap `generator-analyzer-core`: generator-analyzer-core: AI may clear at most to notify (mandate clearance right)
 - silent: trust cap `docs`: docs: AI may clear at most to silent (mandate clearance right)
 - silent: trust cap `tests`: tests: AI may clear at most to silent (mandate clearance right)
@@ -35,20 +36,27 @@ Mandate `messagepack-csharp` v1 sha256 `ef0e95521f7e364a`, signature: valid, Toi
 
 ## What the AI refused to decide, and why
 
-- **REQ-2234-N2**: `cannot_determine` claude: 4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'.; `cannot_determine` codex: The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions.
-- **claude** refused: Which branch this change targets, and therefore whether it resolves issue #2234 for users. Why: The reported regression lives on master/v3.1.x, not on the base of this change. Whether the change is meant for that line, or whether a separate fix is needed there, is a release-management decision I cannot make from the code.. Who should decide: maintainer / release owner
-- **claude** refused: No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests). Why: ExecutionTests and MapModeExecutionTests failed to compile in my environment (CS0117 on GeneratedMessagePackResolver/MyGeneratedCompositeResolver 'Instance', also in pre-existing files), so I could not run them.. Who should decide: CI / build owner (facts stage)
-- **claude** refused: Generator behaviour (no CS8785) on duplicate/mixed keys. Why: Established only by code reading; the new tests run the analyzer alone (CSharpCodeFixVerifier), not the generator.. Who should decide: source generator area owner
-- **codex** refused: Whether the new tests fail on base and whether the existing suite is regression-free. Why: No facts.json checks or executed test outcomes were available to inspect.. Who should decide: MessagePack source generator maintainer
+- **REQ-2234-F1**: `missing_review` nemotron gave no verdict
+- **REQ-2234-F2**: `missing_review` nemotron gave no verdict
+- **REQ-2234-N1**: `missing_review` nemotron gave no verdict; `not_met` claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; `reviewers_disagree` claude says not_met, codex says met
+- **REQ-2234-N2**: `missing_review` nemotron gave no verdict
+- **claude** refused: Whether this change resolves issue #2234 for users of the released 3.1.x packages. Why: The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).. Who should decide: analyzer area owner / maintainers choosing the target branch
+- **claude** refused: Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate. Why: Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.. Who should decide: docs owner
+
+_2 disputed item(s), not adjudicated: REQ-2234-N1, finding:claude:C1_
+
+## Who reviewed
+
+Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confidential: no. Rule: proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass.
 
 ## Requirement trace
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-2234-F1 | proven | claude: met (4/6 verified), codex: met (4/4 verified) | build: pass, tests.targeted: pass | - |
-| REQ-2234-F2 | proven | claude: met (5/5 verified), codex: met (3/3 verified) | build: pass, tests.targeted: pass | - |
-| REQ-2234-N1 | proven | claude: met (6/7 verified), codex: met (4/4 verified) | build: pass, tests.full_suite: pass | - |
-| REQ-2234-N2 | refused | claude: cannot_determine (3/3 verified), codex: cannot_determine (2/2 verified) | build: pass, tests.fail_without_fix: pass | cannot_determine |
+| REQ-2234-F1 | refused | claude: met (9/9 verified), codex: met (4/4 verified) | build: pass, tests.targeted: pass | missing_review |
+| REQ-2234-F2 | refused | claude: met (5/5 verified), codex: met (2/2 verified) | build: pass, tests.targeted: pass | missing_review |
+| REQ-2234-N1 | refused | claude: not_met (4/4 verified), codex: met (2/2 verified) | build: pass, tests.full_suite: pass | missing_review; not_met; reviewers_disagree |
+| REQ-2234-N2 | refused | claude: met (7/7 verified), codex: met (2/2 verified) | build: pass, tests.fail_without_fix: pass | missing_review |
 
 ## What was checked, and by whom
 
@@ -66,29 +74,30 @@ Mandate `messagepack-csharp` v1 sha256 `ef0e95521f7e364a`, signature: valid, Toi
 
 | Reviewer | Model | Prompt | Verified findings | Rejected | Refusals |
 |---|---|---|---|---|---|
-| claude | claude-opus-5-5 (Anthropic) | review-v1 | 3 | 0 | 3 |
-| codex | GPT-6 Codex (OpenAI) | review-v1 | 0 | 0 | 1 |
+| claude | claude-opus-5-5 (Anthropic) | review-v1 | 4 | 0 | 2 |
+| codex | GPT-6 (OpenAI) | review-v1 | 0 | 0 | 0 |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v1 (ef0e95521f7e)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)
 
 ## What the AI found (verified findings)
 
-- **claude:C1** [major, correctness] Change does not address the regression the issue reports; it fixes a different, pre-existing crash -> tier ask
-  The issue says the analyzer stopped working for SuppressSourceGeneration types in 3.1.1. That regression is commit 1a74a620 ('stop collect field when object marked SuppressSourceGeneration'), which moved the 'if (suppressSourceGeneration is true) return null;' ahead of the member loop. It is on origin/master and the v3.1.x tags, but it is NOT an ancestor of base 32258fdb. In the base, the return is still after the member loop (line 1369), the same as v3.1.0, and suppressed types are already validated: MemberWithoutKeyIsReported, AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported and SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed all pass against base source. The change actually fixes the analyzer crash (AD0001) on duplicate or mixed keys. That crash is not specific to suppressed types (DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes fails on base too). It also exists in v3.1.0, so it is not the 3.1.1 regression. If this change is merged into the 3.1.x line where users hit the bug, the issue stays unfixed, because the early return still skips all member checks.
+- **claude:C1** [major, correctness] The issue's 3.1.1 regression is not on this base; the change fixes a different crash -> tier ask
+  Issue #2234 says the analyzer stopped working for SuppressSourceGeneration = true in 3.1.1. The cause in history is commit 1a74a620 ('stop collect field when object marked SuppressSourceGeneration', in v3.1.1 and still in v3.1.12): it moved the 'if (suppressSourceGeneration is true) return null;' to right after the attribute is read, before any member is analyzed. Base 32258fdb is on the develop line and does not contain v3.1.0/v3.1.1 or that commit. Its early return is at line 1369, after member collection, which is why MsgPack004/003/015 tests already pass on base. So the agent fixed the duplicate/mixed-key crashes (which hit non-suppressed types too, see DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes failing on base) and wrote tests and README text as if that were #2234. Merged into the 3.1.x/master line, this change would not restore the analyzer for suppressed types; the early return would still need to move.
+    - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:723` @8373710fb0ae4bb453737f773b930401d8500c31: `if (suppressSourceGeneration is true)` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:723 at 8373710fb0ae4bb453737f773b930401d8500c31 8373710f)
     - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1369` @base: `if (suppressSourceGeneration is true)` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1369 at base 32258fdb)
-    - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1022` @base: `intMembers.Add(member.IntKey, (member, item.Type));` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1022 at base 32258fdb)
-    - [OK] `tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:147` @head: `public async Task DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes()` (quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:147 at head 9007cee1)
+    - [OK] test `SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported` passed (facts.json tests.fail_without_fix: passed (new test))
+    - [OK] test `SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes` failed (facts.json tests.fail_without_fix: failed (new test))
     - [REJECTED] https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234 (issue text cannot be verified offline (not counted as evidence))
-- **claude:C2** [minor, tests] Half of the new tests do not fail without the fix -> tier notify
-  Run against base TypeCollector.cs, 4 of the 8 new analyzer tests pass: MemberWithoutKey, AllowPrivateRequired, MemberTypeMustBeMessagePackObject and SourceGenerationOnlyDiagnostics. The two new execution tests check run-time behaviour of the dynamic resolver, which the change does not touch. These tests document existing behaviour; they are not regression tests for the change.
-    - [OK] `tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:21` @head: `public async Task MemberWithoutKeyIsReported()` (quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:21 at head 9007cee1)
-    - [OK] `tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:39` @head: `public async Task AllowPrivateRequiredIsReported()` (quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:39 at head 9007cee1)
-    - [OK] `tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:27` @head: `public void SuppressedTypeRoundTripsThroughDynamicResolver()` (quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:27 at head 9007cee1)
-- **claude:C3** [minor, correctness] Generator now silently drops the duplicate/mismatched member instead of failing -> tier notify
-  For non-suppressed types the generator (reportDiagnostic == null) used to throw on duplicate or mixed keys. Now it skips the offending member and emits a formatter without it. That is safe only while MsgPack005 (Error) is reported by the analyzer. If the analyzer is disabled or MsgPack005 is downgraded via .editorconfig, the build succeeds with a formatter that silently omits a member.
-    - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008` @head: `continue; // The key kind does not match the other members` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1)
+- **claude:C2** [minor, correctness] Positional-record Key(null) still crashes the analyzer for suppressed (and other) types -> tier notify
+  The BothStringAndIntKeyAreNull path hard-casts the property's syntax to PropertyDeclarationSyntax. For a positional record property it is a ParameterSyntax, so AD0001 InvalidCastException. Reproduced at this head with SuppressSourceGeneration = true (own probe). This is an invalid contract in such a type, so N1's 'must not crash on invalid contracts' is not fully met.
+    - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985` @head: `(PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1)
+- **claude:C3** [info, correctness] 'continue' on mixed key kinds skips recursive collection of that member's type -> tier silent
+  After reporting DoNotMixStringAndIntKeys the new 'continue' also skips CollectCore for the member, so diagnostics about the member's own type (e.g. MsgPack003) are no longer produced for that member until the key kind is fixed. Acceptable because the type already has an error, but it hides a second problem until the first is fixed.
+    - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008` @head: `continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1)
+- **claude:C4** [info, correctness] Duplicate-key guard makes the generator emit a formatter that silently drops the second member -> tier silent
+  For a non-suppressed type with duplicate keys, the generator (which has no diagnostic sink) used to fail with CS8785. Now it keeps the first member and emits a formatter without the second. The build still fails while MsgPack005 is an error, but if a project lowers that diagnostic's severity, it silently loses data. I saw this in my probe (formatter generated, analyzer reports MsgPack005).
     - [OK] `src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023` @head: `if (!intMembers.ContainsKey(member.IntKey))` (quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1)
-    - [OK] `src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:43` @base: `private const DiagnosticSeverity InvalidMessagePackObjectSeverity = DiagnosticSeverity.Error;` (quote matches src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:43 at base 32258fdb)
+    - [OK] test `SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes` passed (facts.json tests.targeted: passed (new test))
 
 ## Rejected: unsupported claims
 
@@ -106,18 +115,20 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v1 (ef0e9552
 
 ## Residual risk
 
-- REQ-2234-N2 not proven: cannot_determine
-- Reviewer refusal (claude): Which branch this change targets, and therefore whether it resolves issue #2234 for users
-- Reviewer refusal (claude): No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests)
-- Reviewer refusal (claude): Generator behaviour (no CS8785) on duplicate/mixed keys
-- Reviewer refusal (codex): Whether the new tests fail on base and whether the existing suite is regression-free
-- Open major finding claude:C1: Change does not address the regression the issue reports; it fixes a different, pre-existing crash
+- REQ-2234-F1 not proven: missing_review
+- REQ-2234-F2 not proven: missing_review
+- REQ-2234-N1 not proven: missing_review; not_met; reviewers_disagree
+- REQ-2234-N2 not proven: missing_review
+- Reviewer refusal (claude): Whether this change resolves issue #2234 for users of the released 3.1.x packages
+- Reviewer refusal (claude): Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate
+- Open major finding claude:C1: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
 - tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)
 - build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))
 - benchmarks not run (no runtime serialization hot path touched (generator/analyzer only))
+- 2 disputed item(s) were not adjudicated (adjudicator gemini has not run)
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
-## Risk score: 59.6 -> ask
+## Risk score: 67.6 -> ask
 
 | Factor | Points | Reason |
 |---|---:|---|
@@ -129,9 +140,9 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v1 (ef0e9552
 | source_without_tests | 0 | tests changed alongside source |
 | security_sensitive_paths | 0 | none touched |
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: pass |
-| reviewer_disagreement | 0 | 0 clause(s) x 8 |
+| reviewer_disagreement | 8 | 1 clause(s) x 8: REQ-2234-N1 |
 | failed_checks | 25 | 1 failed check(s) x 25: tests.execution_fail_without_fix |
-| **total** | **59.6** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| **total** | **67.6** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 ## Sign-off
 

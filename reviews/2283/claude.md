@@ -1,30 +1,36 @@
-# Review of #2283 by claude (claude-opus-5-5, review-v1)
+# Review of #2283 by claude (claude-opus-5-5, review-v1, second pass)
 
-**Verdict:** This fixes the root cause. Two of the five requirements are not fully proven: the full suite was not run, and one cross-compilation case is untested.
+**Verdict:** The crash's root cause is fixed and covered by tests. The new location filter is too broad: it now silently drops a diagnostic about a type in the current compilation, which base reported. N1 is not met.
 
-## What the change does
-- `TypeCollector.GetObjectInfo` indexed `DeclaringSyntaxReferences[0]` in two places in the base: line 985 (`BothStringAndIntKeyAreNull`) and line 1077 (`MemberNeedsKey`). The `MemberNeedsKey` site runs even in the generator, because the `Diagnostic.Create` is evaluated outside the `?.Invoke`. A closed generic **struct** from metadata exposes its private backing fields, which have no syntax, so the index throws. That matches the issue's "generic + value type + referenced assembly" triad. Both sites now use `FirstOrDefault`.
-- All analyzer diagnostics are now routed through `ReportIfLocatedInCompilation`, which drops any diagnostic whose location is not in a syntax tree of the analyzed compilation (REQ-F3).
+## Root cause (confirmed)
+Roslyn imports a metadata struct's private fields, including the compiler-generated backing fields. `GetObjectInfo` (reached through the closed-generic branch of `CollectGeneric`, TypeCollector.cs:651) treats those fields as unkeyed members. Base line 1077 then builds `MemberNeedsKey` with `DeclaringSyntaxReferences[0]` *outside* the `?.Invoke`, so it throws in the generator (CS8785) as well as in the analyzer (AD0001). Head uses `FirstOrDefault` there and a null-safe helper at line 985.
 
-## Verified by running (net8.0, my worktree /tmp/claude-review-2283)
-- `MessagePack.SourceGenerator.Tests`: 170/170 pass on head.
-- The 3 new tests, with base `TypeCollector.cs` restored: all 3 fail with AD0001 (IndexOutOfRangeException) and CS8785. So the tests do cover the fix.
+## Evidence used
+- facts.json: build, targeted, full suite (170/170), fail_without_fix (3/3 new tests fail on base with the issue's IndexOutOfRangeException).
+- My own runs (SDK 8.0.402, scratch worktree, removed afterwards; not citable as test evidence):
+  - Exact issue repro: base gives CS8785 and no generated files; head gives `App.R.g.cs` with no diagnostics.
+  - With only the filter at line 239 reverted, `ClosedGenericStruct_FromMetadataReference_UnkeyedMember` fails with two location-less MsgPack004 diagnostics, so that test pins F3.
+  - **Regression probe:** metadata generic *class* `Lib.Item<T>` used as `Item<Foo>`, where `App.Foo` has no `[MessagePackObject]`. Base reports MsgPack003 (metadata location); head reports nothing.
+  - In-source positional record `[property: Key(null)]`: base gives AD0001 InvalidCastException; head gives no diagnostic.
 
-## Requirement verdicts
 | Req | Verdict | Basis |
 |---|---|---|
-| F1 | met | Both `[0]` sites fixed; the test asserts the resolver hint name is generated |
-| F2 | met | The harness runs all analyzers; no AD0001 on head |
-| F3 | met | Filter at TypeCollector.cs:1446 (code reading; see C1 for the test gap) |
-| N1 | cannot_determine | Execution tests did not build in my environment; see C2 |
-| N2 | met | New tests fail on base source |
+| F1 | met | Fix at line 1077; tests assert the resolver hint and no generator warnings; they fail on base |
+| F2 | met | No AD0001 at head; the same tests fail on base with AD0001 |
+| F3 | met | `ReportIfLocatedInCompilation`, pinned by the UnkeyedMember test; over-broad (C1) |
+| N1 | **not_met** | Suite passes, but MsgPack003 about an in-compilation type is now dropped (C1) |
+| N2 | met | 3/3 new tests fail without the fix |
 
 ## Findings
-- **C1 (minor, tests):** The tests use only `MetadataReference.CreateFromImage`. The case of a source-backed symbol from another compilation (the IDE's project-to-project `CompilationReference`), which F3 is really about, is not tested.
-- **C2 (minor, correctness):** The filter drops *all* diagnostics whose location is not in source, including `Location.None` ones about current-compilation types. Example: MsgPack018 computes `location = null` when the colliding member has no syntax. Before, it was reported without a location; now it is silently dropped. I have not confirmed this path is reachable.
-- **C3 (info, docs):** README and MsgPack004.md say the defining project reports these problems. That is only true if the defining project runs the MessagePack analyzer.
+- **C1 (major):** The filter drops metadata-location and `Location.None` diagnostics, both of which Roslyn allows. MsgPack003 for `Item<Foo>` is lost even though `Foo` is in this compilation. Fix: relocate the diagnostic to the in-compilation caller instead of dropping it.
+- **C2 (minor):** `GetPropertyIdentifierLocation` returns null for positional record properties, so BothStringAndIntKeyAreNull is now silently dropped in source.
+- **C3 (info):** This fixes the symptom (unsafe syntax access) but still walks compiler-generated fields of metadata structs as members.
 
 ## Refused
-- Full-suite regressions: ExecutionTests and MapModeExecutionTests failed to compile in my environment (CS0117 in a pre-existing file), and I did not run net472.
-- IDE behaviour with project references.
-- Whether the C2 path is reachable.
+- Runtime correctness of the generated resolver and of the extra `Lib.Item`1` formatter emitted in the consuming assembly. Execution tests were not run.
+- Whether "the defining project reports it" is acceptable product behaviour (needs maintainers).
+
+## Changes from v1
+- N1: `cannot_determine` became `not_met`. A direct base/head probe found a concrete regression, and the full suite is now in facts.json.
+- v1's C2 ("might drop Location.None diagnostics, reachability unconfirmed") became C1 (major), with a reproduced case. v1's refusal "whether the C2 path is reachable" is resolved.
+- The F3 test gap (v1 C1) is narrowed: I showed the UnkeyedMember test fails when only the filter is reverted.
