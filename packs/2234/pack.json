@@ -1,0 +1,1174 @@
+{
+  "schema": "countersign.pack/v1",
+  "change": "2234",
+  "branch": "ju26-issue-2234",
+  "base": "32258fdb",
+  "head": "9007cee1",
+  "commit_message": "Implementation for #2234 The analyzer does not work if SuppressSourceGeneration = true",
+  "author": "Stelian Vultur",
+  "agent_written": true,
+  "diff": {
+    "files": 4,
+    "insertions": 262,
+    "deletions": 4
+  },
+  "simulated": false,
+  "mutation": null,
+  "engine": {
+    "name": "countersign",
+    "version": "0.1.0"
+  },
+  "mandate": {
+    "path": "mandate/messagepack.mandate.yaml",
+    "id": "messagepack-csharp",
+    "version": "1",
+    "owner": "Toivo",
+    "sha256": "ef0e95521f7e364a9de9cb4bf54ee0d7f9bba3c34096ee2b6f6428d98de725dd",
+    "signature": {
+      "valid": true,
+      "signed_by": "Toivo",
+      "signed_at": "2026-11-13T23:30:41+00:00",
+      "reason": "signature valid"
+    }
+  },
+  "inputs": {
+    "facts": {
+      "path": "evidence/2234/facts.json",
+      "sha256": "97b49f4e2fdf4134ea0c98bfe343e57ba773bec8229e5c56e50f12ad7d6daf12"
+    },
+    "requirements": {
+      "path": "requirements/2234.yaml",
+      "sha256": "e561d7ed419ec0979467d1c4c9ca43810618cf01ad67ec9e546076658ca50b3d"
+    },
+    "reviews": {
+      "claude": {
+        "path": "reviews/2234/claude.json",
+        "sha256": "2d53a3f2b9a86abaa275cbe323953c837de23e61440e7d2e2af8c11bc5223f4c"
+      },
+      "codex": {
+        "path": "reviews/2234/codex.json",
+        "sha256": "70d9c70640a5ea4f3a828727d4522ddd1f5e9954fcbaf4cc015d65d67e410061"
+      }
+    }
+  },
+  "requirement_set": {
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "official": false
+  },
+  "tier": "ask",
+  "ai_recommendation": "ask",
+  "why": [
+    {
+      "source": "verified finding",
+      "id": "claude:C1",
+      "tier": "ask",
+      "why": "major: Change does not address the regression the issue reports; it fixes a different, pre-existing crash"
+    },
+    {
+      "source": "refused clause",
+      "id": "REQ-2234-N2",
+      "tier": "ask",
+      "codes": [
+        "cannot_determine",
+        "cannot_determine"
+      ],
+      "why": "cannot_determine: claude: 4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'.; cannot_determine: codex: The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions."
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "Which branch this change targets, and therefore whether it resolves issue #2234 for users (The reported regression lives on master/v3.1.x, not on the base of this change. Whether the change is meant for that line, or whether a separate fix is needed there, is a release-management decision I cannot make from the code.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests) (ExecutionTests and MapModeExecutionTests failed to compile in my environment (CS0117 on GeneratedMessagePackResolver/MyGeneratedCompositeResolver 'Instance', also in pre-existing files), so I could not run them.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "Generator behaviour (no CS8785) on duplicate/mixed keys (Established only by code reading; the new tests run the analyzer alone (CSharpCodeFixVerifier), not the generator.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "codex",
+      "tier": "ask",
+      "why": "Whether the new tests fail on base and whether the existing suite is regression-free (No facts.json checks or executed test outcomes were available to inspect.)"
+    },
+    {
+      "source": "risk score",
+      "id": "risk",
+      "tier": "ask",
+      "why": "score 59.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6"
+    }
+  ],
+  "drivers": [
+    {
+      "source": "verified finding",
+      "id": "claude:C1",
+      "tier": "ask",
+      "why": "major: Change does not address the regression the issue reports; it fixes a different, pre-existing crash"
+    },
+    {
+      "source": "refused clause",
+      "id": "REQ-2234-N2",
+      "tier": "ask",
+      "codes": [
+        "cannot_determine",
+        "cannot_determine"
+      ],
+      "why": "cannot_determine: claude: 4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'.; cannot_determine: codex: The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions."
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "Which branch this change targets, and therefore whether it resolves issue #2234 for users (The reported regression lives on master/v3.1.x, not on the base of this change. Whether the change is meant for that line, or whether a separate fix is needed there, is a release-management decision I cannot make from the code.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests) (ExecutionTests and MapModeExecutionTests failed to compile in my environment (CS0117 on GeneratedMessagePackResolver/MyGeneratedCompositeResolver 'Instance', also in pre-existing files), so I could not run them.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "Generator behaviour (no CS8785) on duplicate/mixed keys (Established only by code reading; the new tests run the analyzer alone (CSharpCodeFixVerifier), not the generator.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "codex",
+      "tier": "ask",
+      "why": "Whether the new tests fail on base and whether the existing suite is regression-free (No facts.json checks or executed test outcomes were available to inspect.)"
+    },
+    {
+      "source": "risk score",
+      "id": "risk",
+      "tier": "ask",
+      "why": "score 59.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6"
+    },
+    {
+      "source": "verified finding",
+      "id": "claude:C2",
+      "tier": "notify",
+      "why": "minor: Half of the new tests do not fail without the fix"
+    },
+    {
+      "source": "verified finding",
+      "id": "claude:C3",
+      "tier": "notify",
+      "why": "minor: Generator now silently drops the duplicate/mismatched member instead of failing"
+    },
+    {
+      "source": "trust cap",
+      "id": "generator-analyzer-core",
+      "tier": "notify",
+      "why": "generator-analyzer-core: AI may clear at most to notify (mandate clearance right)"
+    },
+    {
+      "source": "trust cap",
+      "id": "docs",
+      "tier": "silent",
+      "why": "docs: AI may clear at most to silent (mandate clearance right)"
+    },
+    {
+      "source": "trust cap",
+      "id": "tests",
+      "tier": "silent",
+      "why": "tests: AI may clear at most to silent (mandate clearance right)"
+    }
+  ],
+  "owner": "Toivo",
+  "primary_area": "generator-analyzer-core",
+  "notify": [
+    "Rene"
+  ],
+  "areas": [
+    {
+      "name": "generator-analyzer-core",
+      "owner": "Toivo",
+      "sensitivity": "high",
+      "max_ai_tier": "notify",
+      "cap": "notify",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs"
+      ]
+    },
+    {
+      "name": "docs",
+      "owner": "Rene",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "README.md"
+      ]
+    },
+    {
+      "name": "tests",
+      "owner": "Toivo",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+        "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-2234-F1",
+      "type": "functional",
+      "text": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "On head the analyzer reports MsgPack004/015/003/005 for SuppressSourceGeneration types (8 new tests pass). The suppression early-return is after the member loop, so the contract checks run. But the base already behaved this way for 004/015/003, so the change only adds the duplicate/mixed-key cases (see C1).",
+          "verified": 4,
+          "cited": 6,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1383,
+              "rev": "head",
+              "quote": "if (suppressSourceGeneration is true)",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1023,
+              "rev": "head",
+              "quote": "if (!intMembers.ContainsKey(member.IntKey))",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json: passed (new test)"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": false,
+              "note": "reviewer says passed, facts.json says failed"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": false,
+              "note": "reviewer says passed, facts.json says failed"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-F1",
+              "quote": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types",
+              "verified": true,
+              "note": "REQ-2234-F1 text contains the quote"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "Added analyzer tests assert that missing keys, duplicate keys, and mixed key kinds are diagnosed for suppressed contracts, and collector changes avoid duplicate-key insertion failures.",
+          "verified": 4,
+          "cited": 4,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-F1",
+              "quote": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.",
+              "verified": true,
+              "note": "REQ-2234-F1 text contains the quote"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 21,
+              "rev": "head",
+              "quote": "public async Task MemberWithoutKeyIsReported()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:21 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 81,
+              "rev": "head",
+              "quote": "public async Task DuplicateIntKeysAreReportedWithoutAnalyzerFailure()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:81 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1023,
+              "rev": "head",
+              "quote": "if (!intMembers.ContainsKey(member.IntKey))",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-2234-F2",
+      "type": "functional",
+      "text": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "MsgPack017 is guarded by suppressSourceGeneration is not true, and MsgPack016 by the same flag. MsgPack011 (PartialTypeRequired) comes after the suppression return, so it is never reached. The new test with a private member and init-with-initializer on a suppressed type expects no diagnostics and passes.",
+          "verified": 5,
+          "cited": 5,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 989,
+              "rev": "base",
+              "quote": "if (suppressSourceGeneration is not true && isInitOnly)",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at base 32258fdb"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1369,
+              "rev": "base",
+              "quote": "if (suppressSourceGeneration is true)",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1369 at base 32258fdb"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 169,
+              "rev": "head",
+              "quote": "public async Task SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:169 at head 9007cee1"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json: passed (new test)"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-F2",
+              "quote": "must not be reported for types with SuppressSourceGeneration = true",
+              "verified": true,
+              "note": "REQ-2234-F2 text contains the quote"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The added test checks that source-generation-only diagnostics do not appear for a suppressed type; the collection logic conditions an init-only diagnostic on generation not being suppressed.",
+          "verified": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-F2",
+              "quote": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.",
+              "verified": true,
+              "note": "REQ-2234-F2 text contains the quote"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 169,
+              "rev": "head",
+              "quote": "public async Task SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:169 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 989,
+              "rev": "head",
+              "quote": "if (suppressSourceGeneration is not true && isInitOnly)",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-2234-N1",
+      "type": "non-functional",
+      "text": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "The two throw sites (Dictionary.Add on a duplicate key -> ArgumentException; intKey!.Value after a mixed-kind diagnostic -> InvalidOperationException, both observed as AD0001 on base) are now guarded in both the property and field loops. The generator runs the same GetObjectInfo code, but no test exercises the generator on these inputs.",
+          "verified": 6,
+          "cited": 7,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1022,
+              "rev": "base",
+              "quote": "intMembers.Add(member.IntKey, (member, item.Type));",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1022 at base 32258fdb"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1008,
+              "rev": "head",
+              "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1148,
+              "rev": "head",
+              "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member.",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1148 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1163,
+              "rev": "head",
+              "quote": "if (!intMembers.ContainsKey(member.IntKey))",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1163 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1179,
+              "rev": "head",
+              "quote": "if (!stringMembers.ContainsKey(member.StringKey))",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1179 at head 9007cee1"
+            },
+            {
+              "kind": "test",
+              "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+              "outcome": "passed",
+              "verified": false,
+              "note": "reviewer says passed, facts.json says failed"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-N1",
+              "quote": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.",
+              "verified": true,
+              "note": "REQ-2234-N1 text contains the quote"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "Duplicate integer and string keys are retained only once in the collector maps, and tests specifically cover duplicate and mixed-key invalid contracts without analyzer failure.",
+          "verified": 4,
+          "cited": 4,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-N1",
+              "quote": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.",
+              "verified": true,
+              "note": "REQ-2234-N1 text contains the quote"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+              "line": 1025,
+              "rev": "head",
+              "quote": "intMembers.Add(member.IntKey, (member, item.Type));",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1025 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 81,
+              "rev": "head",
+              "quote": "public async Task DuplicateIntKeysAreReportedWithoutAnalyzerFailure()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:81 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 125,
+              "rev": "head",
+              "quote": "public async Task MixedKeyKindsAreReportedWithoutAnalyzerFailure()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:125 at head 9007cee1"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-2234-N2",
+      "type": "non-functional",
+      "text": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "cannot_determine",
+          "basis": "4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'.",
+          "verified": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 81,
+              "rev": "head",
+              "quote": "public async Task DuplicateIntKeysAreReportedWithoutAnalyzerFailure()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:81 at head 9007cee1"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+              "line": 21,
+              "rev": "head",
+              "quote": "public void NoFormatterIsGeneratedForSuppressedType()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:21 at head 9007cee1"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-N2",
+              "quote": "no regressions in the existing test suite",
+              "verified": true,
+              "note": "REQ-2234-N2 text contains the quote"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "cannot_determine",
+          "basis": "The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions.",
+          "verified": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2234-N2",
+              "quote": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
+              "verified": true,
+              "note": "REQ-2234-N2 text contains the quote"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+              "line": 125,
+              "rev": "head",
+              "quote": "public async Task MixedKeyKindsAreReportedWithoutAnalyzerFailure()",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:125 at head 9007cee1"
+            }
+          ]
+        }
+      },
+      "status": "refused",
+      "reasons": [
+        {
+          "code": "cannot_determine",
+          "detail": "claude: 4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'."
+        },
+        {
+          "code": "cannot_determine",
+          "detail": "codex: The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions."
+        }
+      ]
+    }
+  ],
+  "checked_by": {
+    "tools": [
+      {
+        "id": "build",
+        "tool": "dotnet build",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "0 errors, 1 unique warnings",
+        "duration_s": 5.0,
+        "log": "evidence/2234/logs/build.log"
+      },
+      {
+        "id": "tests.targeted",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "8 passed, 0 failed, 0 skipped (8 new tests in run)",
+        "duration_s": 2.0,
+        "log": "evidence/2234/logs/tests_targeted.1.log"
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+        "duration_s": 2.0,
+        "log": "evidence/2234/logs/tests_fail_without_fix.1.log"
+      },
+      {
+        "id": "tests.full_suite",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 175 tests, 175 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "duration_s": 6.0,
+        "log": "evidence/2234/logs/tests_full_suite.log"
+      },
+      {
+        "id": "public_api",
+        "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "analyzers",
+        "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no new warnings",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.targeted.execution",
+        "tool": "dotnet build + dotnet test (ExecutionTests, MapModeExecutionTests)",
+        "tool_version": "9.0.321",
+        "status": "pass",
+        "summary": "SuppressedSourceGenerationTests: 4 passed, 0 failed (4 new test results; runtime: generator runs inside csc, no CS9057)",
+        "duration_s": 49.0,
+        "log": [
+          "evidence/2234/logs/execution.ExecutionTests.build.log",
+          "evidence/2234/logs/execution.ExecutionTests.targeted.log",
+          "evidence/2234/logs/execution.ExecutionTests.full.log",
+          "evidence/2234/logs/execution.MapModeExecutionTests.build.log",
+          "evidence/2234/logs/execution.MapModeExecutionTests.targeted.log",
+          "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+        ]
+      },
+      {
+        "id": "tests.execution_fail_without_fix",
+        "tool": "dotnet test (source reverted, tests kept) - ExecutionTests",
+        "tool_version": "9.0.321",
+        "status": "fail",
+        "summary": "new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)",
+        "duration_s": null,
+        "log": [
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.build.log",
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.targeted.log",
+          "evidence/2234/logs/execution_fail_without_fix.ExecutionTests.full.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+          "evidence/2234/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+        ]
+      },
+      {
+        "id": "tests.execution_full_suite",
+        "tool": "dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base",
+        "tool_version": "9.0.321",
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base",
+        "duration_s": 1.0,
+        "log": [
+          "evidence/2234/logs/execution.ExecutionTests.full.log",
+          "evidence/2234/logs/execution.MapModeExecutionTests.full.log"
+        ]
+      }
+    ],
+    "reviewers": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-13T23:40:00+00:00",
+        "inputs": [
+          "diff 32258fdb..origin/ju26-issue-2234 (9007cee1)",
+          "base source at 32258fdb; tags v3.1.0, v3.1.1 and commit 1a74a620 for regression history",
+          "requirements/2234.yaml",
+          "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+          "local run: dotnet test tests/MessagePack.SourceGenerator.Tests -f net8.0 on head (175 passed, 0 failed)",
+          "local run: SuppressSourceGenerationAnalyzerTests against base TypeCollector.cs (4 failed, 4 passed)",
+          "local run: ExecutionTests / MapModeExecutionTests on head (build error in reviewer environment, see refusals)"
+        ],
+        "findings": 3,
+        "verified": 3,
+        "rejected": 0,
+        "refusals": 3
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6 Codex",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-13T00:00:00Z",
+        "inputs": [
+          "diff",
+          "requirements/2234.yaml"
+        ],
+        "findings": 0,
+        "verified": 0,
+        "rejected": 0,
+        "refusals": 1
+      }
+    ],
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v1 (ef0e95521f7e)"
+  },
+  "findings": [
+    {
+      "id": "C1",
+      "title": "Change does not address the regression the issue reports; it fixes a different, pre-existing crash",
+      "severity": "major",
+      "category": "correctness",
+      "claim": "The issue says the analyzer stopped working for SuppressSourceGeneration types in 3.1.1. That regression is commit 1a74a620 ('stop collect field when object marked SuppressSourceGeneration'), which moved the 'if (suppressSourceGeneration is true) return null;' ahead of the member loop. It is on origin/master and the v3.1.x tags, but it is NOT an ancestor of base 32258fdb. In the base, the return is still after the member loop (line 1369), the same as v3.1.0, and suppressed types are already validated: MemberWithoutKeyIsReported, AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported and SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed all pass against base source. The change actually fixes the analyzer crash (AD0001) on duplicate or mixed keys. That crash is not specific to suppressed types (DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes fails on base too). It also exists in v3.1.0, so it is not the 3.1.1 regression. If this change is merged into the 3.1.x line where users hit the bug, the issue stays unfixed, because the early return still skips all member checks.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1369,
+          "rev": "base",
+          "quote": "if (suppressSourceGeneration is true)",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1369 at base 32258fdb"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1022,
+          "rev": "base",
+          "quote": "intMembers.Add(member.IntKey, (member, item.Type));",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1022 at base 32258fdb"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+          "line": 147,
+          "rev": "head",
+          "quote": "public async Task DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes()",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:147 at head 9007cee1"
+        },
+        {
+          "kind": "issue",
+          "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+          "quote": "This has happened since version 3.1.1. It still worked in 3.1.0.",
+          "verified": false,
+          "note": "issue text cannot be verified offline (not counted as evidence)"
+        }
+      ],
+      "suggested_fix": "Confirm the target branch. For the 3.1.x/master line, revert the effect of 1a74a620 by moving the suppression return after the member loop and AllowPrivate check (as in this base), and keep this crash fix as a separate change.",
+      "verified_count": 3,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "ask",
+      "confirmed_by": []
+    },
+    {
+      "id": "C2",
+      "title": "Half of the new tests do not fail without the fix",
+      "severity": "minor",
+      "category": "tests",
+      "claim": "Run against base TypeCollector.cs, 4 of the 8 new analyzer tests pass: MemberWithoutKey, AllowPrivateRequired, MemberTypeMustBeMessagePackObject and SourceGenerationOnlyDiagnostics. The two new execution tests check run-time behaviour of the dynamic resolver, which the change does not touch. These tests document existing behaviour; they are not regression tests for the change.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+          "line": 21,
+          "rev": "head",
+          "quote": "public async Task MemberWithoutKeyIsReported()",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:21 at head 9007cee1"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+          "line": 39,
+          "rev": "head",
+          "quote": "public async Task AllowPrivateRequiredIsReported()",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:39 at head 9007cee1"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+          "line": 27,
+          "rev": "head",
+          "quote": "public void SuppressedTypeRoundTripsThroughDynamicResolver()",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:27 at head 9007cee1"
+        }
+      ],
+      "verified_count": 3,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "notify",
+      "confirmed_by": []
+    },
+    {
+      "id": "C3",
+      "title": "Generator now silently drops the duplicate/mismatched member instead of failing",
+      "severity": "minor",
+      "category": "correctness",
+      "claim": "For non-suppressed types the generator (reportDiagnostic == null) used to throw on duplicate or mixed keys. Now it skips the offending member and emits a formatter without it. That is safe only while MsgPack005 (Error) is reported by the analyzer. If the analyzer is disabled or MsgPack005 is downgraded via .editorconfig, the build succeeds with a formatter that silently omits a member.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1008 at head 9007cee1"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 at head 9007cee1"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+          "line": 43,
+          "rev": "base",
+          "quote": "private const DiagnosticSeverity InvalidMessagePackObjectSeverity = DiagnosticSeverity.Error;",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:43 at base 32258fdb"
+        }
+      ],
+      "suggested_fix": "When a contract error is found, have GetObjectInfo return null (no formatter) instead of continuing with a partial member set.",
+      "verified_count": 3,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "notify",
+      "confirmed_by": []
+    }
+  ],
+  "refused": {
+    "clauses": [
+      {
+        "id": "REQ-2234-N2",
+        "type": "non-functional",
+        "text": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
+        "checks": [
+          {
+            "id": "build",
+            "status": "pass"
+          },
+          {
+            "id": "tests.fail_without_fix",
+            "status": "pass"
+          }
+        ],
+        "verdicts": {
+          "claude": {
+            "verdict": "cannot_determine",
+            "basis": "4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'.",
+            "verified": 3,
+            "cited": 3,
+            "evidence": [
+              {
+                "kind": "code",
+                "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+                "line": 81,
+                "rev": "head",
+                "quote": "public async Task DuplicateIntKeysAreReportedWithoutAnalyzerFailure()",
+                "verified": true,
+                "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:81 at head 9007cee1"
+              },
+              {
+                "kind": "code",
+                "file": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+                "line": 21,
+                "rev": "head",
+                "quote": "public void NoFormatterIsGeneratedForSuppressedType()",
+                "verified": true,
+                "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs:21 at head 9007cee1"
+              },
+              {
+                "kind": "requirement",
+                "req": "REQ-2234-N2",
+                "quote": "no regressions in the existing test suite",
+                "verified": true,
+                "note": "REQ-2234-N2 text contains the quote"
+              }
+            ]
+          },
+          "codex": {
+            "verdict": "cannot_determine",
+            "basis": "The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions.",
+            "verified": 2,
+            "cited": 2,
+            "evidence": [
+              {
+                "kind": "requirement",
+                "req": "REQ-2234-N2",
+                "quote": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite.",
+                "verified": true,
+                "note": "REQ-2234-N2 text contains the quote"
+              },
+              {
+                "kind": "code",
+                "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+                "line": 125,
+                "rev": "head",
+                "quote": "public async Task MixedKeyKindsAreReportedWithoutAnalyzerFailure()",
+                "verified": true,
+                "note": "quote matches tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs:125 at head 9007cee1"
+              }
+            ]
+          }
+        },
+        "status": "refused",
+        "reasons": [
+          {
+            "code": "cannot_determine",
+            "detail": "claude: 4 of the 8 new analyzer tests fail on base source (AD0001), so the fix is covered. SourceGenerator.Tests passes 175/175 on head. But the execution test projects (which include the 2 new execution tests) did not build in my environment, so I cannot establish 'no regressions in the existing test suite'."
+          },
+          {
+            "code": "cannot_determine",
+            "detail": "codex: The added tests cover the stated scenarios, but the available repository review context contains no execution results and does not establish that the tests fail without the fix or that the full suite has no regressions."
+          }
+        ]
+      }
+    ],
+    "reviewer_refusals": [
+      {
+        "topic": "Which branch this change targets, and therefore whether it resolves issue #2234 for users",
+        "reason": "The reported regression lives on master/v3.1.x, not on the base of this change. Whether the change is meant for that line, or whether a separate fix is needed there, is a release-management decision I cannot make from the code.",
+        "who_should_decide": "maintainer / release owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5"
+      },
+      {
+        "topic": "No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests)",
+        "reason": "ExecutionTests and MapModeExecutionTests failed to compile in my environment (CS0117 on GeneratedMessagePackResolver/MyGeneratedCompositeResolver 'Instance', also in pre-existing files), so I could not run them.",
+        "who_should_decide": "CI / build owner (facts stage)",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5"
+      },
+      {
+        "topic": "Generator behaviour (no CS8785) on duplicate/mixed keys",
+        "reason": "Established only by code reading; the new tests run the analyzer alone (CSharpCodeFixVerifier), not the generator.",
+        "who_should_decide": "source generator area owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5"
+      },
+      {
+        "topic": "Whether the new tests fail on base and whether the existing suite is regression-free",
+        "reason": "No facts.json checks or executed test outcomes were available to inspect.",
+        "who_should_decide": "MessagePack source generator maintainer",
+        "reviewer": "codex",
+        "model": "GPT-6 Codex"
+      }
+    ]
+  },
+  "rejected_claims": [],
+  "not_checked": [
+    {
+      "id": "tests.MessagePack.Tests",
+      "reason": "runtime library src/MessagePack not modified by the change; suite not run",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "build.net472/netstandard",
+      "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "benchmarks",
+      "reason": "no runtime serialization hot path touched (generator/analyzer only)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "other-targets",
+      "reason": "Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "runtime-perf",
+      "reason": "No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "semantic-intent",
+      "reason": "Correctness beyond what tests and cited evidence show is not established by the AI",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "provenance",
+      "reason": "Licensing and provenance of agent-written code are not checked",
+      "source": "mandate known gap"
+    }
+  ],
+  "residual_risk": [
+    "REQ-2234-N2 not proven: cannot_determine",
+    "Reviewer refusal (claude): Which branch this change targets, and therefore whether it resolves issue #2234 for users",
+    "Reviewer refusal (claude): No regressions in execution tests (including the 2 new SuppressedSourceGenerationTests)",
+    "Reviewer refusal (claude): Generator behaviour (no CS8785) on duplicate/mixed keys",
+    "Reviewer refusal (codex): Whether the new tests fail on base and whether the existing suite is regression-free",
+    "Open major finding claude:C1: Change does not address the regression the issue reports; it fixes a different, pre-existing crash",
+    "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
+    "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
+    "benchmarks not run (no runtime serialization hot path touched (generator/analyzer only))",
+    "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
+  ],
+  "risk": {
+    "score": 59.6,
+    "tier": "ask",
+    "thresholds": {
+      "notify": 15,
+      "ask": 40,
+      "block": 130
+    },
+    "factors": [
+      {
+        "factor": "area_sensitivity",
+        "points": 20,
+        "reason": "most sensitive area touched: generator-analyzer-core (high)"
+      },
+      {
+        "factor": "files_changed",
+        "points": 4,
+        "reason": "4 files x 1 (cap 20)"
+      },
+      {
+        "factor": "lines_changed",
+        "points": 10.6,
+        "reason": "266 non-generated lines x 4/100 (cap 20)"
+      },
+      {
+        "factor": "generated_files",
+        "points": 0.0,
+        "reason": "0 generated files x 0.1 (cap 10)"
+      },
+      {
+        "factor": "public_api_change",
+        "points": 0,
+        "reason": "public_api check: no change"
+      },
+      {
+        "factor": "source_without_tests",
+        "points": 0,
+        "reason": "tests changed alongside source"
+      },
+      {
+        "factor": "security_sensitive_paths",
+        "points": 0,
+        "reason": "none touched"
+      },
+      {
+        "factor": "fail_without_fix_not_shown",
+        "points": 0,
+        "reason": "tests.fail_without_fix: pass"
+      },
+      {
+        "factor": "reviewer_disagreement",
+        "points": 0,
+        "reason": "0 clause(s) x 8"
+      },
+      {
+        "factor": "failed_checks",
+        "points": 25,
+        "reason": "1 failed check(s) x 25: tests.execution_fail_without_fix"
+      }
+    ]
+  },
+  "rules_fired": [],
+  "signoff": {
+    "required": true,
+    "owner": "Toivo",
+    "allowed_decisions": [
+      "accept",
+      "reject",
+      "request-changes"
+    ],
+    "command": "countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  }
+}

@@ -1,0 +1,1028 @@
+{
+  "schema": "countersign.pack/v1",
+  "change": "2297",
+  "branch": "ju26-issue-2297",
+  "base": "32258fdb",
+  "head": "a0aa5ab2",
+  "commit_message": "implement issue #2297 : Add ExcludeFromCodeCoverage attribute to generated code",
+  "author": "Stelian Vultur",
+  "agent_written": true,
+  "diff": {
+    "files": 237,
+    "insertions": 1383,
+    "deletions": 9
+  },
+  "simulated": false,
+  "mutation": null,
+  "engine": {
+    "name": "countersign",
+    "version": "0.1.0"
+  },
+  "mandate": {
+    "path": "mandate/messagepack.mandate.yaml",
+    "id": "messagepack-csharp",
+    "version": "1",
+    "owner": "Toivo",
+    "sha256": "ef0e95521f7e364a9de9cb4bf54ee0d7f9bba3c34096ee2b6f6428d98de725dd",
+    "signature": {
+      "valid": true,
+      "signed_by": "Toivo",
+      "signed_at": "2026-11-13T23:30:41+00:00",
+      "reason": "signature valid"
+    }
+  },
+  "inputs": {
+    "facts": {
+      "path": "evidence/2297/facts.json",
+      "sha256": "0b34c8e86eea70546b6e93e07d49ac5f84502c6a179a57733d6ee6f6823a545d"
+    },
+    "requirements": {
+      "path": "requirements/2297.yaml",
+      "sha256": "586ac798f71cc8defa6b118157572028ef7ef41a71320ca8f1b0c69558f93833"
+    },
+    "reviews": {
+      "claude": {
+        "path": "reviews/2297/claude.json",
+        "sha256": "c1a1d7cb32f12898b06ff9d91b256ec30f4f635737b560b402513432d6478fab"
+      },
+      "codex": {
+        "path": "reviews/2297/codex.json",
+        "sha256": "da65026686384e57bcb2a7ad689591b5bfe679ef90193e2a7da569198837c2f3"
+      }
+    }
+  },
+  "requirement_set": {
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2297",
+    "official": false
+  },
+  "tier": "block",
+  "ai_recommendation": "block",
+  "why": [
+    {
+      "source": "mandate rule",
+      "id": "split-large-change",
+      "tier": "block",
+      "why": "More than 50 files changed: split the change so each part can be reviewed [237 files changed]"
+    }
+  ],
+  "drivers": [
+    {
+      "source": "mandate rule",
+      "id": "split-large-change",
+      "tier": "block",
+      "why": "More than 50 files changed: split the change so each part can be reviewed [237 files changed]"
+    },
+    {
+      "source": "mandate rule",
+      "id": "generated-files",
+      "tier": "ask",
+      "why": "More than 10 generated files: a human confirms the regeneration is intended [228 generated files]"
+    },
+    {
+      "source": "verified finding",
+      "id": "claude:C1",
+      "tier": "ask",
+      "why": "major: Preprocessor guard excludes netstandard2.0 and .NET Framework based on a false premise"
+    },
+    {
+      "source": "verified finding",
+      "id": "claude:C2",
+      "tier": "ask",
+      "why": "major: Attribute on the generated half of user-declared partial resolvers can break builds (CS0579) and silently hides user code"
+    },
+    {
+      "source": "refused clause",
+      "id": "REQ-2297-F1",
+      "tier": "ask",
+      "codes": [
+        "not_met",
+        "reviewers_disagree",
+        "cannot_determine"
+      ],
+      "why": "not_met: claude: The attribute is added to every generated formatter and resolver type (new test passes on head, fails on base), but every occurrence is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK' on the false premise that the attribute does not exist there. It does exist in netstandard2.0 and .NET Framework 4.0+, so consumers on those targets still get no exclusion, while the issue asks for all generated code to be decorated.; reviewers_disagree: claude says not_met, codex says cannot_determine; cannot_determine: codex: This scoped review did not inspect generated outputs across all formatter, resolver, and template paths to establish complete coverage of the requested attribute."
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "Line-by-line review of the 222 regenerated *.g.cs snapshot files (Mechanically generated; I relied on the SourceGenerator.Tests snapshot comparison (169/169 pass on head) instead of reading each file, so I make no claim about individual snapshot contents.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "Whether [GeneratedCode] should be emitted as well, and whether the maintainers want this at all vs. coverage-tool configuration (Product decision; the issue thread asks the maintainer and has no answer.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "ask",
+      "why": "Behaviour with specific coverage tools (coverlet, dotnet-coverage) on consumer projects (Needs runtime coverage runs I did not perform.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "codex",
+      "tier": "ask",
+      "why": "Whether all generated code receives ExcludeFromCodeCoverage (The change touches many templates and checked-in generated snapshots; this scoped review did not verify every generation path or the associated tests.)"
+    },
+    {
+      "source": "risk score",
+      "id": "risk",
+      "tier": "ask",
+      "why": "score 64.5 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + files_changed 20 + generated_files 10"
+    },
+    {
+      "source": "trust cap",
+      "id": "generator-analyzer-core",
+      "tier": "notify",
+      "why": "generator-analyzer-core: AI may clear at most to notify (mandate clearance right)"
+    },
+    {
+      "source": "trust cap",
+      "id": "docs",
+      "tier": "silent",
+      "why": "docs: AI may clear at most to silent (mandate clearance right)"
+    },
+    {
+      "source": "trust cap",
+      "id": "tests",
+      "tier": "silent",
+      "why": "tests: AI may clear at most to silent (mandate clearance right)"
+    }
+  ],
+  "owner": "Toivo",
+  "primary_area": "generator-analyzer-core",
+  "notify": [
+    "Rene"
+  ],
+  "areas": [
+    {
+      "name": "generator-analyzer-core",
+      "owner": "Toivo",
+      "sensitivity": "high",
+      "max_ai_tier": "notify",
+      "cap": "notify",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.cs",
+        "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+        "src/MessagePack.SourceGenerator/Transforms/EnumTemplate.cs",
+        "src/MessagePack.SourceGenerator/Transforms/EnumTemplate.tt",
+        "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.cs",
+        "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+        "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.cs",
+        "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+        "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.cs",
+        "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt",
+        "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs",
+        "src/MessagePack.SourceGenerator/Transforms/UnionTemplate.cs",
+        "src/MessagePack.SourceGenerator/Transforms/UnionTemplate.tt"
+      ]
+    },
+    {
+      "name": "docs",
+      "owner": "Rene",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "README.md"
+      ]
+    },
+    {
+      "name": "tests",
+      "owner": "Toivo",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/AdditionalAllowTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TypeWithAutoGeneratedFormatterFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/AdditionalAllowTypes/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/AdditionalFormatterTypes/DefiningProject.MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/AdditionalFormatterTypes/TestProject.Formatters.MessagePack.GeneratedMessagePackResolver.TypeWithAutoGeneratedFormatterFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/AdditionalFormatterTypes/TestProject.MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/AdditionalFormatterTypes_RedundantAttribute/Formatters.MessagePack.GeneratedMessagePackResolver.TypeWithAutoGeneratedFormatterFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/AdditionalFormatterTypes_RedundantAttribute/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Array2DJaggedProperty/Formatters.MessagePack.GeneratedMessagePackResolver.ContainerObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Array2DJaggedProperty/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/ArrayTypedProperty/Formatters.MessagePack.GeneratedMessagePackResolver.ContainerObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/ArrayTypedProperty/Formatters.MessagePack.GeneratedMessagePackResolver.SubObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/ArrayTypedProperty/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CanGenerateMessagePackFormatterAttr/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.BarFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CanGenerateMessagePackFormatterAttr/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CompositeResolver_MixedResolverTypes/MyResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CompositeResolver_Nested/MyResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterForGenericWithConstraints/Formatters.MessagePack.GeneratedMessagePackResolver.SampleObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterForGenericWithConstraints/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnField(False)/Formatters.MessagePack.GeneratedMessagePackResolver.HasFieldWithCustomFormatterAttributeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnField(False)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnField(True)/Formatters.MessagePack.GeneratedMessagePackResolver.HasFieldWithCustomFormatterAttributeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnField(True)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnProperty(False)/Formatters.MessagePack.GeneratedMessagePackResolver.HasPropertyWithCustomFormatterAttributeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnProperty(False)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnProperty(True)/Formatters.MessagePack.GeneratedMessagePackResolver.HasPropertyWithCustomFormatterAttributeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterViaAttributeOnProperty(True)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterWithSingletonPattern/Formatters.MessagePack.GeneratedMessagePackResolver.GFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/CustomFormatterWithSingletonPattern/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/DeserializingConstructorParameterMemberTypeAssignability_Incompatible/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/DeserializingConstructorParameterMemberTypeAssignability_MemberAssignsToParamType/Formatters.MessagePack.GeneratedMessagePackResolver.AFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/DeserializingConstructorParameterMemberTypeAssignability_MemberAssignsToParamType/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EmbeddedTypes/Formatters.MessagePack.GeneratedMessagePackResolver.AFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EmbeddedTypes/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(Namespace, False)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(Namespace, False)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(Namespace, False)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(Namespace, True)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(Namespace, True)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(Namespace, True)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(NestingClass, False)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(NestingClass, False)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(NestingClass, False)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(NestingClass, True)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(NestingClass, True)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(NestingClass, True)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(None, False)/Formatters.MessagePack.GeneratedMessagePackResolver.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(None, False)/Formatters.MessagePack.GeneratedMessagePackResolver.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(None, False)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(None, True)/Formatters.MessagePack.GeneratedMessagePackResolver.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(None, True)/Formatters.MessagePack.GeneratedMessagePackResolver.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter(None, True)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS1.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS2.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/EnumFormatter_CollidingTypeNames/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(class)/Formatters.MyObject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(class)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(record struct)/Formatters.MyObject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(record struct)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(record)/Formatters.MyObject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(record)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(struct)/Formatters.MyObject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers(struct)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers_MapMode/Formatters.MyObject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers_MapMode/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers_WithNamespace/Formatters.A.MyObject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/FormatterForClassWithPrivateMembers_WithNamespace/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericCustomFormatter/Formatters.SampleObject.SampleObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericCustomFormatter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericDataTypeWithPrivateMember/Formatters.HasPrivateSerializedMemberAndIsGenericNamed`1.HasPrivateSerializedMemberAndIsGenericNamedFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericDataTypeWithPrivateMember/Formatters.HasPrivateSerializedMemberAndIsGenericOrdinal`1.HasPrivateSerializedMemberAndIsGenericOrdinalFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericDataTypeWithPrivateMember/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericType/Formatters.MessagePack.GeneratedMessagePackResolver.ContainerObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericType/Formatters.MessagePack.GeneratedMessagePackResolver.MyGenericTypeFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericType/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericTypeArg/Formatters.MessagePack.GeneratedMessagePackResolver.GenericClassFormatter`2.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericTypeArg/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS1.MyTypeFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS2.MyTypeFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericType_CollidingTypeNames/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericWithConstraintsThatReferenceTypeParameter/Formatters.MessagePack.GeneratedMessagePackResolver.GenericConstrainedClassIntKeyFormatter`2.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericWithConstraintsThatReferenceTypeParameter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfT1T2Formatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`2.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfT1T2Formatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfT1T2Formatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectNestedFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfT1T2Formatter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectNestedFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter_FormatterOnly/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter_FormatterOnly/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter_WithKnownTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter_WithKnownTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObject2Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter_WithKnownTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsOfTFormatter_WithKnownTypes/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsUnionFormatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.WrapperFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsUnionFormatter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsUnionFormatter_Nested/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsUnionFormatter_Nested/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyInnerGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsUnionFormatter_Nested/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.WrapperFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/GenericsUnionFormatter_Nested/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_Multiple/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`4.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_Multiple/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_NullableReferenceType/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`4.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_NullableReferenceType/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_ReferenceType_Nullable/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`2.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_ReferenceType_Nullable/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_Struct/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_Struct/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_Type/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Constraints_Type/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject/DefiningProject.Formatters.TempProject.MyResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject/DefiningProject.TempProject.MyResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject/TestProject.Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject/TestProject.Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject/TestProject.Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectNestedFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject/TestProject.MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/ImplicitFormatterTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TypeWithAutoGeneratedFormatterFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/ImplicitFormatterTypes/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/InterfaceUnionUsedWithNullableRefAnnotation/Formatters.MessagePack.GeneratedMessagePackResolver.IMyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/InterfaceUnionUsedWithNullableRefAnnotation/Formatters.MessagePack.GeneratedMessagePackResolver.UnionContainerFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/InterfaceUnionUsedWithNullableRefAnnotation/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/MixType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/MixType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS1.MyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/MixType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS2.MyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/MixType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS3.MyTypeFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/MixType_CollidingTypeNames/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/MultipleFunctionalCustomFormattersForType_MultiFormatter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/MultipleFunctionalCustomFormattersForType_OnlyOneNonExcluded/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedGenericTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedGenericTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyInnerGenericObjectFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedGenericTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObject2Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedGenericTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedGenericTypes/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.WrapperFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedGenericTypes/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedMessagePackObjects/Formatters.MessagePack.GeneratedMessagePackResolver.A.B.CFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedMessagePackObjects/Formatters.MessagePack.GeneratedMessagePackResolver.A.BFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedMessagePackObjects/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedMessagePackObjects_Array/Formatters.MessagePack.GeneratedMessagePackResolver.A.B.CFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedMessagePackObjects_Array/Formatters.MessagePack.GeneratedMessagePackResolver.A.BFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NestedMessagePackObjects_Array/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NoFieldWithCustomFormatterCollected/Formatters.MessagePack.GeneratedMessagePackResolver.TestFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NoFieldWithCustomFormatterCollected/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NoPrivateAccessNeeded/Formatters.MessagePack.GeneratedMessagePackResolver.Test3Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NoPrivateAccessNeeded/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NoPrivateMemberCollected/Formatters.MessagePack.GeneratedMessagePackResolver.TestFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NoPrivateMemberCollected/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NonDefaultDeserializingConstructor_Private/Formatters.A.AFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NonDefaultDeserializingConstructor_Private/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NonGenericType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NonGenericType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS1.MyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NonGenericType_CollidingTypeNames/Formatters.MessagePack.GeneratedMessagePackResolver.NS2.MyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NonGenericType_CollidingTypeNames/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NullableFormatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyEnumFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NullableFormatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/NullableFormatter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/OpenGenericFormatter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyDefaultValue/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyDefaultValue/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyIgnore/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyIgnore/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyMixed/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyMixed/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyWithParameterizedConstructor/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyWithParameterizedConstructor/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyWithParameterizedConstructorDefaultValue/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyWithParameterizedConstructorDefaultValue/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyWithParameterizedConstructorPartially/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterOnlyWithParameterizedConstructorPartially/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithDefaultValue/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithDefaultValue/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithDefaultValueInputPartially/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithDefaultValueInputPartially/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructor/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructor/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructorAndDefaultValue/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructorAndDefaultValue/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructorDoNotUseSetter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructorDoNotUseSetter/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructorPartially/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/PropertiesGetterSetterWithParameterizedConstructorPartially/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/RecordWithPrimaryConstructor/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/RecordWithPrimaryConstructor/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/RecordWithWithInitOnlyProps/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/RecordWithWithInitOnlyProps/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/RecursiveGenerics_Direct/Formatters.MessagePack.GeneratedMessagePackResolver.AFormatter`1.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/RecursiveGenerics_Direct/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SimplifiedNameForKeywordsAndSyntaxSugar/Formatters.MessagePack.GeneratedMessagePackResolver.SampleObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SimplifiedNameForKeywordsAndSyntaxSugar/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SpecifyFormatterFromStockSet/Formatters.MessagePack.GeneratedMessagePackResolver.GFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SpecifyFormatterFromStockSet/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SystemCollectionsObjectModelCollection/Formatters.MessagePack.GeneratedMessagePackResolver.AFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SystemCollectionsObjectModelCollection/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SystemMemoryTypes/Formatters.MessagePack.GeneratedMessagePackResolver.AFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/SystemMemoryTypes/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/TwoTypes(False)/Formatters.MessagePack.GeneratedMessagePackResolver.Object1Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/TwoTypes(False)/Formatters.MessagePack.GeneratedMessagePackResolver.Object2Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/TwoTypes(False)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/TwoTypes(True)/Formatters.MessagePack.GeneratedMessagePackResolver.Object1Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/TwoTypes(True)/Formatters.MessagePack.GeneratedMessagePackResolver.Object2Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/TwoTypes(True)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(Namespace)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.Derived1Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(Namespace)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.Derived2Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(Namespace)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.IMyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(Namespace)/Formatters.MessagePack.GeneratedMessagePackResolver.MyTestNamespace.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(Namespace)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(NestingClass)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.Derived1Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(NestingClass)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.Derived2Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(NestingClass)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.IMyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(NestingClass)/Formatters.MessagePack.GeneratedMessagePackResolver.ContainingClass.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(NestingClass)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(None)/Formatters.MessagePack.GeneratedMessagePackResolver.Derived1Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(None)/Formatters.MessagePack.GeneratedMessagePackResolver.Derived2Formatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(None)/Formatters.MessagePack.GeneratedMessagePackResolver.IMyTypeFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(None)/Formatters.MessagePack.GeneratedMessagePackResolver.MyMessagePackObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/UnionFormatter(None)/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/WellKnownGenericsFormatter/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Resources/WellKnownGenericsFormatter/MessagePack.GeneratedMessagePackResolver.g.cs"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-2297-F1",
+      "type": "functional",
+      "text": "Add ExcludeFromCodeCoverage attribute to generated code.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "not_met",
+          "basis": "The attribute is added to every generated formatter and resolver type (new test passes on head, fails on base), but every occurrence is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK' on the false premise that the attribute does not exist there. It does exist in netstandard2.0 and .NET Framework 4.0+, so consumers on those targets still get no exclusion, while the issue asks for all generated code to be decorated.",
+          "verified": 4,
+          "cited": 6,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+              "line": 14,
+              "rev": "head",
+              "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 1640,
+              "rev": "head",
+              "quote": "The attribute is only emitted for targets where it is available (not `netstandard2.0` or .NET Framework).",
+              "verified": true,
+              "note": "quote matches README.md:1640 at head a0aa5ab2"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs",
+              "line": 18,
+              "rev": "head",
+              "quote": "// The attribute is not available on netstandard2.0 or .NET Framework, so it is only emitted where it exists.",
+              "verified": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs:18 at head a0aa5ab2"
+            },
+            {
+              "kind": "test",
+              "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
+              "outcome": "passed",
+              "verified": false,
+              "note": "reviewer says passed, facts.json says failed"
+            },
+            {
+              "kind": "issue",
+              "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2297",
+              "quote": "I would like all generated code to be decorated with ExcludeFromCodeCoverage attribute.",
+              "verified": false,
+              "note": "issue text cannot be verified offline (not counted as evidence)"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-2297-F1",
+              "quote": "Add ExcludeFromCodeCoverage attribute to generated code.",
+              "verified": true,
+              "note": "REQ-2297-F1 text contains the quote"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "cannot_determine",
+          "basis": "This scoped review did not inspect generated outputs across all formatter, resolver, and template paths to establish complete coverage of the requested attribute.",
+          "verified": 1,
+          "cited": 1,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2297-F1",
+              "quote": "Add ExcludeFromCodeCoverage attribute to generated code.",
+              "verified": true,
+              "note": "REQ-2297-F1 text contains the quote"
+            }
+          ]
+        }
+      },
+      "status": "refused",
+      "reasons": [
+        {
+          "code": "not_met",
+          "detail": "claude: The attribute is added to every generated formatter and resolver type (new test passes on head, fails on base), but every occurrence is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK' on the false premise that the attribute does not exist there. It does exist in netstandard2.0 and .NET Framework 4.0+, so consumers on those targets still get no exclusion, while the issue asks for all generated code to be decorated."
+        },
+        {
+          "code": "reviewers_disagree",
+          "detail": "claude says not_met, codex says cannot_determine"
+        },
+        {
+          "code": "cannot_determine",
+          "detail": "codex: This scoped review did not inspect generated outputs across all formatter, resolver, and template paths to establish complete coverage of the requested attribute."
+        }
+      ]
+    }
+  ],
+  "checked_by": {
+    "tools": [
+      {
+        "id": "build",
+        "tool": "dotnet build",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "0 errors, 1 unique warnings",
+        "duration_s": 5.0,
+        "log": "evidence/2297/logs/build.log"
+      },
+      {
+        "id": "tests.targeted",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "2 passed, 0 failed, 0 skipped (2 new tests in run)",
+        "duration_s": 1.0,
+        "log": "evidence/2297/logs/tests_targeted.1.log"
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "new tests fail on base source: 2/2 failed -> tests do cover the change",
+        "duration_s": 2.0,
+        "log": "evidence/2297/logs/tests_fail_without_fix.1.log"
+      },
+      {
+        "id": "tests.full_suite",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "duration_s": 4.0,
+        "log": "evidence/2297/logs/tests_full_suite.log"
+      },
+      {
+        "id": "public_api",
+        "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "analyzers",
+        "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no new warnings",
+        "duration_s": null,
+        "log": null
+      }
+    ],
+    "reviewers": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-13T23:55:00+00:00",
+        "inputs": [
+          "diff 32258fdb..origin/ju26-issue-2297 (a0aa5ab2), scoped review: the 7 templates (.tt and generated .cs), TransformUtilities.cs, README, CodeCoverageExclusionTests.cs; the 222 *.g.cs snapshot files were not read individually",
+          "requirements/2297.yaml",
+          "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2297 (body and comments)",
+          "local run: dotnet test tests/MessagePack.SourceGenerator.Tests -f net8.0 on head (169 passed, 0 failed, includes all snapshot comparisons)",
+          "local run: CodeCoverageExclusionTests against base templates (2 failed)",
+          "local check: ExcludeFromCodeCoverageAttribute present in netstandard.library 2.0.3 ref/netstandard.dll and .NETFramework v4.7.2 System.dll; a netstandard2.0 project using [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] compiles, and two partial declarations each carrying it give CS0579"
+        ],
+        "findings": 3,
+        "verified": 3,
+        "rejected": 0,
+        "refusals": 3
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6 Codex",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-13T00:00:00Z",
+        "inputs": [
+          "diff",
+          "requirements/2297.yaml"
+        ],
+        "findings": 0,
+        "verified": 0,
+        "rejected": 0,
+        "refusals": 1
+      }
+    ],
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v1 (ef0e95521f7e)"
+  },
+  "findings": [
+    {
+      "id": "C1",
+      "title": "Preprocessor guard excludes netstandard2.0 and .NET Framework based on a false premise",
+      "severity": "major",
+      "category": "correctness",
+      "claim": "System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute ships in .NET Framework 4.0+ (System.dll) and in netstandard2.0 (netstandard.dll). I confirmed it in the reference assemblies on this machine and by compiling a netstandard2.0 project that uses it. The guard means consumers targeting netstandard2.0 or any .NET Framework, which includes many library and Unity-adjacent consumers, get no exclusion. The README and test comment state the false premise as fact, and the second new test locks the guard in.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+          "line": 14,
+          "rev": "head",
+          "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:14 at head a0aa5ab2"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs",
+          "line": 19,
+          "rev": "head",
+          "quote": "private const string Guard = \"#if !NETSTANDARD2_0 && !NETFRAMEWORK\";",
+          "verified": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs:19 at head a0aa5ab2"
+        },
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 1640,
+          "rev": "head",
+          "quote": "(not `netstandard2.0` or .NET Framework)",
+          "verified": true,
+          "note": "quote matches README.md:1640 at head a0aa5ab2"
+        }
+      ],
+      "suggested_fix": "Drop the #if guard (the generator already requires a consumer that references MessagePack, which targets netstandard2.0+/net472+), and update README, the test comment and the guard test.",
+      "verified_count": 3,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "ask",
+      "confirmed_by": []
+    },
+    {
+      "id": "C2",
+      "title": "Attribute on the generated half of user-declared partial resolvers can break builds (CS0579) and silently hides user code",
+      "severity": "major",
+      "category": "correctness",
+      "claim": "The resolver and composite resolver templates emit '[ExcludeFromCodeCoverage] partial class <ResolverName>' for a class the user declares as partial. ExcludeFromCodeCoverageAttribute has AllowMultiple = false. A user who already put [ExcludeFromCodeCoverage] on their partial resolver declaration will get error CS0579 'Duplicate attribute' after upgrading on the targets where the guard is active (I reproduced CS0579 with two partial declarations each carrying the attribute). Even without a conflict, the attribute applies to the whole type, so any hand-written members in the user's partial resolver are now excluded from coverage too.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+          "line": 15,
+          "rev": "head",
+          "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:15 at head a0aa5ab2"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+          "line": 17,
+          "rev": "head",
+          "quote": "partial class <#= ResolverName.Name #> : MsgPack::IFormatterResolver",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:17 at head a0aa5ab2"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+          "line": 8,
+          "rev": "head",
+          "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:8 at head a0aa5ab2"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+          "line": 10,
+          "rev": "head",
+          "quote": "partial class <#= ResolverName.Name #> : MsgPack::IFormatterResolver",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:10 at head a0aa5ab2"
+        }
+      ],
+      "suggested_fix": "On the user-declared partial resolver, put the attribute on the generated members (Instance field, GetFormatter method, nested FormatterCache/GetFormatterHelper classes) instead of the type, or skip it when the user's declaration already carries the attribute.",
+      "verified_count": 4,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "ask",
+      "confirmed_by": []
+    },
+    {
+      "id": "C3",
+      "title": "Unrelated-looking whitespace change in TransformUtilities is required by the change but widens the snapshot churn",
+      "severity": "info",
+      "category": "scope",
+      "claim": "The brace emitted after a nesting type with constraints now ends with a newline. This is needed because a '#if' directive must start its own line, but it also changes generated output for nested generic types independently of the attribute. Covered by snapshot tests that pass.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs",
+          "line": 58,
+          "rev": "head",
+          "quote": "writer(anyConstraints ? \"{\\r\\n\" : \" {\\r\\n\");",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58 at head a0aa5ab2"
+        }
+      ],
+      "verified_count": 1,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "silent",
+      "confirmed_by": []
+    }
+  ],
+  "refused": {
+    "clauses": [
+      {
+        "id": "REQ-2297-F1",
+        "type": "functional",
+        "text": "Add ExcludeFromCodeCoverage attribute to generated code.",
+        "checks": [
+          {
+            "id": "build",
+            "status": "pass"
+          },
+          {
+            "id": "tests.targeted",
+            "status": "pass"
+          }
+        ],
+        "verdicts": {
+          "claude": {
+            "verdict": "not_met",
+            "basis": "The attribute is added to every generated formatter and resolver type (new test passes on head, fails on base), but every occurrence is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK' on the false premise that the attribute does not exist there. It does exist in netstandard2.0 and .NET Framework 4.0+, so consumers on those targets still get no exclusion, while the issue asks for all generated code to be decorated.",
+            "verified": 4,
+            "cited": 6,
+            "evidence": [
+              {
+                "kind": "code",
+                "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+                "line": 14,
+                "rev": "head",
+                "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+                "verified": true,
+                "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2"
+              },
+              {
+                "kind": "code",
+                "file": "README.md",
+                "line": 1640,
+                "rev": "head",
+                "quote": "The attribute is only emitted for targets where it is available (not `netstandard2.0` or .NET Framework).",
+                "verified": true,
+                "note": "quote matches README.md:1640 at head a0aa5ab2"
+              },
+              {
+                "kind": "code",
+                "file": "tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs",
+                "line": 18,
+                "rev": "head",
+                "quote": "// The attribute is not available on netstandard2.0 or .NET Framework, so it is only emitted where it exists.",
+                "verified": true,
+                "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs:18 at head a0aa5ab2"
+              },
+              {
+                "kind": "test",
+                "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
+                "outcome": "passed",
+                "verified": false,
+                "note": "reviewer says passed, facts.json says failed"
+              },
+              {
+                "kind": "issue",
+                "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2297",
+                "quote": "I would like all generated code to be decorated with ExcludeFromCodeCoverage attribute.",
+                "verified": false,
+                "note": "issue text cannot be verified offline (not counted as evidence)"
+              },
+              {
+                "kind": "requirement",
+                "req": "REQ-2297-F1",
+                "quote": "Add ExcludeFromCodeCoverage attribute to generated code.",
+                "verified": true,
+                "note": "REQ-2297-F1 text contains the quote"
+              }
+            ]
+          },
+          "codex": {
+            "verdict": "cannot_determine",
+            "basis": "This scoped review did not inspect generated outputs across all formatter, resolver, and template paths to establish complete coverage of the requested attribute.",
+            "verified": 1,
+            "cited": 1,
+            "evidence": [
+              {
+                "kind": "requirement",
+                "req": "REQ-2297-F1",
+                "quote": "Add ExcludeFromCodeCoverage attribute to generated code.",
+                "verified": true,
+                "note": "REQ-2297-F1 text contains the quote"
+              }
+            ]
+          }
+        },
+        "status": "refused",
+        "reasons": [
+          {
+            "code": "not_met",
+            "detail": "claude: The attribute is added to every generated formatter and resolver type (new test passes on head, fails on base), but every occurrence is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK' on the false premise that the attribute does not exist there. It does exist in netstandard2.0 and .NET Framework 4.0+, so consumers on those targets still get no exclusion, while the issue asks for all generated code to be decorated."
+          },
+          {
+            "code": "reviewers_disagree",
+            "detail": "claude says not_met, codex says cannot_determine"
+          },
+          {
+            "code": "cannot_determine",
+            "detail": "codex: This scoped review did not inspect generated outputs across all formatter, resolver, and template paths to establish complete coverage of the requested attribute."
+          }
+        ]
+      }
+    ],
+    "reviewer_refusals": [
+      {
+        "topic": "Line-by-line review of the 222 regenerated *.g.cs snapshot files",
+        "reason": "Mechanically generated; I relied on the SourceGenerator.Tests snapshot comparison (169/169 pass on head) instead of reading each file, so I make no claim about individual snapshot contents.",
+        "who_should_decide": "source generator area owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5"
+      },
+      {
+        "topic": "Whether [GeneratedCode] should be emitted as well, and whether the maintainers want this at all vs. coverage-tool configuration",
+        "reason": "Product decision; the issue thread asks the maintainer and has no answer.",
+        "who_should_decide": "maintainer",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5"
+      },
+      {
+        "topic": "Behaviour with specific coverage tools (coverlet, dotnet-coverage) on consumer projects",
+        "reason": "Needs runtime coverage runs I did not perform.",
+        "who_should_decide": "area owner / QA",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5"
+      },
+      {
+        "topic": "Whether all generated code receives ExcludeFromCodeCoverage",
+        "reason": "The change touches many templates and checked-in generated snapshots; this scoped review did not verify every generation path or the associated tests.",
+        "who_should_decide": "MessagePack source generator maintainer",
+        "reviewer": "codex",
+        "model": "GPT-6 Codex"
+      }
+    ]
+  },
+  "rejected_claims": [],
+  "not_checked": [
+    {
+      "id": "tests.execution",
+      "reason": "SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "tests.MessagePack.Tests",
+      "reason": "runtime library src/MessagePack not modified by the change; suite not run",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "build.net472/netstandard",
+      "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "benchmarks",
+      "reason": "no runtime serialization hot path touched (generator/analyzer only)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "other-targets",
+      "reason": "Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "runtime-perf",
+      "reason": "No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "semantic-intent",
+      "reason": "Correctness beyond what tests and cited evidence show is not established by the AI",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "provenance",
+      "reason": "Licensing and provenance of agent-written code are not checked",
+      "source": "mandate known gap"
+    }
+  ],
+  "residual_risk": [
+    "REQ-2297-F1 not proven: not_met; reviewers_disagree; cannot_determine",
+    "Reviewer refusal (claude): Line-by-line review of the 222 regenerated *.g.cs snapshot files",
+    "Reviewer refusal (claude): Whether [GeneratedCode] should be emitted as well, and whether the maintainers want this at all vs. coverage-tool configuration",
+    "Reviewer refusal (claude): Behaviour with specific coverage tools (coverlet, dotnet-coverage) on consumer projects",
+    "Reviewer refusal (codex): Whether all generated code receives ExcludeFromCodeCoverage",
+    "Open major finding claude:C1: Preprocessor guard excludes netstandard2.0 and .NET Framework based on a false premise",
+    "Open major finding claude:C2: Attribute on the generated half of user-declared partial resolvers can break builds (CS0579) and silently hides user code",
+    "tests.execution not run (SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.)",
+    "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
+    "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
+    "benchmarks not run (no runtime serialization hot path touched (generator/analyzer only))",
+    "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
+  ],
+  "risk": {
+    "score": 64.5,
+    "tier": "ask",
+    "thresholds": {
+      "notify": 15,
+      "ask": 40,
+      "block": 130
+    },
+    "factors": [
+      {
+        "factor": "area_sensitivity",
+        "points": 20,
+        "reason": "most sensitive area touched: generator-analyzer-core (high)"
+      },
+      {
+        "factor": "files_changed",
+        "points": 20,
+        "reason": "237 files x 1 (cap 20)"
+      },
+      {
+        "factor": "lines_changed",
+        "points": 6.5,
+        "reason": "162 non-generated lines x 4/100 (cap 20)"
+      },
+      {
+        "factor": "generated_files",
+        "points": 10,
+        "reason": "228 generated files x 0.1 (cap 10)"
+      },
+      {
+        "factor": "public_api_change",
+        "points": 0,
+        "reason": "public_api check: no change"
+      },
+      {
+        "factor": "source_without_tests",
+        "points": 0,
+        "reason": "tests changed alongside source"
+      },
+      {
+        "factor": "security_sensitive_paths",
+        "points": 0,
+        "reason": "none touched"
+      },
+      {
+        "factor": "fail_without_fix_not_shown",
+        "points": 0,
+        "reason": "tests.fail_without_fix: pass"
+      },
+      {
+        "factor": "reviewer_disagreement",
+        "points": 8,
+        "reason": "1 clause(s) x 8: REQ-2297-F1"
+      },
+      {
+        "factor": "failed_checks",
+        "points": 0,
+        "reason": "0 failed check(s) x 25"
+      }
+    ]
+  },
+  "rules_fired": [
+    {
+      "id": "split-large-change",
+      "when": "files_changed_gt",
+      "value": 50,
+      "tier": "block",
+      "message": "More than 50 files changed: split the change so each part can be reviewed",
+      "evidence": "237 files changed"
+    },
+    {
+      "id": "generated-files",
+      "when": "generated_files_gt",
+      "value": 10,
+      "tier": "ask",
+      "message": "More than 10 generated files: a human confirms the regeneration is intended",
+      "evidence": "228 generated files"
+    }
+  ],
+  "signoff": {
+    "required": true,
+    "owner": "Toivo",
+    "allowed_decisions": [
+      "reject",
+      "request-changes"
+    ],
+    "command": "countersign sign 2297 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  }
+}
