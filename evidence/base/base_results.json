@@ -1,0 +1,683 @@
+{
+ "label": "base",
+ "sha": "32258fdbee4bcd653c79f51b4376b5103c6f4d27",
+ "build_rc": "0",
+ "full_suite": {
+  "total": 167,
+  "passed": 167,
+  "failed": []
+ },
+ "warnings": [
+  "tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj : warning NU1901: Package 'NuGet.Protocol' 6.8.0 has a known low severity vulnerability, https://github.com/advisories/GHSA-g4vj-cjjj-v7hg"
+ ],
+ "tests": [
+  {
+   "name": "CompositeResolverGeneratorTests.CompositeResolver_MixedResolverTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "CompositeResolverGeneratorTests.CompositeResolver_Nested",
+   "outcome": "passed"
+  },
+  {
+   "name": "CustomStringKeyFormatterTests.RecordWithPrimaryConstructor",
+   "outcome": "passed"
+  },
+  {
+   "name": "CustomStringKeyFormatterTests.RecordWithWithInitOnlyProps",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterConstructor(initialModifiers: \"\", expectedModifiers: \"internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterConstructor(initialModifiers: \"private \", expectedModifiers: \"internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterConstructor(initialModifiers: \"private protected \", expectedModifiers: \"internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterConstructor(initialModifiers: \"protected \", expectedModifiers: \"protected internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterType(initialModifiers: \"\", expectedModifiers: \"internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterType(initialModifiers: \"private \", expectedModifiers: \"internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterType(initialModifiers: \"private protected \", expectedModifiers: \"internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FormatterCodeFixProviderTests.InaccessibleCustomFormatterType(initialModifiers: \"protected \", expectedModifiers: \"protected internal \")",
+   "outcome": "passed"
+  },
+  {
+   "name": "FullModelTests.Equals_ByValue",
+   "outcome": "passed"
+  },
+  {
+   "name": "FullModelTests.Equals_Null",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.AdditionalAllowTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.AdditionalFormatterTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.AdditionalFormatterTypes_RedundantAttribute",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.Array2DJaggedProperty",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.ArrayTypedProperty",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.CustomFormatterForGenericWithConstraints",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.CustomFormatterViaAttributeOnField(usesMapMode: False)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.CustomFormatterViaAttributeOnField(usesMapMode: True)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.CustomFormatterViaAttributeOnProperty(usesMapMode: False)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.CustomFormatterViaAttributeOnProperty(usesMapMode: True)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.CustomFormatterWithSingletonPattern",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_Incompatible",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_MemberAssignsToParamType",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EmbeddedTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EnumFormatter(container: Namespace, usesMapMode: False)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EnumFormatter(container: Namespace, usesMapMode: True)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EnumFormatter(container: NestingClass, usesMapMode: False)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EnumFormatter(container: NestingClass, usesMapMode: True)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EnumFormatter(container: None, usesMapMode: False)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EnumFormatter(container: None, usesMapMode: True)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.EnumFormatter_CollidingTypeNames",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.ExcludeFormatterFromSourceGeneratedResolver",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.GenericCustomFormatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.GenericDataTypeWithPrivateMember",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.GenericType",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.GenericTypeArg",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.GenericType_CollidingTypeNames",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.GenericWithConstraintsThatReferenceTypeParameter",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.ImplicitFormatterTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.InterfaceUnionUsedWithNullableRefAnnotation",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.MixType_CollidingTypeNames",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NestedMessagePackObjects",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NestedMessagePackObjects_Array",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NoFieldWithCustomFormatterCollected",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NoGenerationForAnnotationOnly",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NoPrivateAccessNeeded",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NoPrivateMemberCollected",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NonDefaultDeserializingConstructor_Private",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.NonGenericType_CollidingTypeNames",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.SimplifiedNameForKeywordsAndSyntaxSugar",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.SpecifyFormatterFromStockSet",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.SystemCollectionsObjectModelCollection",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.SystemMemoryTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.UnionFormatter(container: Namespace)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.UnionFormatter(container: NestingClass)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenerationTests.UnionFormatter(container: None)",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.GenericsOfT1T2Formatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.GenericsOfTFormatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.GenericsOfTFormatter_FormatterOnly",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.GenericsOfTFormatter_WithKnownTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.GenericsUnionFormatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.GenericsUnionFormatter_Nested",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.Generics_Constraints_Multiple",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.Generics_Constraints_NullableReferenceType",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.Generics_Constraints_ReferenceType_Nullable",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.Generics_Constraints_Struct",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.Generics_Constraints_Type",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.NestedGenericTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.NullableFormatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.RecursiveGenerics_Direct",
+   "outcome": "passed"
+  },
+  {
+   "name": "GenericsFormatterTests.WellKnownGenericsFormatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "ImplicitResolverForCustomFormattersTests.CustomFormatterWithoutDefaultConstructor",
+   "outcome": "passed"
+  },
+  {
+   "name": "ImplicitResolverForCustomFormattersTests.CustomFormatterWithoutDefaultConstructor_Excluded",
+   "outcome": "passed"
+  },
+  {
+   "name": "ImplicitResolverForCustomFormattersTests.MultipleFunctionalCustomFormattersForType",
+   "outcome": "passed"
+  },
+  {
+   "name": "ImplicitResolverForCustomFormattersTests.MultipleFunctionalCustomFormattersForType_MultiFormatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "ImplicitResolverForCustomFormattersTests.MultipleFunctionalCustomFormattersForType_OnlyOneNonExcluded",
+   "outcome": "passed"
+  },
+  {
+   "name": "ImplicitResolverForCustomFormattersTests.OpenGenericFormatter",
+   "outcome": "passed"
+  },
+  {
+   "name": "MemberSerializationInfoTests.Equals_ByValue",
+   "outcome": "passed"
+  },
+  {
+   "name": "MessagePackFormatterAttributeTests.CanGenerateMessagePackFormatterAttr",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack001SpecifyOptionsAnalyzerTests.InvocationWithOptions_LocalVariable",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack001SpecifyOptionsAnalyzerTests.Invocation_ExplicitlyNull",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack001SpecifyOptionsAnalyzerTests.Invocation_OmittedOptionalParameter",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack001SpecifyOptionsAnalyzerTests.Invocation_OmittedOptionalParameter_VB",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack002UseConstantOptionsAnalyzerTests.Fields",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack002UseConstantOptionsAnalyzerTests.Invocation_WithImmutableStaticOptions",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack002UseConstantOptionsAnalyzerTests.Invocation_WithImmutableStaticOptions_VB",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack002UseConstantOptionsAnalyzerTests.Invocation_WithMutableStaticOptions",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack002UseConstantOptionsAnalyzerTests.Members_BasedOnStaticOptions",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack002UseConstantOptionsAnalyzerTests.Properties",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToField_WithComment",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToGenericType",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecord1",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecord2",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecordPrimaryConstructor",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToType_Fields",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToType_Generic",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToType_Nullable",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributeToType_Properties",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecord",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordStruct",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordStructWithPrimaryCtor",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordWithPrimaryCtor",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_AllowPrivateAttribute",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_MixedVisibility",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_PublicOnly",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.AddIgnoreAttributesToMembers",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.CodeFixAppliesAcrossFiles",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.DerivedAttributes",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.DerivedAttributes_SourceGenerationDisabled",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.DoNotAddAttributesToClassWithPrimaryCtor",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.InitPropertyInitializer",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.InvalidMessageFormatterType",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.NameCollisionsInForceMapMode",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.NoMessagePackReference",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.NullStringKey",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack00xAnalyzerTests.PrivateMembersInBaseClassNeedNoAttribution",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack011PartialTypeRequiredTests.CodeFixOffered",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack011PartialTypeRequiredTests.NestedPartialTypeRequiresPartialDeclaringType",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack011PartialTypeRequiredTests.NestedPartialTypeRequiresPartialSelfAndDeclaringType",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack012InaccessibleDataTypeTests.InaccessibleNestedDataType",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack012InaccessibleDataTypeTests.InaccessibleNestedDataType_OuterNesting",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack014NullableRefTypeFormatterTests.RefTypeWithNullableAnnotation",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack014NullableRefTypeFormatterTests.RefTypeWithoutNullableAnnotationsEnabled",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack014NullableRefTypeFormatterTests.RefTypeWithoutNullableGetsFixed",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack014NullableRefTypeFormatterTests.ValueTypeWithoutNullableAnnotation",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack015AllowPrivateRequiredTests.AddForNonPublicDeserializingConstructor",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack015AllowPrivateRequiredTests.AddForNonPublicType",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack015AllowPrivateRequiredTests.AddForPublicTypeNestedUnderNonPublicType",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack015AllowPrivateRequiredTests.AddWhenNonPublicPropertyIsAnnotated",
+   "outcome": "passed"
+  },
+  {
+   "name": "MsgPack015AllowPrivateRequiredTests.SetWhenNonPublicPropertyIsAnnotated",
+   "outcome": "passed"
+  },
+  {
+   "name": "MultipleTypesTests.TwoTypes(usesMapMode: False)",
+   "outcome": "passed"
+  },
+  {
+   "name": "MultipleTypesTests.TwoTypes(usesMapMode: True)",
+   "outcome": "passed"
+  },
+  {
+   "name": "MultipleTypesTests.ZeroTypes",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"class\", version: CSharp7_3)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"record struct\", version: CSharp10)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"record\", version: CSharp9)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"struct\", version: CSharp7_3)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_MapMode",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_Nested_NonPartialTypes(type: \"class\", languageVersion: CSharp7_3)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_Nested_NonPartialTypes(type: \"record\", languageVersion: CSharp9)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_Nested_NonPartialTypes(type: \"struct\", languageVersion: CSharp7_3)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_NonPartialTypes(type: \"class\", languageVersion: CSharp7_3)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_NonPartialTypes(type: \"record\", languageVersion: CSharp9)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_NonPartialTypes(type: \"struct\", languageVersion: CSharp7_3)",
+   "outcome": "passed"
+  },
+  {
+   "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_WithNamespace",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterOnlyDefaultValue",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterOnlyIgnore",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterOnlyMixed",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterOnlyWithParameterizedConstructor",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterOnlyWithParameterizedConstructorDefaultValue",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterOnlyWithParameterizedConstructorPartially",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterSetter",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithDefaultValue",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithDefaultValueInputPartially",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructor",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructorAndDefaultValue",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructorDoNotUseSetter",
+   "outcome": "passed"
+  },
+  {
+   "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructorPartially",
+   "outcome": "passed"
+  },
+  {
+   "name": "UnionSerializationInfoTests.Equals_ByValue",
+   "outcome": "passed"
+  }
+ ]
+}

@@ -1,0 +1,132 @@
+### dotnet test tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-build --filter "FullyQualifiedName~GeneratedMessagePackFormatterTests."
+
+Test run for /data/src/mp-2129-fwf/bin/MessagePack.SourceGenerator.Tests/Debug/net8.0/MessagePack.SourceGenerator.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.94]     GeneratedMessagePackFormatterTests.SurrogateMemberMustMatchFormattedType [FAIL]
+[xUnit.net 00:00:00.96]     GeneratedMessagePackFormatterTests.FormatterMustBePartial [FAIL]
+[xUnit.net 00:00:01.15]     GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT [FAIL]
+[xUnit.net 00:00:01.16]     GeneratedMessagePackFormatterTests.SurrogateMemberMustHaveMatchingType [FAIL]
+[xUnit.net 00:00:01.17]     GeneratedMessagePackFormatterTests.SurrogateKeysMustNotMixStringAndInt [FAIL]
+[xUnit.net 00:00:01.18]     GeneratedMessagePackFormatterTests.FormattedTypeMustNotBeAbstract [FAIL]
+  Failed GeneratedMessagePackFormatterTests.SurrogateMemberMustMatchFormattedType [824 ms]
+  Error Message:
+   System.InvalidOperationException : Context: Source generator application
+Context: Verifying source generated files
+Expected source file list to match
++MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Fail(String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 105
+   at Microsoft.CodeAnalysis.Testing.IVerifierExtensions.EqualOrDiff(IVerifier verifier, String expected, String actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/Extensions/IVerifierExtensions.cs:line 67
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.<VerifySourceGeneratorAsync>g__VerifyDocuments|66_0(IVerifier verifier, ImmutableArray`1 actualDocuments, ImmutableArray`1 expectedDocuments, Boolean allowReordering, String defaultFilePathPrefix, Func`3 getNameAndFolders, TimeSpan matchTimeout) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 407
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(String language, ImmutableArray`1 sourceGenerators, SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 313
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 268
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 202
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at CSharpSourceGeneratorVerifier`1.Test.RunDefaultAsync(ITestOutputHelper logger) in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:line 75
+   at GeneratedMessagePackFormatterTests.SurrogateMemberMustMatchFormattedType() in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:line 129
+--- End of stack trace from previous location ---
+  Failed GeneratedMessagePackFormatterTests.FormatterMustBePartial [18 ms]
+  Error Message:
+   System.InvalidOperationException : Context: Source generator application
+Context: Verifying source generated files
+Expected source file list to match
++MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Fail(String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 105
+   at Microsoft.CodeAnalysis.Testing.IVerifierExtensions.EqualOrDiff(IVerifier verifier, String expected, String actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/Extensions/IVerifierExtensions.cs:line 67
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.<VerifySourceGeneratorAsync>g__VerifyDocuments|66_0(IVerifier verifier, ImmutableArray`1 actualDocuments, ImmutableArray`1 expectedDocuments, Boolean allowReordering, String defaultFilePathPrefix, Func`3 getNameAndFolders, TimeSpan matchTimeout) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 407
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(String language, ImmutableArray`1 sourceGenerators, SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 313
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 268
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 202
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at CSharpSourceGeneratorVerifier`1.Test.RunDefaultAsync(ITestOutputHelper logger) in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:line 75
+   at GeneratedMessagePackFormatterTests.FormatterMustBePartial() in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:line 47
+--- End of stack trace from previous location ---
+  Failed GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT [195 ms]
+  Error Message:
+   System.InvalidOperationException : Mismatch between number of diagnostics returned, expected "1" actual "2"
+
+Diagnostics:
+// /0/Test0.cs(3,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatter' could not be found (are you missing a using directive or an assembly reference?)
+DiagnosticResult.CompilerError("CS0246").WithSpan(3, 2, 3, 31).WithArguments("GeneratedMessagePackFormatter"),
+// /0/Test0.cs(3,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatterAttribute' could not be found (are you missing a using directive or an assembly reference?)
+DiagnosticResult.CompilerError("CS0246").WithSpan(3, 2, 3, 31).WithArguments("GeneratedMessagePackFormatterAttribute"),
+
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Equal[T](T expected, T actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 79
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticResults(IEnumerable`1 actualResults, ImmutableArray`1 analyzers, DiagnosticResult[] expectedResults, IVerifier verifier) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 546
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticsAsync(EvaluatedProjectState primaryProject, ImmutableArray`1 additionalProjects, DiagnosticResult[] expected, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 449
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 203
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at CSharpSourceGeneratorVerifier`1.Test.RunDefaultAsync(ITestOutputHelper logger) in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:line 75
+   at GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT() in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:line 68
+--- End of stack trace from previous location ---
+  Failed GeneratedMessagePackFormatterTests.SurrogateMemberMustHaveMatchingType [7 ms]
+  Error Message:
+   System.InvalidOperationException : Context: Source generator application
+Context: Verifying source generated files
+Expected source file list to match
++MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Fail(String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 105
+   at Microsoft.CodeAnalysis.Testing.IVerifierExtensions.EqualOrDiff(IVerifier verifier, String expected, String actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/Extensions/IVerifierExtensions.cs:line 67
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.<VerifySourceGeneratorAsync>g__VerifyDocuments|66_0(IVerifier verifier, ImmutableArray`1 actualDocuments, ImmutableArray`1 expectedDocuments, Boolean allowReordering, String defaultFilePathPrefix, Func`3 getNameAndFolders, TimeSpan matchTimeout) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 407
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(String language, ImmutableArray`1 sourceGenerators, SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 313
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 268
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 202
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at CSharpSourceGeneratorVerifier`1.Test.RunDefaultAsync(ITestOutputHelper logger) in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:line 75
+   at GeneratedMessagePackFormatterTests.SurrogateMemberMustHaveMatchingType() in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:line 163
+--- End of stack trace from previous location ---
+  Failed GeneratedMessagePackFormatterTests.SurrogateKeysMustNotMixStringAndInt [9 ms]
+  Error Message:
+   System.InvalidOperationException : Context: Source generator application
+Context: Verifying source generated files
+Expected source file list to match
++MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Fail(String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 105
+   at Microsoft.CodeAnalysis.Testing.IVerifierExtensions.EqualOrDiff(IVerifier verifier, String expected, String actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/Extensions/IVerifierExtensions.cs:line 67
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.<VerifySourceGeneratorAsync>g__VerifyDocuments|66_0(IVerifier verifier, ImmutableArray`1 actualDocuments, ImmutableArray`1 expectedDocuments, Boolean allowReordering, String defaultFilePathPrefix, Func`3 getNameAndFolders, TimeSpan matchTimeout) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 407
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(String language, ImmutableArray`1 sourceGenerators, SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 313
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 268
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 202
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at CSharpSourceGeneratorVerifier`1.Test.RunDefaultAsync(ITestOutputHelper logger) in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:line 75
+   at GeneratedMessagePackFormatterTests.SurrogateKeysMustNotMixStringAndInt() in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:line 201
+--- End of stack trace from previous location ---
+  Failed GeneratedMessagePackFormatterTests.FormattedTypeMustNotBeAbstract [5 ms]
+  Error Message:
+   System.InvalidOperationException : Context: Source generator application
+Context: Verifying source generated files
+Expected source file list to match
++MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Fail(String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 105
+   at Microsoft.CodeAnalysis.Testing.IVerifierExtensions.EqualOrDiff(IVerifier verifier, String expected, String actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/Extensions/IVerifierExtensions.cs:line 67
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.<VerifySourceGeneratorAsync>g__VerifyDocuments|66_0(IVerifier verifier, ImmutableArray`1 actualDocuments, ImmutableArray`1 expectedDocuments, Boolean allowReordering, String defaultFilePathPrefix, Func`3 getNameAndFolders, TimeSpan matchTimeout) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 407
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(String language, ImmutableArray`1 sourceGenerators, SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 313
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifySourceGeneratorAsync(SolutionState testState, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 268
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 202
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at CSharpSourceGeneratorVerifier`1.Test.RunDefaultAsync(ITestOutputHelper logger) in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:line 75
+   at GeneratedMessagePackFormatterTests.FormattedTypeMustNotBeAbstract() in /data/src/mp-2129-fwf/tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs:line 95
+--- End of stack trace from previous location ---
+Results File: /data/work/out/2129-fwf/targeted.1.trx
+
+Failed!  - Failed:     6, Passed:     0, Skipped:     0, Total:     6, Duration: 237 ms - MessagePack.SourceGenerator.Tests.dll (net8.0)
+
+Build FAILED.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.77
