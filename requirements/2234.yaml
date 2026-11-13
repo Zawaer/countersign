@@ -12,7 +12,9 @@ requirements:
     text: "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true."
   - id: REQ-2234-N1
     type: non-functional
+    checks: [tests.full_suite]
     text: "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types."
   - id: REQ-2234-N2
     type: non-functional
+    checks: [tests.fail_without_fix]
     text: "The fix is covered by automated tests that fail without it; no regressions in the existing test suite."

@@ -1,0 +1,77 @@
+{
+  "reviewer": "codex",
+  "model": "gpt-5.5-codex",
+  "vendor": "OpenAI",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T03:10:00+02:00",
+  "simulated": true,
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2283.yaml"
+  ],
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "Generator test over a metadata reference passes and fails on base.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "met",
+      "confidence_basis": "Diagnostics routed through the filter.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.targeted"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "Location filter at the single reportDiagnostic entry point.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.targeted"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "Full suite green.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "met",
+      "confidence_basis": "New tests fail on base.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}

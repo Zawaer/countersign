@@ -1,0 +1,261 @@
+{
+  "change": "2129",
+  "branch": "ju26-issue-2129",
+  "base": "32258fdb",
+  "head": "083afd99",
+  "commit_message": "Agentic implementation of #2129 Feature Request: Allow generation of Formatter for a type in a referenced assembly",
+  "author": "Stelian Vultur",
+  "agent_written": true,
+  "simulated": true,
+  "diff": {
+    "files": 28,
+    "insertions": 1034,
+    "deletions": 9,
+    "by_file": [
+      {
+        "path": "README.md",
+        "ins": 52,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "doc/analyzers/MsgPack019.md",
+        "ins": 26,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "doc/analyzers/MsgPack020.md",
+        "ins": 23,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "doc/analyzers/MsgPack021.md",
+        "ins": 23,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "doc/analyzers/MsgPack022.md",
+        "ins": 31,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "doc/analyzers/index.md",
+        "ins": 4,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "src/MessagePack.Annotations/Attributes.cs",
+        "ins": 36,
+        "del": 0,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/AnalyzerReleases.Unshipped.md",
+        "ins": 4,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+        "ins": 45,
+        "del": 1,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+        "ins": 300,
+        "del": 0,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterRequest.cs",
+        "ins": 13,
+        "del": 0,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs",
+        "ins": 7,
+        "del": 0,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/GeneratorUtilities.cs",
+        "ins": 3,
+        "del": 0,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "ins": 36,
+        "del": 3,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.cs",
+        "ins": 3,
+        "del": 1,
+        "kind": "generated"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+        "ins": 1,
+        "del": 1,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.cs",
+        "ins": 3,
+        "del": 1,
+        "kind": "generated"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt",
+        "ins": 1,
+        "del": 1,
+        "kind": "source"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/Utils/Constants.cs",
+        "ins": 2,
+        "del": 0,
+        "kind": "source"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs",
+        "ins": 50,
+        "del": 0,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+        "ins": 95,
+        "del": 0,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj",
+        "ins": 5,
+        "del": 0,
+        "kind": "build"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPerson.cs",
+        "ins": 15,
+        "del": 0,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPoint.cs",
+        "ins": 12,
+        "del": 0,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalWidget.cs",
+        "ins": 15,
+        "del": 0,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj",
+        "ins": 17,
+        "del": 0,
+        "kind": "build"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj",
+        "ins": 2,
+        "del": 1,
+        "kind": "build"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+        "ins": 210,
+        "del": 0,
+        "kind": "test"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "id": "build",
+      "tool": "dotnet build",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "0 errors, 0 warnings",
+      "log": "evidence/2129/logs/build.log",
+      "duration_s": 61.2
+    },
+    {
+      "id": "tests.targeted",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "3 passed, 0 failed",
+      "log": "evidence/2129/logs/tests.targeted.log",
+      "tests": [
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.RoundTripsExternalPerson",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.RoundTripsExternalPoint",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeys",
+          "outcome": "passed",
+          "new": true
+        }
+      ],
+      "duration_s": 48.3
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "8.0.402",
+      "status": "skipped",
+      "summary": "new feature: no previous behaviour to fail against",
+      "log": null
+    },
+    {
+      "id": "tests.full_suite",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "1,412 passed, 0 failed, 6 skipped",
+      "log": null
+    },
+    {
+      "id": "public_api",
+      "tool": "git diff PublicAPI.*.txt + Roslyn symbol diff",
+      "tool_version": "countersign-facts 0.1",
+      "status": "pass",
+      "summary": "1 public type added: MessagePack.GeneratedMessagePackFormatterAttribute",
+      "log": null,
+      "changed": true
+    },
+    {
+      "id": "analyzers",
+      "tool": "dotnet build -warnaserror",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "no new warnings",
+      "log": null
+    }
+  ],
+  "not_run": [
+    {
+      "id": "benchmarks",
+      "reason": "no perf-sensitive path touched (src/MessagePack runtime unchanged)"
+    }
+  ]
+}

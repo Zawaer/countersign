@@ -1,0 +1,132 @@
+{
+  "change": "2234",
+  "branch": "ju26-issue-2234",
+  "base": "32258fdb",
+  "head": "9007cee1",
+  "commit_message": "Implementation for #2234 The analyzer does not work if SuppressSourceGeneration = true",
+  "author": "Stelian Vultur",
+  "agent_written": true,
+  "simulated": true,
+  "diff": {
+    "files": 4,
+    "insertions": 262,
+    "deletions": 4,
+    "by_file": [
+      {
+        "path": "README.md",
+        "ins": 14,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "ins": 18,
+        "del": 4,
+        "kind": "source"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+        "ins": 37,
+        "del": 0,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+        "ins": 193,
+        "del": 0,
+        "kind": "test"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "id": "build",
+      "tool": "dotnet build",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "0 errors, 0 warnings",
+      "log": "evidence/2234/logs/build.log",
+      "duration_s": 61.2
+    },
+    {
+      "id": "tests.targeted",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "6 passed, 0 failed",
+      "log": "evidence/2234/logs/tests.targeted.log",
+      "tests": [
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+          "outcome": "passed",
+          "new": true
+        }
+      ],
+      "duration_s": 48.3
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "new tests fail on base source: 4/6 failed -> they cover the change",
+      "log": null
+    },
+    {
+      "id": "tests.full_suite",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "1,412 passed, 0 failed, 6 skipped",
+      "log": null
+    },
+    {
+      "id": "public_api",
+      "tool": "git diff PublicAPI.*.txt + Roslyn symbol diff",
+      "tool_version": "countersign-facts 0.1",
+      "status": "pass",
+      "summary": "no public API changes",
+      "log": null,
+      "changed": false
+    },
+    {
+      "id": "analyzers",
+      "tool": "dotnet build -warnaserror",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "no new warnings",
+      "log": null
+    }
+  ],
+  "not_run": [
+    {
+      "id": "benchmarks",
+      "reason": "no perf-sensitive path touched (src/MessagePack runtime unchanged)"
+    }
+  ]
+}

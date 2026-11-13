@@ -1,0 +1,29 @@
+{
+  "reviewer": "codex",
+  "model": "gpt-5.5-codex",
+  "vendor": "OpenAI",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T03:10:00+02:00",
+  "simulated": true,
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2129.yaml"
+  ],
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2129-F1",
+      "verdict": "cannot_determine",
+      "confidence_basis": "Contractless key choice for external types is a compatibility decision the requirement does not settle.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2129-F1",
+          "quote": "Allow generation of Formatter for a type in a referenced assembly"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}

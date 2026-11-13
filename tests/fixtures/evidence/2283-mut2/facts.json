@@ -1,0 +1,136 @@
+{
+  "change": "2283-mut2",
+  "branch": "ju26-issue-2283",
+  "base": "32258fdb",
+  "head": "mut2283b",
+  "commit_message": "implementation for #2283 (seeded mutant)",
+  "author": "Stelian Vultur",
+  "agent_written": true,
+  "simulated": true,
+  "diff": {
+    "files": 4,
+    "insertions": 225,
+    "deletions": 3,
+    "by_file": [
+      {
+        "path": "README.md",
+        "ins": 5,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "doc/analyzers/MsgPack004.md",
+        "ins": 5,
+        "del": 0,
+        "kind": "doc"
+      },
+      {
+        "path": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "ins": 26,
+        "del": 3,
+        "kind": "source"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+        "ins": 189,
+        "del": 0,
+        "kind": "test"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "id": "build",
+      "tool": "dotnet build",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "0 errors, 0 warnings",
+      "log": "evidence/2283-mut2/logs/build.log",
+      "duration_s": 61.2
+    },
+    {
+      "id": "tests.targeted",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "6 passed, 0 failed",
+      "log": "evidence/2283-mut2/logs/tests.targeted.log",
+      "tests": [
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GenericsFormatterTests.NullableFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NestedGenericTypes",
+          "outcome": "passed",
+          "new": false
+        }
+      ],
+      "duration_s": 48.3
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "new tests fail on base source: 3/3 failed -> they cover the change",
+      "log": null
+    },
+    {
+      "id": "tests.full_suite",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "1,412 passed, 0 failed, 6 skipped",
+      "log": null
+    },
+    {
+      "id": "public_api",
+      "tool": "git diff PublicAPI.*.txt + Roslyn symbol diff",
+      "tool_version": "countersign-facts 0.1",
+      "status": "pass",
+      "summary": "no public API changes",
+      "log": null,
+      "changed": false
+    },
+    {
+      "id": "analyzers",
+      "tool": "dotnet build -warnaserror",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "no new warnings",
+      "log": null
+    }
+  ],
+  "not_run": [
+    {
+      "id": "benchmarks",
+      "reason": "no perf-sensitive path touched (src/MessagePack runtime unchanged)"
+    }
+  ],
+  "mutation": {
+    "of": "2283",
+    "description": "ContainsSyntaxTree condition removed: diagnostics from other compilations' source trees are reported again (REQ-2283-F3); no test covers it"
+  }
+}

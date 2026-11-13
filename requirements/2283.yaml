@@ -15,7 +15,9 @@ requirements:
     text: "Diagnostics about members of a type declared in a referenced assembly must not be reported at locations outside the compilation being analyzed."
   - id: REQ-2283-N1
     type: non-functional
+    checks: [tests.full_suite]
     text: "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite)."
   - id: REQ-2283-N2
     type: non-functional
+    checks: [tests.fail_without_fix]
     text: "The fix is covered by automated tests that fail without it."

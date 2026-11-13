@@ -1,0 +1,103 @@
+{
+  "reviewer": "codex",
+  "model": "gpt-5.5-codex",
+  "vendor": "OpenAI",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T03:10:00+02:00",
+  "simulated": true,
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2234.yaml"
+  ],
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "New analyzer tests show MsgPack003/004 reported for suppressed types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "Execution test confirms no formatter is generated and no partial requirement fires.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressedSourceGenerationTests.NoFormatterIsGeneratedForSuppressedType",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "not_met",
+      "confidence_basis": "String-key branch has no ContainsKey guard (identical to the crashing base code); only the int-key duplicate is tested.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1035,
+          "rev": "base",
+          "quote": "stringMembers.Add(member.StringKey, (member, item.Type));"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "met",
+      "confidence_basis": "fail-without-fix and full suite both pass.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "X1",
+      "title": "Duplicate string keys still crash the analyzer",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "The mutant leaves stringMembers.Add unguarded as in base, so a duplicate string key throws ArgumentException (AD0001), violating REQ-2234-N1.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1035,
+          "rev": "base",
+          "quote": "stringMembers.Add(member.StringKey, (member, item.Type));"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-N1",
+          "quote": "must not crash on invalid contracts"
+        }
+      ],
+      "suggested_fix": "Guard with ContainsKey as in the int-key branch and add a duplicate string key test."
+    }
+  ],
+  "refusals": []
+}

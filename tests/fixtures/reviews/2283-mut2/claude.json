@@ -1,0 +1,83 @@
+{
+  "reviewer": "claude",
+  "model": "claude-opus-5-5",
+  "vendor": "Anthropic",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T03:10:00+02:00",
+  "simulated": true,
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2283.yaml"
+  ],
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "New tests build a project referencing a metadata closed generic struct; they pass and fail on base.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "met",
+      "confidence_basis": "The analyzer's diagnostics now go through ReportIfLocatedInCompilation, so no out-of-compilation location reaches Roslyn.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.targeted"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "Diagnostics are dropped unless their location's syntax tree is in this compilation.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2283-F3",
+          "quote": "must not be reported at locations outside the compilation being analyzed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "Full suite passes; existing generic formatter tests unchanged.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.NestedGenericTypes",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "met",
+      "confidence_basis": "fail-without-fix shows the three new tests fail on base source.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}

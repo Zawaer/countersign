@@ -22,16 +22,31 @@ change (branch + requirement IDs)
 ```
 countersign/                Python package (CLI: `python -m countersign ...` or `countersign ...`)
 mandate/messagepack.mandate.yaml   the review mandate for the MessagePack-CSharp repo
+mandate/messagepack.mandate.yaml.sig  owner's Ed25519 signature over sha256(mandate file)
 requirements/<change>.yaml   requirement set with IDs (from Tieto; placeholder until pasted)
 evidence/<change>/facts.json deterministic check results (+ raw logs in evidence/<change>/logs/)
 reviews/<change>/claude.json, codex.json   structured reviewer output (+ .md raw prose)
 packs/<change>/pack.json, pack.md, pack.html   generated evidence pack
+packs/<change>/signoff.json  copy of the ledger entry written when the owner signed
 ledger/ledger.jsonl          append-only, hash-chained sign-off + trust events
 keys/<name>.pub              public keys of named owners (private keys never committed; demo keys in .keys/, gitignored)
 measurement/                 replay results (real vs simulated clearly marked)
+tests/fixtures/{evidence,reviews}/   simulated inputs (every file has "simulated": true) used by tests and `--inputs tests/fixtures`
 ```
 
+Every command takes `--root` (default `.`: mandate/, requirements/, keys/), `--inputs` (folder holding `evidence/`, `reviews/` and the outputs `packs/`, `ledger/`, `measurement/`; default `--root`), `--repo` (git repo for code quotes, default `/data/src/mp`) and `--mandate`. So `--inputs tests/fixtures` is a separate simulated world with its own (gitignored) ledger and packs; requirements fall back to the root's.
+
 `<change>` is the short id: `2283`, `2234`, `2129`, `2297` (branches `ju26-issue-<n>`), and seeded variants like `2283-mut1`.
+A mutant `<n>-mutK` reuses `requirements/<n>.yaml`. A change is any `evidence/<change>/` folder that holds a `facts.json`.
+
+## Mandate (mandate/messagepack.mandate.yaml)
+
+Policy, not code; versioned and signed by its `owner` (`countersign sign-mandate --as Toivo`, also logged as a `mandate_change` ledger entry). Every pack records its path, version, sha256 and signature status. If the file changes after signing, or the signer is not the owner, the `mandate-not-signed` rule fires and nothing clears below `ask`.
+
+- `areas`: name -> `owner`, `paths` (globs; `**` crosses folders, `*` does not; **first match wins**), `sensitivity` (low/medium/high/critical), `max_ai_tier` (the AI's clearance right: the most lenient tier it may assign alone), `checks` (deterministic checks any change in the area needs). Demo owners: Toivo (generator/analyzer core, runtime, annotations, tests), Rene (docs, build).
+- The change's **owner** is the owner of the most sensitive area it touches; other area owners are listed as FYI.
+- `requirement_checks`: deterministic checks a clause needs, by clause `type`. A clause in `requirements/<change>.yaml` may add `checks: [...]` (2283/2234: N1 -> `tests.full_suite`, N2 -> `tests.fail_without_fix`).
+- `decision`, `rules`, `risk`, `trust`, `known_gaps`, `measurement`: see the sections below. `rules[].when` names a predicate in `countersign/decide.py` (`RULES`): `files_changed_gt`, `generated_files_gt`, `public_api_changed`, `source_without_tests`, `mandated_check_failed`, `mandated_check_missing`, `mandate_unsigned`.
 
 ## Tiers
 
@@ -67,6 +82,10 @@ The tier is the **strictest** of: the risk tier, any mandate rule that fires, th
   "not_run": [{"id": "benchmarks", "reason": "no perf-sensitive path touched"}]
 }
 ```
+
+Optional fields the pipeline uses: `"simulated": true` (fixture data; propagates to the pack and to every measurement number), `diff.by_file[].kind` (drives areas, generated-file and test-delta rules), `public_api.changed`, and for mutants `"mutation": {"of", "description", "file", "line", "before", "after"}`. Extra fields are ignored.
+
+`public_api` is a **detector, not a gate**: `status: "fail"` or `changed: true` means the public surface changed (added or removed); that fires the `public-api-change` rule (`ask`) and adds risk points. It is therefore not in any area's mandated `checks`. Additive vs breaking is not distinguished yet.
 
 `status` meanings: `pass` (check ran and passed), `fail` (ran and failed), `skipped` (deliberately not run; must have a reason), `error` (could not run: the check itself broke). `error` and `skipped` are never treated as `pass`.
 
@@ -106,29 +125,52 @@ Evidence item kinds (the engine verifies each one):
 {"kind": "issue", "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283", "quote": "..."}
 ```
 
+`rev` is `head`, `base` (resolved through facts.json) or an explicit sha. A review may carry `"simulated": true`.
+
 ## Verification and decision rules (stages 3-4)
 
-- A `code` item is verified if `file` exists at `rev` and `quote` occurs on `line` (±3 lines tolerance, recorded). A `test`/`check` item must exist in facts.json with the same outcome. A `requirement` quote must occur in the requirement text.
+- A `code` item is verified if `file` exists at `rev` (`git show <rev>:<file>` in `--repo`) and `quote` occurs on `line` (±`decision.code_line_tolerance`, default 3; the offset is recorded). Whitespace is normalised. For a mutant (uncommitted single-line edit), `rev: head` is the branch head with facts.json's `mutation.before -> after` applied on `mutation.line`, so quotes are checked against the mutant itself. A `test` item must exist in facts.json with the same `outcome`; a `check` item must exist, and if it states `status`/`outcome` it must match. A `requirement` quote must occur in the clause text.
+- An `issue` item is **not counted as verified**: the pipeline runs offline and cannot confirm what an issue page says. Unknown kinds are not verified either. Every item gets `verified` and a `note` saying what was checked.
 - A finding with **zero verified evidence** is rejected (kept in the pack under "rejected: unsupported claims", counted as a hallucination signal for that reviewer).
-- Per requirement clause: **proven** only if both reviewers say `met` with verified evidence AND the clause's mandated deterministic checks pass. Otherwise **refused**, with a machine reason: `reviewers_disagree`, `cannot_determine`, `thin_evidence`, `check_failed`, `check_not_run`, `not_met`.
-- Severity `blocker` finding verified by any reviewer -> tier at least `ask`; verified by both or backed by a failing check -> `block`.
+- Per requirement clause: **proven** only if every reviewer in `decision.reviewers_required` (claude, codex) says `met` with at least `decision.min_verified_evidence` (1) verified items AND the clause's checks pass. Otherwise **refused**, with every reason that applies (a list, not just the first): `check_failed`, `check_not_run` (skipped/error/absent), `missing_review`, `not_met`, `reviewers_disagree`, `cannot_determine`, `thin_evidence`.
+- Verified findings set a tier by severity (`decision.finding_tiers`: blocker/major -> `ask`, minor -> `notify`, info -> `silent`). A `blocker` verified by both reviewers (their verified evidence points at the same file within ~10 lines, or the same check/test) or backed by a failing check/test -> `block`. Rejected findings never move the tier; they are listed under residual risk if blocker/major ("rejected, not disproven").
+- Any refused clause -> `decision.refused_clause_tier` (`ask`). Any reviewer `refusals[]` entry -> `decision.reviewer_refusal_tier` (`ask`): a topic the AI declined is a topic nobody cleared.
+- Hard rules (`rules` in the mandate): >50 files -> `block` (split; counts all files, generated included), >10 generated files -> `ask`, public API changed -> `ask`, source changed without a test change -> `ask`, a mandated area check failed -> `block`, not run -> `ask`, mandate not validly signed -> `ask`.
+- **Tier drivers**: risk band, each fired rule, each touched area's current cap (mandate cap or trust-ledger cap), each refused clause, each reviewer refusal, each verified finding. Tier = strictest driver. The pack lists all drivers; "why" is the drivers at the final tier, most specific first (rule, finding, refused clause, reviewer refusal, trust cap, risk).
+- `ai_recommendation` in the pack is the tier under the mandate's own caps (ignoring trust-ledger probation); spot-checks grade that.
 
 ## Risk score (explainable, additive)
 
 Each factor adds points and a one-line reason; the pack prints the table. Weights live in the mandate, not in code.
-Factors: area sensitivity (e.g. generator/analyzer core vs docs), files and lines changed, generated-file count, public API change, test delta (source changed without tests -> points), security-sensitive paths (deserialization, unsafe code), tests-fail-without-fix not shown, reviewer disagreement count.
-Score bands map to tiers via mandate thresholds.
+Factors (all printed, including zeros): `area_sensitivity` (most sensitive touched area), `files_changed`, `lines_changed` (non-generated), `generated_files`, `public_api_change` (also counted when public_api was not checked), `source_without_tests`, `security_sensitive_paths` (mandate globs), `fail_without_fix_not_shown`, `reviewer_disagreement` (per clause), `failed_checks` (per failing check other than public_api). Size factors are capped.
+Score bands map to tiers via `risk.thresholds` (score >= threshold): notify 15, ask 40, block 130. The block band is deliberately high: blocks normally come from hard rules; risk alone blocks only a pile-up (e.g. failing checks + critical area + size).
 
 ## Signing and ledger (stage 6)
 
-- `countersign sign packs/<change>/pack.json --as <owner>` shows the sign-off card (checked by whom, not checked and why, residual risk), requires the owner to type the decision (`accept` / `reject` / `request-changes`) and an optional note, signs `sha256(canonical pack JSON) + decision + timestamp + signer` with the owner's Ed25519 key, and appends to `ledger/ledger.jsonl`.
-- Ledger entry: `{"seq", "ts", "type": "signoff|spotcheck|escape|mandate_change", "payload": {...}, "prev": "<sha256 of previous line>", "hash": "<sha256 of this entry without hash>", "sig": "<base64 ed25519>", "signer": "<name>"}`.
-- `countersign verify-ledger` re-checks the chain and every signature.
+- `countersign sign packs/<change>/pack.json --as <owner> [--decision accept|reject|request-changes] [--note "..."]` shows the sign-off card (checked by whom, not checked and why, residual risk). Without `--decision`/`--note` it prompts. Rules: only the pack's named owner may sign; the pack must still match a fresh rebuild from the current inputs, mandate and trust state (otherwise "out of date: re-run review"); a `block` pack accepts only `reject` / `request-changes`.
+- pack.json holds no timestamps, so the same inputs give the same sha256 (the render time is only in pack.md/html). "Canonical JSON" = `json.dumps(sort_keys=True, separators=(",", ":"), ensure_ascii=False)` UTF-8.
+- The signoff payload holds `change, pack_path, pack_sha256, decision, note, tier, ai_cleared, areas, mandate_sha256, statement`; the entry's `ts` and `signer` complete what is signed.
+- Ledger entry: `{"seq", "ts", "type": "signoff|spotcheck|escape|mandate_change", "payload": {...}, "prev", "signer", "hash", "sig"}`. `hash` = sha256(canonical entry without `hash` and `sig`); `prev` = the previous entry's `hash` (64 zeros for the first); `sig` = base64 Ed25519 by `signer` over the ASCII hex `hash`, checked against `keys/<signer lowercased>.pub`.
+- `countersign verify-ledger` re-checks seq, chain, hashes and every signature (exit 1 and the line number on any problem), and warns when a signed pack.json changed after signing.
+- Keys: `countersign keygen --name Toivo` writes `.keys/toivo.key` (raw Ed25519, base64, mode 0600, gitignored) and `keys/toivo.pub`. Key rotation and revocation are out of scope.
 
 ## Trust ledger (stage 7)
 
 Per area (from the mandate), derived purely from ledger events:
-- `spotcheck`: a human re-reviews a change the AI cleared (`silent`/`notify`) and records agree / disagree.
-- `escape`: a revert or incident traced to a change; if the AI had cleared it, the area's clearance right drops (e.g. `silent` -> `ask`) and a probation counter starts.
-- Clearance right is earned back after N consecutive agreeing spot-checks (N in the mandate).
-- `countersign trust` prints each area's current cap, with the events that set it.
+- `spotcheck` (`countersign spotcheck <change> --as <name> --result agree|disagree [--note] [--simulated]`): a human re-reviews a change whose `ai_recommendation` was `silent`/`notify` and records agree / disagree; it applies to every area the change touched. During probation the cap forces `ask`, but the AI's own recommendation is still graded, which is how the right is earned back.
+- `escape` (`countersign escape <change> --as <name> --kind revert|incident [--area A]... [--simulated]`): if the change's actual tier was `silent`/`notify` (AI-cleared), the named areas (default: the change's primary area) drop to `trust.escape_cap` (`ask`) and start probation. An escape on a human-signed change is logged but leaves the AI's cap alone (the human owned it).
+- A `disagree` spot-check tightens the cap by `trust.disagree_tightens_by` (1) step (never past `ask`) and restarts probation.
+- The mandate cap is restored after `trust.restore_after_agreeing_spotchecks` (3) consecutive agreeing spot-checks.
+- `countersign trust` prints each area's mandate cap, current cap, probation progress and the ledger entries that set it.
+
+## Measurement (`countersign replay`)
+
+Runs verify + decide over every change under `--inputs` (trust events ignored, so it measures the reviewer under the mandate, not the ledger state) and writes `measurement/results.json` and `.md`. Each number is `{"value", "simulated", "how"}`.
+- Changes without reviews are listed as "not replayed" and excluded from every metric.
+- `catch_rate`: seeded mutants routed to a human. `catch_rate_attributable`: routed by a specific signal (verified finding, failing check, hard rule other than mandated-check-missing/mandate-not-signed, refused clause with a reason other than check_not_run/missing_review) that the unmutated original did not raise. `caught_by_checks_alone`: mutants where a deterministic check failed (from facts.json; works before reviews exist). `missed_defects` lists mutants the AI would have cleared.
+- `share_routed_to_humans` (real changes only), `findings_per_reviewer` (verified / rejected / refusals), `escapes_recorded`, `spotcheck_agreement` (from the ledger; simulated if events were recorded with `--simulated`).
+- `human_minutes_full_read` vs `human_minutes_with_pack`: always `simulated: true`, from the reading model in the mandate's `measurement` block, not a stopwatch.
+
+## CLI
+
+`review <change>...` · `route --all` · `sign` · `verify-ledger` · `trust` · `spotcheck` · `escape` · `keygen --name` · `sign-mandate --as` · `replay`. Run as `countersign ...` from the venv or `python -m countersign ...`.

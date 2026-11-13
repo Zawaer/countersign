@@ -1,0 +1,76 @@
+{
+  "reviewer": "codex",
+  "model": "gpt-5.5-codex",
+  "vendor": "OpenAI",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T03:10:00+02:00",
+  "simulated": true,
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2283.yaml"
+  ],
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "not_met",
+      "confidence_basis": "Targeted tests fail.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.targeted"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "The new tests run the source generator verifier; none runs the MsgPack00x analyzer, so 'no AD0001' is not observed.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "Location filter at the single reportDiagnostic entry point.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1447,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "Full suite green.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "met",
+      "confidence_basis": "New tests fail on base.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}

@@ -1,0 +1,33 @@
+{
+  "reviewer": "claude",
+  "model": "claude-opus-5-5",
+  "vendor": "Anthropic",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T03:10:00+02:00",
+  "simulated": true,
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2297.yaml"
+  ],
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2297-F1",
+      "verdict": "met",
+      "confidence_basis": "Templates now emit [ExcludeFromCodeCoverage]; snapshots updated accordingly.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.targeted"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-2297-F1",
+          "quote": "Add ExcludeFromCodeCoverage attribute to generated code."
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}
