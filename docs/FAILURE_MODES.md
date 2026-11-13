@@ -1,0 +1,36 @@
+# Failure modes we saw
+
+Observed while running Countersign on the four agent-written MessagePack-CSharp changes. Each one says what happened, where we saw it, and what in the concept catches it (or doesn't yet). "Agent" means the coding agent that wrote the change; "reviewer" means an AI reviewer.
+
+## In the agent-written changes
+
+| # | Failure mode | Seen in | Caught by |
+|---|---|---|---|
+| A1 | **Right fix, wrong bug.** The change is sound code with tests, but it fixes a different, pre-existing crash. The regression the issue reports comes from an upstream commit that isn't even in the branch's base. | 2234 | Claude reviewer (root-cause check against the issue and git history) + the fail-without-fix check (half the new tests already pass without the change). Codex did not catch it. |
+| A2 | **Requirement already held before the change.** A clause is "met", but the base code met it too, so the change didn't achieve it. | 2234 (REQ-2234-F1/F2) | Fail-without-fix per test. The engine still marks such a clause *proven*; we're adding a "held before" status (see D-log). |
+| A3 | **Untested guard.** A line the change depends on is never exercised: deleting it breaks no test. | 2283 (the `ContainsSyntaxTree` filter, REQ-2283-F3); 2234 (field-path `continue`) | Seeded defects: both mutants survived the full suite. Reviewers read the guard as correct, so only mutation testing exposes the gap. |
+| A4 | **Tests that pass without the fix.** New tests look like coverage but don't test the change. | 2234 (4 of 8) | Fail-without-fix check, reported per test in the pack. |
+| A5 | **Out-of-scope edit hidden in a large change.** A whitespace change in an unrelated generator utility rode along with 222 regenerated snapshots. | 2297 (`TransformUtilities.cs`) | Diff facts separate source from generated files; the >50-files rule blocks the change and asks for a split. |
+| A6 | **Wrong premise in code.** `#if !NETSTANDARD2_0 && !NETFRAMEWORK` assumes the attribute doesn't exist there; it does, so those users get no exclusion. | 2297 | Claude reviewer (checked the reference assemblies). Not caught by any test: the tests run on net8.0 only. |
+| A7 | **Upgrade break for existing users.** The generated attribute collides with one the user may already have on their partial resolver (CS0579). | 2297 | Claude reviewer (reproduced it). No test covers user code that already has the attribute. |
+| A8 | **Public API added without tracking.** A new public attribute in a project that has no `PublicAPI.*.txt`, so the repo's own analyzer can't see it. | 2129 | Our `public_api` check diffs public signatures directly; the mandate routes any API change to `ask`. |
+| A9 | **New project not added to the solution.** | 2129 | `solution_membership` check. |
+| A10 | **Over-broad suppression.** The fix for 2283 drops *every* diagnostic without a source location, including some about the project's own types. | 2283 (Claude finding C2) | Claude reviewer; refused as "can't establish whether that path occurs". Owner decides. |
+
+## In the AI reviewers
+
+| # | Failure mode | Seen in | What the concept does about it |
+|---|---|---|---|
+| R1 | **Evidence makes a reviewer agreeable.** Given passing test results, Codex's second pass turned *every* refusal into "met" on all four changes and raised no findings. It missed A1, A6 and A7, which the other reviewer found. | Codex v2, all changes | A clause is proven only if *all* reviewers agree; any verified major finding routes to a human. One reviewer's "all good" can't clear anything. Also tracked per reviewer: findings raised vs findings others verified. |
+| R2 | **Refusing for the wrong reason.** Reviewers refused clauses because test projects didn't compile in *their* environment, not because of the change. | Claude v1, Codex v1 | Facts first: build/test results come from one controlled run, not from each reviewer's sandbox. Refusals are re-run when facts arrive (v1 vs v2 kept side by side). |
+| R3 | **Self-reported metadata is unreliable.** Codex returned a placeholder `reviewed_at` and a model name the tool can't confirm. | Codex v1, v2 | The runner stamps time, model and prompt version; the model's own claims are ignored. |
+| R4 | **Same name, different run.** A test is "passed" on the change and "failed" in the fail-without-fix run, by design. A correct citation was marked unverified because our verifier matched the wrong run. | Our verifier, 8 Codex citations | A failure of *our* pipeline, not the reviewer: unverified items are shown, not deleted, so it was visible. Fixed by matching the run the reviewer meant. |
+| R5 | **Shared blind spots.** Both reviewers read the untested guard in 2283 as fine. | 2283 | Mixing vendors doesn't remove correlated misses; deterministic checks (mutation) have to cover what models agree on. |
+
+## In the environment and checks
+
+| # | Failure mode | Seen in | What we did |
+|---|---|---|---|
+| E1 | **Toolchain mismatch looks like a failing change.** The repo pins SDK 8.0.402, but the generator needs Roslyn 4.12 (SDK 9), so execution tests don't compile on base either. | ExecutionTests, all branches | Status `error`, never `fail` or `pass`; re-ran under SDK 9 and recorded why. |
+| E2 | **Size rules counting generated files.** 2297 is 237 files, but 222 of them are regenerated snapshots. | 2297 | Kept the block (it also hid A5), but the pack shows the source/generated split. Open question for the mandate owner. |
+| E3 | **Checks only cover one target.** Everything ran on net8.0 / Linux; .NET Framework and netstandard paths are unchecked. | All | Listed under "not checked, and why" in every pack. |
