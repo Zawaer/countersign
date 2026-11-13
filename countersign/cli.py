@@ -6,7 +6,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import keys, ledger, mandate as mandate_mod, measure, pack as pack_mod, trust
+from . import costs as costs_mod, keys, ledger, llm, mandate as mandate_mod, measure, pack as pack_mod, trust
 from .common import DEFAULT_REPO, HUMAN_TIERS, Workspace, canonical, read_json, sha256_hex, write_json
 
 
@@ -144,6 +144,46 @@ def cmd_replay(a) -> int:
     return 0
 
 
+def cmd_review_llm(a) -> int:
+    ws = _ws(a)
+    status = 0
+    for change in a.changes:
+        try:
+            out = llm.run_review(ws, change, a.reviewer, a.repo, budget=a.context_chars)
+        except llm.LLMError as e:
+            print(f"error: {change}: {e}", file=sys.stderr)
+            status = 1
+            continue
+        r = read_json(out)
+        print(f"wrote {out.relative_to(ws.inputs)} ({r['model']}): " + ", ".join(f"{v['req']} {v['verdict']}" for v in r["requirement_verdicts"])
+              + f"; {len(r['findings'])} findings, {len(r['refusals'])} refusals; tokens {r['runner']['usage']}")
+    return status
+
+
+def cmd_adjudicate(a) -> int:
+    ws = _ws(a)
+    status = 0
+    for change in a.changes:
+        try:
+            out = llm.run_adjudication(ws, change, a.repo, a.adjudicator)
+        except llm.LLMError as e:
+            print(f"error: {change}: {e}", file=sys.stderr)
+            status = 1
+            continue
+        if out is None:
+            print(f"{change}: no disputes between the reviewers; adjudicator not run")
+        else:
+            r = read_json(out)
+            print(f"wrote {out.relative_to(ws.inputs)} ({r['model']}): {len(r['rulings'])} rulings on {', '.join(r['disputes_given'])}")
+    return status
+
+
+def cmd_costs(a) -> int:
+    out = costs_mod.write(_ws(a))
+    print(f"wrote {out}")
+    return 0
+
+
 def parser() -> argparse.ArgumentParser:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--root", default=".", help="repo root holding mandate/, requirements/, packs/, ledger/, keys/ (default: .)")
@@ -190,6 +230,14 @@ def parser() -> argparse.ArgumentParser:
     sp.add_argument("--force", action="store_true")
     sp = add("sign-mandate", cmd_sign_mandate, "the mandate owner signs the current mandate")
     sp.add_argument("--as", dest="signer", required=True)
+    sp = add("review-llm", cmd_review_llm, "stage 2 from a model API (OpenAI-compatible): writes reviews/<change>/<reviewer>.json")
+    sp.add_argument("changes", nargs="+")
+    sp.add_argument("--reviewer", required=True, choices=sorted(llm.PRESETS))
+    sp.add_argument("--context-chars", type=int, default=None, help=f"context budget in characters (default {llm.DEFAULT_CONTEXT_CHARS})")
+    sp = add("adjudicate", cmd_adjudicate, "only if reviewers disagree: the adjudicator's rulings (advisory; never clears)")
+    sp.add_argument("changes", nargs="+")
+    sp.add_argument("--adjudicator", default=None, help="default: the mandate's adjudicator")
+    add("costs", cmd_costs, "render docs/COSTS.md from measurement/costs.yaml")
     add("replay", cmd_replay, "run every change (incl. seeded mutants) and write measurement/results.{json,md}")
     return ap
 

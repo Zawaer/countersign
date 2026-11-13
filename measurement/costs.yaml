@@ -1,0 +1,20 @@
+# Countersign spend ledger: append-only. One row per model call or CI run; never edit a row, add a correction.
+# `countersign costs` renders docs/COSTS.md from it. review-llm and adjudicate append rows automatically.
+# source: "api usage field" (tokens from the API response) | "estimate" | "unknown". usd: null = not known.
+# `changes` (list) marks a run that covered several changes; its cost is split evenly per change in COSTS.md.
+
+prices_usd_per_1m:
+  nvidia/nemotron-3.5-super-vl-120b-a12b: {in: 0, out: 0, basis: "NVIDIA API catalog (build.nvidia.com) free tier, rate-limited, not billed"}
+  gemini-4-hydrogen: {in: 1.5, out: 7.5, basis: "Google Gemini API list price as charged in the team's Sous runs (13.11.2026)"}
+
+notes:
+  - "Codex (OpenAI) runs are billed to Toivo's OpenAI credits; the token counts are the Codex run summaries (docs/CODEX_LOG.md), so source is estimate and usd unknown."
+  - "Claude reviews ran in a Renki session on a Claude subscription, not on the hackathon's API credits: there is no per-token bill to attribute."
+  - "CRACI CI runs are paid from CRACI's per-team compute credits; rows record the job minutes, usd unknown (see the CRACI dashboard)."
+  - "NVIDIA's free tier costs $0 but is capped at about 40 requests per minute."
+
+runs:
+  - {"when": "2026-11-14 01:13", "provider": "openai", "model": "GPT-6 Codex (self-reported)", "purpose": "Codex review v1, read-only, all four changes (run 01a1d72f)", "changes": ["2283", "2234", "2129", "2297"], "tokens_in": 116000, "tokens_out": 4000, "usd": null, "source": "estimate", "run_url": null, "note": "billed to Toivo's OpenAI credits"}
+  - {"when": "2026-11-14 01:37", "provider": "openai", "model": "GPT-6 (self-reported)", "purpose": "Codex review v2 with facts, read-only, all four changes (run 01a1d745)", "changes": ["2283", "2234", "2129", "2297"], "tokens_in": 378000, "tokens_out": 4800, "usd": null, "source": "estimate", "run_url": null, "note": "billed to Toivo's OpenAI credits"}
+  - {"when": "2026-11-14 01:24", "provider": "anthropic", "model": "claude-opus-5-5", "purpose": "Claude review v1, all four changes (Renki session, subscription)", "changes": ["2283", "2234", "2129", "2297"], "tokens_in": null, "tokens_out": null, "tokens_total": 191000, "usd": null, "source": "estimate", "run_url": null, "note": "~191k tokens per the agent's usage report; subscription, not API credits"}
+  - {"when": "2026-11-14 01:46", "provider": "anthropic", "model": "claude-opus-5-5", "purpose": "Claude review v2 with SDK 9 evidence, all four changes (Renki session, subscription)", "changes": ["2283", "2234", "2129", "2297"], "tokens_in": null, "tokens_out": null, "usd": null, "source": "unknown", "run_url": null, "note": "subscription, not API credits"}
