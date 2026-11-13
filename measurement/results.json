@@ -1,0 +1,650 @@
+{
+  "inputs": "/data/worktrees/s_Vga5T2JJtb",
+  "changes": [
+    {
+      "change": "2129",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "block",
+      "score": 145.2,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 1,
+      "full_read_min": 114.3,
+      "guided_min": 26,
+      "simulated": false
+    },
+    {
+      "change": "2234",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 67.6,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "verified finding claude:C1",
+        "refused clause REQ-2234-N1",
+        "reviewer refusal claude",
+        "reviewer refusal claude",
+        "reviewer refusal nemotron",
+        "reviewer refusal nemotron",
+        "reviewer refusal nemotron",
+        "reviewer refusal nemotron",
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 3,
+      "refused": 1,
+      "full_read_min": 26.2,
+      "guided_min": 44,
+      "simulated": false
+    },
+    {
+      "change": "2283",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 41.1,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "verified finding claude:C1",
+        "refused clause REQ-2283-F1",
+        "refused clause REQ-2283-F2",
+        "refused clause REQ-2283-F3",
+        "refused clause REQ-2283-N1",
+        "refused clause REQ-2283-N2",
+        "reviewer refusal claude",
+        "reviewer refusal claude",
+        "reviewer refusal codex",
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 5,
+      "full_read_min": 23.0,
+      "guided_min": 35,
+      "simulated": false
+    },
+    {
+      "change": "2297",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "block",
+      "score": 64.5,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "mandate rule split-large-change"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 1,
+      "full_read_min": 260.8,
+      "guided_min": 22,
+      "simulated": false
+    }
+  ],
+  "skipped": [
+    {
+      "change": "2129-mut1",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2129-mut2",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2234-mut1",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2234-mut2",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2234-mut3",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2234-mut4",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2234-mut5",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2234-mut6",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2234-mut7",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2283-mut1",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2283-mut2",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2283-mut3",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2283-mut4",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "2283-mut5",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    }
+  ],
+  "mutants": [
+    {
+      "change": "2129-mut1",
+      "of": "2129",
+      "kind": "off-by-one",
+      "description": "boundary error: accept a [GeneratedMessagePackFormatter] class that implements zero IMessagePackFormatter<T>",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.targeted",
+        "tests.full_suite"
+      ],
+      "tier": "block",
+      "original_tier": "block",
+      "routed_to_human": true,
+      "attributable": [
+        "mandated-check-failed"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2129-mut2",
+      "of": "2129",
+      "kind": "wrong key kind",
+      "description": "classify the surrogate member's key kind backwards",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.execution_full_suite"
+      ],
+      "tier": "block",
+      "original_tier": "block",
+      "routed_to_human": true,
+      "attributable": [],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2234-mut1",
+      "of": "2234",
+      "kind": "removed guard",
+      "description": "remove the ContainsKey guard before intMembers.Add in the property loop",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.targeted",
+        "tests.full_suite"
+      ],
+      "tier": "block",
+      "original_tier": "ask",
+      "routed_to_human": true,
+      "attributable": [
+        "mandated-check-failed"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2234-mut2",
+      "of": "2234",
+      "kind": "removed guard",
+      "description": "drop the `continue` after DoNotMixStringAndIntKeys in the FIELD loop",
+      "caught_by_checks": false,
+      "failed_checks": [],
+      "tier": "ask",
+      "original_tier": "ask",
+      "routed_to_human": true,
+      "attributable": [],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2234-mut3",
+      "of": "2234",
+      "kind": "removed guard",
+      "description": "remove the ContainsKey guard before stringMembers.Add in the property loop",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.targeted",
+        "tests.full_suite"
+      ],
+      "tier": "block",
+      "original_tier": "ask",
+      "routed_to_human": true,
+      "attributable": [
+        "mandated-check-failed"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2234-mut4",
+      "of": "2234",
+      "kind": "swallowed diagnostic",
+      "description": "comment out the KeysMustBeUnique (MsgPack005) report for duplicate int keys on properties",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.targeted",
+        "tests.full_suite"
+      ],
+      "tier": "block",
+      "original_tier": "ask",
+      "routed_to_human": true,
+      "attributable": [
+        "mandated-check-failed"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2234-mut5",
+      "of": "2234",
+      "kind": "inverted condition",
+      "description": "invert the duplicate guard in the field loop",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.full_suite"
+      ],
+      "tier": "ask",
+      "original_tier": "ask",
+      "routed_to_human": true,
+      "attributable": [],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2234-mut6",
+      "of": "2234",
+      "kind": "wrong key kind",
+      "description": "check the wrong key kind in the property loop's mixed-keys test",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.targeted",
+        "tests.full_suite"
+      ],
+      "tier": "block",
+      "original_tier": "ask",
+      "routed_to_human": true,
+      "attributable": [
+        "mandated-check-failed"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2234-mut7",
+      "of": "2234",
+      "kind": "off-by-one",
+      "description": "start the constructor-parameter index at 1 instead of 0 (int-key constructor matching, in the method the change edits)",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.full_suite"
+      ],
+      "tier": "ask",
+      "original_tier": "ask",
+      "routed_to_human": true,
+      "attributable": [],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2283-mut1",
+      "of": "2283",
+      "kind": "removed guard",
+      "description": "remove the ContainsSyntaxTree guard in ReportIfLocatedInCompilation, so in-source diagnostics located in another compilation's syntax tree are reported again",
+      "caught_by_checks": false,
+      "failed_checks": [],
+      "tier": "notify",
+      "original_tier": "notify",
+      "routed_to_human": false,
+      "attributable": [],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2283-mut2",
+      "of": "2283",
+      "kind": "removed guard",
+      "description": "reintroduce the unguarded DeclaringSyntaxReferences[0] index for the MemberNeedsKey (MsgPack004) location",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.targeted",
+        "tests.full_suite"
+      ],
+      "tier": "block",
+      "original_tier": "notify",
+      "routed_to_human": true,
+      "attributable": [
+        "mandated-check-failed"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2283-mut3",
+      "of": "2283",
+      "kind": "inverted condition",
+      "description": "invert the ContainsSyntaxTree test: report only diagnostics located in a foreign syntax tree, drop the ones in this compilation",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.full_suite"
+      ],
+      "tier": "ask",
+      "original_tier": "notify",
+      "routed_to_human": true,
+      "attributable": [
+        "risk 33.1 -> 58.1 (failed: tests.full_suite)"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2283-mut4",
+      "of": "2283",
+      "kind": "swallowed diagnostic",
+      "description": "comment out the BothStringAndIntKeyAreNull report for properties (the line the change rewrote)",
+      "caught_by_checks": true,
+      "failed_checks": [
+        "tests.full_suite"
+      ],
+      "tier": "ask",
+      "original_tier": "notify",
+      "routed_to_human": true,
+      "attributable": [
+        "risk 33.1 -> 58.1 (failed: tests.full_suite)"
+      ],
+      "reviews": "pending",
+      "simulated": false
+    },
+    {
+      "change": "2283-mut5",
+      "of": "2283",
+      "kind": "removed guard",
+      "description": "undo the change's null-safe location helper for the keyless-property diagnostic (back to the unguarded [0] index and cast)",
+      "caught_by_checks": false,
+      "failed_checks": [],
+      "tier": "notify",
+      "original_tier": "notify",
+      "routed_to_human": false,
+      "attributable": [],
+      "reviews": "pending",
+      "simulated": false
+    }
+  ],
+  "metrics": {
+    "seeded_defects": {
+      "value": 0,
+      "simulated": false,
+      "how": "mutants found as evidence/<change>-mutK"
+    },
+    "catch_rate": {
+      "value": null,
+      "simulated": false,
+      "how": "share of seeded defects routed to a human (ask/block) instead of AI-cleared"
+    },
+    "catch_rate_attributable": {
+      "value": null,
+      "simulated": false,
+      "how": "share routed to a human by a specific signal (failing check, verified finding, hard rule, refused clause) that the unmutated original did not raise"
+    },
+    "caught_by_checks_alone": {
+      "value": {
+        "caught": 11,
+        "of": 14,
+        "detail": {
+          "2129-mut1": [
+            "tests.targeted",
+            "tests.full_suite"
+          ],
+          "2129-mut2": [
+            "tests.execution_full_suite"
+          ],
+          "2234-mut1": [
+            "tests.targeted",
+            "tests.full_suite"
+          ],
+          "2234-mut2": "no check failed",
+          "2234-mut3": [
+            "tests.targeted",
+            "tests.full_suite"
+          ],
+          "2234-mut4": [
+            "tests.targeted",
+            "tests.full_suite"
+          ],
+          "2234-mut5": [
+            "tests.full_suite"
+          ],
+          "2234-mut6": [
+            "tests.targeted",
+            "tests.full_suite"
+          ],
+          "2234-mut7": [
+            "tests.full_suite"
+          ],
+          "2283-mut1": "no check failed",
+          "2283-mut2": [
+            "tests.targeted",
+            "tests.full_suite"
+          ],
+          "2283-mut3": [
+            "tests.full_suite"
+          ],
+          "2283-mut4": [
+            "tests.full_suite"
+          ],
+          "2283-mut5": "no check failed"
+        }
+      },
+      "simulated": false,
+      "how": "seeded defects where a deterministic check failed (no AI involved; includes mutants without reviews)"
+    },
+    "missed_defects": {
+      "value": [],
+      "simulated": false,
+      "how": "seeded defects the AI would have cleared"
+    },
+    "share_routed_to_humans": {
+      "value": 1.0,
+      "simulated": false,
+      "how": "real changes (not mutants) at ask/block"
+    },
+    "findings_per_reviewer": {
+      "value": {
+        "claude": {
+          "model": "claude-opus-5-5",
+          "verified": 13,
+          "rejected": 0,
+          "refusals": 10,
+          "rejected_share": 0.0
+        },
+        "codex": {
+          "model": "GPT-6",
+          "verified": 0,
+          "rejected": 0,
+          "refusals": 3,
+          "rejected_share": null
+        },
+        "nemotron": {
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "verified": 5,
+          "rejected": 0,
+          "refusals": 4,
+          "rejected_share": 0.0
+        }
+      },
+      "simulated": false,
+      "how": "verified vs rejected (unsupported) findings over all replayed changes"
+    },
+    "human_minutes_full_read": {
+      "value": 424.3,
+      "simulated": true,
+      "how": "reading-speed model in the mandate: lines/min + minutes per file"
+    },
+    "human_minutes_with_pack": {
+      "value": 127,
+      "simulated": true,
+      "how": "pack reading time by tier + per refused item + per verified finding"
+    },
+    "review_time_saved_share": {
+      "value": 0.7,
+      "simulated": true,
+      "how": "1 - with_pack / full_read"
+    },
+    "escapes_recorded": {
+      "value": 0,
+      "simulated": false,
+      "how": "escape events in the ledger"
+    },
+    "spotcheck_agreement": {
+      "value": null,
+      "simulated": false,
+      "how": "agreeing spot-checks / all spot-checks in the ledger"
+    },
+    "seeded_defects_total": {
+      "value": 14,
+      "simulated": false,
+      "how": "every evidence/<change>-mutK, with or without reviews"
+    },
+    "seeded_routed_to_human_before_review": {
+      "value": {
+        "routed": 12,
+        "attributable": 8,
+        "of": 14
+      },
+      "simulated": false,
+      "how": "facts only (no reviews): mutants at ask/block; attributable = a hard rule fired, or the tier rose, versus the unmutated original routed the same way"
+    },
+    "reviewer_cross_check": {
+      "value": {
+        "claude": {
+          "major_raised_verified": 4,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 0
+        },
+        "codex": {
+          "major_raised_verified": 0,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 4
+        },
+        "nemotron": {
+          "major_raised_verified": 0,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 1
+        }
+      },
+      "simulated": false,
+      "how": "blocker/major findings: raised and verified, confirmed by another reviewer (shared anchor), and other reviewers' verified ones this reviewer did not raise"
+    },
+    "time_per_change": {
+      "value": {
+        "2129": {
+          "full_read_min": 114.3,
+          "with_pack_min": 26,
+          "saved_min": 88.3
+        },
+        "2234": {
+          "full_read_min": 26.2,
+          "with_pack_min": 44,
+          "saved_min": -17.8
+        },
+        "2283": {
+          "full_read_min": 23.0,
+          "with_pack_min": 35,
+          "saved_min": -12.0
+        },
+        "2297": {
+          "full_read_min": 260.8,
+          "with_pack_min": 22,
+          "saved_min": 238.8
+        }
+      },
+      "simulated": true,
+      "how": "reading model; negative = the pack costs more than reading the diff (small changes)"
+    },
+    "model_tokens_per_change": {
+      "value": {
+        "2283": 173450,
+        "2234": 173450,
+        "2129": 173450,
+        "2297": 173450
+      },
+      "simulated": false,
+      "how": "measurement/costs.yaml; estimates where the row says so"
+    }
+  },
+  "history": {
+    "simulated": false,
+    "source": "measurement/history/results.json",
+    "ci-credited": {
+      "n": 109,
+      "tiers": {
+        "silent": 0,
+        "notify": 24,
+        "ask": 74,
+        "block": 11
+      },
+      "routed_to_humans": 85,
+      "share_routed_to_humans": 0.78,
+      "escapes": 11,
+      "escapes_high_confidence": 6,
+      "confusion": {
+        "escape_routed": 11,
+        "escape_cleared": 0,
+        "clean_routed": 74,
+        "clean_cleared": 24
+      },
+      "escape_recall": 1.0,
+      "escape_rate_routed": 0.129,
+      "escape_rate_cleared": 0.0,
+      "escapes_cleared": []
+    },
+    "diff-only": {
+      "n": 109,
+      "tiers": {
+        "silent": 0,
+        "notify": 0,
+        "ask": 95,
+        "block": 14
+      },
+      "routed_to_humans": 109,
+      "share_routed_to_humans": 1.0,
+      "escapes": 11,
+      "escapes_high_confidence": 6,
+      "confusion": {
+        "escape_routed": 11,
+        "escape_cleared": 0,
+        "clean_routed": 98,
+        "clean_cleared": 0
+      },
+      "escape_recall": 1.0,
+      "escape_rate_routed": 0.101,
+      "escape_rate_cleared": null,
+      "escapes_cleared": []
+    }
+  }
+}
