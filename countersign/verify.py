@@ -19,7 +19,12 @@ class Verifier:
         self.repo, self.facts, self.tolerance = repo, facts, line_tolerance
         self.reqs = {r["id"]: r for r in requirements.get("requirements", [])}
         self.checks = {c["id"]: c for c in facts.get("checks", [])}
-        self.tests = {t["name"]: t for c in facts.get("checks", []) for t in c.get("tests", [])}
+        # every run of a test, per check: the same name can appear in tests.targeted (head, passed) and in
+        # tests.fail_without_fix (source reverted, failed by design), so a name alone is ambiguous.
+        self.test_runs: dict[str, list[tuple[str, dict]]] = {}
+        for c in facts.get("checks", []):
+            for t in c.get("tests", []):
+                self.test_runs.setdefault(t["name"], []).append((c["id"], t))
         self._files: dict[tuple[str, str], list[str] | None] = {}
 
     # --- per kind -------------------------------------------------------
@@ -60,13 +65,36 @@ class Verifier:
         off = f" (found at line {best}, {abs(best - line)} off)" if best != line else ""
         return True, f"quote matches {item['file']}:{line} at {rev_name} {rev[:8]}{off}"
 
+    @staticmethod
+    def _head_run(check_id: str) -> bool:
+        """Runs on the change's own head (targeted, full suite, execution), not the source-reverted or base runs."""
+        return "fail_without_fix" not in check_id and "base" not in check_id
+
     def test(self, item: dict) -> tuple[bool, str]:
-        t = self.tests.get(item.get("name", ""))
-        if t is None:
-            return False, f"test {item.get('name')!r} is not in facts.json"
-        if item.get("outcome") and item["outcome"] != t["outcome"]:
-            return False, f"reviewer says {item['outcome']}, facts.json says {t['outcome']}"
-        return True, f"facts.json: {t['outcome']}" + (" (new test)" if t.get("new") else "")
+        """Verified if a run on the change's head has the cited outcome. `check` on the item pins one run
+        (which may then be a fail_without_fix run: citing a failure there is legitimate evidence)."""
+        name = item.get("name", "")
+        runs = self.test_runs.get(name)
+        if not runs:
+            return False, f"test {name!r} is not in facts.json"
+        if item.get("check"):
+            runs = [(cid, t) for cid, t in runs if cid == item["check"]]
+            if not runs:
+                return False, f"test {name!r} was not run by check {item['check']!r}"
+            pool = runs
+        else:
+            pool = [(cid, t) for cid, t in runs if self._head_run(cid)]
+        want = item.get("outcome")
+        hits = [(cid, t) for cid, t in pool if not want or t["outcome"] == want]
+        if hits:
+            cid, t = hits[0]
+            return True, f"facts.json {cid}: {t['outcome']}" + (" (new test)" if t.get("new") else "")
+        seen = ", ".join(f"{cid}: {t['outcome']}" for cid, t in runs)
+        other = [cid for cid, t in runs if not self._head_run(cid) and t["outcome"] == want]
+        if other and not item.get("check"):
+            return False, (f"reviewer says {want}, but on the change's head facts.json has {seen if pool else 'no run'}; "
+                           f"{want} only in {', '.join(other)} (the source-reverted/base run): add check: {other[0]!r} to cite that run")
+        return False, f"reviewer says {want}, facts.json says {seen}"
 
     def check(self, item: dict) -> tuple[bool, str]:
         c = self.checks.get(item.get("id", ""))

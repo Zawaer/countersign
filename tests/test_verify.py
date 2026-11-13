@@ -63,3 +63,21 @@ def test_finding_without_verified_evidence_is_rejected_but_kept(ws):
     status = {f["id"]: f["status"] for f in out["findings"]}
     assert status == {"X1": "rejected", "X2": "verified"}
     assert "no cited evidence could be verified" in out["findings"][0]["rejection_reason"]
+
+
+def test_test_evidence_matches_the_head_run_not_the_fail_without_fix_run(ws):
+    facts = make_facts(base=ws.base, head=ws.head)
+    # the same test, run again with the source reverted: it fails there by design (listed first on purpose)
+    fwf = next(c for c in facts["checks"] if c["id"] == "tests.fail_without_fix")
+    fwf["tests"] = [{"name": "CollectorTests.DuplicateKeys", "outcome": "failed", "new": True}]
+    facts["checks"].insert(0, facts["checks"].pop(facts["checks"].index(fwf)))
+    v = Verifier(ws.repo, facts, REQS)
+    ok = v.item({"kind": "test", "name": "CollectorTests.DuplicateKeys", "outcome": "passed"})
+    assert ok["verified"] and "tests.targeted" in ok["note"]
+    # "failed" without pinning the run: only the reverted run failed, so it is not verified, and the note says why
+    bad = v.item({"kind": "test", "name": "CollectorTests.DuplicateKeys", "outcome": "failed"})
+    assert not bad["verified"] and "tests.fail_without_fix" in bad["note"]
+    # pinned to the fail_without_fix run, the failure is legitimate evidence
+    pinned = v.item({"kind": "test", "name": "CollectorTests.DuplicateKeys", "outcome": "failed", "check": "tests.fail_without_fix"})
+    assert pinned["verified"]
+    assert not v.item({"kind": "test", "name": "CollectorTests.DuplicateKeys", "check": "tests.full_suite"})["verified"]
