@@ -206,6 +206,186 @@
       "failures_also_on_base": [],
       "log": "evidence/2283-mut1/logs/tests_full_suite.log",
       "duration_s": 6.0
+    },
+    {
+      "id": "tests.execution_full_suite",
+      "tool": "dotnet test (ExecutionTests, MapModeExecutionTests)",
+      "tool_version": "9.0.321",
+      "tool_version_note": "SDK 9 because the generator needs Roslyn 4.12; the repo pins 8.0.402",
+      "status": "pass",
+      "summary": "34 passed, 0 failed",
+      "tests": [
+        {
+          "project": "ExecutionTests",
+          "name": "ExcludedCustomFormatter.ExcludedFormatterIsIgnored",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithEnumProperty",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithInitProperty",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertiesWithGetterAndCtor",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertiesWithGetterAndSetter",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertyWithCustomFormatterAttribute",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertyWithTypeWithCustomFormatter",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithRequiredMembers",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.ClassWithUnionProperty",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.DeserializingConstructorStartsWithIdx1",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.GeneratedResolverPicksUpCustomResolversAutomatically",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.NewPropertyInDerivedType_KeepsValueIndependent",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "ExecutionTests.PrivateFieldIsSerialized",
+          "outcome": "passed"
+        },
+        {
+          "project": "ExecutionTests",
+          "name": "GeneratedCompositeResolverTests.CanFindFormatterFromVariousResolvers",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExcludedCustomFormatter.ExcludedFormatterIsIgnored",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithEnumProperty",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithInitProperty",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertiesWithGetterAndCtor",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertiesWithGetterAndSetter",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertyWithCustomFormatterAttribute",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithPropertyWithTypeWithCustomFormatter",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithRequiredMembers",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.ClassWithUnionProperty",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.DeserializingConstructorStartsWithIdx1",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.GeneratedResolverPicksUpCustomResolversAutomatically",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "ExecutionTests.NewPropertyInDerivedType_KeepsValueIndependent",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "GeneratedCompositeResolverTests.CanFindFormatterFromVariousResolvers",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "MapModeExecutionTests.NewPropertyInDerivedType_KeepsValueIndependent",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "MapModeExecutionTests.TestMapModeAgainstVariousVisibility",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "MapModeExecutionTests.TestMapModeAgainstVariousVisibility_AllowPrivateAttribute",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "StringKeyOverrideTests.KeyOnReadOnlyField",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "StringKeyOverrideTests.KeyOnReadOnlyProperty",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "StringKeyOverrideTests.KeyOnSettableField",
+          "outcome": "passed"
+        },
+        {
+          "project": "MapModeExecutionTests",
+          "name": "StringKeyOverrideTests.KeyOnSettableProperty",
+          "outcome": "passed"
+        }
+      ]
     }
   ],
   "not_run": [

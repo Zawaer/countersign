@@ -1,0 +1,26 @@
+### dotnet build tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-incremental -m:8 -c Debug
+
+  Determining projects to restore...
+/data/src/mp-2283-mut5/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj : warning NU1901: Package 'NuGet.Protocol' 6.8.0 has a known low severity vulnerability, https://github.com/advisories/GHSA-g4vj-cjjj-v7hg
+  Restored /data/src/mp-2283-mut5/src/MessagePack.Analyzers/MessagePack.Analyzers.csproj (in 197 ms).
+  Restored /data/src/mp-2283-mut5/src/MessagePack.Annotations/MessagePack.Annotations.csproj (in 195 ms).
+  Restored /data/src/mp-2283-mut5/src/MessagePack.SourceGenerator/MessagePack.SourceGenerator.csproj (in 195 ms).
+  Restored /data/src/mp-2283-mut5/src/MessagePack/MessagePack.csproj (in 199 ms).
+  Restored /data/src/mp-2283-mut5/src/MessagePack.Analyzers.CodeFixes/MessagePack.Analyzers.CodeFixes.csproj (in 195 ms).
+  Restored /data/src/mp-2283-mut5/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj (in 230 ms).
+/data/src/mp-2283-mut5/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj : warning NU1901: Package 'NuGet.Protocol' 6.8.0 has a known low severity vulnerability, https://github.com/advisories/GHSA-g4vj-cjjj-v7hg
+  MessagePack.SourceGenerator -> /data/src/mp-2283-mut5/bin/MessagePack.SourceGenerator/Debug/netstandard2.0/MessagePack.SourceGenerator.dll
+  MessagePack.Analyzers.CodeFixes -> /data/src/mp-2283-mut5/bin/MessagePack.Analyzers.CodeFixes/Debug/netstandard2.0/MessagePack.Analyzers.CodeFixes.dll
+  MessagePack.Analyzers -> /data/src/mp-2283-mut5/bin/MessagePack.Analyzers/Debug/netstandard2.0/MessagePack.Analyzers.dll
+  MessagePack.Annotations -> /data/src/mp-2283-mut5/bin/MessagePack.Annotations/Debug/netstandard2.0/MessagePack.Annotations.dll
+  MessagePack -> /data/src/mp-2283-mut5/bin/MessagePack/Debug/net8.0/MessagePack.dll
+  MessagePack.SourceGenerator.Tests -> /data/src/mp-2283-mut5/bin/MessagePack.SourceGenerator.Tests/Debug/net8.0/MessagePack.SourceGenerator.Tests.dll
+
+Build succeeded.
+
+/data/src/mp-2283-mut5/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj : warning NU1901: Package 'NuGet.Protocol' 6.8.0 has a known low severity vulnerability, https://github.com/advisories/GHSA-g4vj-cjjj-v7hg
+/data/src/mp-2283-mut5/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj : warning NU1901: Package 'NuGet.Protocol' 6.8.0 has a known low severity vulnerability, https://github.com/advisories/GHSA-g4vj-cjjj-v7hg
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.65

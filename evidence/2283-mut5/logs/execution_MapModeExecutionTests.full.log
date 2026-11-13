@@ -1,0 +1,17 @@
+### dotnet test tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj --no-build
+
+Test run for /data/src/mp-2283-mut5/bin/MessagePack.SourceGenerator.MapModeExecutionTests/Debug/net8.0/MessagePack.SourceGenerator.MapModeExecutionTests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.2 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: /data/work/out/exec9-2283-mut5/MapModeExecutionTests.full.trx
+
+Passed!  - Failed:     0, Passed:    20, Skipped:     0, Total:    20, Duration: 37 ms - MessagePack.SourceGenerator.MapModeExecutionTests.dll (net8.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.69
