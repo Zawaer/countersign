@@ -200,8 +200,7 @@ def render(p: dict, pack_sha: str, live: dict, stale: list[str], signoff: dict |
     owner, login = p["owner"], cfg["owners"].get(p["owner"])
     who = f"{owner} (@{login})" if login else f"{owner} (no GitHub login mapped in .countersign/config.yaml)"
     sig = p["mandate"].get("signature") or {}
-    icon = {"success": "PASS", "pending": "WAITING", "failure": "STOP"}[status[0]]
-    lines = [MARKER, f"## Countersign: {p['tier'].upper()} · {icon}: {status[1]}", ""]
+    lines = [MARKER, f"## Countersign · {status[1]}", ""]
     if cfg.get("recorded"):
         lines += ["> **Recorded reviews; a live run calls the reviewers with the same prompt** "
                   "(`prompts/review-v1.md`). This demo replays the reviews, the adjudication and the build/test results "
@@ -236,7 +235,7 @@ def render(p: dict, pack_sha: str, live: dict, stale: list[str], signoff: dict |
                   f"the commenter is @{login or '?'}, appends it to the `{cfg['ledger_branch']}` branch and sets "
                   f"`{cfg['status_context']}`. A plain `/countersign accept` without the signed block changes nothing. "
                   "Merging `main` requires that status to pass.", ""]
-    lines += ["<details><summary><b>Evidence pack</b> (pack.md: what was checked and by whom, what was refused and why, "
+    lines += ["<details open><summary><b>Evidence pack</b> (pack.md: what was checked and by whom, what was refused and why, "
               "what was not checked, residual risk)</summary>", "", pack_mod.to_markdown(p), "", "</details>"]
     body = "\n".join(lines)
     return body if len(body) < 65000 else body[:64000] + "\n\n_(truncated: the full pack is in the workflow artifact)_\n</details>"
