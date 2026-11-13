@@ -1,26 +1,43 @@
 {
   "reviewer": "codex",
-  "model": "GPT-6 Codex",
+  "model": "GPT-6",
   "vendor": "OpenAI",
   "prompt_version": "review-v1",
-  "reviewed_at": "2026-11-13T00:00:00Z",
-  "inputs": ["diff", "requirements/2129.yaml"],
+  "reviewed_at": "2026-11-14T01:37:14+02:00",
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2129.yaml"
+  ],
   "requirement_verdicts": [
     {
       "req": "REQ-2129-F1",
-      "verdict": "cannot_determine",
-      "confidence_basis": "This scoped review did not trace the new referenced-type formatter request path end to end or establish the supported type and assembly cases.",
+      "verdict": "met",
+      "confidence_basis": "The supplied execution tests show generated formatters for external types pass, and those tests depend on the new feature according to the fail-without-fix result.",
       "evidence": [
-        {"kind": "requirement", "req": "REQ-2129-F1", "quote": "Feature Request: Allow generation of Formatter for a type in a referenced assembly"}
+        {
+          "kind": "check",
+          "id": "tests.execution_full_suite"
+        },
+        {
+          "kind": "test",
+          "name": "GeneratedFormatterForExternalTypesTests.MessagePackObjectCanContainExternalTypes",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GeneratedFormatterForExternalTypesTests.GeneratedFormattersAreRegisteredInGeneratedResolver",
+          "outcome": "passed"
+        }
       ]
     }
   ],
   "findings": [],
   "refusals": [
     {
-      "topic": "Whether formatter generation for referenced-assembly types fully meets the feature request",
-      "reason": "Only the diff summary and requirement were reviewed; the implementation path, edge cases, and execution tests were not traced.",
-      "who_should_decide": "MessagePack source generator maintainer"
+      "topic": "Full acceptance and compatibility review of the external formatter feature",
+      "reason": "This is a scoped review. The placeholder requirement contains only a broad feature statement; I did not comprehensively review all generator paths, API compatibility, or serialization contracts. The supplied facts also record a public API check failure, analyzer warning, and missing solution membership for the new test project.",
+      "who_should_decide": "area owner"
     }
   ]
 }

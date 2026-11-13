@@ -1,63 +1,120 @@
 {
   "reviewer": "codex",
-  "model": "GPT-6 Codex",
+  "model": "GPT-6",
   "vendor": "OpenAI",
   "prompt_version": "review-v1",
-  "reviewed_at": "2026-11-13T00:00:00Z",
-  "inputs": ["diff", "requirements/2283.yaml"],
+  "reviewed_at": "2026-11-14T01:37:14+02:00",
+  "inputs": [
+    "diff",
+    "facts.json",
+    "requirements/2283.yaml"
+  ],
   "requirement_verdicts": [
     {
       "req": "REQ-2283-F1",
-      "verdict": "cannot_determine",
-      "confidence_basis": "The added test file has generic formatter tests, but the inspected test inputs do not establish the required referenced-assembly case or verify a generated resolver for it.",
+      "verdict": "met",
+      "confidence_basis": "The new metadata-reference tests pass with the change and fail when the source is reverted; the added collector logic handles missing source declarations and drops diagnostics outside the analyzed compilation.",
       "evidence": [
-        {"kind": "requirement", "req": "REQ-2283-F1", "quote": "Building a project whose [MessagePackObject] type has a member of a closed generic value type defined in a referenced assembly must not crash the source generator (no CS8785) and must produce a generated resolver."},
-        {"kind": "code", "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs", "line": 49, "rev": "head", "quote": "public async Task WellKnownGenericsFormatter()"}
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))"
+        }
       ]
     },
     {
       "req": "REQ-2283-F2",
-      "verdict": "cannot_determine",
-      "confidence_basis": "The reviewed test input does not exercise the same type from a referenced assembly through the MsgPack00x analyzer.",
+      "verdict": "met",
+      "confidence_basis": "The failing-without-fix evidence records AD0001 for the new metadata-reference cases on base source, while all three cases pass with the fix.",
       "evidence": [
-        {"kind": "requirement", "req": "REQ-2283-F2", "quote": "The MsgPack00x analyzer must not throw (no AD0001) for the same input."},
-        {"kind": "code", "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs", "line": 51, "rev": "head", "quote": "string testSource ="}
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 239,
+          "rev": "head",
+          "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);"
+        }
       ]
     },
     {
       "req": "REQ-2283-F3",
       "verdict": "met",
-      "confidence_basis": "Analyzer diagnostics are now forwarded only when their source location belongs to the analyzed compilation; metadata members without source declarations also receive nullable locations.",
+      "confidence_basis": "The change filters analyzer diagnostics to source locations belonging to this compilation and uses nullable syntax-reference lookups for members that may come from metadata.",
       "evidence": [
-        {"kind": "code", "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs", "line": 239, "rev": "head", "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);"},
-        {"kind": "code", "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs", "line": 1447, "rev": "head", "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))"}
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1434,
+          "rev": "head",
+          "quote": "private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        }
       ]
     },
     {
       "req": "REQ-2283-N1",
-      "verdict": "cannot_determine",
-      "confidence_basis": "The changed diagnostic forwarding and location handling plausibly preserve current-compilation diagnostics, but no suite results or regression-test outcomes are available here.",
+      "verdict": "met",
+      "confidence_basis": "The source-generator test suite passes in full after the change.",
       "evidence": [
-        {"kind": "requirement", "req": "REQ-2283-N1", "quote": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite)."},
-        {"kind": "code", "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs", "line": 1447, "rev": "head", "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree)"}
+        {
+          "kind": "check",
+          "id": "tests.full_suite"
+        }
       ]
     },
     {
       "req": "REQ-2283-N2",
-      "verdict": "cannot_determine",
-      "confidence_basis": "The inspected added tests do not establish that the required referenced-assembly scenario is covered or that those tests fail without the fix, and no deterministic test-check results were available.",
+      "verdict": "met",
+      "confidence_basis": "All three added metadata-reference tests pass with the fix and fail with the source reverted.",
       "evidence": [
-        {"kind": "requirement", "req": "REQ-2283-N2", "quote": "The fix is covered by automated tests that fail without it."},
-        {"kind": "code", "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs", "line": 49, "rev": "head", "quote": "public async Task WellKnownGenericsFormatter()"}
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        }
       ]
     }
   ],
   "findings": [],
   "refusals": [
     {
-      "topic": "Referenced-assembly generic value type reproduction, analyzer behavior, and whether tests fail without the fix",
-      "reason": "The inspected test cases do not demonstrate this issue-specific scenario, and no facts.json or test run results were available to establish runtime/build behavior.",
-      "who_should_decide": "MessagePack source generator maintainer"
+      "topic": "Execution-test behavior under a compiler that loads the generator",
+      "reason": "The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change.",
+      "who_should_decide": "area owner"
     }
   ]
 }
