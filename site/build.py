@@ -24,6 +24,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -74,15 +75,18 @@ def short_test(name: str) -> str:
     return name.split(".")[-1]
 
 
-TIER_GLYPH = {"silent": "✓", "notify": "✓", "ask": "?", "block": "✗"}
+sys.path.insert(0, str(ROOT))
+from countersign.icons import CSS as ICON_CSS, GLYPH, icon  # noqa: E402  Material Symbols, one mapping for every page
+
+TIER_ICON = {"silent": "silent", "notify": "notify", "ask": "ask", "block": "block"}  # meanings in countersign/icons.py STATUS
 TIER_CLASS = {"silent": "ok", "notify": "ok", "ask": "warn", "block": "bad"}
 
 
 def tier(t: str | None, owner: str | None = None) -> str:
     if not t:
         return '<span class="badge">not routed yet</span>'
-    o = f" → {e(owner)}" if owner and t in HUMAN_TIERS else ""
-    return f'<span class="badge {TIER_CLASS.get(t, "")}">{TIER_GLYPH.get(t, "")} {e(t.upper())}{o}</span>'
+    o = f'{icon("arrow_forward", "arr")}{e(owner)}' if owner and t in HUMAN_TIERS else ""
+    return f'<span class="badge {TIER_CLASS.get(t, "")}">{icon(TIER_ICON.get(t, "unknown"))}{e(t.upper())}{o}</span>'
 
 
 def trust_rule(D: "Data") -> str:
@@ -110,9 +114,9 @@ def status(s: str | None, word: str | None = None) -> str:
     s = s or "not run"
     cls = {"pass": "ok", "passed": "ok", "met": "ok", "fail": "bad", "failed": "bad", "not_met": "bad",
            "error": "warn", "cannot_determine": "warn"}.get(s, "")
-    glyph = {"ok": "✓", "bad": "✗", "warn": "?"}.get(cls, "–")
+    meaning = {"ok": "pass", "bad": "fail", "warn": "unknown"}.get(cls, "pending")
     word = word or {"not_met": "not met", "cannot_determine": "can't tell"}.get(s, s)
-    return f'<span class="st {cls}">{glyph} {e(word)}</span>'
+    return f'<span class="st {cls}">{icon(meaning)}{e(word)}</span>'
 
 
 def table(head: list[str], rows: list[list[str]], num_cols: tuple[int, ...] = (), cls: str = "stack", row_ids: list[str] | None = None) -> str:
@@ -344,6 +348,9 @@ def page(fname: str, title: str, body: str, js: str = "", cls: str = "", desc: s
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc or 'Countersign: AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it cannot, and a named human countersigns the rest.')}">
+<link rel="icon" href="{up}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{up}favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="{up}apple-touch-icon.png">
 <link rel="stylesheet" href="{up}style.css">
 <script>try{{var t=localStorage.getItem("cs-theme");if(t)document.documentElement.dataset.theme=t}}catch(_){{}}</script>
 </head><body class="{cls}">
@@ -351,7 +358,7 @@ def page(fname: str, title: str, body: str, js: str = "", cls: str = "", desc: s
 <header class="top"><div class="wrap bar">
 <p class="brand"><a class="mark" href="{up}index.html">Countersign</a><span class="tag">{e(TAGLINE)}</span></p>
 <nav aria-label="Site"><a href="{up}more.html"{" aria-current=page" if fname == "more.html" else ""}>More</a>
-<button class="theme" type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav>
+<button class="theme" type="button" aria-label="Switch light or dark theme" onclick="csTheme()">{icon("contrast")}</button></nav>
 </div></header>
 <main id="main">{body}</main>
 <footer class="foot"><div class="wrap">
@@ -395,7 +402,7 @@ def story_2234(D: Data, compact: bool = False) -> str:
             if ev["kind"] == "code":
                 rev = ev["rev"] if len(ev["rev"]) < 12 else ev["rev"][:8]
                 ok = "verified" if ev.get("verified") else "rejected"
-                ev_html += (f'<li><span class="st {"ok" if ev.get("verified") else "bad"}">{"✓" if ev.get("verified") else "✗"} {ok}</span> '
+                ev_html += (f'<li><span class="st {"ok" if ev.get("verified") else "bad"}">{icon("pass" if ev.get("verified") else "fail")}{ok}</span> '
                             f'<code>{e(ev["file"].split("/")[-1])}:{ev["line"]} @{e(rev)}</code><pre class="q">{e(ev["quote"])}</pre></li>')
     card_c = f"""
 <li>{status('fail')} <b>Fixes a different bug than the issue reports.</b> The 3.1.1 regression in #2234 comes from an upstream commit that is not in this branch's base; the agent fixed another, older crash.</li>
@@ -534,7 +541,7 @@ def build_tour(D: Data, n: dict) -> str:
     # 2 do the new tests fail without the fix?
     ft = next((c for c in f.get("checks", []) if c["id"] == "tests.fail_without_fix"), {}).get("tests", [])
     still = sum(t["outcome"] == "passed" for t in ft)
-    tiles = "".join(f'<li class="{"weak" if t["outcome"] == "passed" else "ok"}"><b aria-hidden="true">{"◐" if t["outcome"] == "passed" else "✓"}</b>'
+    tiles = "".join(f'<li class="{"weak" if t["outcome"] == "passed" else "ok"}">{icon("partial" if t["outcome"] == "passed" else "pass")}'
                     f'<code>{e(short_test(t["name"]))}</code><span>{"passes without the fix" if t["outcome"] == "passed" else "fails without the fix"}</span></li>'
                     for t in sorted(ft, key=lambda t: t["outcome"] != "passed"))
     steps.append(("The tests", f"Undo the fix and {still} of its {len(ft)} new tests still pass, so they prove nothing.",
@@ -545,7 +552,7 @@ def build_tour(D: Data, n: dict) -> str:
     def vline(r):
         v = list(r["verdicts"].values())
         no = len(v) - v.count("met")
-        return (f'<li class="{"bad" if no else "ok"}"><b aria-hidden="true">{"✗" if no else "✓"}</b><span class="who">{e(r["reviewer"].capitalize())}</span>'
+        return (f'<li class="{"bad" if no else "ok"}">{icon("fail" if no else "pass")}<span class="who">{e(r["reviewer"].capitalize())}</span>'
                 f'<span>{f"{no} of {len(v)} not met" if no else f"all {len(v)} met"}</span><span class="muted">{e(r.get("vendor", ""))}</span></li>')
     steps.append(("The reviewers", "Three AI reviewers from three vendors; a requirement counts only if all say met.",
                   f'<ul class="vlist">{"".join(vline(r) for r in rows)}</ul>', src('packs/2234/pack.json')))
@@ -556,17 +563,17 @@ def build_tour(D: Data, n: dict) -> str:
     h = scene.where_hunk(code, sd)
     vis = ""
     if h:
-        pin = '<div class="pin" role="note"><b aria-hidden="true">✗</b> Untouched by the fix</div>' if h["touched"] else ""
+        pin = f'<div class="pin" role="note">{icon("fail")}<span>Untouched by the fix</span></div>' if h["touched"] else ""
         vis = f'<div class="hunk"><div class="file">{e(h["file"].rsplit("/", 1)[-1])}</div>{scene.code_rows(h["rows"], h["pin"], pin)}</div>'
     steps.append(("The finding", f"{sd['finder']} showed it fixes a different bug than the issue reports, citing the exact line.",
                   vis, src('packs/2234/pack.json')))
 
     # 5 the owner decides
     so = _signoff(p) if p else None
-    marks = "".join(f'<li class="m-{c}"><b aria-hidden="true">{g}</b>{e(w)}</li>' for c, g, w in _marks(p, so)) if p else ""
+    marks = "".join(f'<li class="m-{c}">{icon(GLYPH.get(g, "unknown"))}<span>{e(w)}</span></li>' for c, g, w in _marks(p, so)) if p else ""
     owner = p.get("owner") or "The owner"
     steps.append(("The owner", f"{owner} gets one screen and signs the decision under their name.",
-                  f'<a class="mini-card" href="packs/2234/pack.html"><span class="pill {e(p.get("tier", ""))}"><b>{e(str(p.get("tier", "")).upper())}</b> → {e(owner)}</span>'
+                  f'<a class="mini-card" href="packs/2234/pack.html"><span class="pill {e(p.get("tier", ""))}">{icon(TIER_ICON.get(p.get("tier", ""), "unknown"))}<b>{e(str(p.get("tier", "")).upper())}</b>{icon("arrow_forward", "arr")}{e(owner)}</span>'
                   f'<span class="why"><b>Why:</b> {e(_why(p)) if p else ""}</span><ul class="marks">{marks}</ul><span class="open">Open the evidence pack →</span></a>',
                   src('packs/2234/pack.json') + ' · ' + src('ledger/ledger.jsonl')))
 
@@ -586,7 +593,8 @@ def build_tour(D: Data, n: dict) -> str:
 {secs}
 <div class="tnav"><button class="btn" id="prev" type="button">← Back</button><span id="pos" class="muted"></span><button class="btn primary" id="next" type="button">Next →</button></div>
 </div>"""
-    js = ("var LEDGER=" + json.dumps(D.ledger) + ";var PUB=" + json.dumps(D.pubkeys) + ";" + TOUR_JS + LEDGER_JS)
+    ledger_js = LEDGER_JS.replace("@@FAIL@@", icon("fail")).replace("@@PASS@@", icon("pass"))
+    js = ("var LEDGER=" + json.dumps(D.ledger) + ";var PUB=" + json.dumps(D.pubkeys) + ";" + TOUR_JS + ledger_js)
     return page("tour.html", "How it works: change 2234 in six steps", body, js=js, cls="has-tour")
 
 
@@ -635,7 +643,7 @@ async function check(){var prev="0".repeat(64),bad=[],sigNA=false;
   if(hashOf(e)!==e.hash)p.push("content does not match its hash (edited after it was written)");
   var s=await sigOk(e);if(s===false)p.push("signature does not verify against keys/"+String(e.signer).toLowerCase()+".pub");if(s===null)sigNA=true;
   prev=e.hash;var r=document.querySelectorAll(".lres")[i];
-  if(r)r.innerHTML=p.length?'<span class="st bad">✗ line '+line+"</span> "+p.join("; "):'<span class="st ok">✓ line '+line+"</span> "+e.type+" by "+e.signer+", "+e.ts+(s?" · signature valid":"");
+  if(r)r.innerHTML=p.length?'<span class="st bad">@@FAIL@@line '+line+"</span> "+p.join("; "):'<span class="st ok">@@PASS@@line '+line+"</span> "+e.type+" by "+e.signer+", "+e.ts+(s?" · signature valid":"");
   p.forEach(function(x){bad.push("line "+line+": "+x)})}
  var st=document.getElementById("lstatus");if(!st)return;
  st.className="banner "+(bad.length?"bad":"ok");
@@ -749,8 +757,8 @@ def build_pitch(D: Data, n: dict) -> str:
     V[3] = ("A signed mandate decides what AI may clear.",
             "<div class='pipe'>" + "".join(f"<span>{x}</span>" for x in ["facts", "reviewers", "decide", "owner signs"]) + "</div>")
     V[4] = ("Green CI. AI says met. Wrong bug.",
-            '<div class="tiles3">' + tile("CI", f"✓ {s_pass}/{s_tot}", "ok") + tile("AI review", f"✓ {c_met}/{len(cv)} met", "ok")
-            + tile("Countersign", f'✗ {e(str(p.get("tier", "")).upper())} → {e(p.get("owner", ""))}', "bad") + "</div>")
+            '<div class="tiles3">' + tile("CI", f'{icon("pass")}{s_pass}/{s_tot}', "ok") + tile("AI review", f'{icon("pass")}{c_met}/{len(cv)} met', "ok")
+            + tile("Countersign", f'{icon("ask")}{e(str(p.get("tier", "")).upper())}{icon("arrow_forward", "arr")}{e(p.get("owner", ""))}', "bad") + "</div>")
     real = [r for r in D.results.get("changes", []) if not r.get("mutant") and not r["change"].startswith("var-")] or [{"change": r["change"], "tier": r["tier"]} for r in rows]
     cleared = [r for r in real if r.get("tier") not in HUMAN_TIERS]
     V[5] = ("Every change says why. Low risk can clear." if cleared else "Every change reached a human, with a reason.",
@@ -779,16 +787,16 @@ def build_pitch(D: Data, n: dict) -> str:
         note = f'<p><b>{md_inline(s["message"])}</b></p><p>{md_inline(s["note"])}</p>'
         if k == 1:
             punch = "AI clears what it can prove. A named human signs the rest."
-            out.append(f'<section class="slide title-slide" data-i="{i}"><div class="sl"><h1><span class="sig">✓</span>Countersign</h1>'
+            out.append(f'<section class="slide title-slide" data-i="{i}"><div class="sl"><h1>{icon("check_box", "sig", fill=0)}Countersign</h1>'
                        f'<p class="punch">{punch}</p><p class="muted">{REPO_URL.replace("https://", "")}</p></div>'
                        f'<aside class="note">{note}<p>{hero_line(n)}</p></aside></section>')
             continue
         out.append(f'<section class="slide" data-i="{i}"><div class="sl"><h2>{e(head)}</h2><div class="vis">{vis}</div></div>'
                    f'<aside class="note">{note}</aside></section>')
     body = f"""<div class="deck" id="deck">{''.join(out)}</div>
-<div class="deckbar"><button class="btn" id="dprev" type="button" aria-label="Previous slide">←</button><span id="dpos" class="muted"></span>
-<button class="btn" id="dnote" type="button" aria-label="Speaker notes (N)">Notes</button><button class="btn" id="dfull" type="button" aria-label="Full screen (F)">⛶</button>
-<button class="btn" id="dnext" type="button" aria-label="Next slide">→</button></div>"""
+<div class="deckbar"><button class="btn" id="dprev" type="button" aria-label="Previous slide">{icon("arrow_back")}</button><span id="dpos" class="muted"></span>
+<button class="btn" id="dnote" type="button" aria-label="Speaker notes (N)">Notes</button><button class="btn" id="dfull" type="button" aria-label="Full screen (F)">{icon("fullscreen")}</button>
+<button class="btn" id="dnext" type="button" aria-label="Next slide">{icon("arrow_forward")}</button></div>"""
     return page("pitch.html", "Countersign: pitch", body, js=PITCH_JS, cls="pitch")
 
 
@@ -835,21 +843,22 @@ section.wrap{padding-top:40px}
 .top{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:5}
 .bar{display:flex;align-items:center;gap:16px;min-height:56px}
 .mark{font-weight:600;color:var(--fg);text-decoration:none;display:flex;align-items:center;gap:8px}
-.sig{display:inline-grid;place-items:center;width:24px;height:24px;border:1.5px solid var(--fg);border-radius:6px;font-size:14px}
+.i.sig{color:var(--fg)}
 .brand{margin:0;display:flex;align-items:baseline;gap:0 10px;flex-wrap:wrap;flex:1;min-width:0}.tag{color:var(--muted);font-size:14px}
 .top nav{display:flex;gap:12px;align-items:center;margin-left:auto}
 .top nav a{color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:6px;font-size:14px;white-space:nowrap}
 .top nav a:hover{color:var(--fg);background:var(--bg2)}.top nav a[aria-current]{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px 0 var(--accent);border-radius:0}
-.theme{background:none;border:0;color:var(--muted);font:inherit;font-size:17px;padding:2px 6px;cursor:pointer}
+.theme{display:inline-flex;align-items:center;background:none;border:0;color:var(--muted);font:inherit;font-size:20px;padding:6px;border-radius:6px;cursor:pointer}.theme:hover{color:var(--fg);background:var(--bg2)}
 .hero{padding-top:48px}.hero h1{max-width:44ch}.hero .muted{font-size:14px}
-.legend{display:flex;flex-wrap:wrap;gap:8px 24px;margin:8px 0 16px;font-size:14px;color:var(--muted)}.legend div{display:flex;gap:8px;align-items:baseline}.legend dt{white-space:nowrap}.legend dd{margin:0}.hero.small h1{max-width:none}
+.legend{display:flex;flex-wrap:wrap;gap:8px 24px;margin:8px 0 16px;font-size:14px;color:var(--muted)}.legend div{display:flex;gap:8px;align-items:center}.legend dt{white-space:nowrap;display:inline-flex;gap:6px}.legend dd{margin:0}.hero.small h1{max-width:none}
 .h-sm{font-size:20px}
 .foot{border-top:1px solid var(--border);margin-top:64px;padding:24px 0;color:var(--muted);font-size:14px}.foot p{margin:0 0 8px}
 .foot-note{font-size:12px;color:var(--muted);margin-top:8px}
 a.src{font-family:var(--mono);font-size:12px;color:var(--muted)}a.src:hover{color:var(--accent)}
 /* status */
-.st{font:600 12px/1.5 var(--mono);white-space:nowrap;text-transform:uppercase}.st.ok{color:var(--ok)}.st.bad{color:var(--bad)}.st.warn{color:var(--warn)}
-.badge{justify-self:start;display:inline-block;font:600 12px/20px var(--mono);padding:0 8px;border:1px solid var(--border);border-radius:999px;white-space:nowrap}
+.st{font:600 12px/1.5 var(--mono);white-space:nowrap;text-transform:uppercase;display:inline-flex;align-items:center;gap:.35em;vertical-align:-.2em}.st .i{width:1.3em;height:1.3em}.st:not(:has(.i)){vertical-align:baseline}
+li.gl{list-style:none;display:flex;align-items:flex-start;gap:6px;margin-left:-1.4em}li.gl .i{width:1.15em;height:1.15em;margin-top:.17em}li.gl.ok .i{color:var(--ok)}li.gl.bad .i{color:var(--bad)}li.gl.warn .i{color:var(--warn)}.st.ok{color:var(--ok)}.st.bad{color:var(--bad)}.st.warn{color:var(--warn)}
+.badge{justify-self:start;display:inline-flex;align-items:center;gap:4px;vertical-align:middle;font:600 12px/20px var(--mono);padding:1px 10px 1px 6px;border:1px solid var(--border);border-radius:999px;white-space:nowrap}.badge .i{width:15px;height:15px}.badge .i.arr{width:13px;height:13px;opacity:.8}
 .badge.ok{color:var(--ok);border-color:currentColor;background:var(--ok-bg)}.badge.warn{color:var(--warn);border-color:currentColor;background:var(--warn-bg)}
 .badge.bad{color:var(--bad);border-color:currentColor;background:var(--bad-bg)}
 /* story cards */
@@ -937,7 +946,7 @@ body.pitch .foot{display:none}body.pitch main{padding:0}
 .slide .vis{font-size:clamp(15px,1.5vw,20px)}
 .slide .vis table{font-size:clamp(13px,1.2vw,17px)}
 .title-slide h1{font-size:clamp(32px,5vw,64px);display:flex;align-items:center;gap:16px}
-.title-slide .sig{width:1.1em;height:1.1em;font-size:.6em;border-width:2px;border-radius:10px}
+.title-slide .i.sig{width:1.1em;height:1.1em}.deckbar .btn .i{width:18px;height:18px}
 .punch{font-size:clamp(20px,2.6vw,32px);max-width:36ch;line-height:1.35}
 .note{display:none;max-width:1040px;margin:24px auto 0;width:100%;border-top:1px dashed var(--border);padding-top:12px;color:var(--muted);font-size:15px}
 body.notes .note{display:block}
@@ -952,7 +961,7 @@ ul.cols>li{border:1px solid var(--border);border-radius:6px;padding:16px;margin:
 .two{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
 .greyed{border:1px dashed var(--border);border-radius:6px;padding:24px;color:var(--muted)}.greyed .big{color:var(--muted)}
 .signs{font-size:1.2em}.signs li{margin-bottom:12px;padding-left:4px}
-.title-slide .sig{line-height:1}
+
 /* numbers page */
 .fold-hero{min-height:calc(100vh - 57px);display:flex;flex-direction:column;justify-content:center;padding-top:0}
 .small{font-size:14px}
@@ -967,8 +976,8 @@ tr:target td{background:var(--accent-bg)}
 .dstat li:first-child{border-top:0}.dstat code{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dstat .mono{text-align:right}
 .nbar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}.nbar i{display:block;height:100%;background:var(--muted)}
 .tiles{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
-.tiles li{border:1px solid;border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:20px 1fr;gap:2px 8px;font-size:14px}
-.tiles li b{grid-row:span 2}.tiles li code{border:0;background:none;padding:0;overflow-wrap:anywhere}.tiles li span{font-size:12px}
+.tiles li{border:1px solid;border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:20px 1fr;gap:2px 8px;font-size:14px;align-content:start}
+.tiles li .i{grid-row:span 2;width:20px;height:20px}.tiles li code{border:0;background:none;padding:0;overflow-wrap:anywhere}.tiles li span{font-size:12px}
 .tiles li.ok{border-color:var(--ok);color:var(--ok);background:var(--ok-bg)}.tiles li.weak{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
 .tiles li code{color:var(--fg)}
 .cites li{margin-bottom:12px;max-width:90ch}
@@ -980,7 +989,7 @@ details.more[open] summary{margin-bottom:8px}
 /* pitch visuals */
 .tiles3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 .tile{border:1px solid var(--border);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:8px}
-.tile span{color:var(--muted);font-size:.9em}.tile b{font:600 clamp(22px,2.6vw,36px)/1.2 var(--mono)}
+.tile span{color:var(--muted);font-size:.9em}.tile b{font:600 clamp(22px,2.6vw,36px)/1.2 var(--mono);display:inline-flex;align-items:center;gap:.25em;flex-wrap:wrap}.tile b .i.arr{width:.8em;height:.8em;opacity:.8}
 .slide .repo{margin-top:24px;font-size:1.3em}.tile.ok{border-color:var(--ok)}.tile.ok b{color:var(--ok)}.tile.bad{border-color:var(--bad);background:var(--bad-bg)}.tile.bad b{color:var(--bad)}
 .chg{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:1.1em}
 .lim span{border:1px dashed var(--border);border-radius:6px;padding:8px 14px}
@@ -1013,7 +1022,7 @@ th,td{padding:6px 8px}}
 .md details{margin:8px 0}.md summary{cursor:pointer}
 .fold{border-top:1px solid var(--border);padding-top:12px;margin-top:4px}.fold>summary{color:var(--accent);font-weight:600}
 .ghs{border:1px solid var(--border);border-radius:6px;margin:16px 0;font-size:14px}
-.ghs-row{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;padding:12px 16px;border-top:1px solid var(--border);align-items:baseline}
+.ghs-row{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;padding:12px 16px;border-top:1px solid var(--border);align-items:start}.ghs-row>.st .i{width:20px;height:20px}
 .ghs-row:first-child{border-top:0}.ghs-row.merge{grid-template-columns:20px minmax(0,1fr)}.ghs-row .st{font-size:14px}
 .req{font-size:12px;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:0 8px}
 .pr-side{border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;font-size:14px}
@@ -1027,19 +1036,19 @@ th,td{padding:6px 8px}}
 .big span{font:400 20px/1.35 var(--sans);color:var(--muted);max-width:18ch}
 .tstep .kick{font:600 14px/1.5 var(--sans);color:var(--muted);margin:0 0 4px}.tstep h1{font-size:clamp(24px,3.6vw,34px);max-width:30ch;margin-bottom:24px}
 .vlist{list-style:none;padding:0;margin:0;display:grid;gap:8px;max-width:560px}
-.vlist li{display:grid;grid-template-columns:24px 110px 1fr auto;gap:12px;align-items:baseline;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:18px}
-.vlist li.ok b{color:var(--ok)}.vlist li.bad{border-color:var(--bad);background:var(--bad-bg)}.vlist li.bad b{color:var(--bad)}.vlist .who{font-weight:600}.vlist .muted{font-size:13px}
+.vlist li{display:grid;grid-template-columns:24px 110px 1fr auto;gap:12px;align-items:center;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:18px}
+.vlist .i{width:1.15em;height:1.15em}.vlist li.ok .i{color:var(--ok)}.vlist li.bad{border-color:var(--bad);background:var(--bad-bg)}.vlist li.bad .i{color:var(--bad)}.vlist .who{font-weight:600}.vlist .muted{font-size:13px}
 .hunk{max-width:760px;border:1px solid var(--border);border-radius:10px;padding:8px 0;font:14px/22px var(--mono)}
 .hunk .file{font-weight:600;font-size:13px;color:var(--muted);padding:2px 14px 6px}
 .hunk .r{display:grid;grid-template-columns:56px 1fr}.hunk .n{color:var(--muted);text-align:right;padding-right:14px}.hunk .c{white-space:pre-wrap;overflow-wrap:anywhere}
 .hunk .r.pinned{background:var(--bad-bg);box-shadow:inset 4px 0 var(--bad);font-weight:600}.hunk .r.gap .c{color:var(--muted);font-family:var(--sans)}
 .hunk i{font-style:normal}.hunk i.tk{color:#8250df}.hunk i.tc{color:var(--muted);font-style:italic}
-.hunk .pin{margin:4px 14px 8px 56px;color:var(--bad);font:700 16px/1.3 var(--sans)}
+.hunk .pin{margin:4px 14px 8px 56px;color:var(--bad);font:700 16px/1.3 var(--sans);display:flex;align-items:center;gap:6px}.pin .i{width:1.15em;height:1.15em}
 .mini-card{display:grid;gap:12px;justify-items:start;max-width:520px;padding:20px 24px;border:1px solid var(--border);border-radius:12px;color:var(--fg);text-decoration:none}
 .mini-card:hover{border-color:var(--accent)}.mini-card .why{font-size:18px}.mini-card .open{color:var(--accent)}
-.pill{border:2px solid currentColor;border-radius:999px;padding:4px 16px;font-size:18px}.pill.ask{color:var(--warn);background:var(--warn-bg)}.pill.block{color:var(--bad);background:var(--bad-bg)}
+.pill{border:2px solid currentColor;border-radius:999px;padding:4px 16px 4px 10px;font-size:18px;display:inline-flex;align-items:center;gap:6px}.pill .i{width:1.15em;height:1.15em}.pill .i.arr{width:.9em;height:.9em;opacity:.8}.pill.ask{color:var(--warn);background:var(--warn-bg)}.pill.block{color:var(--bad);background:var(--bad-bg)}
 .pill.notify,.pill.silent{color:var(--ok);background:var(--ok-bg)}.pill b{font-family:var(--mono)}
-.marks{list-style:none;padding:0;margin:0;display:grid;gap:6px;font-size:17px}.marks li{display:flex;gap:10px}.marks .m-ok b{color:var(--ok)}.marks .m-bad b{color:var(--bad)}.marks .m-warn b{color:var(--warn)}
+.marks{list-style:none;padding:0;margin:0;display:grid;gap:6px;font-size:17px}.marks li{display:flex;gap:8px;align-items:flex-start}.marks .i{width:1.15em;height:1.15em;margin-top:.17em}.marks .m-ok .i{color:var(--ok)}.marks .m-bad .i{color:var(--bad)}.marks .m-warn .i{color:var(--warn)}
 @media (max-width:720px){.bignums{grid-template-columns:1fr;gap:8px;min-height:0;padding-top:16px}.big{padding:20px 8px}.big span{font-size:18px}
 .vlist li{grid-template-columns:20px 90px 1fr;font-size:16px}.vlist .muted{display:none}.hunk{font-size:12.5px;line-height:20px}.hunk .r{grid-template-columns:40px 1fr}.hunk .pin{margin-left:40px}}
 """
@@ -1153,7 +1162,13 @@ def gh_markdown(text: str, anchor: str = "c-") -> str:
                 mm = re.match(r"^\s*([-*]|\d+\.)\s+(.*)$", lines[i])
                 if not mm or (mm.group(1)[0].isdigit()) != (tag == "ol"):
                     break
-                items.append(f"<li>{gh_inline(mm.group(2), anchor)}</li>")
+                gm = re.match(r"^(\S)\s+(.*)$", mm.group(2))
+                if gm and gm.group(1) in GLYPH:  # the gate comment's status glyphs, drawn as the site's icons
+                    meaning = GLYPH[gm.group(1)]
+                    cls = {"pass": "ok", "fail": "bad", "warn": "warn", "partial": "warn", "pending": "warn"}.get(meaning, "")
+                    items.append(f'<li class="gl {cls}">{icon(meaning)}<span>{gh_inline(gm.group(2), anchor)}</span></li>')
+                else:
+                    items.append(f"<li>{gh_inline(mm.group(2), anchor)}</li>")
                 i += 1
             out.append(f"<{tag}>{''.join(items)}</{tag}>")
             continue
@@ -1165,11 +1180,11 @@ def gh_markdown(text: str, anchor: str = "c-") -> str:
 
 def pr_status_line(st: dict, app_name: str) -> str:
     state = st.get("state")
-    glyph, cls, word = {"success": ("✓", "ok", "Successful"), "pending": ("●", "warn", "Pending"),
-                        "failure": ("✗", "bad", "Failing"), "error": ("✗", "bad", "Error")}.get(state, ("?", "", state or "?"))
+    glyph, cls, word = {"success": ("pass", "ok", "Successful"), "pending": ("pending", "warn", "Pending"),
+                        "failure": ("fail", "bad", "Failing"), "error": ("fail", "bad", "Error")}.get(state, ("unknown", "", state or "?"))
     bot = st.get("creator") or ""
     by = f' · by <span title="{e(bot)}">{e(app_name)} <span class="botl">bot</span></span>' if bot.endswith("[bot]") else (f" · by {e(bot)}" if bot else "")
-    return (f'<div class="ghs-row"><span class="st {cls}" aria-hidden="true">{glyph}</span>'
+    return (f'<div class="ghs-row"><span class="st {cls}">{icon(glyph)}</span>'
             f'<div><b class="mono">{e(st.get("context"))}</b> <span class="st {cls}">{word}</span>'
             f'<span class="muted"> — {e(st.get("description"))}{by}</span></div><span class="req">Required</span></div>')
 
@@ -1177,7 +1192,7 @@ def pr_status_line(st: dict, app_name: str) -> str:
 def pr_merge_box(pr: dict, app_name: str, why: bool = True) -> str:
     rows = "".join(pr_status_line(s, app_name) for s in pr.get("statuses", []))
     blocked = pr.get("mergeStateStatus") == "BLOCKED"
-    tail = (f'<div class="ghs-row merge"><span class="st bad" aria-hidden="true">✗</span><div><b>Merging is blocked</b>'
+    tail = (f'<div class="ghs-row merge"><span class="st bad">{icon("fail")}</span><div><b>Merging is blocked</b>'
             + ('<div class="muted">Required status check <code>countersign/tier</code> has not succeeded. The merge button stays grey.</div>' if why else '') + '</div></div>'
             if blocked else f'<div class="ghs-row merge"><div class="muted">mergeStateStatus: {e(pr.get("mergeStateStatus"))}</div></div>')
     return f'<div class="ghs">{rows}{tail}</div>'
@@ -1268,7 +1283,7 @@ def main() -> None:
     D = Data()
     n = numbers(D)
     copy_packs()
-    (SITE / "style.css").write_text(CSS.strip() + "\n", encoding="utf-8")
+    (SITE / "style.css").write_text(ICON_CSS + "\n" + CSS.strip() + "\n", encoding="utf-8")
     pages = {"overview.html": build_index(D, n), "attack.html": build_attack(D, n), "tour.html": build_tour(D, n), "pitch.html": build_pitch(D, n)}
     prs = build_prs(D)
     if prs:

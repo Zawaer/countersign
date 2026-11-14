@@ -24,10 +24,13 @@ import json
 import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
+sys.path.insert(0, str(ROOT))
+from countersign.icons import CSS as ICON_CSS, icon  # noqa: E402
 MP = Path(os.environ.get("MP_REPO", "/data/src/mp"))
 CACHE = SITE / "scene-cache.json"
 BLOB = "https://github.com/Zawaer/countersign/blob/main/"
@@ -236,17 +239,17 @@ def bug_data(mid: str) -> dict | None:
     rpin, rname = reviewer_pin(mid, m, fin.get("why") or [])
     inj = next((c for c in failed if c["id"] == "injection_scan"), None)
     if inj:
-        res = ("ok", "✓", "Blocked: instructions to the AI found.",
+        res = ("ok", "pass", "Blocked: instructions to the AI found.",
                f"The injection scan matched {len(inj.get('matches') or [])} patterns before any AI reviewer read it.")
     elif tests:
-        res = ("ok", "✓", f"Caught: {len(tests)} test{'s' if len(tests) != 1 else ''} failed.",
+        res = ("ok", "pass", f"Caught: {len(tests)} test{'s' if len(tests) != 1 else ''} failed.",
                "")
     elif failed:
-        res = ("ok", "✓", f"Caught: the {failed[0]['id']} check failed.", failed[0].get("summary", ""))
+        res = ("ok", "pass", f"Caught: the {failed[0]['id']} check failed.", failed[0].get("summary", ""))
     elif rpin:
-        res = ("ok", "✓", "Caught by a reviewer (tests missed it).", f"{rname}: “{rpin['say']}”")
+        res = ("ok", "pass", "Caught by a reviewer (tests missed it).", f"{rname}: “{rpin['say']}”")
     else:
-        res = ("bad", "✕", "It got past the checks and the reviewers.", "")
+        res = ("bad", "fail", "It got past the checks and the reviewers.", "")
     return dict(id=mid, file=m["file"], line=m.get("line"), before=m.get("before", ""), after=m.get("after", ""), res=res,
                 tier=fin.get("tier"), routed=fin.get("routed_to_human"))
 
@@ -281,10 +284,10 @@ def build() -> tuple[str, str]:
         checks.append(f"{d['tests']} tests pass")
     if d["allmet"]:
         checks.append("AI reviewer: requirements met")
-    ticks = "".join(f'<li style="--i:{i}"><span class="g" aria-hidden="true">✓</span>{e(c)}</li>' for i, c in enumerate(checks))
-    wrong = ('<p class="wrong reveal r1"><span class="g" aria-hidden="true">✕</span>It fixes the wrong bug.</p>'
+    ticks = "".join(f'<li style="--i:{i}">{icon("pass", "g")}<span>{e(c)}</span></li>' for i, c in enumerate(checks))
+    wrong = ('<p class="wrong reveal r1">' + icon("fail", "g") + '<span>It fixes the wrong bug.</span></p>'
              '<p class="caught reveal r1">Countersign caught it with a second AI reviewer.</p>' if d["finding"] else "")
-    actions = (f'<p class="decide reveal r2"><span aria-hidden="true">→</span> {e(owner)}, its owner, must decide.</p>'
+    actions = (f'<p class="decide reveal r2">{icon("ask", "g")}<span>{e(owner)}, its owner, must decide.</span></p>'
                '<p class="acts reveal r3"><a class="btn primary" href="#where">Show me where</a>'
                + ('<a class="btn" href="#sneak">Try to sneak a bug in</a>' if bugs else "") + "</p>")
     home = (f'<section class="view home" id="home" aria-labelledby="h-home">'
@@ -298,8 +301,8 @@ def build() -> tuple[str, str]:
         say = "The bug the issue reports isn’t in this code; this fix changes something else."
         edits = (f'<div class="r gap"><span class="n"></span><span class="c">⋯ the fix edits lines {h["edits"][0]}–{h["edits"][1]} instead</span></div>'
                  if h["touched"] and h["edits"] else "")
-        pin = (f'<div class="pin" role="note"><span class="g" aria-hidden="true">✕</span>'
-               f'{"Untouched by the fix" if h["touched"] else "The fix is here"}</div>')
+        pin = (f'<div class="pin" role="note">{icon("fail", "g")}'
+               f'<span>{"Untouched by the fix" if h["touched"] else "The fix is here"}</span></div>')
         by = f'Found by the second AI reviewer, {e(d["finder"])}'
         if d["rated"] == "accepted" and d["signed"]:
             by += f"; {e(owner)} agreed"
@@ -322,7 +325,7 @@ def build() -> tuple[str, str]:
             after = "" if b["after"].strip().startswith("// (mutant") else f'<div class="r add planted"><span class="n" data-m="+">{b["line"]}</span><span class="c">{hl(b["after"].strip())}</span></div>'
             results += (f'<section class="view" id="{a}" aria-labelledby="h-{a}"><a class="back" href="#sneak">← Try another</a>'
                         f'<p class="you">You chose: {e(label[:1].lower() + label[1:])}.</p>'
-                        f'<h2 id="h-{a}" class="result {cls}"><span class="g" aria-hidden="true">{g}</span>{e(big)}</h2>'
+                        f'<h2 id="h-{a}" class="result {cls}">{icon(g, "g")}<span>{e(big)}</span></h2>'
                         f'<div class="code"><div class="file">{e(short(b["file"]))}</div>{before}{after}</div>'
                         + (f'<p class="by">{e(small)}</p>' if small else "")
                         + f'<p class="by"><a href="overview.html">All planted bugs →</a></p></section>')
@@ -362,7 +365,7 @@ a{color:var(--accent);text-underline-offset:3px}
 .mark{font-weight:600;color:var(--fg);text-decoration:none}
 .brand{margin:0;display:flex;align-items:baseline;gap:0 10px;flex-wrap:wrap;min-width:0}.tag{color:var(--muted);font-size:14px}
 .top nav{display:flex;gap:16px;align-items:center}.top nav a{color:var(--muted)}
-.top button{background:none;border:0;color:var(--muted);font:inherit;font-size:17px;padding:2px 6px;cursor:pointer}
+.top button{display:inline-flex;align-items:center;background:none;border:0;color:var(--muted);font:inherit;font-size:20px;padding:4px;cursor:pointer}
 main{flex:1;display:flex;flex-direction:column}
 .view{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px 20px 48px;gap:20px}
 .view:target{display:flex}.view:target~.home{display:none}.home{display:flex}
@@ -375,11 +378,12 @@ h1,h2,.say,.wrong,.decide{text-wrap:balance}
 .caught{margin:-8px 0 0;font-size:clamp(16px,2.6vw,20px);color:var(--fg)}
 .issue:hover{text-decoration:underline}
 .ticks{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px 28px;font-size:clamp(19px,3.4vw,28px);font-weight:600}
-.ticks li{display:flex;align-items:center;gap:10px;color:var(--fg);opacity:0;animation:in .4s ease-out forwards;animation-delay:calc(.35s + var(--i) * .35s)}
-.g{display:inline-grid;place-items:center;width:1.25em;height:1.25em;border-radius:50%;border:2px solid currentColor;font-size:.85em;font-weight:800;flex:none}
-.ticks .g{color:var(--ok);background:var(--ok-bg)}
-.wrong{margin:12px 0 0;font-size:clamp(32px,7vw,64px);line-height:1.15;font-weight:800;color:var(--bad)}.wrong .g,.result .g{display:inline-grid;vertical-align:.1em;margin-right:.3em}
-.wrong .g{background:var(--bad-bg)}
+.ticks li{display:inline-flex;align-items:center;gap:.35em;color:var(--fg);opacity:0;animation:in .4s ease-out forwards;animation-delay:calc(.35s + var(--i) * .35s)}
+.i.g{width:1.15em;height:1.15em}
+.ticks .g{color:var(--ok)}
+.wrong{margin:12px 0 0;font-size:clamp(32px,7vw,64px);line-height:1.15;font-weight:800;color:var(--bad)}
+.wrong,.decide,.result{display:inline-flex;align-items:center;justify-content:center;gap:.3em}
+.wrong .g{width:1em;height:1em}.decide .g{color:var(--muted)}.result .g{width:1.05em;height:1.05em}
 .decide{margin:0;font-size:clamp(22px,4vw,34px);font-weight:600}
 .acts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:4px 0 0}
 .btn{display:inline-block;padding:14px 26px;border-radius:10px;border:2px solid var(--fg);color:var(--fg);text-decoration:none;font-size:18px;font-weight:600;background:var(--bg)}
@@ -402,7 +406,7 @@ h1,h2,.say,.wrong,.decide{text-wrap:balance}
 .r.planted{box-shadow:inset 4px 0 var(--fg)}
 .r.gap .c{color:var(--fg);font-family:var(--sans);font-size:15px;font-weight:600}
 .pin{display:flex;align-items:center;gap:8px;margin:4px 14px 8px 56px;color:var(--bad);font:700 16px/1.3 var(--sans)}
-.pin .g{background:var(--bad-bg)}
+.pin .g{width:1.15em;height:1.15em}
 i.tk{font-style:normal;color:var(--k)}i.ts{font-style:normal;color:var(--s)}i.tc{color:var(--cm)}i.tn{font-style:normal;color:var(--num)}
 mark.zw{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 2px;white-space:nowrap}
 .nw{white-space:nowrap}.by{margin:0;color:var(--muted);font-size:15px;max-width:60ch}
@@ -412,9 +416,7 @@ mark.zw{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 
 #h-sneak{font-size:clamp(26px,5vw,40px)}
 .you{margin:0;color:var(--muted);font-size:17px}
 .result{font-size:clamp(26px,5.4vw,46px);line-height:1.2;max-width:22ch}
-.result.ok{color:var(--ok)}.result.ok .g{background:var(--ok-bg)}
-.result.warn{color:var(--warn)}.result.warn .g{background:var(--warn-bg)}
-.result.bad{color:var(--bad)}.result.bad .g{background:var(--bad-bg)}
+.result.ok{color:var(--ok)}.result.warn{color:var(--warn)}.result.bad{color:var(--bad)}
 .plain-list{display:flex;justify-content:flex-start;align-items:flex-start;text-align:left;max-width:560px;margin:0 auto;width:100%}
 .plain-list h1{font-size:32px}
 .links{list-style:none;margin:0;padding:0;display:grid;gap:4px;width:100%}
@@ -437,10 +439,13 @@ def page(title: str, body: str, cls: str = "") -> str:
 <title>{e(title)}</title>
 <meta name="description" content="Countersign: an AI agent wrote a fix that builds, passes its tests and an AI review, and fixes the wrong bug. Countersign shows where, and its owner decides.">
 <script>try{{var t=localStorage.getItem("cs-theme");if(t)document.documentElement.dataset.theme=t}}catch(_){{}}</script>
-<style>{PAGE_CSS.strip()}</style>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>{ICON_CSS}{PAGE_CSS.strip()}</style>
 </head><body class="{cls}">
 <header class="top"><p class="brand"><a class="mark" href="index.html">Countersign</a><span class="tag">{TAGLINE}</span></p>
-<nav aria-label="Site"><a href="more.html">More</a><button type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav></header>
+<nav aria-label="Site"><a href="more.html">More</a><button type="button" aria-label="Switch light or dark theme" onclick="csTheme()">{icon("contrast")}</button></nav></header>
 <main id="main">{body}</main>
 <script>{SEEN_JS}</script>
 </body></html>

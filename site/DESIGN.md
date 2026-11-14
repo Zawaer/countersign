@@ -5,12 +5,16 @@
 3. "Try to sneak a bug in" is three cards and one big result each, with the planted line.
 4. Depth is one small "More" link (more.html). Numbers: three huge numbers, captions of at most 8 words. Tour: at most 6 steps, one sentence and one visual each.
 5. Pack first screen: verdict pill, the change, "Why:" (at most 12 words), three marks (checks, reviewers, signature from the ledger); everything else behind one Evidence fold.
-6. Every line still comes from a record (site/scene.py); no JavaScript needed on the first screen; light by default; status is glyph + words.
+6. Every line still comes from a record (site/scene.py); no JavaScript needed on the first screen; light by default; status is icon + words.
+
+# Icons
+
+Every icon is a Google Material Symbol (Rounded, weight 400), inlined as SVG by `countersign/icons.py` (`icon(name, cls, label)`), sized 1em (about 1.15em in big status rows) and coloured with currentColor; no circles drawn around them. One mapping on every page and in the packs: pass `check_circle` (green), fail `cancel` (red), partial / held before / needs care `error` or `warning` (amber), not checked `help`, waiting `pending`, tiers silent `check_circle`, notify `notifications`, ask `person`, block `block`; the brand mark and favicon are `check_box`. Material Symbols are Copyright Google LLC, Apache License 2.0.
 
 # v2: the code is the scene
 
 1. The landing page is one scene: the real diff of the agent-written change, full viewport, calm monospace, subtle syntax colour. No hero, no paragraphs, no tables, no number tiles, no side panels.
-2. On it, 3 to 5 pins sit at the end of the exact lines they are about (error-lens style): a status glyph and 2-5 words. `✗` problem, `◐` weak evidence, `✓` proven, `?` refused / not checked.
+2. On it, 3 to 5 pins sit at the end of the exact lines they are about (error-lens style): a status icon and 2-5 words (icons below).
 3. One verdict pill on top: tier → named owner, plus 3-6 words. One muted line above it: the issue title.
 4. Tap a pin (or the pill): a small card under the line with one sentence, who agreed or disagreed (tiny chips), the evidence (cited line, test and run), the source file, and a link into the full evidence pack. Nothing else.
 5. One bar at the bottom switches the scene: 2234 · 2283 · 2129 · 2297 · up-1967 · sneak a bug in (pick a seeded bug; its pin says whether the checks caught it).
@@ -26,7 +30,7 @@
 Audience: engineers and engineering leads (Tieto, Junction peer reviewers, jurors). It should read like a developer tool's own docs (GitHub's Primer, Stripe docs, Sigstore provenance pages): calm, dense, real data. Sources: Primer color and typography foundations (semantic roles, ~80ch lines, left-aligned text, never colour alone), WCAG 2.2 SC 1.4.3 / 1.4.11 (contrast).
 
 1. Neutral canvas, one accent (blue: links, focus, the current step). Green, amber and red mean status only: pass, ask, fail/block.
-2. Status is never colour alone: every status carries a word and a glyph (`PASS ✓`, `FAIL ✗`, `ASK`, `BLOCK`).
+2. Status is never colour alone: every status carries a word and an icon (`PASS`, `FAIL`, `ASK`, `BLOCK`).
 3. System font stack for text; `ui-monospace` for ids, hashes, file:line, commands and code.
 4. Type scale 12 / 14 / 16 / 20 / 24 / 32 px; body 16px at line-height 1.5, headings 1.25. Weight 400 and 600 only.
 5. Spacing on an 8px grid (4px allowed inside dense rows). Radius 6px, 1px borders, no shadows, gradients, blur or glow.
