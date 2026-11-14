@@ -1,7 +1,8 @@
 # CI on CRACI
 
 One workflow, [`.github/workflows/countersign.yml`](../.github/workflows/countersign.yml). Every job runs on
-[CRACI](https://docs.craci.com) (`runs-on: craci`). Each job starts with a `cracicorp/setup@v1` step that sets
+[CRACI](https://docs.craci.com) (`runs-on: craci`), except `craci`, which only reads APIs and runs GitHub-hosted (see
+[below](#reproduced-on-craci-the-four-changes)). Each CRACI job starts with a `cracicorp/setup@v1` step that sets
 its VM size and a **deny-by-default network policy**. CRACI reads that step when it schedules the job. All
 actions are pinned to full commit SHAs (version in a comment). The CRACI GitHub App has access to
 `Zawaer/countersign`; running jobs needs no CRACI token.
@@ -10,7 +11,7 @@ actions are pinned to full commit SHAs (version in a comment). The CRACI GitHub 
 push / pull_request / dispatch ──► pipeline                     (always)
 workflow_dispatch job=reviewers ──► reviewers                    (Nemotron reviews; Gemini adjudication if its key exists)
 workflow_dispatch job=facts     ──► facts                        (stage 1 for one change, .NET 8 + 9, deps.delta, build.egress)
-                                     └─► craci                    (CRACI's job SBOM + network trace of facts; needs CRACI_API_TOKEN)
+                                     └─► craci                    (CRACI's job SBOM + network trace of facts; GitHub-hosted)
 ```
 
 | Job | What it does | Size | Egress allowed |
@@ -18,12 +19,11 @@ workflow_dispatch job=facts     ──► facts                        (stage 1 
 | `pipeline` | `uv sync --frozen` + `pytest` (fixture tests included: `COUNTERSIGN_REPO` points at a fresh clone of the challenge repo), `countersign verify-ledger`, `countersign route --all` (the table goes in the job summary), then rebuilds every committed pack and **fails if `packs/*/pack.json` differs from the rebuild**. pack.json is deterministic (no timestamps), so a diff means someone changed reviews, facts, the mandate or the engine without re-running `countersign review`. Uploads `packs` as an artifact. | 4 | PyPI preset, `github.com` |
 | `reviewers` | Clones the challenge repo (read-only: the push URL is disabled, no credentials). Runs `countersign review-llm <n> --reviewer nemotron` per change, then `countersign adjudicate <n>` (Gemini, only where the reviewers disagree) **only if the `GEMINI_API_KEY` secret exists**; otherwise a `::notice` says it was skipped. Rebuilds the packs with the new reviews, renders `docs/COSTS.md`, and uploads `reviews` (reviews/, raw responses, packs, `measurement/costs.yaml`). The summary lists Nemotron's verdicts and the route table. | 2 | PyPI preset, `integrate.api.nvidia.com`, `generativelanguage.googleapis.com`, `github.com` |
 | `facts` | Reproduces the stage-1 deterministic checks for one change with the same scripts as the original local run: `evidence/scripts/ci-facts.sh` creates base, head and fail-without-fix worktrees, then runs `run.sh` (SDK 8.0.402: build, targeted tests, full suite), `exec9.sh` (SDK 9.0.x: ExecutionTests) and `facts.py`. Paths come from env vars; the local defaults are unchanged. The job summary compares every check status with the committed `evidence/<n>/facts.json`. Uploads `facts-<n>`: facts.json, logs, .trx. Then `deps-delta.py` (restore every `*.csproj` of base and head, CycloneDX SBOMs, the `deps.delta` check; its table goes in the job summary) and `build-egress.py` (copies this job's network policy into facts.json as `build.egress`, fails on a blocked host). | 8 | `presets: [github]`; TLS: `github.com`, .NET download hosts, `api.nuget.org` / `*.nuget.org`, `pkgs.dev.azure.com` (the repo's dotnet-tools feed) |
-| `craci` | After `facts`. Downloads `facts-<n>`, runs `python3 -m countersign.craci attach`: with the `CRACI_API_TOKEN` secret it fetches CRACI's job SBOM and network trace of the `facts` job (`GET /v1preview1/sbom`, `/v1preview1/network-trace`, by GitHub job id) and adds `craci.sbom` / `craci.network` to facts.json; without it both are `skipped` ("no CRACI_API_TOKEN") and the job passes. Uploads `craci-<n>` (facts.json + raw SBOM and trace). | 1 | `presets: [github]`; TLS: `api.craci.com`, `api.github.com` |
+| `craci` | After `facts`. Downloads `facts-<n>`, runs `python3 -m countersign.craci attach`: with the `CRACI_API_TOKEN` secret it fetches CRACI's job SBOM and network trace of the `facts` job (`GET /v1preview1/sbom`, `/v1preview1/network-trace`, by GitHub job id) and adds `craci.sbom` / `craci.network` to facts.json; without it both are `skipped` ("no CRACI_API_TOKEN") and the job passes. `craci.network` lists every connection CRACI recorded and fails on a proxy violation by the build; denied certificate revocation lookups (CRL/OCSP, recognised from the request) and requests made before the change's build step (toolchain setup, timed from the GitHub job's steps) are listed separately and not counted. Uploads `craci-<n>` (facts.json + raw SBOM and trace). Runs on `ubuntu-24.04`, not CRACI: inside a CRACI job the proxy answers calls to `api.craci.com` with a plain-text `403 Access denied` before they reach the API, even with a TLS rule for it (runs 43580280041, 43580287458, 43580295113, 43580303397). | GitHub-hosted | no CRACI policy (job reads `api.github.com`, `api.craci.com`) |
 
-Secrets: `NVIDIA_API_KEY` (set by Toivo), `GEMINI_API_KEY` (to come from Rene) and, optional, `CRACI_API_TOKEN`
-(CRACI app → Settings → API tokens; `gh secret set CRACI_API_TOKEN -R Zawaer/countersign`). Today only
-`NVIDIA_API_KEY` is set (`gh secret list`): Gemini adjudication has not run, and the `craci` job records
-`craci.sbom` / `craci.network` as skipped. The keys exist only as Actions secrets. The runner reads them from the environment and never writes them to files or logs.
+Secrets: `NVIDIA_API_KEY`, `GEMINI_API_KEY` and `CRACI_API_TOKEN` (CRACI app → Settings → API tokens; expires
+after 90 days), all set (`gh secret list`). Without `CRACI_API_TOKEN` the `craci` job records `craci.sbom` /
+`craci.network` as skipped and passes. The keys exist only as Actions secrets. The runner reads them from the environment and never writes them to files or logs.
 
 ## Dispatch
 
@@ -71,7 +71,8 @@ The `facts` job records what building the change touched, as checks in facts.jso
 - `build.egress`: the network policy of this job, copied from this workflow file into facts.json with its sha256,
   the run URL and the CRACI job CA fingerprint. Fails when the logs show a blocked connection (CRACI answers a denied
   connection with HTTP 403, a reset/EOF or a failed handshake; NuGet reports NU1301) and names the host.
-- `craci.sbom`, `craci.network` (job `craci`, token only): CRACI's own record of the `facts` job.
+- `craci.sbom`, `craci.network` (job `craci`, token only): CRACI's own record of the `facts` job: every connection
+  with the rule that matched it, every denied one, and the packages CRACI saw.
 
 ## Reproduced on CRACI: the four changes
 
@@ -79,14 +80,28 @@ The `facts` job records what building the change touched, as checks in facts.jso
 reproduced; `build.egress` is the one new check, appended to the committed `evidence/<n>/facts.json` with its
 `run_url` (every other check byte-identical). Per-change comparison: `evidence/<n>/ci/compare.md`.
 
-| Change | CRACI run | `facts` job | Statuses matched | Egress hosts allowed | Blocked |
-|---|---|---|---|---|---|
-| 2283 | [43559078089](https://github.com/Zawaer/countersign/actions/runs/43559078089) | 2 min 24 s | 9/9 | 13 TLS patterns, port 443, preset github | 0 (19 logs) |
-| 2234 | [43559084959](https://github.com/Zawaer/countersign/actions/runs/43559084959) | 3 min 22 s | 12/12 | 13 TLS patterns, port 443, preset github | 0 (40 logs) |
-| 2129 | [43559092226](https://github.com/Zawaer/countersign/actions/runs/43559092226) | 3 min 8 s | 12/12 | 13 TLS patterns, port 443, preset github | 0 (29 logs) |
-| 2297 | [43559099382](https://github.com/Zawaer/countersign/actions/runs/43559099382) | 1 min 56 s | 8/8 | 13 TLS patterns, port 443, preset github | 0 (13 logs) |
+| Change | CRACI run | `facts` job | Statuses matched | Egress hosts allowed | Blocked (logs) | CRACI trace run | Hosts observed | Violations |
+|---|---|---|---|---|---|---|---|---|
+| 2283 | [43559078089](https://github.com/Zawaer/countersign/actions/runs/43559078089) | 2 min 24 s | 9/9 | 13 TLS patterns, port 443, preset github | 0 (19 logs) | [43580831017](https://github.com/Zawaer/countersign/actions/runs/43580831017) | 6 build + 7 CI service (183 connections) | 0 |
+| 2234 | [43559084959](https://github.com/Zawaer/countersign/actions/runs/43559084959) | 3 min 22 s | 12/12 | 13 TLS patterns, port 443, preset github | 0 (40 logs) | [43580841815](https://github.com/Zawaer/countersign/actions/runs/43580841815) | 6 build + 7 CI service (220 connections) | 0 |
+| 2129 | [43559092226](https://github.com/Zawaer/countersign/actions/runs/43559092226) | 3 min 8 s | 12/12 | 13 TLS patterns, port 443, preset github | 0 (29 logs) | [43580812697](https://github.com/Zawaer/countersign/actions/runs/43580812697) | 6 build + 7 CI service (215 connections) | 0 |
+| 2297 | [43559099382](https://github.com/Zawaer/countersign/actions/runs/43559099382) | 1 min 56 s | 8/8 | 13 TLS patterns, port 443, preset github | 0 (13 logs) | [43580820406](https://github.com/Zawaer/countersign/actions/runs/43580820406) | 6 build + 7 CI service (181 connections) | 0 |
 
-Policy sha256 `31fafb855e98…` for all four. `craci.sbom` / `craci.network` were skipped (no `CRACI_API_TOKEN`).
+Policy sha256 `31fafb855e98…` for all four. `craci.sbom` and `craci.network` come from a second `facts` dispatch
+on main (f2219f9) whose `craci` job read CRACI's API; they were appended to `evidence/<n>/facts.json` with
+`run_url` (raw trace and SBOM in `evidence/<n>/ci/craci/`).
+
+What CRACI saw, the same on all four:
+- **Hosts.** The build reached 6 hosts, all inside `build.egress`'s 13 patterns: `builds.dotnet.microsoft.com`,
+  `api.nuget.org`, `github.com`, `codeload.github.com`, `pkgs.dev.azure.com`, `ci.dot.net` (about 0.76 GB). The other
+  7 are GitHub Actions service endpoints (`*.actions.githubusercontent.com`, a results blob) that CRACI always allows.
+- **Violations: 0** by the build. CRACI did deny about 2,900 plain-HTTP certificate revocation lookups (CRL and OCSP
+  to DigiCert and Symantec hosts) that NuGet makes when it verifies package signatures, and 3 `aka.ms` requests by
+  `actions/setup-dotnet` before the change was cloned. Both are listed in `craci.network` and not counted. The first
+  means **package-signature revocation was not checked online** in these builds; allowing those CRL/OCSP hosts on
+  port 80 would fix it. `build.egress` saw none of this: it reads the build logs, and the build did not log them.
+- **SBOM.** CRACI's job SBOM has 0 components. Our `deps.delta` SBOMs list 242 NuGet packages. CRACI has nothing we
+  lack, and it does not see NuGet (no NuGet source type; a TLS connection rule bypasses package detection).
 
 ## Where CRACI's SBOM and network trace are
 
@@ -109,7 +124,8 @@ Open the run in the CRACI web app (or follow the CRACI link on the GitHub job). 
 - `facts` omitted `presets:` until the `craci` work: per CRACI's docs that enables **every** built-in preset (npm,
   PyPI, Docker Hub, ...), so "deny by default" was not as narrow as the comment said. It is now `presets: [github]`.
 - `build.egress` sees what a blocked connection looks like from inside the job; it cannot see a connection the
-  policy allowed. The full list of connections is CRACI's trace (`craci.network`, needs the token).
+  policy allowed, or one the build made without logging it (the revocation lookups above). The full list is
+  CRACI's trace (`craci.network`).
 - `deps.delta` vulnerability results come from NuGet Audit at restore time: the advisory database changes, so a
   rerun can find more advisories for the same commit. The SBOM's dependency graph does not change.
 

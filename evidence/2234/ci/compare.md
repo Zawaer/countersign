@@ -3,7 +3,7 @@
 - Run: https://github.com/Zawaer/countersign/actions/runs/43559084959 (job `facts`: https://github.com/Zawaer/countersign/actions/runs/43559084959/job/132338506177)
 - Workflow commit: 9e708dbb849708b99fe45c3269b04f422e907d93 (main), dispatched with `job=facts change=2234`
 - Runner: craci-1-1f0727ec (CRACI, size 8), 2026-11-14T04:56:33Z to 2026-11-14T04:59:55Z, 3 min 22 s
-- Artifacts: `facts-2234` (facts.json, logs, .trx), `craci-2234` (craci.sbom / craci.network: skipped, no CRACI_API_TOKEN)
+- Artifacts: `facts-2234` (facts.json, logs, .trx), `craci-2234` of the earlier run (skipped, no token); CRACI's record is from https://github.com/Zawaer/countersign/actions/runs/43580841815 (below)
 
 ## Stage 1 reproduced on CRACI: change 2234 (head 9007cee1, SDK 8.0.402 + 9.0.321)
 
@@ -35,3 +35,30 @@ Every check other than `build.egress` also has the same summary text as the comm
 - Blocked hosts: 0 (none), in 40 logs scanned
 - NuGet feeds on head outside the policy: 0
 - CRACI job CA sha256: `baa0ee3ae7ed8f66cd7175b67a7351f91531c53a210f3955fbd6b456ccc79b31`; runner craci-1-1f0727ec
+
+## CRACI's own record of the build (craci.network, craci.sbom)
+
+- Source: CRACI API `/v1preview1/network-trace` and `/v1preview1/sbom` for the `facts` job 132405049035 of https://github.com/Zawaer/countersign/actions/runs/43580841815, fetched by the `craci` job of the same run (GitHub-hosted; CRACI's proxy refuses a CRACI job's own calls to api.craci.com). Raw: `evidence/2234/ci/craci/network-trace.json.gz`, `evidence/2234/ci/craci/sbom.cdx.json`.
+- `craci.network` **pass**: 3706 observations (555 DNS); 220 allowed connections to 13 hosts; **0 proxy violations** by the change's build.
+
+| Host | Connections | Received | Rule (CRACI) | In build.egress TLS list? |
+|---|---|---|---|---|
+| `builds.dotnet.microsoft.com` | 17 | 468.2 MB | passthrough-tls-github.com | yes |
+| `api.nuget.org` | 87 | 283.5 MB | passthrough-tls-github.com | yes |
+| `github.com` | 2 | 19.3 MB | passthrough-tls-github.com | yes |
+| `codeload.github.com` | 3 | 4.2 MB | passthrough-tls-github.com | yes |
+| `pkgs.dev.azure.com` | 36 | 0.4 MB | passthrough-tls-github.com | yes |
+| `ci.dot.net` | 8 | 44 kB | passthrough-tls-github.com | yes |
+| `results-receiver.actions.githubusercontent.com` | 44 | 10 kB | github-actions-cache-results-receiver.actions.githubusercontent.com | no: CRACI CI-service rule |
+| `launch.actions.githubusercontent.com` | 1 | 2 kB | github-actions-actions.githubusercontent.com | no: CRACI CI-service rule |
+| `run.actions.githubusercontent.com` | 1 | 0 kB | github-actions-actions.githubusercontent.com | no: CRACI CI-service rule |
+| `broker.actions.githubusercontent.com` | 2 | 0 kB | github-actions-actions.githubusercontent.com | no: CRACI CI-service rule |
+| `productionresultssa30.blob.core.windows.net` | 17 | 0 kB | recorded-http-api.github.com | no: CRACI CI-service rule |
+| `run-actions-3-azure-eastus.actions.githubusercontent.com` | 1 | 0 kB | github-actions-actions.githubusercontent.com | no: CRACI CI-service rule |
+| `token.actions.githubusercontent.com` | 1 | 0 kB | github-actions-actions.githubusercontent.com | no: CRACI CI-service rule |
+
+Against `build.egress`: all 6 TLS hosts the build reached (builds.dotnet.microsoft.com, api.nuget.org, github.com, codeload.github.com, pkgs.dev.azure.com, ci.dot.net) are inside its 13 declared patterns. The other 7 are GitHub Actions service endpoints (runner broker, results, cache) that CRACI always allows. Denied by the policy, listed, and not counted as the change's:
+- 2928 certificate revocation lookups over plain HTTP (CRL downloads and OCSP GETs, recognised from the request): `ocsp.digicert.com` 924, `crl3.digicert.com` 633, `crl4.digicert.com` 291, `s.symcb.com` 270, `s.symcd.com` 270, `ts-crl.ws.symantec.com` 270, `ts-ocsp.ws.symantec.com` 270. NuGet makes them when it verifies package signatures, so signing-certificate revocation was **not** checked online in this build (the policy has no rule for port 80). `build.egress` saw none of them: the build log does not show them.
+- 3 requests during toolchain setup (`actions/setup-dotnet`, before the change was cloned): `aka.ms` 3 (`https://aka.ms/dotnet/LTS/dotnet-runtime-linux-x64.tar.gz`). setup-dotnet then downloads from `builds.dotnet.microsoft.com`.
+
+- `craci.sbom` **pass**: CRACI's job SBOM (CycloneDX 1.7, `urn:uuid:5dda6883-444d-4319-a554-c2d45b3d23ee`) has **0 components**. Our `deps.delta` SBOMs list 242 NuGet packages (base and head). CRACI's SBOM has nothing ours lacks: CRACI has no NuGet source type and the facts job reaches NuGet through a TLS connection rule, which CRACI does not inspect for packages. The package record is ours (`deps.delta`); CRACI's is the connections.

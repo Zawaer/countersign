@@ -34,7 +34,7 @@
   "inputs": {
     "facts": {
       "path": "evidence/2297/facts.json",
-      "sha256": "2fc8c9e8f73f4a85881a22ff16d365d9da3843be136d4c9f78455d1419af9acf"
+      "sha256": "9f77c20ae6a4cf56c67f6176fab9e4c37363138bb4acb2bd7e586cb0c7f11ee9"
     },
     "requirements": {
       "path": "requirements/2297.yaml",
@@ -834,6 +834,24 @@
         "tool_version": null,
         "status": "pass",
         "summary": "built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 13 logs; every NuGet feed the head declares is inside the policy",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "craci.sbom",
+        "tool": "CRACI API v1preview1 (https://api.craci.com)",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "CRACI's job SBOM: 0 components (none); 0 NuGet, all in our restore graph (242 NuGet packages). CRACI has no NuGet source type, so the facts job reaches NuGet through a TLS connection rule, which CRACI does not inspect for packages: the NuGet graph is recorded by deps.delta, CRACI records the connections (craci.network)",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "craci.network",
+        "tool": "CRACI API v1preview1 (https://api.craci.com)",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "181 connections to 13 hosts, 0 proxy violations: builds.dotnet.microsoft.com (468.1 MB), api.nuget.org (271.4 MB), github.com (19.3 MB), codeload.github.com (4.2 MB), pkgs.dev.azure.com (0.2 MB), ci.dot.net (44 kB); denied, not counted as the change's: 2904 certificate revocation lookups (CRL/OCSP over plain HTTP: crl3.digicert.com, crl4.digicert.com, ocsp.digicert.com, s.symcb.com, s.symcd.com, ts-crl.ws.symantec.com, ts-ocsp.ws.symantec.com), so package-signature revocation was not checked online; 3 request(s) during toolchain setup, before the change was built (aka.ms); 7 host(s) allowed by a preset or CRACI's own CI-service rule, not a listed TLS host (rules: github-actions-actions.githubusercontent.com, github-actions-cache-results-receiver.actions.githubusercontent.com, recorded-http-api.github.com)",
         "duration_s": null,
         "log": null
       }
@@ -2854,9 +2872,97 @@
       "blocked_hosts": [],
       "feeds_outside_policy": {}
     },
-    "craci_network": null,
-    "craci_sbom": null,
+    "craci_network": {
+      "status": "pass",
+      "summary": "181 connections to 13 hosts, 0 proxy violations: builds.dotnet.microsoft.com (468.1 MB), api.nuget.org (271.4 MB), github.com (19.3 MB), codeload.github.com (4.2 MB), pkgs.dev.azure.com (0.2 MB), ci.dot.net (44 kB); denied, not counted as the change's: 2904 certificate revocation lookups (CRL/OCSP over plain HTTP: crl3.digicert.com, crl4.digicert.com, ocsp.digicert.com, s.symcb.com, s.symcd.com, ts-crl.ws.symantec.com, ts-ocsp.ws.symantec.com), so package-signature revocation was not checked online; 3 request(s) during toolchain setup, before the change was built (aka.ms); 7 host(s) allowed by a preset or CRACI's own CI-service rule, not a listed TLS host (rules: github-actions-actions.githubusercontent.com, github-actions-cache-results-receiver.actions.githubusercontent.com, recorded-http-api.github.com)",
+      "reason": null,
+      "proxy_violations": [],
+      "hosts": [
+        {
+          "host": "builds.dotnet.microsoft.com",
+          "connections": 17,
+          "bytes_received": 468146875,
+          "denied": 0
+        },
+        {
+          "host": "api.nuget.org",
+          "connections": 65,
+          "bytes_received": 271367288,
+          "denied": 0
+        },
+        {
+          "host": "github.com",
+          "connections": 2,
+          "bytes_received": 19252062,
+          "denied": 0
+        },
+        {
+          "host": "codeload.github.com",
+          "connections": 3,
+          "bytes_received": 4158726,
+          "denied": 0
+        },
+        {
+          "host": "pkgs.dev.azure.com",
+          "connections": 21,
+          "bytes_received": 214748,
+          "denied": 0
+        },
+        {
+          "host": "ci.dot.net",
+          "connections": 8,
+          "bytes_received": 43540,
+          "denied": 0
+        },
+        {
+          "host": "results-receiver.actions.githubusercontent.com",
+          "connections": 42,
+          "bytes_received": 10084,
+          "denied": 0
+        },
+        {
+          "host": "launch.actions.githubusercontent.com",
+          "connections": 1,
+          "bytes_received": 1616,
+          "denied": 0
+        },
+        {
+          "host": "run.actions.githubusercontent.com",
+          "connections": 1,
+          "bytes_received": 49,
+          "denied": 0
+        },
+        {
+          "host": "broker.actions.githubusercontent.com",
+          "connections": 2,
+          "bytes_received": 4,
+          "denied": 0
+        },
+        {
+          "host": "productionresultssa17.blob.core.windows.net",
+          "connections": 17,
+          "bytes_received": 0,
+          "denied": 0
+        },
+        {
+          "host": "run-actions-3-azure-eastus.actions.githubusercontent.com",
+          "connections": 1,
+          "bytes_received": 0,
+          "denied": 0
+        },
+        {
+          "host": "token.actions.githubusercontent.com",
+          "connections": 1,
+          "bytes_received": 0,
+          "denied": 0
+        }
+      ]
+    },
+    "craci_sbom": {
+      "status": "pass",
+      "summary": "CRACI's job SBOM: 0 components (none); 0 NuGet, all in our restore graph (242 NuGet packages). CRACI has no NuGet source type, so the facts job reaches NuGet through a TLS connection rule, which CRACI does not inspect for packages: the NuGet graph is recorded by deps.delta, CRACI records the connections (craci.network)"
+    },
     "status": "pass",
-    "line": "deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build.egress pass"
+    "line": "deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build.egress pass; CRACI trace pass"
   }
 }

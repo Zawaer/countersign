@@ -14,18 +14,21 @@ with two advisories not on base.
 hosts and NuGet. `build.egress` copies it into the facts with its sha256, the run URL and the CRACI job CA
 fingerprint, so the pack says "the build reached only these hosts". A build that phones home fails with the host.
 
-| Change | CRACI run (main) | `facts` job | Statuses matched | Egress allowed | Blocked |
-|---|---|---|---|---|---|
-| 2283 | 43559078089 | 2m24s | 9/9 | 13 TLS patterns | 0 |
-| 2234 | 43559084959 | 3m22s | 12/12 | 13 TLS patterns | 0 |
-| 2129 | 43559092226 | 3m08s | 12/12 | 13 TLS patterns | 0 |
-| 2297 | 43559099382 | 1m56s | 8/8 | 13 TLS patterns | 0 |
+| Change | `facts` run | Statuses | Blocked | CRACI trace run | Hosts | Violations |
+|---|---|---|---|---|---|---|
+| 2283 | 43559078089 | 9/9 | 0 | 43580831017 | 6+7 | 0 |
+| 2234 | 43559084959 | 12/12 | 0 | 43580841815 | 6+7 | 0 |
+| 2129 | 43559092226 | 12/12 | 0 | 43580812697 | 6+7 | 0 |
+| 2297 | 43559099382 | 8/8 | 0 | 43580820406 | 6+7 | 0 |
 
-**3. CRACI's API as an independent record.** A `craci` job adds CRACI's own SBOM and network trace of `facts`
-(`/v1preview1/sbom`, `/network-trace`) as `craci.sbom`, `craci.network`. No API token is set, so both are `skipped`.
+**3. CRACI's API as an independent record.** A `craci` job adds CRACI's own trace and SBOM of `facts` as checks.
+On all four: craci.network: pass, 13 hosts observed (6 build hosts, all in the policy, plus 7 GitHub Actions
+endpoints), 0 violations. craci.sbom: pass, 0 components.
 
-**What we learned.** CRACI has no NuGet source type, so NuGet goes through a TLS rule CRACI logs but does not
-inspect: our SBOM covers packages, CRACI the policy and connections. Omitting `presets:` enables every preset; we fixed ours.
+**What we learned.** CRACI's trace saw what our log check could not: about 2,900 denied certificate revocation
+lookups (NuGet signature checks), so revocation was not checked online. CRACI has no NuGet source type, so our
+SBOM covers packages and CRACI the connections. A CRACI job cannot call api.craci.com, so the `craci` job runs
+GitHub-hosted.
 
-Runs: github.com/Zawaer/countersign/actions/runs/<run> (table); comparisons in `evidence/<n>/ci/compare.md`
+Runs: github.com/Zawaer/countersign/actions/runs/<run>; details in `evidence/<n>/ci/compare.md`
 Code: github.com/Zawaer/countersign (`countersign/sbom.py`, `countersign/craci.py`)

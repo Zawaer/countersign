@@ -229,6 +229,41 @@ def test_plain_403_is_reported_as_blocked_egress_not_an_api_answer(tmp_path):
     assert "never reached the CRACI API" in checks[0]["summary"] and "api.craci.com" in checks[0]["summary"]
 
 
+def _denied(seq, url, at="2026-11-14T00:00:10.5Z"):
+    return {"sequence": seq, "observedAt": at, "protocol": "http",
+            "http": {"method": "GET", "originUrl": url, "ipAddress": "5.6.7.8", "statusCode": 403, "bodySizeBytes": "9",
+                     "policyDenied": True, "denyReason": "request does not match an allowed proxy policy rule", "matchedRule": None}}
+
+
+# A real OCSP GET from the facts job (run 43580812697): base64 DER OCSPRequest with a SHA-1 CertID.
+OCSP = "http://ocsp.digicert.com/MFEwTzBNMEswSTAJBgUrDgMCGgUABBT3xL4LQLXDRDM9P665TW442vrsUQQUReuir%2FSSy4IxLVGLp6chnfNtyA8CEA6bGI750C3n79tQ4ghAGFo%3D"
+
+
+def test_revocation_lookups_and_setup_requests_are_listed_but_not_violations():
+    t = json.loads(json.dumps(TRACE))
+    setup = _denied(9, "https://aka.ms/dotnet/9.0/dotnet-sdk-linux-x64.tar.gz", "2026-11-14T00:00:00.9Z")
+    setup["http"] = {**setup["http"], "method": "HEAD"}
+    t["observations"] += [setup, _denied(10, "http://crl3.digicert.com/sha2-assured-cs-g1.crl"), _denied(11, OCSP), _denied(12, OCSP)]
+    steps = [{"name": "Run actions/setup-dotnet", "started_at": "2026-11-14T00:00:00Z"},
+             {"name": "Reproduce stage 1 (evidence/scripts/ci-facts.sh)", "started_at": "2026-11-14T00:00:01Z"}]
+    out = craci.summarize_trace(t, ["api.nuget.org"], steps)
+    assert out["status"] == "pass" and out["proxy_violations"] == []
+    assert {(g["host"], g["count"]) for g in out["denied_certificate_status"]} == {("crl3.digicert.com", 1), ("ocsp.digicert.com", 2)}
+    assert [g["host"] for g in out["denied_during_toolchain_setup"]] == ["aka.ms"]
+    assert "3 certificate revocation lookups" in out["summary"] and "before the change was built (aka.ms)" in out["summary"]
+    # The same aka.ms request during the build is the change's, and fails; so is any other GET to a CRL/OCSP host.
+    late = craci.summarize_trace(t, ["api.nuget.org"], steps[:1])
+    assert late["status"] == "fail" and [g["host"] for g in late["proxy_violations"]] == ["aka.ms"]
+    t["observations"].append(_denied(13, "http://ocsp.digicert.com/upload?data=c2VjcmV0"))
+    assert craci.summarize_trace(t, ["api.nuget.org"], steps)["status"] == "fail"
+
+
+@pytest.mark.parametrize("url,expected", [(OCSP, True), ("http://crl4.digicert.com/DigiCertAssuredIDRootCA.crl", True),
+                                          ("https://crl4.digicert.com/x.crl", False), ("http://ocsp.digicert.com/aGVsbG8gd29ybGQgdGhpcyBpcyBub3Qgb2NzcA==", False)])
+def test_certificate_status_request_is_recognised_from_the_request(url, expected):
+    assert craci.certificate_status_request({"method": "GET", "originUrl": url}) is expected
+
+
 @pytest.mark.parametrize("argv", [[], ["nope"]])
 def test_cli_usage(argv):
     assert craci.main(argv) == 2
