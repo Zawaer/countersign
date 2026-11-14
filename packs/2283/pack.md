@@ -49,10 +49,8 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 
 - Open major finding: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic
 - Not proven by the AI: REQ-2283-N1. Signing means you judge them yourself.
-- 5 questions the AI declined to decide (listed above) are yours.
-- Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks
-- 2 disputed items not adjudicated
-- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+
+<details><summary>4 more risks that do not set the tier</summary>5 questions the AI declined to decide (listed above) are yours. · Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks · 2 disputed items not adjudicated · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: accept, reject, request-changes)
 

@@ -1192,7 +1192,7 @@
     "risk_score": 7.9,
     "reasons": [
       {
-        "text": "The AI declined to decide 3 questions, e.g. That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs)",
+        "text": "The AI declined to decide 1 question, e.g. Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",
         "link": "#refused"
       }
     ],
@@ -1279,6 +1279,20 @@
     "rejected_total": 0,
     "refused": [
       {
+        "topic": "Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",
+        "why": "Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "CI or area owner"
+        ],
+        "peripheral": false,
+        "anchor": "refusal-3"
+      }
+    ],
+    "refused_peripheral": [
+      {
         "topic": "That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs)",
         "why": "Taken from the requirement text; not checkable from the evidence",
         "raised_by": [
@@ -1287,6 +1301,7 @@
         "who_should_decide": [
           "area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-1"
       },
       {
@@ -1298,18 +1313,8 @@
         "who_should_decide": [
           "countersign evidence maintainer"
         ],
+        "peripheral": true,
         "anchor": "refusal-2"
-      },
-      {
-        "topic": "Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",
-        "why": "Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).",
-        "raised_by": [
-          "nemotron"
-        ],
-        "who_should_decide": [
-          "CI or area owner"
-        ],
-        "anchor": "refusal-3"
       }
     ],
     "refused_clauses": [],
@@ -1343,16 +1348,26 @@
     ],
     "residual": [
       {
-        "text": "3 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused"
+        "text": "1 question the AI declined to decide (listed above) are yours.",
+        "link": "#refused",
+        "drives": true
+      }
+    ],
+    "residual_more": [
+      {
+        "text": "2 peripheral refusals (out of scope for this change) are yours too.",
+        "link": "#refused-peripheral",
+        "drives": false
       },
       {
         "text": "Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       }
     ],
     "sign": {

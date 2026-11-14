@@ -2284,7 +2284,7 @@
         "link": "#chain-REQ-2234-N1"
       },
       {
-        "text": "The AI declined to decide 6 questions, e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages",
+        "text": "The AI declined to decide 2 questions, e.g. Runtime library behavior (src/MessagePack) and net472/netstandard builds",
         "link": "#refused"
       }
     ],
@@ -2380,50 +2380,6 @@
     "rejected_total": 0,
     "refused": [
       {
-        "topic": "Whether this change resolves issue #2234 for users of the released 3.1.x packages",
-        "why": "The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).",
-        "raised_by": [
-          "claude"
-        ],
-        "who_should_decide": [
-          "analyzer area owner / maintainers choosing the target branch"
-        ],
-        "anchor": "refusal-1"
-      },
-      {
-        "topic": "Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate",
-        "why": "Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.",
-        "raised_by": [
-          "claude"
-        ],
-        "who_should_decide": [
-          "docs owner"
-        ],
-        "anchor": "refusal-2"
-      },
-      {
-        "topic": "Parity with analyzer behavior in version 3.1.0",
-        "why": "No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.",
-        "raised_by": [
-          "nemotron"
-        ],
-        "who_should_decide": [
-          "Area owner or maintainer with access to the 3.1.0 release"
-        ],
-        "anchor": "refusal-3"
-      },
-      {
-        "topic": "Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types",
-        "why": "The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.",
-        "raised_by": [
-          "nemotron"
-        ],
-        "who_should_decide": [
-          "Area owner"
-        ],
-        "anchor": "refusal-4"
-      },
-      {
         "topic": "Runtime library behavior (src/MessagePack) and net472/netstandard builds",
         "why": "Not run; the runtime library was not modified and only net8.0 was built.",
         "raised_by": [
@@ -2432,6 +2388,7 @@
         "who_should_decide": [
           "Area owner"
         ],
+        "peripheral": false,
         "anchor": "refusal-5"
       },
       {
@@ -2443,7 +2400,58 @@
         "who_should_decide": [
           "Security reviewer"
         ],
+        "peripheral": false,
         "anchor": "refusal-6"
+      }
+    ],
+    "refused_peripheral": [
+      {
+        "topic": "Whether this change resolves issue #2234 for users of the released 3.1.x packages",
+        "why": "The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "analyzer area owner / maintainers choosing the target branch"
+        ],
+        "peripheral": true,
+        "anchor": "refusal-1"
+      },
+      {
+        "topic": "Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate",
+        "why": "Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "docs owner"
+        ],
+        "peripheral": true,
+        "anchor": "refusal-2"
+      },
+      {
+        "topic": "Parity with analyzer behavior in version 3.1.0",
+        "why": "No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "Area owner or maintainer with access to the 3.1.0 release"
+        ],
+        "peripheral": true,
+        "anchor": "refusal-3"
+      },
+      {
+        "topic": "Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types",
+        "why": "The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "Area owner"
+        ],
+        "peripheral": true,
+        "anchor": "refusal-4"
       }
     ],
     "refused_clauses": [
@@ -2473,31 +2481,45 @@
     "residual": [
       {
         "text": "Open major finding: The issue's 3.1.1 regression is not on this base; the change fixes a different crash",
-        "link": "#f-claude-C1"
+        "link": "#f-claude-C1",
+        "drives": true
       },
       {
         "text": "Not proven by the AI: REQ-2234-N1, REQ-2234-N2. Signing means you judge them yourself.",
-        "link": "#chain-REQ-2234-N1"
+        "link": "#chain-REQ-2234-N1",
+        "drives": true
       },
+      {
+        "text": "2 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused",
+        "drives": true
+      }
+    ],
+    "residual_more": [
       {
         "text": "REQ-2234-F1, REQ-2234-F2 already held before this change: met, but not achieved by it.",
-        "link": "#chain-REQ-2234-F1"
+        "link": "#chain-REQ-2234-F1",
+        "drives": false
       },
       {
-        "text": "6 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused"
+        "text": "4 peripheral refusals (out of scope for this change) are yours too.",
+        "link": "#refused-peripheral",
+        "drives": false
       },
       {
         "text": "Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       },
       {
         "text": "2 disputed items not adjudicated",
-        "link": "#panel"
+        "link": "#panel",
+        "drives": false
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       }
     ],
     "sign": {

@@ -27,13 +27,10 @@ Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, Formatter
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-1"></a>Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix. *Why:* Scoped review: not read individually. tests.full_suite passing shows they match the new generator output, not that the output is otherwise unchanged. *Who:* source-generator area owner (diff-filter the resources) (raised by Claude)
-- <a id="refusal-2"></a>Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings. *Why:* Execution tests not run for this change (tests.execution not run: SDK 8 cannot load the generator); no compile of generated code against net472/netstandard2.0 targets. *Who:* source-generator area owner (raised by Claude)
-- <a id="refusal-3"></a>The TransformUtilities brace change ('{' to '{\r\n' when constraints exist): intended fix or incidental. *Why:* Not mentioned in the issue; I did not establish what output it changes beyond the resources. *Who:* source-generator area owner (raised by Claude)
-- <a id="refusal-4"></a>Coverage of generated code not exercised by the supplied generator test fixture. *Why:* The supplied tests exercise the generated output represented by their fixture; I did not independently inspect every generation path or framework configuration beyond the cited template and facts. *Who:* area owner (raised by Codex)
-- <a id="refusal-5"></a>netstandard2.0 and .NET Framework compilation of generated output. *Why:* build.net472/netstandard was not run (Linux container, only net8.0 built), so the #if guard's effect for those targets was not compile-verified; only the template text was inspected. *Who:* area owner / maintainer with a multi-target build (raised by Nemotron)
 - <a id="refusal-6"></a>runtime execution of generated formatters/resolvers (execution tests). *Why:* tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change. *Who:* area owner / maintainer, after moving to an SDK with Roslyn >= 4.12 (raised by Nemotron)
 - Whether [REQ-2297-F1](#chain-REQ-2297-F1) is met: see the trace. *Who:* Toivo
+
+<details id="refused-peripheral"><summary>5 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix (Claude) · <a id="refusal-2"></a>Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings (Claude) · <a id="refusal-3"></a>The TransformUtilities brace change ('{' to '{\r\n' when constraints exist): intended fix or incidental (Claude) · <a id="refusal-4"></a>Coverage of generated code not exercised by the supplied generator test fixture (Codex) · <a id="refusal-5"></a>netstandard2.0 and .NET Framework compilation of generated output (Nemotron)</details>
 
 **Not checked, and why**
 
@@ -48,10 +45,9 @@ Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, Formatter
 - Open major finding: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise
 - Open major finding: Attribute on the generated half of user-declared partial resolvers can break builds (CS0579) and silently hides user code
 - Not proven by the AI: REQ-2297-F1. Signing means you judge them yourself.
-- 6 questions the AI declined to decide (listed above) are yours.
-- Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks
-- 3 disputed items not adjudicated
-- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+- 1 question the AI declined to decide (listed above) are yours.
+
+<details><summary>4 more risks that do not set the tier</summary>5 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks · 3 disputed items not adjudicated · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: reject, request-changes)
 

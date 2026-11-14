@@ -1707,6 +1707,20 @@
     "rejected_total": 0,
     "refused": [
       {
+        "topic": "runtime execution of generated formatters/resolvers (execution tests)",
+        "why": "tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / maintainer, after moving to an SDK with Roslyn >= 4.12"
+        ],
+        "peripheral": false,
+        "anchor": "refusal-6"
+      }
+    ],
+    "refused_peripheral": [
+      {
         "topic": "Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix",
         "why": "Scoped review: not read individually. tests.full_suite passing shows they match the new generator output, not that the output is otherwise unchanged.",
         "raised_by": [
@@ -1715,6 +1729,7 @@
         "who_should_decide": [
           "source-generator area owner (diff-filter the resources)"
         ],
+        "peripheral": true,
         "anchor": "refusal-1"
       },
       {
@@ -1726,6 +1741,7 @@
         "who_should_decide": [
           "source-generator area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-2"
       },
       {
@@ -1737,6 +1753,7 @@
         "who_should_decide": [
           "source-generator area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-3"
       },
       {
@@ -1748,6 +1765,7 @@
         "who_should_decide": [
           "area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-4"
       },
       {
@@ -1759,18 +1777,8 @@
         "who_should_decide": [
           "area owner / maintainer with a multi-target build"
         ],
+        "peripheral": true,
         "anchor": "refusal-5"
-      },
-      {
-        "topic": "runtime execution of generated formatters/resolvers (execution tests)",
-        "why": "tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change.",
-        "raised_by": [
-          "nemotron"
-        ],
-        "who_should_decide": [
-          "area owner / maintainer, after moving to an SDK with Roslyn >= 4.12"
-        ],
-        "anchor": "refusal-6"
       }
     ],
     "refused_clauses": [
@@ -1803,31 +1811,45 @@
     "residual": [
       {
         "text": "Open major finding: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise",
-        "link": "#f-claude-C1"
+        "link": "#f-claude-C1",
+        "drives": true
       },
       {
         "text": "Open major finding: Attribute on the generated half of user-declared partial resolvers can break builds (CS0579) and silently hides user code",
-        "link": "#f-claude-v1.C2"
+        "link": "#f-claude-v1.C2",
+        "drives": true
       },
       {
         "text": "Not proven by the AI: REQ-2297-F1. Signing means you judge them yourself.",
-        "link": "#chain-REQ-2297-F1"
+        "link": "#chain-REQ-2297-F1",
+        "drives": true
       },
       {
-        "text": "6 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused"
+        "text": "1 question the AI declined to decide (listed above) are yours.",
+        "link": "#refused",
+        "drives": true
+      }
+    ],
+    "residual_more": [
+      {
+        "text": "5 peripheral refusals (out of scope for this change) are yours too.",
+        "link": "#refused-peripheral",
+        "drives": false
       },
       {
         "text": "Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       },
       {
         "text": "3 disputed items not adjudicated",
-        "link": "#panel"
+        "link": "#panel",
+        "drives": false
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       }
     ],
     "sign": {

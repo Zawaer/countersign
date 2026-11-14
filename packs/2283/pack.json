@@ -1785,6 +1785,7 @@
         "who_should_decide": [
           "source-generator area owner (run the execution tests under SDK 9 or a two-project repro)"
         ],
+        "peripheral": true,
         "anchor": "refusal-1"
       },
       {
@@ -1796,6 +1797,7 @@
         "who_should_decide": [
           "MessagePack-CSharp maintainers / analyzer area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-2"
       },
       {
@@ -1807,6 +1809,7 @@
         "who_should_decide": [
           "area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-3"
       },
       {
@@ -1818,6 +1821,7 @@
         "who_should_decide": [
           "area owner or maintainer, with an SDK that ships Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx)"
         ],
+        "peripheral": true,
         "anchor": "refusal-4"
       },
       {
@@ -1829,9 +1833,11 @@
         "who_should_decide": [
           "area owner or maintainer"
         ],
+        "peripheral": true,
         "anchor": "refusal-5"
       }
     ],
+    "refused_peripheral": [],
     "refused_clauses": [
       "REQ-2283-N1"
     ],
@@ -1862,27 +1868,35 @@
     "residual": [
       {
         "text": "Open major finding: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
-        "link": "#f-claude-C1"
+        "link": "#f-claude-C1",
+        "drives": true
       },
       {
         "text": "Not proven by the AI: REQ-2283-N1. Signing means you judge them yourself.",
-        "link": "#chain-REQ-2283-N1"
-      },
+        "link": "#chain-REQ-2283-N1",
+        "drives": true
+      }
+    ],
+    "residual_more": [
       {
         "text": "5 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused"
+        "link": "#refused",
+        "drives": false
       },
       {
         "text": "Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       },
       {
         "text": "2 disputed items not adjudicated",
-        "link": "#panel"
+        "link": "#panel",
+        "drives": false
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       }
     ],
     "sign": {

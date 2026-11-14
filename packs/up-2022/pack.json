@@ -1123,7 +1123,7 @@
     "risk_score": 23.2,
     "reasons": [
       {
-        "text": "The AI declined to decide 4 questions, e.g. Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after",
+        "text": "The AI declined to decide 1 question, e.g. Runtime deserialization security and execution behavior",
         "link": "#refused"
       }
     ],
@@ -1194,6 +1194,20 @@
     "rejected_total": 1,
     "refused": [
       {
+        "topic": "Runtime deserialization security and execution behavior",
+        "why": "The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / MessagePack maintainer"
+        ],
+        "peripheral": false,
+        "anchor": "refusal-3"
+      }
+    ],
+    "refused_peripheral": [
+      {
         "topic": "Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after",
         "why": "Not exercised by any test in facts.json; would need a run I was not given",
         "raised_by": [
@@ -1202,6 +1216,7 @@
         "who_should_decide": [
           "source generator area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-1"
       },
       {
@@ -1213,18 +1228,8 @@
         "who_should_decide": [
           "area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-2"
-      },
-      {
-        "topic": "Runtime deserialization security and execution behavior",
-        "why": "The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.",
-        "raised_by": [
-          "nemotron"
-        ],
-        "who_should_decide": [
-          "area owner / MessagePack maintainer"
-        ],
-        "anchor": "refusal-3"
       },
       {
         "topic": "Behavior on non-net8.0 target frameworks",
@@ -1235,6 +1240,7 @@
         "who_should_decide": [
           "area owner / maintainer"
         ],
+        "peripheral": true,
         "anchor": "refusal-4"
       }
     ],
@@ -1265,16 +1271,26 @@
     ],
     "residual": [
       {
-        "text": "4 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused"
+        "text": "1 question the AI declined to decide (listed above) are yours.",
+        "link": "#refused",
+        "drives": true
+      }
+    ],
+    "residual_more": [
+      {
+        "text": "3 peripheral refusals (out of scope for this change) are yours too.",
+        "link": "#refused-peripheral",
+        "drives": false
       },
       {
         "text": "Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       }
     ],
     "sign": {

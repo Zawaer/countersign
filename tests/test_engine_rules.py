@@ -183,6 +183,17 @@ def test_refusal_routing(ws, extra, tier):
     assert any("Reviewer refusal (codex)" in x for x in p["residual_risk"])
 
 
+def test_out_of_scope_refusals_fold_when_a_routing_refusal_exists(ws):
+    review(ws, "codex", make_review("codex", refusals=[REFUSAL, {**REFUSAL, "topic": "Security of deserializing untrusted input"}]))
+    p = pack.build(ws, "9001")
+    c = p["card"]
+    assert [g["topic"] for g in c["refused"]] == ["Security of deserializing untrusted input"]
+    assert [g["topic"] for g in c["refused_peripheral"]] == [REFUSAL["topic"]]
+    assert all(r["drives"] for r in c["residual"]) and not any(r["drives"] for r in c["residual_more"])
+    md = (pack.write(ws, p) / "pack.md").read_text()
+    assert "1 peripheral refusal (out of scope" in md
+
+
 def test_reasons_carry_reviewer_and_verdict(ws):
     write_json(ws.inputs / "reviews" / "9001" / "nemotron.json", {**make_review("nemotron"), "requirement_verdicts": []})
     review(ws, "codex", make_review("codex", verdict="not_met"))

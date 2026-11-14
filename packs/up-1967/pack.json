@@ -846,6 +846,7 @@
         "who_should_decide": [
           "docs owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-1"
       },
       {
@@ -857,9 +858,11 @@
         "who_should_decide": [
           "docs owner / area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-2"
       }
     ],
+    "refused_peripheral": [],
     "refused_clauses": [],
     "not_checked": [
       {
@@ -900,15 +903,20 @@
     "residual": [
       {
         "text": "2 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused"
-      },
+        "link": "#refused",
+        "drives": true
+      }
+    ],
+    "residual_more": [
       {
         "text": "Not run: docs.rendering, docs.external_links, build, tests.targeted, tests.fail_without_fix, tests.full_suite, analyzers",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       }
     ],
     "sign": {

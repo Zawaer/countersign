@@ -8,7 +8,7 @@ Changes 10 source files (Attributes.cs, MsgPack00xMessagePackAnalyzer.cs, Genera
 
 1. Risk score 145.2 reaches the block band (>= 130), mostly 2 failed check(s) x 25: analyzers, solution_membership (50) and most sensitive area touched: annotations-api (critical) (35) ([evidence](#risk))
 2. Also routes to a human. Claude found a verified major issue: New public API in MessagePack.Annotations is not tracked by any PublicAPI file (and 1 more finding) ([evidence](#f-claude-C1))
-3. Also routes to a human. The AI declined to decide 6 questions, e.g. Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching) ([evidence](#refused))
+3. Also routes to a human. The AI declined to decide 2 questions, e.g. Security/trust implications of generating formatters that access members of external types (e.g. non-public members) ([evidence](#refused))
 
 <sub>All 19 tier drivers are under Full detail.</sub>
 
@@ -27,12 +27,10 @@ Changes 10 source files (Attributes.cs, MsgPack00xMessagePackAnalyzer.cs, Genera
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-1"></a>Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching). *Why:* Scoped review: I did not read these 300+ lines line by line. Tests show only the happy paths and the 4 diagnostics. *Who:* source-generator area owner (raised by Claude)
-- <a id="refusal-2"></a>Whether the API design (SurrogateType, contractless default for external types) is the right answer to the issue, which also asks for Union and other attribute-driven settings. *Why:* Product/API design decision with permanent public surface; the issue proposes three alternatives and the change picks a fourth (surrogate type). *Who:* MessagePack-CSharp maintainers (raised by Claude)
 - <a id="refusal-3"></a>Security/trust implications of generating formatters that access members of external types (e.g. non-public members). *Why:* Not examined in this scoped review. *Who:* security champion (raised by Claude)
-- <a id="refusal-4"></a>Full acceptance and compatibility review of the external formatter feature. *Why:* This is a scoped review. The placeholder requirement contains only a broad feature statement; I did not comprehensively review all generator paths, API compatibility, or serialization contracts. The supplied facts also record a public API check failure, analyzer warning, and missing solution membership for the new test project. *Who:* area owner (raised by Codex)
-- <a id="refusal-5"></a>Generated output of FormatterTemplate.cs and StringKeyFormatterTemplate.cs. *Why:* The two generated template .cs files were listed as changed but their contents/diffs were not provided, so the exact generated formatter class text could not be inspected directly; behavior was verified through the passing execution tests instead. *Who:* area owner (or re-run this review with the generated file contents) (raised by Nemotron)
 - <a id="refusal-6"></a>Security review of serializing externally defined types via generated formatters. *Why:* No runtime deserialization code was changed by this branch, but the library deserializes untrusted input and this feature lets formats be generated for types the reviewer cannot inspect; a formal security judgement is beyond the provided evidence. *Who:* area owner / security reviewer (raised by Nemotron)
+
+<details id="refused-peripheral"><summary>4 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching) (Claude) · <a id="refusal-2"></a>Whether the API design (SurrogateType, contractless default for external types) is the right answer to the issue, which also asks for Union and other attribute-driven settings (Claude) · <a id="refusal-4"></a>Full acceptance and compatibility review of the external formatter feature (Codex) · <a id="refusal-5"></a>Generated output of FormatterTemplate.cs and StringKeyFormatterTemplate.cs (Nemotron)</details>
 
 **Not checked, and why**
 
@@ -45,9 +43,9 @@ Changes 10 source files (Attributes.cs, MsgPack00xMessagePackAnalyzer.cs, Genera
 
 - Open major finding: New public API in MessagePack.Annotations is not tracked by any PublicAPI file
 - Open major finding: Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402
-- 6 questions the AI declined to decide (listed above) are yours.
-- Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks
-- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+- 2 questions the AI declined to decide (listed above) are yours.
+
+<details><summary>3 more risks that do not set the tier</summary>4 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: reject, request-changes)
 

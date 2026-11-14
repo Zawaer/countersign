@@ -6,7 +6,7 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 **Why ask**
 
-1. The AI declined to decide 3 questions, e.g. That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) ([evidence](#refused))
+1. The AI declined to decide 1 question, e.g. Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack) ([evidence](#refused))
 
 <sub>All 5 tier drivers are under Full detail.</sub>
 
@@ -26,9 +26,9 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-1"></a>That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs). *Why:* Taken from the requirement text; not checkable from the evidence *Who:* area owner (raised by Claude)
-- <a id="refusal-2"></a>facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed). *Why:* Likely renamed theory cases, but the logs were not given *Who:* countersign evidence maintainer (raised by Claude)
 - <a id="refusal-3"></a>Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack). *Why:* Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run). *Who:* CI or area owner (raised by Nemotron)
+
+<details id="refused-peripheral"><summary>2 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (Claude) · <a id="refusal-2"></a>facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (Claude)</details>
 
 **Not checked, and why**
 
@@ -41,9 +41,9 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 **Residual risk you accept by signing**
 
-- 3 questions the AI declined to decide (listed above) are yours.
-- Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix
-- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+- 1 question the AI declined to decide (listed above) are yours.
+
+<details><summary>3 more risks that do not set the tier</summary>2 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: accept, reject, request-changes)
 

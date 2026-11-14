@@ -41,8 +41,8 @@ Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki. Judged against 2 r
 **Residual risk you accept by signing**
 
 - 2 questions the AI declined to decide (listed above) are yours.
-- Not run: docs.rendering, docs.external_links, build, tests.targeted, tests.fail_without_fix, tests.full_suite, analyzers
-- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+
+<details><summary>2 more risks that do not set the tier</summary>Not run: docs.rendering, docs.external_links, build, tests.targeted, tests.fail_without_fix, tests.full_suite, analyzers · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Rene signs** (not required: AI-cleared, spot-checks apply; allowed: accept, reject, request-changes)
 

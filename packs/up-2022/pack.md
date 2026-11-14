@@ -6,7 +6,7 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 **Why ask**
 
-1. The AI declined to decide 4 questions, e.g. Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after ([evidence](#refused))
+1. The AI declined to decide 1 question, e.g. Runtime deserialization security and execution behavior ([evidence](#refused))
 
 <sub>All 7 tier drivers are under Full detail.</sub>
 
@@ -26,10 +26,9 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-1"></a>Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after. *Why:* Not exercised by any test in facts.json; would need a run I was not given *Who:* source generator area owner (raised by Claude)
-- <a id="refusal-2"></a>Whether the release notes / analyzer docs should mention the change. *Why:* Docs for MsgPack009/MsgPack013 were not in the context *Who:* area owner (raised by Claude)
 - <a id="refusal-3"></a>Runtime deserialization security and execution behavior. *Why:* The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here. *Who:* area owner / MessagePack maintainer (raised by Nemotron)
-- <a id="refusal-4"></a>Behavior on non-net8.0 target frameworks. *Why:* Build and tests ran only on net8.0 Debug in a Linux container; net472/netstandard builds were not run (listed in not_run). *Who:* area owner / maintainer (raised by Nemotron)
+
+<details id="refused-peripheral"><summary>3 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after (Claude) · <a id="refusal-2"></a>Whether the release notes / analyzer docs should mention the change (Claude) · <a id="refusal-4"></a>Behavior on non-net8.0 target frameworks (Nemotron)</details>
 
 **Not checked, and why**
 
@@ -41,9 +40,9 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 **Residual risk you accept by signing**
 
-- 4 questions the AI declined to decide (listed above) are yours.
-- Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks
-- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+- 1 question the AI declined to decide (listed above) are yours.
+
+<details><summary>3 more risks that do not set the tier</summary>3 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: accept, reject, request-changes)
 

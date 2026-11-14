@@ -8,7 +8,7 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 1. Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a different crash ([evidence](#f-claude-C1))
 2. 2 of 4 requirement clauses not proven. REQ-2234-N1: Claude says not met (Codex and Nemotron: met) (+1 more) ([evidence](#chain-REQ-2234-N1))
-3. The AI declined to decide 6 questions, e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages ([evidence](#refused))
+3. The AI declined to decide 2 questions, e.g. Runtime library behavior (src/MessagePack) and net472/netstandard builds ([evidence](#refused))
 
 <sub>All 18 tier drivers are under Full detail.</sub>
 
@@ -30,13 +30,11 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-1"></a>Whether this change resolves issue #2234 for users of the released 3.1.x packages. *Why:* The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own). *Who:* analyzer area owner / maintainers choosing the target branch (raised by Claude)
-- <a id="refusal-2"></a>Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate. *Why:* Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one. *Who:* docs owner (raised by Claude)
-- <a id="refusal-3"></a>Parity with analyzer behavior in version 3.1.0. *Why:* No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release. *Who:* Area owner or maintainer with access to the 3.1.0 release (raised by Nemotron)
-- <a id="refusal-4"></a>Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types. *Why:* The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed. *Who:* Area owner (raised by Nemotron)
 - <a id="refusal-5"></a>Runtime library behavior (src/MessagePack) and net472/netstandard builds. *Why:* Not run; the runtime library was not modified and only net8.0 was built. *Who:* Area owner (raised by Nemotron)
 - <a id="refusal-6"></a>Security review of analyzer deserializing untrusted input. *Why:* No security-specific evidence was provided and no security analysis was performed. *Who:* Security reviewer (raised by Nemotron)
 - Whether [REQ-2234-N1](#chain-REQ-2234-N1), [REQ-2234-N2](#chain-REQ-2234-N2) are met: see the trace. *Who:* Toivo
+
+<details id="refused-peripheral"><summary>4 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Whether this change resolves issue #2234 for users of the released 3.1.x packages (Claude) · <a id="refusal-2"></a>Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Claude) · <a id="refusal-3"></a>Parity with analyzer behavior in version 3.1.0 (Nemotron) · <a id="refusal-4"></a>Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (Nemotron)</details>
 
 **Not checked, and why**
 
@@ -49,11 +47,9 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 - Open major finding: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
 - Not proven by the AI: REQ-2234-N1, REQ-2234-N2. Signing means you judge them yourself.
-- REQ-2234-F1, REQ-2234-F2 already held before this change: met, but not achieved by it.
-- 6 questions the AI declined to decide (listed above) are yours.
-- Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks
-- 2 disputed items not adjudicated
-- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
+- 2 questions the AI declined to decide (listed above) are yours.
+
+<details><summary>5 more risks that do not set the tier</summary>REQ-2234-F1, REQ-2234-F2 already held before this change: met, but not achieved by it. · 4 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks · 2 disputed items not adjudicated · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: accept, reject, request-changes)
 

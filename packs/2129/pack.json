@@ -1206,7 +1206,7 @@
         "link": "#f-claude-C1"
       },
       {
-        "text": "Also routes to a human. The AI declined to decide 6 questions, e.g. Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching)",
+        "text": "Also routes to a human. The AI declined to decide 2 questions, e.g. Security/trust implications of generating formatters that access members of external types (e.g. non-public members)",
         "link": "#refused"
       }
     ],
@@ -1285,6 +1285,32 @@
     "rejected_total": 1,
     "refused": [
       {
+        "topic": "Security/trust implications of generating formatters that access members of external types (e.g. non-public members)",
+        "why": "Not examined in this scoped review.",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "security champion"
+        ],
+        "peripheral": false,
+        "anchor": "refusal-3"
+      },
+      {
+        "topic": "Security review of serializing externally defined types via generated formatters",
+        "why": "No runtime deserialization code was changed by this branch, but the library deserializes untrusted input and this feature lets formats be generated for types the reviewer cannot inspect; a formal security judgement is beyond the provided evidence.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / security reviewer"
+        ],
+        "peripheral": false,
+        "anchor": "refusal-6"
+      }
+    ],
+    "refused_peripheral": [
+      {
         "topic": "Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching)",
         "why": "Scoped review: I did not read these 300+ lines line by line. Tests show only the happy paths and the 4 diagnostics.",
         "raised_by": [
@@ -1293,6 +1319,7 @@
         "who_should_decide": [
           "source-generator area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-1"
       },
       {
@@ -1304,18 +1331,8 @@
         "who_should_decide": [
           "MessagePack-CSharp maintainers"
         ],
+        "peripheral": true,
         "anchor": "refusal-2"
-      },
-      {
-        "topic": "Security/trust implications of generating formatters that access members of external types (e.g. non-public members)",
-        "why": "Not examined in this scoped review.",
-        "raised_by": [
-          "claude"
-        ],
-        "who_should_decide": [
-          "security champion"
-        ],
-        "anchor": "refusal-3"
       },
       {
         "topic": "Full acceptance and compatibility review of the external formatter feature",
@@ -1326,6 +1343,7 @@
         "who_should_decide": [
           "area owner"
         ],
+        "peripheral": true,
         "anchor": "refusal-4"
       },
       {
@@ -1337,18 +1355,8 @@
         "who_should_decide": [
           "area owner (or re-run this review with the generated file contents)"
         ],
+        "peripheral": true,
         "anchor": "refusal-5"
-      },
-      {
-        "topic": "Security review of serializing externally defined types via generated formatters",
-        "why": "No runtime deserialization code was changed by this branch, but the library deserializes untrusted input and this feature lets formats be generated for types the reviewer cannot inspect; a formal security judgement is beyond the provided evidence.",
-        "raised_by": [
-          "nemotron"
-        ],
-        "who_should_decide": [
-          "area owner / security reviewer"
-        ],
-        "anchor": "refusal-6"
       }
     ],
     "refused_clauses": [],
@@ -1375,23 +1383,35 @@
     "residual": [
       {
         "text": "Open major finding: New public API in MessagePack.Annotations is not tracked by any PublicAPI file",
-        "link": "#f-claude-C1"
+        "link": "#f-claude-C1",
+        "drives": true
       },
       {
         "text": "Open major finding: Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402",
-        "link": "#f-nemotron-N2"
+        "link": "#f-nemotron-N2",
+        "drives": true
       },
       {
-        "text": "6 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused"
+        "text": "2 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused",
+        "drives": true
+      }
+    ],
+    "residual_more": [
+      {
+        "text": "4 peripheral refusals (out of scope for this change) are yours too.",
+        "link": "#refused-peripheral",
+        "drives": false
       },
       {
         "text": "Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
-        "link": "#not-checked"
+        "link": "#not-checked",
+        "drives": false
       }
     ],
     "sign": {

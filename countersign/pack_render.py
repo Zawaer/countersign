@@ -49,6 +49,20 @@ def _sim(p: dict) -> bool:
     return bool(p.get("simulated"))
 
 
+def _html_inline(t: str) -> str:
+    return html.escape(t, quote=False)
+
+
+def _peripheral(c: dict) -> str:
+    n = len(c.get("refused_peripheral") or [])
+    return f"{n} peripheral refusal{'' if n == 1 else 's'}"
+
+
+def _more_risks(c: dict) -> str:
+    n = len(c.get("residual_more") or [])
+    return f"{n} more risk{'' if n == 1 else 's'} that do not set the tier"
+
+
 # --- CLI ------------------------------------------------------------------------------
 
 def card(p: dict) -> str:
@@ -68,6 +82,8 @@ def card(p: dict) -> str:
     out += [f"  - {g['topic']} -> {'; '.join(g['who_should_decide'])} (raised by {', '.join(_name(n) for n in g['raised_by'])})" for g in c["refused"]]
     if c["refused_clauses"]:
         out.append(f"  - whether {', '.join(c['refused_clauses'])} {'is' if len(c['refused_clauses']) == 1 else 'are'} met -> {p['owner']}")
+    if c.get("refused_peripheral"):
+        out.append(f"  ({_peripheral(c)}: " + "; ".join(g["topic"] for g in c["refused_peripheral"]) + ")")
     if not (c["refused"] or c["refused_clauses"]):
         out.append("  nothing")
     for r in _rulings(p):
@@ -80,6 +96,8 @@ def card(p: dict) -> str:
     if c["known_gaps"]:
         out.append(f"  standing gaps: {', '.join(c['known_gaps'])}")
     out += ["", "Residual risk you accept by signing:"] + [f"  - {r['text']}" for r in c["residual"]]
+    if c.get("residual_more"):
+        out.append(f"  (+{len(c['residual_more'])} more in the pack)")
     out += ["", f"{c['sign']['owner']} signs: {c['sign']['statement']}", f"  {c['sign']['command']}"]
     return "\n".join(out)
 
@@ -131,10 +149,16 @@ def _md_card(p: dict) -> list[str]:
                    f"{'is' if len(c['refused_clauses']) == 1 else 'are'} met: see the trace. *Who:* {p['owner']}")
     if not (c["refused"] or c["refused_clauses"]):
         out.append("- Nothing: every clause was proven and no reviewer refused a topic.")
+    if c.get("refused_peripheral"):
+        out += ["", f"<details id=\"refused-peripheral\"><summary>{_peripheral(c)} (out of scope for this change)</summary>"
+                + " · ".join(f"<a id=\"{g['anchor']}\"></a>{_html_inline(g['topic'])} ({_name(g['raised_by'][0])})" for g in c["refused_peripheral"])
+                + "</details>"]
     out += ["", "**Not checked, and why**", ""] + [f"- `{x['id']}`: {x['reason']}" for x in c["not_checked"]]
     if c["known_gaps"]:
         out.append(f"- Standing pipeline gaps: {', '.join(f'`{g}`' for g in c['known_gaps'])}")
     out += ["", "**Residual risk you accept by signing**", ""] + [f"- {r['text']}" for r in c["residual"]]
+    if c.get("residual_more"):
+        out += ["", f"<details><summary>{_more_risks(c)}</summary>" + " · ".join(_html_inline(r["text"]) for r in c["residual_more"]) + "</details>"]
     sg = c["sign"]
     out += ["", f"**{sg['owner']} signs** ({'required' if sg['required'] else 'not required: AI-cleared, spot-checks apply'}; "
                 f"allowed: {', '.join(sg['decisions'])})", "", f"> {sg['statement']}", "", f"```\n{sg['command']}\n```", ""]
@@ -451,10 +475,19 @@ def _html_card(p: dict) -> str:
                     f'Who: <b>{_e(p["owner"])}</b></div></div></li>')
     if not refused:
         refused = '<li><span class="st st-proven">none</span><div>Every clause was proven and no reviewer refused a topic.</div></li>'
+    if c.get("refused_peripheral"):
+        refused += (f'<li><span></span><div class="sm"><details class="mini" id="refused-peripheral"><summary>{_e(_peripheral(c))} (out of scope for this change)</summary><ul>'
+                    + "".join(f'<li id="{_e(g["anchor"])}">{_e(g["topic"])} <span class="mut">(who: {_e("; ".join(g["who_should_decide"]))}; '
+                              f'raised by {_e(", ".join(_name(n) for n in g["raised_by"]))})</span></li>' for g in c["refused_peripheral"])
+                    + "</ul></details></div></li>")
     nc = "".join(f"<li><code>{_e(x['id'])}</code>: {_e(x['reason'])}</li>" for x in c["not_checked"])
     if c["known_gaps"]:
         nc += f'<li class="mut">Standing pipeline gaps: {_e(", ".join(c["known_gaps"]))} (<a href="#not-checked">why</a>)</li>'
     residual = "".join(f'<li>{_e(r["text"])} <a class="sm" href="{_e(r["link"])}">see</a></li>' for r in c["residual"])
+    if c.get("residual_more"):
+        residual += (f'<li class="mut"><details class="mini"><summary>{_e(_more_risks(c))}</summary><ul>'
+                     + "".join(f'<li>{_e(r["text"])} <a class="sm" href="{_e(r["link"])}">see</a></li>' for r in c["residual_more"])
+                     + "</ul></details></li>")
     sg = c["sign"]
     return f"""
 <section class="card" aria-labelledby="card-h" id="card">
