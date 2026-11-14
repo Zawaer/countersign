@@ -1,0 +1,41 @@
+# Publishes the judge-facing site (site/) to GitHub Pages.
+# site/build.py regenerates every page from the repo's own files (stdlib only), so the numbers on the
+# site always match measurement/, evidence/, reviews/, packs/ and ledger/ at the published commit.
+# GitHub Pages needs the repository to be public (or a paid plan); until then this workflow fails at deploy.
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "packs/**", "measurement/**", "evidence/**", "reviews/**", "ledger/**", "mandate/**", "docs/pitch/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build site
+        run: python3 site/build.py
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

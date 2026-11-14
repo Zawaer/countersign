@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Countersign: earned trust in AI code review</title>
+<meta name="description" content="4 agent-written changes: 0 cleared, 2 routed to their owner, 2 blocked; it caught one that passes CI and fixes the wrong bug. 11 of 14 seeded one-line bugs failed a check. Replayed on 109 real upstream PRs, it would have cleared 0 of the 11 that later had to be reverted or fixed.">
+<link rel="stylesheet" href="style.css">
+<script>try{var t=localStorage.getItem("cs-theme");if(t)document.documentElement.dataset.theme=t}catch(_){}</script>
+</head><body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap bar">
+<a class="mark" href="index.html"><span class="sig">✓</span>Countersign</a>
+<nav aria-label="Site"><a href="index.html" aria-current=page>Overview</a><a href="attack.html">Sneak a bug past it</a><a href="tour.html">Guided tour</a><a href="pitch.html">Pitch</a><a href="packs/2234/pack.html">Evidence pack</a></nav>
+<button class="theme" type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button>
+</div></header>
+<main id="main">
+<section class="wrap hero">
+<p class="eyebrow">Junction 2026 · Tieto: Earned Trust in AI Code</p>
+<h1>AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.</h1>
+<p class="lead"><b>4 agent-written changes: 0 cleared, 2 routed to their owner, 2 blocked</b>; it caught one that passes CI and fixes the wrong bug. <b>11 of 14</b> seeded one-line bugs failed a check. Replayed on 109 real upstream PRs, it would have cleared <b>0 of the 11</b> that later had to be reverted or fixed.</p>
+</section>
+<section class="wrap" aria-labelledby="s2234">
+<h2 id="s2234" class="h-sm">Change 2234: green everywhere, wrong bug</h2>
+
+<ol class="story" aria-label="Change 2234 in three steps">
+<li class="card">
+ <div class="card-h"><span class="step">1 · CI</span><span class="st ok">✓ pass</span></div>
+ <ul class="rows">
+  <li><span class="st ok">✓ pass</span> Build: 0 errors, 1 unique warnings</li>
+  <li><span class="st ok">✓ pass</span> New tests: 8 of 8 pass</li>
+  <li><span class="st ok">✓ pass</span> Generator suite: 175 of 175 pass</li>
+ </ul>
+ <p class="foot-note"><a class="src" href="https://github.com/Zawaer/countersign/blob/main/evidence/2234/facts.json">evidence/2234/facts.json</a></p>
+</li>
+<li class="card">
+ <div class="card-h"><span class="step">2 · AI reviewer</span><span class="st ok">✓ pass</span></div>
+ <ul class="rows">
+  <li><span class="st ok">✓ met</span> Codex (OpenAI): <b>4 of 4</b> requirement clauses met, 0 findings</li>
+  <li><span class="st ok">✓ met</span> Nemotron (NVIDIA) also says met on 4 of 4</li>
+ </ul>
+ <blockquote>“The full source-generator suite passes, and duplicate-key tests demonstrate that invalid contracts no longer trigger analyzer failure.”</blockquote>
+ <p class="foot-note"><a class="src" href="https://github.com/Zawaer/countersign/blob/main/reviews/2234/codex.json">reviews/2234/codex.json</a></p>
+</li>
+<li class="card bad">
+ <div class="card-h"><span class="step">3 · Countersign</span><span class="badge warn">? ASK → Toivo</span></div>
+ <ul class="rows">
+<li><span class="st bad">✗ fail</span> <b>Fixes a different bug than the issue reports.</b> The 3.1.1 regression in #2234 comes from an upstream commit that is not in this branch's base; the agent fixed another, older crash.</li>
+<li><span class="st bad">✗ fail</span> Revert the source, rerun the new tests: <b>4 of 8</b> analyzer tests still pass on the old code, and <b>4 of 4</b> runtime test results. They don't test the change.</li></ul>
+ <p class="ev-h">Claude&#39;s finding C1; the engine re-read each cited line at that commit:</p><ul class="ev"><li><span class="st ok">✓ verified</span> <code>TypeCollector.cs:723 @8373710f</code><pre class="q">if (suppressSourceGeneration is true)</pre></li><li><span class="st ok">✓ verified</span> <code>TypeCollector.cs:1369 @base</code><pre class="q">if (suppressSourceGeneration is true)</pre></li></ul>
+ <p class="foot-note"><a class="src" href="https://github.com/Zawaer/countersign/blob/main/packs/2234/pack.json">packs/2234/pack.json</a> · <a href="packs/2234/pack.html">open the pack</a></p>
+</li>
+</ol>
+<p class="ctas"><a class="btn primary" href="attack.html">Try to sneak a bug past it</a><a class="btn" href="tour.html">Guided tour, 8 steps</a><a class="btn" href="pitch.html">Pitch deck</a></p>
+</section>
+<section class="wrap" aria-labelledby="snum"><h2 id="snum">The numbers</h2><div class="stats"><div class="stat"><div class="big">0 of 4</div><div>agent-written changes cleared by the AI. 2 went to their owner, 2 were blocked, each with the rule that decided it. <a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/results.json">source</a></div></div><div class="stat"><div class="big">11 of 14</div><div>seeded one-line bugs failed a build or test check. Before any AI review, 12 of 14 would reach a human; the other 2 are shown, not hidden. <a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/results.json">source</a></div></div><div class="stat"><div class="big">0 of 11</div><div>real escapes (later reverted or fixed) among 109 upstream MessagePack PRs that the signed mandate would have let the AI clear. It routed 85 of 109 to a human. <a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/history/results.md">source</a></div></div></div></section>
+<section class="wrap" aria-labelledby="sdiff"><h2 id="sdiff">What it does that a reviewer bot doesn't</h2><ol class="diffs"><li><h3>It caught a change that is green everywhere and fixes the wrong bug.</h3><p>Change 2234 passes its build, its new tests and the full suite, and a reviewer says every requirement is met. Countersign routes it to its owner with the reason: the reported regression isn't on this base.</p><p class="more"><a href="tour.html">Walk through it</a></p></li><li><h3>Tests have to prove they test something.</h3><p>Fail-without-fix: we revert the source, keep the new tests and run them. A test that still passes on the old code doesn't count as evidence for the change.</p><p class="more"><a class="src" href="https://github.com/Zawaer/countersign/blob/main/evidence/2234/facts.json">2234 facts</a></p></li><li><h3>One reviewer can never clear a change.</h3><p>We measured it: given passing test results, Codex went from 4 of 11 clauses met to <b>11 of 11</b>, with 0 findings. On the same changes Claude raised 13. So a clause is proven only when every reviewer agrees with verified citations.</p><p class="more"><a class="src" href="https://github.com/Zawaer/countersign/blob/main/docs/FAILURE_MODES.md">failure mode R1</a></p></li><li><h3>We measure what gets through.</h3><p>14 single-line bugs planted in the agents' branches: 11 failed a check, 12 reach a human before any AI review. 109 real upstream PRs replayed: 0 of 11 later escapes would have been cleared.</p><p class="more"><a href="attack.html">Try it yourself</a></p></li><li><h3>Trust is withdrawn automatically after an escape.</h3><p>Each area's clearance right lives in the signed mandate. An escape traced to an AI-cleared change drops the area to <code>ask</code> until 3 spot-checks in a row agree.</p><p class="more"><a class="src" href="https://github.com/Zawaer/countersign/blob/main/mandate/messagepack.mandate.yaml">mandate</a></p></li></ol></section>
+<section class="wrap" aria-labelledby="sall"><h2 id="sall">All four agent-written changes</h2>
+<p class="prose">The four branches Tieto provided, run end to end. None is cleared: a repo with no track record starts strict. Each row opens its evidence pack.</p>
+<div class="scroll"><table class="stack"><thead><tr><th>Change</th><th>Size</th><th>Tier</th><th>Deciding reason</th></tr></thead><tbody><tr><td data-label="Change"><a href="packs/2234/pack.html"><code>2234</code></a></td><td data-label="Size">4 files, +262 −4</td><td data-label="Tier"><span class="badge warn">? ASK → Toivo</span></td><td data-label="Deciding reason">Claude found a verified major issue: The issue&#x27;s 3.1.1 regression is not on this base; the change fixes a different crash</td></tr><tr><td data-label="Change"><a href="packs/2283/pack.html"><code>2283</code></a></td><td data-label="Size">4 files, +225 −3</td><td data-label="Tier"><span class="badge warn">? ASK → Toivo</span></td><td data-label="Deciding reason">Claude found a verified major issue: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic</td></tr><tr><td data-label="Change"><a href="packs/2129/pack.html"><code>2129</code></a></td><td data-label="Size">28 files, +1034 −9</td><td data-label="Tier"><span class="badge bad">✗ BLOCK → Toivo</span></td><td data-label="Deciding reason">Risk score 145.2 reaches the block band (&gt;= 130), mostly 2 failed check(s) x 25: analyzers, solution_membership (50) and most sensitive area touched: annotations-api (critical) (35)</td></tr><tr><td data-label="Change"><a href="packs/2297/pack.html"><code>2297</code></a></td><td data-label="Size">237 files, +1383 −9</td><td data-label="Tier"><span class="badge bad">✗ BLOCK → Toivo</span></td><td data-label="Deciding reason">More than 50 files changed: split the change so each part can be reviewed [237 files changed]</td></tr></tbody></table></div>
+<p class="foot-note"><a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/results.json">measurement/results.json</a> · <a class="src" href="https://github.com/Zawaer/countersign/blob/main/packs/2234/pack.json">packs/*/pack.json</a></p></section>
+<section class="wrap" aria-labelledby="slim"><h2 id="slim">Where it stops</h2>
+<ul class="prose list">
+<li>It can't judge intent: whether this is the change the product needs.</li>
+<li>It is only as good as the requirement text. Ours are placeholders derived from the upstream issues (<code>official: false</code>).</li>
+<li>Checks ran on net8.0 / Linux only; other targets are listed as not checked in every pack.</li>
+<li>Reviewers share training data, so their independence is partial; seeded bugs measure what they miss together.</li>
+<li>Spot-checks, escapes and review minutes in the trust demo are simulated, and labelled so.</li>
+</ul></section>
+</main>
+<footer class="foot"><div class="wrap">
+<p>Junction 2026 · Tieto: Earned Trust in AI Code · <a href="https://github.com/Zawaer/countersign">github.com/Zawaer/countersign</a></p>
+<p>Generated by <a class="src" href="https://github.com/Zawaer/countersign/blob/main/site/build.py">site/build.py</a> from the repo's own files at commit <code>9449074</code>, 2026-11-14 00:09 UTC. Every number links to the file it was read from.</p>
+</div></footer>
+<script>function csTheme(){var d=document.documentElement,c=d.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),n=c==="dark"?"light":"dark";d.dataset.theme=n;try{localStorage.setItem("cs-theme",n)}catch(_){}}</script>
+
+</body></html>
