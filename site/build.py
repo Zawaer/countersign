@@ -266,6 +266,15 @@ def numbers(D: Data) -> dict:
     n["mut_checks"] = cba.get("caught")
     srh = D.metric("seeded_routed_to_human_before_review") or {}
     n["mut_routed"], n["mut_attrib"] = srh.get("routed"), srh.get("attributable")
+    try:  # red team totals come from the same place as the docs' numbers (scripts/sync_numbers.py)
+        import importlib.util  # noqa: PLC0415
+        spec = importlib.util.spec_from_file_location("sync_numbers", ROOT / "scripts/sync_numbers.py")
+        sn = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(sn)
+        sv = sn.values()
+        n["rt_total"], n["rt_stopped"] = int(sv["redteam_total"]), int(sv["redteam_stopped"])
+    except Exception:  # noqa: BLE001  (the site still builds without the red-team tile)
+        pass
     hm = ((D.history or {}).get("modes") or {}).get("ci-credited")
     if hm:
         n.update(h_n=hm["n"], h_esc=hm["escapes"], h_esc_cleared=len(hm["escapes_cleared"]), h_routed=hm["routed_to_humans"],
@@ -446,14 +455,15 @@ def build_index(D: Data, n: dict) -> str:
     flagged = [s for s in surv if s["rname"]]
     fresh = new_flags(D, surv)
     nums = []
+    if n.get("h_cleared") is not None:
+        nums.append((f'{n["h_cleared"]}<small>/{n["h_n"]}</small>', "real past PRs the AI would clear"
+                     f'<i>{n["h_esc_cleared"]} of the {n["h_esc"]} later reverted or fixed are among them</i>', "#history"))
     if n.get("mut_checks") is not None:
         nums.append((f'{n["mut_checks"]}<small>/{n["mut_total"]}</small>', "planted bugs and attacks failed a check"
-                     + (f'<i>{len(surv)} got past; a reviewer flagged {fresh} with a new finding ({len(flagged)} by location)</i>' if surv else ""), "#seeded"))
-    if n.get("h_esc") is not None:
-        nums.append((f'{n["h_esc_cleared"]}<small>/{n["h_esc"]}</small>', "real escapes the AI would clear"
-                     + (f'<i>it would clear {n["h_cleared"]} of {n["h_n"]} past PRs; {n["h_esc_cleared"]} of the {n["h_esc"]} escapes among them</i>' if n.get("h_cleared") is not None else ""), "#history"))
-    if rows:
-        nums.append((f'{n["ask"] + n["block"]}<small>/{n["changes"]}</small>', "agent changes sent to a human<i>each for a verified reason</i>", "#changes"))
+                     + (f'<i>{len(surv)} got past; a reviewer pointed at the planted line in {len(flagged)}</i>' if surv else ""), "#seeded"))
+    if n.get("rt_total"):
+        nums.append((f'{n["rt_stopped"]}<small>/{n["rt_total"]}</small>', "attacks on our own pipeline stopped"
+                     "<i>after the fixes; the first run stopped 7</i>", f'{BLOB}docs/security/REDTEAM.md'))
     nums_html = "".join(f'<a class="num" href="{h}"><b>{a}</b><span>{b}</span></a>' for a, b, h in nums)
 
     sd_rows, sd_ids = [], []
@@ -476,7 +486,7 @@ def build_index(D: Data, n: dict) -> str:
                 e(r["reasons"][0] if r["reasons"] else "")] for r in rows]
     body = f"""
 <section class="wrap hero small fold-hero">
-<h1>Measured, not claimed</h1>
+<h1>Measured where we can, simulated where marked</h1>
 <div class="nums">{nums_html}</div>
 <p class="muted small">Read from {src('measurement/results.json')} at build time. Tap a number for its rows.</p>
 <p class="small"><a href="#seeded">Details ↓</a></p>
@@ -557,7 +567,7 @@ def build_tour(D: Data, n: dict) -> str:
                     f'<span class="nbar"><i style="width:{max(2, round(100 * (x["ins"] + x["del"]) / mx))}%"></i></span><span class="mono">+{x["ins"]} −{x["del"]}</span></li>' for x in bf)
     req_rows = [[code(r["id"]), e(r.get("text", ""))] for r in reqs]
     steps.append(("The change", "The change",
-                  f'An agent wrote {d.get("files", "?")} files, +{d.get("insertions", "?")} −{d.get("deletions", "?")}, for issue #2234. Nobody will read it all.',
+                  f'An agent wrote {d.get("files", "?")} files, +{d.get("insertions", "?")} −{d.get("deletions", "?")}, for issue #2234. A careful read takes about {round((D.metric("time_per_change") or {}).get("2234", {}).get("full_read_min", 0)) or "?"} minutes (simulated), and still would not show whether it fixes the bug the issue reports.',
                   f'<ul class="dstat">{dstat}</ul>',
                   more(f"What it has to do: {len(reqs)} clauses", table(['Clause', 'Text'], req_rows)
                        + f'<p class="foot-note">Placeholders from the upstream issue (<code>official: false</code>). {src("requirements/2234.yaml")}</p>'),
@@ -827,13 +837,13 @@ def build_pitch(D: Data, n: dict) -> str:
     V[5] = ("Every change says why. Low risk can clear." if cleared else "Every change reached a human, with a reason.",
             '<div class="tiers">' + "".join(f'<span class="chg"><code>{e(r["change"])}</code>{tier(r.get("tier"))}</span>' for r in real) + "</div>")
     nums = []
+    if n.get("h_cleared") is not None:
+        nums.append(tile(f'past PRs cleared; {n["h_esc_cleared"]} of {n["h_esc"]} escapes among them', f'{n["h_cleared"]}/{n["h_n"]}'))
     if n.get("mut_checks") is not None:
         nums.append(tile("seeded changes a check caught", f'{n["mut_checks"]}/{n["mut_total"]}'))
-    if n.get("h_esc") is not None:
-        nums.append(tile("real escapes cleared", f'{n["h_esc_cleared"]}/{n["h_esc"]}'))
     if surv:
         nums.append(tile("test survivors a reviewer newly flagged", f'{new_flags(D, surv)}/{len(surv)}'))
-    V[6] = ("Measured, not claimed.", '<div class="tiles3">' + "".join(nums) + "</div>")
+    V[6] = ("Measured where we can, simulated where marked.", '<div class="tiles3">' + "".join(nums) + "</div>")
     V[7] = ("One reviewer's “all good” clears nothing.",
             '<div class="tiles3">' + (tile("Codex", f'{v2["met"]}/{v2["of"]} met, {v2["findings"]} findings') if v2 else "")
             + (tile("Claude", f'{cl["findings"]} findings', "bad") if cl else "") + "</div>")
