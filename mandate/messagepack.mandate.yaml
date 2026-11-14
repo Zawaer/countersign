@@ -184,6 +184,16 @@ rules:
      message: "The change brings in a package version with a known advisory not on base"}
   - {id: build-egress-violation, when: egress_violation, tier: block,
      message: "The build tried to reach a host outside its network policy"}
+  # v5 (red team S2, S3, S7): deps.delta at fail/error, or a new/changed dotnet tool, MSBuild SDK or SDK pin
+  # (build-time code that is not in the restored package graph).
+  - {id: dependency-check-failed, when: deps_check_failed, tier: ask,
+     message: "deps.delta failed or errored, or the change adds or changes a dotnet tool, MSBuild SDK or SDK pin: the owner reviews the supply chain"}
+  # v5 (red team I9): binary files the scanner could not read: a human looks; nothing planted was found, so not R-INJECT.
+  - {id: injection-unscannable, when: injection_unscannable, tier: ask,
+     message: "The change adds content the injection scan cannot read (binary files): a human looks at it"}
+  # v5 (red team G2): a file named like generated output whose input did not change is a hand edit nobody regenerated.
+  - {id: generated-file-hand-edited, when: generated_hand_edited, tier: ask,
+     message: "A generated-looking file (*.g.cs or a T4 template's output) changed without its input: a human reviews the hand edit"}
 
 # Risk score: additive, every point has a printed reason. Bands map to tiers.
 risk:

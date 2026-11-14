@@ -10,6 +10,7 @@ from __future__ import annotations
 import re
 
 from .common import TIERS, strictest
+from .injection import only_unscannable
 from .mandate import SENSITIVITY, Mandate, matches
 
 # When several drivers set the same tier, the most specific one is listed first.
@@ -53,7 +54,23 @@ def injection_lines(facts: dict) -> list[str]:
 
 
 def injection_found(facts: dict) -> bool:
-    return check_status(facts, INJECTION_CHECK) == "fail"
+    """injection_scan found text addressed to reviewers (not only content it could not read: see injection_unscannable)."""
+    c = check(facts, INJECTION_CHECK)
+    return c is not None and c.get("status") == "fail" and not only_unscannable(c)
+
+
+def injection_unscannable(facts: dict) -> bool:
+    """injection_scan failed only because it could not read something (binary files): a human looks (ask), but nothing
+    planted was found, so reviewers stay trusted and R-INJECT does not block (red team I9)."""
+    c = check(facts, INJECTION_CHECK)
+    return c is not None and only_unscannable(c)
+
+
+def generated_hand_edited(facts: dict) -> list[str]:
+    """Files named like generated output (`*.g.cs`, or a T4 template's `.cs`, which stage 1 marks `looks_generated`)
+    that stage 1 classified as not generated because their input did not change in the diff: a hand edit to the
+    output (red team G2: the depth guard removed from every generated formatter)."""
+    return [f["path"] for f in files(facts) if f.get("kind") != "generated" and (f.get("looks_generated") or f["path"].endswith(".g.cs"))]
 
 
 def public_api_changed(facts: dict) -> bool | None:
@@ -97,6 +114,49 @@ def deps_new_vulnerabilities(facts: dict) -> list[str]:
 def egress_violations(facts: dict) -> list[str]:
     """build.egress or craci.network at `fail`: the build tried to reach a host outside its network policy."""
     return [f"{cid}: {c.get('summary') or 'fail'}" for cid in EGRESS_CHECKS if (c := check(facts, cid)) and c.get("status") == "fail"]
+
+
+# Build-time code that is not a NuGet package in project.assets.json: dotnet tools (run in CI), MSBuild SDKs and
+# the SDK pin. deps.delta records them under build_inputs_changed (sbom.tree_inputs); the file list is the fallback
+# when deps.delta did not run or did not record them (red team S2, S3).
+BUILD_CODE_INPUTS = ("dotnet_tools", "msbuild_sdks", "sdk")
+BUILD_CODE_FILES = ("dotnet-tools.json", "global.json")
+
+
+def deps_check_problem(facts: dict) -> str | None:
+    """deps.delta at fail or error: a package, feed, advisory or restore failure the graph could not account for
+    (red team S7: a project that restores on base but not on head hides its packages)."""
+    c = check(facts, DEPS_CHECK)
+    if c is None or c.get("status") not in NOT_PASSING:
+        return None
+    return f"deps.delta {c['status']}: " + ("; ".join(map(str, c.get("fail_reasons") or [])) or c.get("summary") or "no reason recorded")
+
+
+def build_code_changes(facts: dict) -> list[str]:
+    """New or changed dotnet tools, MSBuild SDKs or SDK pin, from deps.delta's build_inputs_changed; when deps.delta
+    did not record build inputs, any dotnet-tools.json / global.json in the diff. (Not covered: `Sdk="..."` attributes
+    in project files, which sbom.tree_inputs does not record yet.)"""
+    c = check(facts, DEPS_CHECK) or {}
+    changed = c.get("build_inputs_changed") or {}
+    out = []
+    for k in BUILD_CODE_INPUTS:
+        if k not in changed:
+            continue
+        b, h = (changed[k] or {}).get("base"), (changed[k] or {}).get("head")
+        if isinstance(b, dict) or isinstance(h, dict):
+            b, h = b or {}, h or {}
+            diff = [f"{n} {b.get(n)} -> {h.get(n)}" for n in sorted(set(b) | set(h)) if b.get(n) != h.get(n)]
+            out.append(f"{k}: " + ", ".join(diff))
+        else:
+            out.append(f"{k}: {b} -> {h}")
+    if "build_inputs_changed" not in c:  # deps.delta did not run (or predates build inputs): read the file list
+        out += [f"{f['path']} changed (not checked by deps.delta)" for f in files(facts) if f["path"].rsplit("/", 1)[-1].lower() in BUILD_CODE_FILES]
+    return out
+
+
+def _deps_changed_rule(ctx: dict) -> tuple[bool, str]:
+    parts = list(filter(None, [deps_check_problem(ctx["facts"])])) + build_code_changes(ctx["facts"])
+    return bool(parts), "; ".join(parts)
 
 
 def _deps_unallowed_rule(ctx: dict) -> tuple[bool, str]:
@@ -165,6 +225,7 @@ def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate, required:
             if v is None:
                 reasons.append({"code": "missing_review", "detail": f"{name} gave no verdict", "reviewer": name, "verdict": None})
                 continue
+            docs_checks(v, r, m)
             verdict = v.get("verdict") if v.get("verdict") in ("met", "not_met", "cannot_determine") else "cannot_determine"
             verdicts[name] = {"verdict": verdict, "basis": str(v.get("confidence_basis", "")),
                               "verified": v.get("substantive_count", 0), "verified_any": v.get("verified_count", 0),
@@ -194,27 +255,61 @@ def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate, required:
     return out
 
 
+def docs_checks(v: dict, req: dict, m: Mandate) -> None:
+    """A docs clause has no code path or test to cite: a passing check the mandate requires for docs clauses
+    (requirement_checks.docs, e.g. docs.anchors) counts on its own there. verify.py set such checks aside as
+    "context only" (a check never counts alone); this puts them back for docs clauses only, so the R3 rule for code
+    clauses is unchanged."""
+    if req.get("type") != "docs":
+        return
+    mandated = set(m["requirement_checks"].get("docs", []))
+    back = [e for e in v.get("evidence", []) if e.get("kind") == "check" and e.get("verified") and not e.get("substantive")
+            and e.get("id") in mandated and e.get("context") and (e.get("status") or e.get("outcome"))]
+    for e in back:
+        e["substantive"] = True
+        e["note"] = e["note"].split("; context only")[0] + "; counts: a check the mandate requires for docs clauses"
+        del e["context"]
+    if back:
+        v["substantive_count"] = sum(bool(e.get("substantive")) for e in v["evidence"])
+
+
 def held_before(req: dict, verdicts: dict, facts: dict) -> dict | None:
-    """Met, but not achieved by this change: every relevant test that was also run with the source reverted
-    (a `*fail_without_fix*` check) passed there. Relevant tests are the clause's own `tests:` in the requirement
-    file if it lists them, else the tests the change adds (`new: true` in that run) that the reviewers cited with
-    verified evidence on this clause. Existing tests passing on base are regression guards, not evidence that the
-    clause held before ("no regressions" clauses should hold before), so they are not counted.
-    No relevant test in a fail-without-fix run -> no judgement (None): absence of evidence is not `held_before`."""
-    names = list(req.get("tests") or dict.fromkeys(
-        e["name"] for v in verdicts.values() for e in v["evidence"] if e.get("kind") == "test" and e.get("verified")))
+    """Met, but not achieved by this change: a relevant test that was also run with the source reverted (a
+    `*fail_without_fix*` check) passed there.
+
+    - If the clause lists its own `tests:` (owner-authored), they decide: held_before when every one of them that was
+      run without the fix passed there. Reviewer citations can't add or remove a test from that judgement.
+    - Otherwise the relevant tests are the new tests (`new: true` in that run) that EVERY reviewer cited with
+      substantive evidence on this clause; held_before fires if any of them passes without the fix. One cited test
+      that fails without the fix doesn't cancel another that passes (red team R7: citing an unrelated new test that
+      fails on base used to hide that the clause's own test passes there).
+    Existing tests passing on base are regression guards, not evidence that the clause held before ("no regressions"
+    clauses should hold before), so they are not counted. No relevant test in a fail-without-fix run -> no judgement
+    (None): absence of evidence is not `held_before`."""
+    listed = list(req.get("tests") or [])
+    if listed:
+        names = set(listed)
+    else:
+        cited = [{e["name"] for e in v["evidence"] if e.get("kind") == "test" and e.get("substantive", e.get("verified"))}
+                 for v in verdicts.values()]
+        names = set.intersection(*cited) if cited else set()
     without: dict[str, set] = {}
     for c in facts.get("checks", []):
         if "fail_without_fix" in c["id"]:
             for t in c.get("tests", []):
-                if t["name"] in names and (req.get("tests") or t.get("new") is True):
+                if t["name"] in names and (listed or t.get("new") is True):
                     without.setdefault(t["name"], set()).add(t["outcome"])
-    if not without or any(outs != {"passed"} for outs in without.values()):
+    if listed:
+        held = sorted(without) if without and all(outs == {"passed"} for outs in without.values()) else []
+    else:
+        held = sorted(n for n, outs in without.items() if outs == {"passed"})
+    if not held:
         return None
-    tests = sorted(without)
-    src = "the clause's tests" if req.get("tests") else "the new tests the reviewers cited"
-    return {"tests": tests, "detail": f"all {len(tests)} of {src} that were run without the fix pass there too: "
-                                      + ", ".join(t.rsplit(".", 1)[-1] for t in tests)}
+    if listed:
+        detail = f"all {len(held)} of the clause's tests that were run without the fix pass there too: "
+    else:
+        detail = f"{len(held)} of the {len(without)} new test(s) every reviewer cited that were run without the fix pass there too: "
+    return {"tests": held, "detail": detail + ", ".join(t.rsplit(".", 1)[-1] for t in held)}
 
 
 # --- reviewer refusals ---------------------------------------------------------------
@@ -335,15 +430,18 @@ def _same_evidence(a: dict, b: dict) -> bool:
     return False
 
 
-def carry_forward(reviews: dict, earlier: dict | None) -> tuple[list[dict], list[dict]]:
+def carry_forward(reviews: dict, earlier: dict | None, facts: dict | None = None) -> tuple[list[dict], list[dict]]:
     """Failure mode R6: a later pass may not silently drop a finding. For each reviewer's earlier passes
     (reviews/<n>/<reviewer>.v<k>.json, verified), every verified blocker/major finding stays open as
-    `carried_forward` unless the reviewer's current pass
-      - re-raises it: a current finding cites a piece of the same verified evidence (same code quote in the same
-        file, or the same test), or
-      - refutes it: an entry in `refutations[]` (or a finding with `refutes:`) that names the earlier finding id
-        and cites at least one verified evidence item about the same location (shared anchor).
-    Returns (carried findings, refuted findings). Carried ones are verified findings with id `<pass>.<id>`."""
+    `carried_forward` unless the reviewer's current pass re-raises it: a current finding cites a piece of the same
+    verified evidence (same code quote in the same file, or the same test).
+
+    A refutation (an entry in `refutations[]`, or a finding with `refutes:`, that names the earlier finding id and
+    cites verified evidence at the same location) only annotates: a reviewer's word can open a finding, not close one
+    (red team R6: re-quoting the line the finding quoted used to clear it). The finding stays open, at its tier (ask
+    for blocker/major), until the pipeline's repro for it (`repro.<reviewer>.<id>`) ran and did not reproduce it, or
+    the owner closes it at sign-off. Returns (carried findings, refuted findings): carried ones are verified findings
+    with id `<pass>.<id>`; each refuted entry says whether the refutation closed it (`closed`)."""
     carried, refuted = [], []
     for name, passes in (earlier or {}).items():
         cur = reviews.get(name)
@@ -362,14 +460,23 @@ def carry_forward(reviews: dict, earlier: dict | None) -> tuple[list[dict], list
                     continue  # already carried from a newer earlier pass
                 ref = next((x for x in refs if str(x.get("finding", "")).split(".")[-1] == f["id"]
                             and _anchors(f) & _anchors({"evidence": x.get("evidence", [])})), None)
+                why = f"{name}'s current pass neither re-raised it nor refuted it with verified evidence, so it stays open"
                 if ref is not None:
+                    repro = check(facts or {}, f"{REPRO_PREFIX}{name}.{f['id']}") or {}
+                    closed = repro.get("status") == "fail"
                     refuted.append({"reviewer": name, "id": f"{pass_name}.{f['id']}", "title": f["title"],
                                     "refuted_by": ref.get("id") or "refutation", "reason": ref.get("reason") or ref.get("claim", ""),
-                                    "evidence": [e for e in ref.get("evidence", []) if e.get("verified")]})
-                    continue
+                                    "evidence": [e for e in ref.get("evidence", []) if e.get("verified")], "closed": closed,
+                                    "closed_by": f"{repro['id']} did not reproduce it" if closed else None})
+                    if closed:
+                        continue
+                    why = (f"{name} refuted it ({ref.get('reason') or ref.get('claim', '')}), but a refutation only annotates: it stays "
+                           f"open until the pipeline's repro ({REPRO_PREFIX}{name}.{f['id']}) fails to reproduce it or the owner closes it at sign-off")
                 c = {**f, "id": f"{pass_name}.{f['id']}", "reviewer": name, "carried_forward": {
-                    "from": f"{name}.{pass_name}.json", "pass": pass_name, "original_id": f["id"],
-                    "why": f"{name}'s current pass neither re-raised it nor refuted it with verified evidence, so it stays open"}}
+                    "from": f"{name}.{pass_name}.json", "pass": pass_name, "original_id": f["id"], "why": why,
+                    **({"refuted_by": ref.get("id") or "refutation"} if ref is not None else {})}}
+                if ref is not None:
+                    c["tier_reason"] = "refuted by the reviewer without a pipeline repro: a human closes it"
                 carried.append(c)
                 seen.append(f)
     return carried, refuted
@@ -405,6 +512,8 @@ def grade_findings(reviews: dict, facts: dict, m: Mandate, carried: list[dict] |
         if repro == "reproduced" and f["status"] != "verified":
             f["status"], f["verified_by"] = "verified", "repro"  # the pipeline reproduced it: strongest evidence there is
         f["tier"] = d["finding_tiers"][f["severity"]] if f["status"] == "verified" else "silent"
+        if f["status"] == "verified" and f.get("carried_forward", {}).get("refuted_by"):
+            f["tier"] = strictest(f["tier"], "ask")  # R6: a refuted finding stays with a human until a repro or the owner closes it
         f["confirmed_by"] = []
         if repro == "not_reproduced" and f["status"] == "verified":
             # Labelled, not demoted: the label adds no routing of its own, and a repro the pipeline could not make work
@@ -447,10 +556,15 @@ RULES = {
                                               "; ".join(f"{c} ({a}): {s}" for c, a, s in dict.fromkeys(_mandated(ctx)) if s not in ("pass", "fail"))),
     "mandate_unsigned": lambda ctx, _: (not ctx["mandate_sig"]["valid"], ctx["mandate_sig"]["reason"]),
     "injection_found": lambda ctx, _: (injection_found(ctx["facts"]), "; ".join(injection_lines(ctx["facts"]))),
+    "injection_unscannable": lambda ctx, _: (injection_unscannable(ctx["facts"]), "; ".join(injection_lines(ctx["facts"]))),
+    "generated_hand_edited": lambda ctx, _: (bool(generated_hand_edited(ctx["facts"])),
+                                             ", ".join(generated_hand_edited(ctx["facts"])) + " (generated-looking, its input unchanged)"),
     # supply chain: only stricter routing, never a pass (deps.delta stays out of the areas' mandated checks)
     "deps_unallowed": lambda ctx, _: _deps_unallowed_rule(ctx),
     "deps_new_vulnerability": lambda ctx, _: (bool(deps_new_vulnerabilities(ctx["facts"])), "; ".join(deps_new_vulnerabilities(ctx["facts"]))),
     "egress_violation": lambda ctx, _: (bool(egress_violations(ctx["facts"])), "; ".join(egress_violations(ctx["facts"]))),
+    # deps.delta at fail/error, or new/changed dotnet tools, MSBuild SDKs or SDK pin (red team S2, S3, S7)
+    "deps_check_failed": lambda ctx, _: _deps_changed_rule(ctx),
 }
 
 
@@ -529,7 +643,7 @@ def decide(facts: dict, reviews: dict, reqs: dict, m: Mandate, mandate_sig: dict
         untrusted = ("injection_scan found text addressed to automated reviewers in the change, so reviewers saw planted "
                      "instructions and their verdicts don't count: " + "; ".join(injection_lines(facts)))
     clauses = decide_clauses(reqs, reviews, facts, m, required_reviewers(m, panel), untrusted)
-    carried, refuted = carry_forward(reviews, earlier)
+    carried, refuted = carry_forward(reviews, earlier, facts)
     findings = grade_findings(reviews, facts, m, carried)
     open_disputes = disputes(clauses, findings)
     adj_drivers = apply_adjudication(clauses, adjudication, open_disputes)

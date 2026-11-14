@@ -106,17 +106,29 @@ def test_re_raised_finding_is_not_carried(ws):
     assert p["carried_forward"] == [] and [f["id"] for f in p["findings"]] == ["M2"]
 
 
-def test_refuted_finding_is_closed_only_with_verified_evidence_at_the_same_location(ws):
+def test_a_refutation_only_annotates_a_major_finding_stays_at_ask(ws):
+    """Red team R6: a reviewer's word can open a finding, not close one. A refutation with verified evidence at the
+    same location is recorded, but the finding stays open at ask until the pipeline's repro fails to reproduce it."""
     review(ws, "claude.v1", make_review("claude", findings=[MAJOR]))
     bad = make_review("claude")
     bad["refutations"] = [{"finding": "v1.M", "reason": "not a defect", "evidence": [{**GOOD_CODE, "quote": "nope"}]}]
     review(ws, "claude", bad)
-    assert pack.build(ws, "9001")["carried_forward"] == ["claude:v1.M"]
+    p = pack.build(ws, "9001")
+    assert p["carried_forward"] == ["claude:v1.M"] and p["refuted_findings"] == []
     good = make_review("claude")
     good["refutations"] = [{"finding": "v1.M", "reason": "the guard is on both branches", "evidence": [GOOD_CODE]}]
     review(ws, "claude", good)
     p = pack.build(ws, "9001")
-    assert p["carried_forward"] == [] and p["refuted_findings"][0]["id"] == "v1.M" and p["tier"] == "notify"
+    assert p["carried_forward"] == ["claude:v1.M"] and p["tier"] == "ask"
+    assert p["refuted_findings"][0]["id"] == "v1.M" and p["refuted_findings"][0]["closed"] is False
+    f = next(f for f in p["findings"] if f["id"] == "v1.M")
+    assert f["tier"] == "ask" and "refuted" in f["carried_forward"]["why"]
+    # a reproduced (pass) repro does not close it either; one that ran and did not reproduce does
+    with_check(ws, {"id": "repro.claude.M", "status": "pass", "summary": "reproduced"})
+    assert pack.build(ws, "9001")["tier"] == "ask"
+    with_check(ws, {"id": "repro.claude.M", "status": "fail", "summary": "not reproduced"})
+    p = pack.build(ws, "9001")
+    assert p["carried_forward"] == [] and p["refuted_findings"][0]["closed"] is True and p["tier"] == "notify"
 
 
 # --- executable repros ------------------------------------------------------------------------
