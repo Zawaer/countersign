@@ -17,18 +17,18 @@ GAP = 0.35               # pause between two lines in one shot
 TAIL = 0.45
 SHOTS = [
     # id,   entry,  url (relative to site/ unless it starts with '/'), display URL, extra lead, extra tail
-    ("s01", "cold", "index.html",            "localhost:3474",                     0.0, 0.35),
-    ("s02", "whip", "pitch.html#3",          "localhost:3474/pitch.html#3",        0.0, 0.0),
-    ("s03", "type", "tour.html#3",           "localhost:3474/tour.html#3",         0.0, 0.0),
-    ("s04", "whip", "index.html",            "localhost:3474",                     0.5, 0.2),
-    ("s05", "type", "tour.html#2",           "localhost:3474/tour.html#2",         0.0, 0.0),
-    ("s06", "type", "packs/2234/pack.html",  "localhost:3474/packs/2234/pack.html", 0.9, 0.3),
-    ("s07", "type", "tour.html#5",           "localhost:3474/tour.html#5",         0.0, 0.2),
-    ("s08", "whip", "prs.html",              "localhost:3474/prs.html",            0.2, 0.2),
-    ("s09", "type", "pitch.html#5",          "localhost:3474/pitch.html#5",        0.0, 0.6),
-    ("s10", "type", "tour.html#6",           "localhost:3474/tour.html#6",         0.0, 0.5),
-    ("s11", "whip", "overview.html",         "localhost:3474/overview.html",       0.0, 0.3),
-    ("s12", "whip", "pitch.html#1",          "localhost:3474/pitch.html#1",        0.0, 3.2),
+    ("s01", "cold", "index.html",            "zawaer.github.io/countersign/",                     0.0, 0.35),
+    ("s02", "whip", "pitch.html#3",          "zawaer.github.io/countersign/pitch.html#3",        0.0, 0.0),
+    ("s03", "type", "tour.html#3",           "zawaer.github.io/countersign/tour.html#3",         0.0, 0.0),
+    ("s04", "whip", "index.html",            "zawaer.github.io/countersign/",                     0.5, 0.2),
+    ("s05", "type", "tour.html#2",           "zawaer.github.io/countersign/tour.html#2",         0.0, 0.0),
+    ("s06", "type", "packs/2234/pack.html",  "zawaer.github.io/countersign/packs/2234/pack.html", 0.9, 0.3),
+    ("s07", "type", "tour.html#5",           "zawaer.github.io/countersign/tour.html#5",         0.0, 0.2),
+    ("s08", "whip", "prs.html",              "zawaer.github.io/countersign/prs.html",            0.2, 0.2),
+    ("s09", "type", "pitch.html#5",          "zawaer.github.io/countersign/pitch.html#5",        0.0, 0.6),
+    ("s10", "type", "tour.html#6",           "zawaer.github.io/countersign/tour.html#6",         0.0, 0.5),
+    ("s11", "whip", "overview.html",         "zawaer.github.io/countersign/overview.html",       0.0, 0.3),
+    ("s12", "whip", "pitch.html#1",          "zawaer.github.io/countersign/pitch.html#1",        0.0, 3.2),
 ]
 
 
