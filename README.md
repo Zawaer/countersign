@@ -19,7 +19,7 @@
 3. **Bugs a reviewer claims are re-run.** A reviewer's probe test becomes a repro check that the pipeline runs on the old and new code.
 4. **The change explains itself.** An evidence pack: tier and why, requirement trace, findings, refusals, what was not checked, residual risk.
 5. **A named owner countersigns.** An Ed25519 signature over the pack's hash, in a hash-chained ledger.
-6. **Trust is earned per area.** Areas move ask -> notify -> silent after 20 agreeing spot-checks in a row. An escape, a disagreeing spot-check or a missed seeded-bug canary drops the area one stage. A new reviewer model or prompt version starts again at ask.
+6. **Trust is earned per area.** An area moves from ask to notify after 20 agreeing spot-checks in a row, and to silent after 40. An escape, a disagreeing spot-check or a missed seeded-bug canary drops the area one stage. A new reviewer model or prompt version starts again at ask.
 
 One page: [docs/CONCEPT_CARD.md](docs/CONCEPT_CARD.md). Rules a team could adopt: [docs/PRINCIPLES.md](docs/PRINCIPLES.md).
 
