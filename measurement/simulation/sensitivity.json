@@ -1,0 +1,113 @@
+{
+  "simulated": true,
+  "rows": [
+    {
+      "panel_miss": 0.2,
+      "spot_rate": 0.0,
+      "escapes_per_week": 0.06,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 486.32,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 0.2,
+      "spot_rate": 0.05,
+      "escapes_per_week": 0.06,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 498.12,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 0.2,
+      "spot_rate": 0.1,
+      "escapes_per_week": 0.06,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 509.19,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 0.2,
+      "spot_rate": 0.2,
+      "escapes_per_week": 0.05,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 531.5,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 0.5,
+      "spot_rate": 0.0,
+      "escapes_per_week": 0.15,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 490.71,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 0.5,
+      "spot_rate": 0.05,
+      "escapes_per_week": 0.14,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 502.09,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 0.5,
+      "spot_rate": 0.1,
+      "escapes_per_week": 0.14,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 512.94,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 0.5,
+      "spot_rate": 0.2,
+      "escapes_per_week": 0.14,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 534.6,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 1.0,
+      "spot_rate": 0.0,
+      "escapes_per_week": 0.28,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 496.59,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 1.0,
+      "spot_rate": 0.05,
+      "escapes_per_week": 0.27,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 507.66,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 1.0,
+      "spot_rate": 0.1,
+      "escapes_per_week": 0.26,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 518.38,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    },
+    {
+      "panel_miss": 1.0,
+      "spot_rate": 0.2,
+      "escapes_per_week": 0.25,
+      "baseline_escapes_per_week": 0.17,
+      "minutes_per_week": 539.12,
+      "baseline_minutes_per_week": 710.0,
+      "simulated": true
+    }
+  ]
+}

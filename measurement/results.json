@@ -14,10 +14,10 @@
         "risk score risk"
       ],
       "caught_by": null,
-      "proven": 0,
-      "refused": 1,
+      "proven": 1,
+      "refused": 0,
       "full_read_min": 114.3,
-      "guided_min": 26,
+      "guided_min": 37,
       "simulated": false
     },
     {
@@ -58,21 +58,19 @@
       "routed_to_human": true,
       "why": [
         "verified finding claude:C1",
-        "refused clause REQ-2283-F1",
-        "refused clause REQ-2283-F2",
-        "refused clause REQ-2283-F3",
         "refused clause REQ-2283-N1",
-        "refused clause REQ-2283-N2",
         "reviewer refusal claude",
         "reviewer refusal claude",
         "reviewer refusal codex",
+        "reviewer refusal nemotron",
+        "reviewer refusal nemotron",
         "risk score risk"
       ],
       "caught_by": null,
-      "proven": 0,
-      "refused": 5,
+      "proven": 4,
+      "refused": 1,
       "full_read_min": 23.0,
-      "guided_min": 35,
+      "guided_min": 29,
       "simulated": false
     },
     {
@@ -91,7 +89,7 @@
       "proven": 0,
       "refused": 1,
       "full_read_min": 260.8,
-      "guided_min": 22,
+      "guided_min": 30,
       "simulated": false
     }
   ],
@@ -150,6 +148,18 @@
     },
     {
       "change": "2283-mut5",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "up-1934",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "up-1967",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "up-2022",
       "reason": "no reviews yet (stage 2 not run); excluded from every metric"
     }
   ],
@@ -491,9 +501,9 @@
         },
         "nemotron": {
           "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-          "verified": 5,
+          "verified": 10,
           "rejected": 0,
-          "refusals": 4,
+          "refusals": 10,
           "rejected_share": 0.0
         }
       },
@@ -506,12 +516,12 @@
       "how": "reading-speed model in the mandate: lines/min + minutes per file"
     },
     "human_minutes_with_pack": {
-      "value": 127,
+      "value": 140,
       "simulated": true,
       "how": "pack reading time by tier + per refused item + per verified finding"
     },
     "review_time_saved_share": {
-      "value": 0.7,
+      "value": 0.67,
       "simulated": true,
       "how": "1 - with_pack / full_read"
     },
@@ -541,18 +551,18 @@
     },
     "reviewer_cross_check": {
       "value": {
-        "claude": {
-          "major_raised_verified": 4,
-          "confirmed_by_another": 0,
-          "missed_others_verified_major": 0
-        },
         "codex": {
           "major_raised_verified": 0,
           "confirmed_by_another": 0,
-          "missed_others_verified_major": 4
+          "missed_others_verified_major": 5
         },
         "nemotron": {
-          "major_raised_verified": 0,
+          "major_raised_verified": 1,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 4
+        },
+        "claude": {
+          "major_raised_verified": 4,
           "confirmed_by_another": 0,
           "missed_others_verified_major": 1
         }
@@ -564,8 +574,8 @@
       "value": {
         "2129": {
           "full_read_min": 114.3,
-          "with_pack_min": 26,
-          "saved_min": 88.3
+          "with_pack_min": 37,
+          "saved_min": 77.3
         },
         "2234": {
           "full_read_min": 26.2,
@@ -574,13 +584,13 @@
         },
         "2283": {
           "full_read_min": 23.0,
-          "with_pack_min": 35,
-          "saved_min": -12.0
+          "with_pack_min": 29,
+          "saved_min": -6.0
         },
         "2297": {
           "full_read_min": 260.8,
-          "with_pack_min": 22,
-          "saved_min": 238.8
+          "with_pack_min": 30,
+          "saved_min": 230.8
         }
       },
       "simulated": true,
@@ -588,10 +598,10 @@
     },
     "model_tokens_per_change": {
       "value": {
-        "2283": 173450,
-        "2234": 173450,
-        "2129": 173450,
-        "2297": 173450
+        "2283": 233512,
+        "2234": 275180,
+        "2129": 295729,
+        "2297": 239227
       },
       "simulated": false,
       "how": "measurement/costs.yaml; estimates where the row says so"
@@ -645,6 +655,66 @@
       "escape_rate_routed": 0.101,
       "escape_rate_cleared": null,
       "escapes_cleared": []
+    }
+  },
+  "simulation": {
+    "simulated": true,
+    "source": "measurement/simulation/results.json",
+    "summary": {
+      "simulated": true,
+      "weeks": 52,
+      "replicates": 200,
+      "drift_week": 26,
+      "countersign": {
+        "minutes_per_week_first_4": 565.29,
+        "minutes_per_week_before_drift": 510.31,
+        "minutes_per_week_after_drift": 517.07,
+        "escapes_per_week_before_drift": 0.14,
+        "escapes_per_week_after_drift": 0.26,
+        "routed_share_before_drift": 0.53,
+        "routed_share_after_drift": 0.54,
+        "escapes_total": 10.2
+      },
+      "no-spot-checks": {
+        "minutes_per_week_first_4": 548.85,
+        "minutes_per_week_before_drift": 487.66,
+        "minutes_per_week_after_drift": 495.61,
+        "escapes_per_week_before_drift": 0.15,
+        "escapes_per_week_after_drift": 0.27,
+        "routed_share_before_drift": 0.53,
+        "routed_share_after_drift": 0.54,
+        "escapes_total": 10.7
+      },
+      "countersign+canaries": {
+        "minutes_per_week_first_4": 708.91,
+        "minutes_per_week_before_drift": 537.52,
+        "minutes_per_week_after_drift": 671.96,
+        "escapes_per_week_before_drift": 0.13,
+        "escapes_per_week_after_drift": 0.18,
+        "routed_share_before_drift": 0.58,
+        "routed_share_after_drift": 0.9,
+        "escapes_total": 8.0
+      },
+      "no-withdrawal": {
+        "minutes_per_week_first_4": 482.23,
+        "minutes_per_week_before_drift": 480.4,
+        "minutes_per_week_after_drift": 479.98,
+        "escapes_per_week_before_drift": 0.15,
+        "escapes_per_week_after_drift": 0.28,
+        "routed_share_before_drift": 0.52,
+        "routed_share_after_drift": 0.52,
+        "escapes_total": 11.0
+      },
+      "full-human-review": {
+        "minutes_per_week_first_4": 710.0,
+        "minutes_per_week_before_drift": 710.0,
+        "minutes_per_week_after_drift": 710.0,
+        "escapes_per_week_before_drift": 0.16,
+        "escapes_per_week_after_drift": 0.17,
+        "routed_share_before_drift": 1.0,
+        "routed_share_after_drift": 1.0,
+        "escapes_total": 8.5
+      }
     }
   }
 }

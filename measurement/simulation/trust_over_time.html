@@ -1,0 +1,465 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Countersign: trust over time (SIMULATED)</title>
+<style>
+.viz-root{color-scheme:light;--surface-1:#fcfcfb;--text-primary:#0b0b0b;--text-secondary:#52514e;--grid:#e4e3df;
+--series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;--series-4:#eda100;font:14px system-ui,sans-serif;background:var(--surface-1);color:var(--text-primary);max-width:760px;margin:24px auto;padding:0 16px}
+@media (prefers-color-scheme:dark){.viz-root{color-scheme:dark;--surface-1:#1a1a19;--text-primary:#f0efec;--text-secondary:#c3c2b7;--grid:#383835;
+--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;--series-4:#c98500}}
+body{margin:0;background:var(--surface-1)} .t{fill:var(--text-primary);font-weight:600;font-size:13px} .ax{fill:var(--text-secondary);font-size:11px}
+.grid{stroke:var(--grid);stroke-width:1} .drift{stroke:var(--text-secondary);stroke-dasharray:4 4} .hit{fill:transparent} .hit:hover{fill:var(--text-secondary)}
+.lg{margin-right:16px;color:var(--text-secondary)} .lg i{display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:middle;border-radius:2px}
+table{border-collapse:collapse;margin-top:12px;font-size:13px} td,th{border-bottom:1px solid var(--grid);padding:4px 8px;text-align:right} td:first-child,th:first-child{text-align:left}
+.banner{border:2px solid var(--series-2);padding:6px 10px;border-radius:4px;font-weight:600}
+</style></head><body><div class="viz-root">
+<p class="banner">SIMULATED. Inputs: measured catch rates of our checks and reviewers, assumed volumes and human miss rate (see docs/MEASUREMENT.md).</p>
+<h2>Trust over time: 200 runs of 52 weeks, averaged</h2>
+<div><span class="lg"><i style="background:var(--series-1)"></i>Countersign, 10% spot-checks</span><span class="lg"><i style="background:var(--series-2)"></i>Countersign, spot-checks off</span><span class="lg"><i style="background:var(--series-4)"></i>What-if: + weekly canaries, restore after 20 agreeing checks</span><span class="lg"><i style="background:var(--series-3)"></i>Full human review (baseline, same CI checks)</span></div><svg viewBox="0 0 720 530" role="img" aria-label="Simulated human review minutes and escapes per week"><text x="0" y="14" class="t">Human review minutes per week (SIMULATED)</text>
+<line x1="56" x2="686" y1="232.0" y2="232.0" class="grid"/><text x="50" y="236.0" class="ax" text-anchor="end">0</text>
+<line x1="56" x2="686" y1="181.0" y2="181.0" class="grid"/><text x="50" y="185.0" class="ax" text-anchor="end">195</text>
+<line x1="56" x2="686" y1="130.0" y2="130.0" class="grid"/><text x="50" y="134.0" class="ax" text-anchor="end">391</text>
+<line x1="56" x2="686" y1="79.0" y2="79.0" class="grid"/><text x="50" y="83.0" class="ax" text-anchor="end">586</text>
+<line x1="56" x2="686" y1="28.0" y2="28.0" class="grid"/><text x="50" y="32.0" class="ax" text-anchor="end">781</text>
+<text x="56.0" y="250" class="ax" text-anchor="middle">wk 1</text>
+<text x="204.2" y="250" class="ax" text-anchor="middle">wk 13</text>
+<text x="364.8" y="250" class="ax" text-anchor="middle">wk 26</text>
+<text x="525.4" y="250" class="ax" text-anchor="middle">wk 39</text>
+<text x="686.0" y="250" class="ax" text-anchor="middle">wk 52</text>
+<line x1="364.8" x2="364.8" y1="24" y2="232" class="drift"/><text x="368.8" y="36" class="ax">reviewers degrade</text>
+<polyline points="56.0,46.5 68.4,91.2 80.7,98.4 93.1,101.2 105.4,100.6 117.8,100.5 130.1,100.5 142.5,100.1 154.8,100.5 167.2,101.6 179.5,101.6 191.9,100.2 204.2,100.0 216.6,97.6 228.9,98.7 241.3,98.6 253.6,97.7 266.0,99.4 278.4,98.5 290.7,95.8 303.1,98.9 315.4,98.8 327.8,97.5 340.1,96.7 352.5,96.7 364.8,97.8 377.2,97.6 389.5,97.8 401.9,100.0 414.2,98.1 426.6,96.9 438.9,99.2 451.3,98.6 463.6,100.4 476.0,98.1 488.4,94.5 500.7,98.2 513.1,97.4 525.4,96.7 537.8,97.1 550.1,96.0 562.5,96.9 574.8,96.5 587.2,93.7 599.5,95.3 611.9,96.2 624.2,95.5 636.6,96.0 648.9,96.3 661.3,94.3 673.6,96.4 686.0,96.8" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round"><title>Countersign, 10% spot-checks</title></polyline>
+<circle cx="56.0" cy="46.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 1: 710.0 min</title></circle>
+<circle cx="68.4" cy="91.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 2: 538.9 min</title></circle>
+<circle cx="80.7" cy="98.4" r="6" class="hit"><title>Countersign, 10% spot-checks, week 3: 511.375 min</title></circle>
+<circle cx="93.1" cy="101.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 4: 500.9 min</title></circle>
+<circle cx="105.4" cy="100.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 5: 503.175 min</title></circle>
+<circle cx="117.8" cy="100.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 6: 503.4 min</title></circle>
+<circle cx="130.1" cy="100.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 7: 503.4 min</title></circle>
+<circle cx="142.5" cy="100.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 8: 504.875 min</title></circle>
+<circle cx="154.8" cy="100.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 9: 503.5 min</title></circle>
+<circle cx="167.2" cy="101.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 10: 499.05 min</title></circle>
+<circle cx="179.5" cy="101.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 11: 499.075 min</title></circle>
+<circle cx="191.9" cy="100.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 12: 504.675 min</title></circle>
+<circle cx="204.2" cy="100.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 13: 505.175 min</title></circle>
+<circle cx="216.6" cy="97.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 14: 514.65 min</title></circle>
+<circle cx="228.9" cy="98.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 15: 510.225 min</title></circle>
+<circle cx="241.3" cy="98.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 16: 510.875 min</title></circle>
+<circle cx="253.6" cy="97.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 17: 514.2 min</title></circle>
+<circle cx="266.0" cy="99.4" r="6" class="hit"><title>Countersign, 10% spot-checks, week 18: 507.575 min</title></circle>
+<circle cx="278.4" cy="98.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 19: 511.125 min</title></circle>
+<circle cx="290.7" cy="95.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 20: 521.325 min</title></circle>
+<circle cx="303.1" cy="98.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 21: 509.475 min</title></circle>
+<circle cx="315.4" cy="98.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 22: 509.975 min</title></circle>
+<circle cx="327.8" cy="97.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 23: 515.1 min</title></circle>
+<circle cx="340.1" cy="96.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 24: 517.875 min</title></circle>
+<circle cx="352.5" cy="96.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 25: 518.0 min</title></circle>
+<circle cx="364.8" cy="97.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 26: 513.625 min</title></circle>
+<circle cx="377.2" cy="97.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 27: 514.425 min</title></circle>
+<circle cx="389.5" cy="97.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 28: 513.8 min</title></circle>
+<circle cx="401.9" cy="100.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 29: 505.5 min</title></circle>
+<circle cx="414.2" cy="98.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 30: 512.475 min</title></circle>
+<circle cx="426.6" cy="96.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 31: 517.075 min</title></circle>
+<circle cx="438.9" cy="99.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 32: 508.6 min</title></circle>
+<circle cx="451.3" cy="98.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 33: 510.725 min</title></circle>
+<circle cx="463.6" cy="100.4" r="6" class="hit"><title>Countersign, 10% spot-checks, week 34: 503.775 min</title></circle>
+<circle cx="476.0" cy="98.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 35: 512.65 min</title></circle>
+<circle cx="488.4" cy="94.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 36: 526.275 min</title></circle>
+<circle cx="500.7" cy="98.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 37: 512.175 min</title></circle>
+<circle cx="513.1" cy="97.4" r="6" class="hit"><title>Countersign, 10% spot-checks, week 38: 515.35 min</title></circle>
+<circle cx="525.4" cy="96.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 39: 518.15 min</title></circle>
+<circle cx="537.8" cy="97.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 40: 516.4 min</title></circle>
+<circle cx="550.1" cy="96.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 41: 520.65 min</title></circle>
+<circle cx="562.5" cy="96.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 42: 517.4 min</title></circle>
+<circle cx="574.8" cy="96.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 43: 518.725 min</title></circle>
+<circle cx="587.2" cy="93.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 44: 529.525 min</title></circle>
+<circle cx="599.5" cy="95.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 45: 523.175 min</title></circle>
+<circle cx="611.9" cy="96.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 46: 520.0 min</title></circle>
+<circle cx="624.2" cy="95.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 47: 522.75 min</title></circle>
+<circle cx="636.6" cy="96.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 48: 520.725 min</title></circle>
+<circle cx="648.9" cy="96.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 49: 519.625 min</title></circle>
+<circle cx="661.3" cy="94.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 50: 527.175 min</title></circle>
+<circle cx="673.6" cy="96.4" r="6" class="hit"><title>Countersign, 10% spot-checks, week 51: 518.95 min</title></circle>
+<circle cx="686.0" cy="96.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 52: 517.65 min</title></circle>
+<polyline points="56.0,46.5 68.4,96.6 80.7,104.0 93.1,107.4 105.4,106.7 117.8,107.3 130.1,106.2 142.5,106.2 154.8,106.9 167.2,108.2 179.5,108.6 191.9,106.2 204.2,106.8 216.6,103.9 228.9,103.8 241.3,103.8 253.6,103.8 266.0,105.4 278.4,104.7 290.7,101.2 303.1,104.8 315.4,104.1 327.8,103.2 340.1,102.4 352.5,101.9 364.8,103.4 377.2,103.3 389.5,104.1 401.9,105.1 414.2,103.1 426.6,102.7 438.9,103.9 451.3,104.9 463.6,106.6 476.0,104.7 488.4,101.0 500.7,103.9 513.1,103.4 525.4,100.7 537.8,102.6 550.1,101.7 562.5,101.8 574.8,102.2 587.2,99.5 599.5,100.6 611.9,101.2 624.2,101.4 636.6,101.9 648.9,102.6 661.3,99.6 673.6,101.5 686.0,102.0" fill="none" stroke="var(--series-2)" stroke-width="2" stroke-linejoin="round"><title>Countersign, spot-checks off</title></polyline>
+<circle cx="56.0" cy="46.5" r="6" class="hit"><title>Countersign, spot-checks off, week 1: 710.0 min</title></circle>
+<circle cx="68.4" cy="96.6" r="6" class="hit"><title>Countersign, spot-checks off, week 2: 518.475 min</title></circle>
+<circle cx="80.7" cy="104.0" r="6" class="hit"><title>Countersign, spot-checks off, week 3: 489.975 min</title></circle>
+<circle cx="93.1" cy="107.4" r="6" class="hit"><title>Countersign, spot-checks off, week 4: 476.95 min</title></circle>
+<circle cx="105.4" cy="106.7" r="6" class="hit"><title>Countersign, spot-checks off, week 5: 479.85 min</title></circle>
+<circle cx="117.8" cy="107.3" r="6" class="hit"><title>Countersign, spot-checks off, week 6: 477.5 min</title></circle>
+<circle cx="130.1" cy="106.2" r="6" class="hit"><title>Countersign, spot-checks off, week 7: 481.5 min</title></circle>
+<circle cx="142.5" cy="106.2" r="6" class="hit"><title>Countersign, spot-checks off, week 8: 481.55 min</title></circle>
+<circle cx="154.8" cy="106.9" r="6" class="hit"><title>Countersign, spot-checks off, week 9: 479.075 min</title></circle>
+<circle cx="167.2" cy="108.2" r="6" class="hit"><title>Countersign, spot-checks off, week 10: 474.125 min</title></circle>
+<circle cx="179.5" cy="108.6" r="6" class="hit"><title>Countersign, spot-checks off, week 11: 472.275 min</title></circle>
+<circle cx="191.9" cy="106.2" r="6" class="hit"><title>Countersign, spot-checks off, week 12: 481.6 min</title></circle>
+<circle cx="204.2" cy="106.8" r="6" class="hit"><title>Countersign, spot-checks off, week 13: 479.475 min</title></circle>
+<circle cx="216.6" cy="103.9" r="6" class="hit"><title>Countersign, spot-checks off, week 14: 490.5 min</title></circle>
+<circle cx="228.9" cy="103.8" r="6" class="hit"><title>Countersign, spot-checks off, week 15: 490.675 min</title></circle>
+<circle cx="241.3" cy="103.8" r="6" class="hit"><title>Countersign, spot-checks off, week 16: 490.625 min</title></circle>
+<circle cx="253.6" cy="103.8" r="6" class="hit"><title>Countersign, spot-checks off, week 17: 490.625 min</title></circle>
+<circle cx="266.0" cy="105.4" r="6" class="hit"><title>Countersign, spot-checks off, week 18: 484.575 min</title></circle>
+<circle cx="278.4" cy="104.7" r="6" class="hit"><title>Countersign, spot-checks off, week 19: 487.425 min</title></circle>
+<circle cx="290.7" cy="101.2" r="6" class="hit"><title>Countersign, spot-checks off, week 20: 500.675 min</title></circle>
+<circle cx="303.1" cy="104.8" r="6" class="hit"><title>Countersign, spot-checks off, week 21: 486.975 min</title></circle>
+<circle cx="315.4" cy="104.1" r="6" class="hit"><title>Countersign, spot-checks off, week 22: 489.6 min</title></circle>
+<circle cx="327.8" cy="103.2" r="6" class="hit"><title>Countersign, spot-checks off, week 23: 493.2 min</title></circle>
+<circle cx="340.1" cy="102.4" r="6" class="hit"><title>Countersign, spot-checks off, week 24: 496.225 min</title></circle>
+<circle cx="352.5" cy="101.9" r="6" class="hit"><title>Countersign, spot-checks off, week 25: 497.9 min</title></circle>
+<circle cx="364.8" cy="103.4" r="6" class="hit"><title>Countersign, spot-checks off, week 26: 492.375 min</title></circle>
+<circle cx="377.2" cy="103.3" r="6" class="hit"><title>Countersign, spot-checks off, week 27: 492.7 min</title></circle>
+<circle cx="389.5" cy="104.1" r="6" class="hit"><title>Countersign, spot-checks off, week 28: 489.8 min</title></circle>
+<circle cx="401.9" cy="105.1" r="6" class="hit"><title>Countersign, spot-checks off, week 29: 485.775 min</title></circle>
+<circle cx="414.2" cy="103.1" r="6" class="hit"><title>Countersign, spot-checks off, week 30: 493.575 min</title></circle>
+<circle cx="426.6" cy="102.7" r="6" class="hit"><title>Countersign, spot-checks off, week 31: 494.85 min</title></circle>
+<circle cx="438.9" cy="103.9" r="6" class="hit"><title>Countersign, spot-checks off, week 32: 490.35 min</title></circle>
+<circle cx="451.3" cy="104.9" r="6" class="hit"><title>Countersign, spot-checks off, week 33: 486.575 min</title></circle>
+<circle cx="463.6" cy="106.6" r="6" class="hit"><title>Countersign, spot-checks off, week 34: 480.075 min</title></circle>
+<circle cx="476.0" cy="104.7" r="6" class="hit"><title>Countersign, spot-checks off, week 35: 487.45 min</title></circle>
+<circle cx="488.4" cy="101.0" r="6" class="hit"><title>Countersign, spot-checks off, week 36: 501.525 min</title></circle>
+<circle cx="500.7" cy="103.9" r="6" class="hit"><title>Countersign, spot-checks off, week 37: 490.25 min</title></circle>
+<circle cx="513.1" cy="103.4" r="6" class="hit"><title>Countersign, spot-checks off, week 38: 492.35 min</title></circle>
+<circle cx="525.4" cy="100.7" r="6" class="hit"><title>Countersign, spot-checks off, week 39: 502.675 min</title></circle>
+<circle cx="537.8" cy="102.6" r="6" class="hit"><title>Countersign, spot-checks off, week 40: 495.425 min</title></circle>
+<circle cx="550.1" cy="101.7" r="6" class="hit"><title>Countersign, spot-checks off, week 41: 498.775 min</title></circle>
+<circle cx="562.5" cy="101.8" r="6" class="hit"><title>Countersign, spot-checks off, week 42: 498.525 min</title></circle>
+<circle cx="574.8" cy="102.2" r="6" class="hit"><title>Countersign, spot-checks off, week 43: 497.075 min</title></circle>
+<circle cx="587.2" cy="99.5" r="6" class="hit"><title>Countersign, spot-checks off, week 44: 507.2 min</title></circle>
+<circle cx="599.5" cy="100.6" r="6" class="hit"><title>Countersign, spot-checks off, week 45: 502.925 min</title></circle>
+<circle cx="611.9" cy="101.2" r="6" class="hit"><title>Countersign, spot-checks off, week 46: 500.575 min</title></circle>
+<circle cx="624.2" cy="101.4" r="6" class="hit"><title>Countersign, spot-checks off, week 47: 499.975 min</title></circle>
+<circle cx="636.6" cy="101.9" r="6" class="hit"><title>Countersign, spot-checks off, week 48: 498.05 min</title></circle>
+<circle cx="648.9" cy="102.6" r="6" class="hit"><title>Countersign, spot-checks off, week 49: 495.25 min</title></circle>
+<circle cx="661.3" cy="99.6" r="6" class="hit"><title>Countersign, spot-checks off, week 50: 506.95 min</title></circle>
+<circle cx="673.6" cy="101.5" r="6" class="hit"><title>Countersign, spot-checks off, week 51: 499.6 min</title></circle>
+<circle cx="686.0" cy="102.0" r="6" class="hit"><title>Countersign, spot-checks off, week 52: 497.6 min</title></circle>
+<polyline points="56.0,46.5 68.4,46.5 80.7,46.5 93.1,47.7 105.4,68.6 117.8,83.1 130.1,89.1 142.5,89.2 154.8,92.2 167.2,91.8 179.5,92.0 191.9,94.0 204.2,94.6 216.6,94.6 228.9,95.5 241.3,95.9 253.6,96.3 266.0,92.5 278.4,91.6 290.7,89.6 303.1,89.9 315.4,87.9 327.8,88.2 340.1,87.1 352.5,88.2 364.8,86.8 377.2,87.7 389.5,86.2 401.9,79.3 414.2,65.1 426.6,56.8 438.9,58.0 451.3,56.2 463.6,51.0 476.0,47.8 488.4,50.2 500.7,53.8 513.1,50.9 525.4,48.0 537.8,51.0 550.1,53.0 562.5,52.6 574.8,49.9 587.2,52.6 599.5,55.4 611.9,53.5 624.2,50.6 636.6,51.5 648.9,54.9 661.3,51.8 673.6,49.2 686.0,51.5" fill="none" stroke="var(--series-4)" stroke-width="2" stroke-linejoin="round"><title>What-if: + weekly canaries, restore after 20 agreeing checks</title></polyline>
+<circle cx="56.0" cy="46.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 1: 710.0 min</title></circle>
+<circle cx="68.4" cy="46.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 2: 710.0 min</title></circle>
+<circle cx="80.7" cy="46.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 3: 710.0 min</title></circle>
+<circle cx="93.1" cy="47.7" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 4: 705.65 min</title></circle>
+<circle cx="105.4" cy="68.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 5: 625.6 min</title></circle>
+<circle cx="117.8" cy="83.1" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 6: 569.95 min</title></circle>
+<circle cx="130.1" cy="89.1" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 7: 547.025 min</title></circle>
+<circle cx="142.5" cy="89.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 8: 546.55 min</title></circle>
+<circle cx="154.8" cy="92.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 9: 535.025 min</title></circle>
+<circle cx="167.2" cy="91.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 10: 536.7 min</title></circle>
+<circle cx="179.5" cy="92.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 11: 535.825 min</title></circle>
+<circle cx="191.9" cy="94.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 12: 528.35 min</title></circle>
+<circle cx="204.2" cy="94.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 13: 525.875 min</title></circle>
+<circle cx="216.6" cy="94.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 14: 526.075 min</title></circle>
+<circle cx="228.9" cy="95.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 15: 522.725 min</title></circle>
+<circle cx="241.3" cy="95.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 16: 521.125 min</title></circle>
+<circle cx="253.6" cy="96.3" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 17: 519.525 min</title></circle>
+<circle cx="266.0" cy="92.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 18: 534.0 min</title></circle>
+<circle cx="278.4" cy="91.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 19: 537.675 min</title></circle>
+<circle cx="290.7" cy="89.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 20: 545.075 min</title></circle>
+<circle cx="303.1" cy="89.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 21: 544.2 min</title></circle>
+<circle cx="315.4" cy="87.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 22: 551.6 min</title></circle>
+<circle cx="327.8" cy="88.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 23: 550.525 min</title></circle>
+<circle cx="340.1" cy="87.1" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 24: 554.6 min</title></circle>
+<circle cx="352.5" cy="88.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 25: 550.65 min</title></circle>
+<circle cx="364.8" cy="86.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 26: 555.85 min</title></circle>
+<circle cx="377.2" cy="87.7" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 27: 552.525 min</title></circle>
+<circle cx="389.5" cy="86.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 28: 558.225 min</title></circle>
+<circle cx="401.9" cy="79.3" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 29: 584.55 min</title></circle>
+<circle cx="414.2" cy="65.1" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 30: 638.85 min</title></circle>
+<circle cx="426.6" cy="56.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 31: 670.65 min</title></circle>
+<circle cx="438.9" cy="58.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 32: 666.175 min</title></circle>
+<circle cx="451.3" cy="56.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 33: 673.2 min</title></circle>
+<circle cx="463.6" cy="51.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 34: 692.825 min</title></circle>
+<circle cx="476.0" cy="47.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 35: 705.2 min</title></circle>
+<circle cx="488.4" cy="50.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 36: 696.0 min</title></circle>
+<circle cx="500.7" cy="53.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 37: 682.4 min</title></circle>
+<circle cx="513.1" cy="50.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 38: 693.25 min</title></circle>
+<circle cx="525.4" cy="48.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 39: 704.25 min</title></circle>
+<circle cx="537.8" cy="51.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 40: 692.9 min</title></circle>
+<circle cx="550.1" cy="53.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 41: 685.45 min</title></circle>
+<circle cx="562.5" cy="52.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 42: 686.7 min</title></circle>
+<circle cx="574.8" cy="49.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 43: 697.2 min</title></circle>
+<circle cx="587.2" cy="52.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 44: 686.85 min</title></circle>
+<circle cx="599.5" cy="55.4" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 45: 676.25 min</title></circle>
+<circle cx="611.9" cy="53.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 46: 683.35 min</title></circle>
+<circle cx="624.2" cy="50.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 47: 694.35 min</title></circle>
+<circle cx="636.6" cy="51.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 48: 691.15 min</title></circle>
+<circle cx="648.9" cy="54.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 49: 677.9 min</title></circle>
+<circle cx="661.3" cy="51.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 50: 690.0 min</title></circle>
+<circle cx="673.6" cy="49.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 51: 699.85 min</title></circle>
+<circle cx="686.0" cy="51.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 52: 690.9 min</title></circle>
+<polyline points="56.0,46.5 68.4,46.5 80.7,46.5 93.1,46.5 105.4,46.5 117.8,46.5 130.1,46.5 142.5,46.5 154.8,46.5 167.2,46.5 179.5,46.5 191.9,46.5 204.2,46.5 216.6,46.5 228.9,46.5 241.3,46.5 253.6,46.5 266.0,46.5 278.4,46.5 290.7,46.5 303.1,46.5 315.4,46.5 327.8,46.5 340.1,46.5 352.5,46.5 364.8,46.5 377.2,46.5 389.5,46.5 401.9,46.5 414.2,46.5 426.6,46.5 438.9,46.5 451.3,46.5 463.6,46.5 476.0,46.5 488.4,46.5 500.7,46.5 513.1,46.5 525.4,46.5 537.8,46.5 550.1,46.5 562.5,46.5 574.8,46.5 587.2,46.5 599.5,46.5 611.9,46.5 624.2,46.5 636.6,46.5 648.9,46.5 661.3,46.5 673.6,46.5 686.0,46.5" fill="none" stroke="var(--series-3)" stroke-width="2" stroke-linejoin="round"><title>Full human review (baseline, same CI checks)</title></polyline>
+<circle cx="56.0" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 1: 710.0 min</title></circle>
+<circle cx="68.4" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 2: 710.0 min</title></circle>
+<circle cx="80.7" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 3: 710.0 min</title></circle>
+<circle cx="93.1" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 4: 710.0 min</title></circle>
+<circle cx="105.4" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 5: 710.0 min</title></circle>
+<circle cx="117.8" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 6: 710.0 min</title></circle>
+<circle cx="130.1" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 7: 710.0 min</title></circle>
+<circle cx="142.5" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 8: 710.0 min</title></circle>
+<circle cx="154.8" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 9: 710.0 min</title></circle>
+<circle cx="167.2" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 10: 710.0 min</title></circle>
+<circle cx="179.5" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 11: 710.0 min</title></circle>
+<circle cx="191.9" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 12: 710.0 min</title></circle>
+<circle cx="204.2" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 13: 710.0 min</title></circle>
+<circle cx="216.6" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 14: 710.0 min</title></circle>
+<circle cx="228.9" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 15: 710.0 min</title></circle>
+<circle cx="241.3" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 16: 710.0 min</title></circle>
+<circle cx="253.6" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 17: 710.0 min</title></circle>
+<circle cx="266.0" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 18: 710.0 min</title></circle>
+<circle cx="278.4" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 19: 710.0 min</title></circle>
+<circle cx="290.7" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 20: 710.0 min</title></circle>
+<circle cx="303.1" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 21: 710.0 min</title></circle>
+<circle cx="315.4" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 22: 710.0 min</title></circle>
+<circle cx="327.8" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 23: 710.0 min</title></circle>
+<circle cx="340.1" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 24: 710.0 min</title></circle>
+<circle cx="352.5" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 25: 710.0 min</title></circle>
+<circle cx="364.8" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 26: 710.0 min</title></circle>
+<circle cx="377.2" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 27: 710.0 min</title></circle>
+<circle cx="389.5" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 28: 710.0 min</title></circle>
+<circle cx="401.9" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 29: 710.0 min</title></circle>
+<circle cx="414.2" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 30: 710.0 min</title></circle>
+<circle cx="426.6" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 31: 710.0 min</title></circle>
+<circle cx="438.9" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 32: 710.0 min</title></circle>
+<circle cx="451.3" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 33: 710.0 min</title></circle>
+<circle cx="463.6" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 34: 710.0 min</title></circle>
+<circle cx="476.0" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 35: 710.0 min</title></circle>
+<circle cx="488.4" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 36: 710.0 min</title></circle>
+<circle cx="500.7" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 37: 710.0 min</title></circle>
+<circle cx="513.1" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 38: 710.0 min</title></circle>
+<circle cx="525.4" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 39: 710.0 min</title></circle>
+<circle cx="537.8" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 40: 710.0 min</title></circle>
+<circle cx="550.1" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 41: 710.0 min</title></circle>
+<circle cx="562.5" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 42: 710.0 min</title></circle>
+<circle cx="574.8" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 43: 710.0 min</title></circle>
+<circle cx="587.2" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 44: 710.0 min</title></circle>
+<circle cx="599.5" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 45: 710.0 min</title></circle>
+<circle cx="611.9" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 46: 710.0 min</title></circle>
+<circle cx="624.2" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 47: 710.0 min</title></circle>
+<circle cx="636.6" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 48: 710.0 min</title></circle>
+<circle cx="648.9" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 49: 710.0 min</title></circle>
+<circle cx="661.3" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 50: 710.0 min</title></circle>
+<circle cx="673.6" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 51: 710.0 min</title></circle>
+<circle cx="686.0" cy="46.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 52: 710.0 min</title></circle><text x="0" y="284" class="t">Escapes per week, 4-week rolling mean (SIMULATED)</text>
+<line x1="56" x2="686" y1="502.0" y2="502.0" class="grid"/><text x="50" y="506.0" class="ax" text-anchor="end">0.00</text>
+<line x1="56" x2="686" y1="451.0" y2="451.0" class="grid"/><text x="50" y="455.0" class="ax" text-anchor="end">0.09</text>
+<line x1="56" x2="686" y1="400.0" y2="400.0" class="grid"/><text x="50" y="404.0" class="ax" text-anchor="end">0.18</text>
+<line x1="56" x2="686" y1="349.0" y2="349.0" class="grid"/><text x="50" y="353.0" class="ax" text-anchor="end">0.26</text>
+<line x1="56" x2="686" y1="298.0" y2="298.0" class="grid"/><text x="50" y="302.0" class="ax" text-anchor="end">0.35</text>
+<text x="56.0" y="520" class="ax" text-anchor="middle">wk 1</text>
+<text x="204.2" y="520" class="ax" text-anchor="middle">wk 13</text>
+<text x="364.8" y="520" class="ax" text-anchor="middle">wk 26</text>
+<text x="525.4" y="520" class="ax" text-anchor="middle">wk 39</text>
+<text x="686.0" y="520" class="ax" text-anchor="middle">wk 52</text>
+<line x1="364.8" x2="364.8" y1="294" y2="502" class="drift"/><text x="368.8" y="306" class="ax">reviewers degrade</text>
+<polyline points="56.0,452.7 68.4,441.1 80.7,438.2 93.1,434.8 105.4,431.9 117.8,433.0 130.1,434.8 142.5,427.2 154.8,426.7 167.2,424.9 179.5,424.9 191.9,435.9 204.2,432.5 216.6,429.6 228.9,420.9 241.3,415.6 253.6,420.9 266.0,407.5 278.4,412.8 290.7,415.6 303.1,409.3 315.4,427.2 327.8,434.8 340.1,426.7 352.5,424.3 364.8,416.2 377.2,383.8 389.5,372.8 401.9,357.7 414.2,340.3 426.6,350.2 438.9,336.8 451.3,328.7 463.6,331.0 476.0,335.1 488.4,342.0 500.7,351.9 513.1,351.3 525.4,357.1 537.8,368.1 550.1,371.6 562.5,369.3 574.8,354.8 587.2,346.7 599.5,340.3 611.9,342.6 624.2,345.5 636.6,357.1 648.9,373.9 661.3,378.0 673.6,382.6 686.0,369.3" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round"><title>Countersign, 10% spot-checks</title></polyline>
+<circle cx="56.0" cy="452.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 1: 0.085 escapes</title></circle>
+<circle cx="68.4" cy="441.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 2: 0.105 escapes</title></circle>
+<circle cx="80.7" cy="438.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 3: 0.11 escapes</title></circle>
+<circle cx="93.1" cy="434.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 4: 0.116 escapes</title></circle>
+<circle cx="105.4" cy="431.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 5: 0.121 escapes</title></circle>
+<circle cx="117.8" cy="433.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 6: 0.119 escapes</title></circle>
+<circle cx="130.1" cy="434.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 7: 0.116 escapes</title></circle>
+<circle cx="142.5" cy="427.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 8: 0.129 escapes</title></circle>
+<circle cx="154.8" cy="426.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 9: 0.13 escapes</title></circle>
+<circle cx="167.2" cy="424.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 10: 0.133 escapes</title></circle>
+<circle cx="179.5" cy="424.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 11: 0.133 escapes</title></circle>
+<circle cx="191.9" cy="435.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 12: 0.114 escapes</title></circle>
+<circle cx="204.2" cy="432.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 13: 0.12 escapes</title></circle>
+<circle cx="216.6" cy="429.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 14: 0.125 escapes</title></circle>
+<circle cx="228.9" cy="420.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 15: 0.14 escapes</title></circle>
+<circle cx="241.3" cy="415.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 16: 0.149 escapes</title></circle>
+<circle cx="253.6" cy="420.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 17: 0.14 escapes</title></circle>
+<circle cx="266.0" cy="407.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 18: 0.163 escapes</title></circle>
+<circle cx="278.4" cy="412.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 19: 0.154 escapes</title></circle>
+<circle cx="290.7" cy="415.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 20: 0.149 escapes</title></circle>
+<circle cx="303.1" cy="409.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 21: 0.16 escapes</title></circle>
+<circle cx="315.4" cy="427.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 22: 0.129 escapes</title></circle>
+<circle cx="327.8" cy="434.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 23: 0.116 escapes</title></circle>
+<circle cx="340.1" cy="426.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 24: 0.13 escapes</title></circle>
+<circle cx="352.5" cy="424.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 25: 0.134 escapes</title></circle>
+<circle cx="364.8" cy="416.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 26: 0.148 escapes</title></circle>
+<circle cx="377.2" cy="383.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 27: 0.204 escapes</title></circle>
+<circle cx="389.5" cy="372.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 28: 0.223 escapes</title></circle>
+<circle cx="401.9" cy="357.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 29: 0.249 escapes</title></circle>
+<circle cx="414.2" cy="340.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 30: 0.279 escapes</title></circle>
+<circle cx="426.6" cy="350.2" r="6" class="hit"><title>Countersign, 10% spot-checks, week 31: 0.262 escapes</title></circle>
+<circle cx="438.9" cy="336.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 32: 0.285 escapes</title></circle>
+<circle cx="451.3" cy="328.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 33: 0.299 escapes</title></circle>
+<circle cx="463.6" cy="331.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 34: 0.295 escapes</title></circle>
+<circle cx="476.0" cy="335.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 35: 0.288 escapes</title></circle>
+<circle cx="488.4" cy="342.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 36: 0.276 escapes</title></circle>
+<circle cx="500.7" cy="351.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 37: 0.259 escapes</title></circle>
+<circle cx="513.1" cy="351.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 38: 0.26 escapes</title></circle>
+<circle cx="525.4" cy="357.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 39: 0.25 escapes</title></circle>
+<circle cx="537.8" cy="368.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 40: 0.231 escapes</title></circle>
+<circle cx="550.1" cy="371.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 41: 0.225 escapes</title></circle>
+<circle cx="562.5" cy="369.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 42: 0.229 escapes</title></circle>
+<circle cx="574.8" cy="354.8" r="6" class="hit"><title>Countersign, 10% spot-checks, week 43: 0.254 escapes</title></circle>
+<circle cx="587.2" cy="346.7" r="6" class="hit"><title>Countersign, 10% spot-checks, week 44: 0.268 escapes</title></circle>
+<circle cx="599.5" cy="340.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 45: 0.279 escapes</title></circle>
+<circle cx="611.9" cy="342.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 46: 0.275 escapes</title></circle>
+<circle cx="624.2" cy="345.5" r="6" class="hit"><title>Countersign, 10% spot-checks, week 47: 0.27 escapes</title></circle>
+<circle cx="636.6" cy="357.1" r="6" class="hit"><title>Countersign, 10% spot-checks, week 48: 0.25 escapes</title></circle>
+<circle cx="648.9" cy="373.9" r="6" class="hit"><title>Countersign, 10% spot-checks, week 49: 0.221 escapes</title></circle>
+<circle cx="661.3" cy="378.0" r="6" class="hit"><title>Countersign, 10% spot-checks, week 50: 0.214 escapes</title></circle>
+<circle cx="673.6" cy="382.6" r="6" class="hit"><title>Countersign, 10% spot-checks, week 51: 0.206 escapes</title></circle>
+<circle cx="686.0" cy="369.3" r="6" class="hit"><title>Countersign, 10% spot-checks, week 52: 0.229 escapes</title></circle>
+<polyline points="56.0,452.7 68.4,441.1 80.7,436.5 93.1,431.9 105.4,427.8 117.8,429.6 130.1,430.1 142.5,423.2 154.8,422.0 167.2,420.3 179.5,419.1 191.9,431.9 204.2,429.0 216.6,424.9 228.9,418.5 241.3,412.2 253.6,416.8 266.0,404.1 278.4,407.5 290.7,411.6 303.1,404.6 315.4,422.0 327.8,431.9 340.1,423.2 352.5,420.9 364.8,412.8 377.2,375.1 389.5,365.8 401.9,350.7 414.2,333.4 426.6,346.7 438.9,332.8 451.3,322.3 463.6,322.9 476.0,327.6 488.4,335.7 500.7,347.8 513.1,346.7 525.4,351.9 537.8,360.0 550.1,363.5 562.5,363.5 574.8,346.7 587.2,342.0 599.5,333.9 611.9,334.5 624.2,340.3 636.6,349.0 648.9,365.2 661.3,369.9 673.6,373.9 686.0,361.8" fill="none" stroke="var(--series-2)" stroke-width="2" stroke-linejoin="round"><title>Countersign, spot-checks off</title></polyline>
+<circle cx="56.0" cy="452.7" r="6" class="hit"><title>Countersign, spot-checks off, week 1: 0.085 escapes</title></circle>
+<circle cx="68.4" cy="441.1" r="6" class="hit"><title>Countersign, spot-checks off, week 2: 0.105 escapes</title></circle>
+<circle cx="80.7" cy="436.5" r="6" class="hit"><title>Countersign, spot-checks off, week 3: 0.113 escapes</title></circle>
+<circle cx="93.1" cy="431.9" r="6" class="hit"><title>Countersign, spot-checks off, week 4: 0.121 escapes</title></circle>
+<circle cx="105.4" cy="427.8" r="6" class="hit"><title>Countersign, spot-checks off, week 5: 0.128 escapes</title></circle>
+<circle cx="117.8" cy="429.6" r="6" class="hit"><title>Countersign, spot-checks off, week 6: 0.125 escapes</title></circle>
+<circle cx="130.1" cy="430.1" r="6" class="hit"><title>Countersign, spot-checks off, week 7: 0.124 escapes</title></circle>
+<circle cx="142.5" cy="423.2" r="6" class="hit"><title>Countersign, spot-checks off, week 8: 0.136 escapes</title></circle>
+<circle cx="154.8" cy="422.0" r="6" class="hit"><title>Countersign, spot-checks off, week 9: 0.138 escapes</title></circle>
+<circle cx="167.2" cy="420.3" r="6" class="hit"><title>Countersign, spot-checks off, week 10: 0.141 escapes</title></circle>
+<circle cx="179.5" cy="419.1" r="6" class="hit"><title>Countersign, spot-checks off, week 11: 0.143 escapes</title></circle>
+<circle cx="191.9" cy="431.9" r="6" class="hit"><title>Countersign, spot-checks off, week 12: 0.121 escapes</title></circle>
+<circle cx="204.2" cy="429.0" r="6" class="hit"><title>Countersign, spot-checks off, week 13: 0.126 escapes</title></circle>
+<circle cx="216.6" cy="424.9" r="6" class="hit"><title>Countersign, spot-checks off, week 14: 0.133 escapes</title></circle>
+<circle cx="228.9" cy="418.5" r="6" class="hit"><title>Countersign, spot-checks off, week 15: 0.144 escapes</title></circle>
+<circle cx="241.3" cy="412.2" r="6" class="hit"><title>Countersign, spot-checks off, week 16: 0.155 escapes</title></circle>
+<circle cx="253.6" cy="416.8" r="6" class="hit"><title>Countersign, spot-checks off, week 17: 0.147 escapes</title></circle>
+<circle cx="266.0" cy="404.1" r="6" class="hit"><title>Countersign, spot-checks off, week 18: 0.169 escapes</title></circle>
+<circle cx="278.4" cy="407.5" r="6" class="hit"><title>Countersign, spot-checks off, week 19: 0.163 escapes</title></circle>
+<circle cx="290.7" cy="411.6" r="6" class="hit"><title>Countersign, spot-checks off, week 20: 0.156 escapes</title></circle>
+<circle cx="303.1" cy="404.6" r="6" class="hit"><title>Countersign, spot-checks off, week 21: 0.168 escapes</title></circle>
+<circle cx="315.4" cy="422.0" r="6" class="hit"><title>Countersign, spot-checks off, week 22: 0.138 escapes</title></circle>
+<circle cx="327.8" cy="431.9" r="6" class="hit"><title>Countersign, spot-checks off, week 23: 0.121 escapes</title></circle>
+<circle cx="340.1" cy="423.2" r="6" class="hit"><title>Countersign, spot-checks off, week 24: 0.136 escapes</title></circle>
+<circle cx="352.5" cy="420.9" r="6" class="hit"><title>Countersign, spot-checks off, week 25: 0.14 escapes</title></circle>
+<circle cx="364.8" cy="412.8" r="6" class="hit"><title>Countersign, spot-checks off, week 26: 0.154 escapes</title></circle>
+<circle cx="377.2" cy="375.1" r="6" class="hit"><title>Countersign, spot-checks off, week 27: 0.219 escapes</title></circle>
+<circle cx="389.5" cy="365.8" r="6" class="hit"><title>Countersign, spot-checks off, week 28: 0.235 escapes</title></circle>
+<circle cx="401.9" cy="350.7" r="6" class="hit"><title>Countersign, spot-checks off, week 29: 0.261 escapes</title></circle>
+<circle cx="414.2" cy="333.4" r="6" class="hit"><title>Countersign, spot-checks off, week 30: 0.291 escapes</title></circle>
+<circle cx="426.6" cy="346.7" r="6" class="hit"><title>Countersign, spot-checks off, week 31: 0.268 escapes</title></circle>
+<circle cx="438.9" cy="332.8" r="6" class="hit"><title>Countersign, spot-checks off, week 32: 0.292 escapes</title></circle>
+<circle cx="451.3" cy="322.3" r="6" class="hit"><title>Countersign, spot-checks off, week 33: 0.31 escapes</title></circle>
+<circle cx="463.6" cy="322.9" r="6" class="hit"><title>Countersign, spot-checks off, week 34: 0.309 escapes</title></circle>
+<circle cx="476.0" cy="327.6" r="6" class="hit"><title>Countersign, spot-checks off, week 35: 0.301 escapes</title></circle>
+<circle cx="488.4" cy="335.7" r="6" class="hit"><title>Countersign, spot-checks off, week 36: 0.287 escapes</title></circle>
+<circle cx="500.7" cy="347.8" r="6" class="hit"><title>Countersign, spot-checks off, week 37: 0.266 escapes</title></circle>
+<circle cx="513.1" cy="346.7" r="6" class="hit"><title>Countersign, spot-checks off, week 38: 0.268 escapes</title></circle>
+<circle cx="525.4" cy="351.9" r="6" class="hit"><title>Countersign, spot-checks off, week 39: 0.259 escapes</title></circle>
+<circle cx="537.8" cy="360.0" r="6" class="hit"><title>Countersign, spot-checks off, week 40: 0.245 escapes</title></circle>
+<circle cx="550.1" cy="363.5" r="6" class="hit"><title>Countersign, spot-checks off, week 41: 0.239 escapes</title></circle>
+<circle cx="562.5" cy="363.5" r="6" class="hit"><title>Countersign, spot-checks off, week 42: 0.239 escapes</title></circle>
+<circle cx="574.8" cy="346.7" r="6" class="hit"><title>Countersign, spot-checks off, week 43: 0.268 escapes</title></circle>
+<circle cx="587.2" cy="342.0" r="6" class="hit"><title>Countersign, spot-checks off, week 44: 0.276 escapes</title></circle>
+<circle cx="599.5" cy="333.9" r="6" class="hit"><title>Countersign, spot-checks off, week 45: 0.29 escapes</title></circle>
+<circle cx="611.9" cy="334.5" r="6" class="hit"><title>Countersign, spot-checks off, week 46: 0.289 escapes</title></circle>
+<circle cx="624.2" cy="340.3" r="6" class="hit"><title>Countersign, spot-checks off, week 47: 0.279 escapes</title></circle>
+<circle cx="636.6" cy="349.0" r="6" class="hit"><title>Countersign, spot-checks off, week 48: 0.264 escapes</title></circle>
+<circle cx="648.9" cy="365.2" r="6" class="hit"><title>Countersign, spot-checks off, week 49: 0.236 escapes</title></circle>
+<circle cx="661.3" cy="369.9" r="6" class="hit"><title>Countersign, spot-checks off, week 50: 0.228 escapes</title></circle>
+<circle cx="673.6" cy="373.9" r="6" class="hit"><title>Countersign, spot-checks off, week 51: 0.221 escapes</title></circle>
+<circle cx="686.0" cy="361.8" r="6" class="hit"><title>Countersign, spot-checks off, week 52: 0.242 escapes</title></circle>
+<polyline points="56.0,432.5 68.4,427.8 80.7,441.1 93.1,446.4 105.4,445.2 117.8,443.5 130.1,434.8 142.5,431.9 154.8,434.2 167.2,431.9 179.5,429.6 191.9,426.7 204.2,417.4 216.6,416.8 228.9,415.6 241.3,415.6 253.6,424.9 266.0,431.9 278.4,435.9 290.7,434.2 303.1,434.2 315.4,424.9 327.8,426.7 340.1,433.0 352.5,424.9 364.8,440.6 377.2,426.7 389.5,403.5 401.9,380.9 414.2,362.9 426.6,363.5 438.9,368.1 451.3,385.5 463.6,380.9 476.0,384.4 488.4,394.8 500.7,398.8 513.1,407.0 525.4,406.4 537.8,402.9 550.1,404.6 562.5,406.4 574.8,407.5 587.2,396.5 599.5,395.4 611.9,394.8 624.2,397.1 636.6,407.5 648.9,407.0 661.3,408.7 673.6,409.3 686.0,409.9" fill="none" stroke="var(--series-4)" stroke-width="2" stroke-linejoin="round"><title>What-if: + weekly canaries, restore after 20 agreeing checks</title></polyline>
+<circle cx="56.0" cy="432.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 1: 0.12 escapes</title></circle>
+<circle cx="68.4" cy="427.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 2: 0.128 escapes</title></circle>
+<circle cx="80.7" cy="441.1" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 3: 0.105 escapes</title></circle>
+<circle cx="93.1" cy="446.4" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 4: 0.096 escapes</title></circle>
+<circle cx="105.4" cy="445.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 5: 0.098 escapes</title></circle>
+<circle cx="117.8" cy="443.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 6: 0.101 escapes</title></circle>
+<circle cx="130.1" cy="434.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 7: 0.116 escapes</title></circle>
+<circle cx="142.5" cy="431.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 8: 0.121 escapes</title></circle>
+<circle cx="154.8" cy="434.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 9: 0.117 escapes</title></circle>
+<circle cx="167.2" cy="431.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 10: 0.121 escapes</title></circle>
+<circle cx="179.5" cy="429.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 11: 0.125 escapes</title></circle>
+<circle cx="191.9" cy="426.7" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 12: 0.13 escapes</title></circle>
+<circle cx="204.2" cy="417.4" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 13: 0.146 escapes</title></circle>
+<circle cx="216.6" cy="416.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 14: 0.147 escapes</title></circle>
+<circle cx="228.9" cy="415.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 15: 0.149 escapes</title></circle>
+<circle cx="241.3" cy="415.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 16: 0.149 escapes</title></circle>
+<circle cx="253.6" cy="424.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 17: 0.133 escapes</title></circle>
+<circle cx="266.0" cy="431.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 18: 0.121 escapes</title></circle>
+<circle cx="278.4" cy="435.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 19: 0.114 escapes</title></circle>
+<circle cx="290.7" cy="434.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 20: 0.117 escapes</title></circle>
+<circle cx="303.1" cy="434.2" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 21: 0.117 escapes</title></circle>
+<circle cx="315.4" cy="424.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 22: 0.133 escapes</title></circle>
+<circle cx="327.8" cy="426.7" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 23: 0.13 escapes</title></circle>
+<circle cx="340.1" cy="433.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 24: 0.119 escapes</title></circle>
+<circle cx="352.5" cy="424.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 25: 0.133 escapes</title></circle>
+<circle cx="364.8" cy="440.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 26: 0.106 escapes</title></circle>
+<circle cx="377.2" cy="426.7" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 27: 0.13 escapes</title></circle>
+<circle cx="389.5" cy="403.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 28: 0.17 escapes</title></circle>
+<circle cx="401.9" cy="380.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 29: 0.209 escapes</title></circle>
+<circle cx="414.2" cy="362.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 30: 0.24 escapes</title></circle>
+<circle cx="426.6" cy="363.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 31: 0.239 escapes</title></circle>
+<circle cx="438.9" cy="368.1" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 32: 0.231 escapes</title></circle>
+<circle cx="451.3" cy="385.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 33: 0.201 escapes</title></circle>
+<circle cx="463.6" cy="380.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 34: 0.209 escapes</title></circle>
+<circle cx="476.0" cy="384.4" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 35: 0.203 escapes</title></circle>
+<circle cx="488.4" cy="394.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 36: 0.185 escapes</title></circle>
+<circle cx="500.7" cy="398.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 37: 0.178 escapes</title></circle>
+<circle cx="513.1" cy="407.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 38: 0.164 escapes</title></circle>
+<circle cx="525.4" cy="406.4" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 39: 0.165 escapes</title></circle>
+<circle cx="537.8" cy="402.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 40: 0.171 escapes</title></circle>
+<circle cx="550.1" cy="404.6" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 41: 0.168 escapes</title></circle>
+<circle cx="562.5" cy="406.4" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 42: 0.165 escapes</title></circle>
+<circle cx="574.8" cy="407.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 43: 0.163 escapes</title></circle>
+<circle cx="587.2" cy="396.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 44: 0.182 escapes</title></circle>
+<circle cx="599.5" cy="395.4" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 45: 0.184 escapes</title></circle>
+<circle cx="611.9" cy="394.8" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 46: 0.185 escapes</title></circle>
+<circle cx="624.2" cy="397.1" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 47: 0.181 escapes</title></circle>
+<circle cx="636.6" cy="407.5" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 48: 0.163 escapes</title></circle>
+<circle cx="648.9" cy="407.0" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 49: 0.164 escapes</title></circle>
+<circle cx="661.3" cy="408.7" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 50: 0.161 escapes</title></circle>
+<circle cx="673.6" cy="409.3" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 51: 0.16 escapes</title></circle>
+<circle cx="686.0" cy="409.9" r="6" class="hit"><title>What-if: + weekly canaries, restore after 20 agreeing checks, week 52: 0.159 escapes</title></circle>
+<polyline points="56.0,406.4 68.4,404.6 80.7,412.2 93.1,413.9 105.4,418.0 117.8,413.3 130.1,415.6 142.5,409.9 154.8,412.2 167.2,422.0 179.5,411.6 191.9,414.5 204.2,414.5 216.6,411.6 228.9,416.2 241.3,419.1 253.6,418.5 266.0,407.5 278.4,405.8 290.7,401.7 303.1,391.9 315.4,403.5 327.8,406.4 340.1,406.4 352.5,409.9 364.8,401.2 377.2,391.9 389.5,397.1 401.9,399.4 414.2,403.5 426.6,409.9 438.9,399.4 451.3,394.8 463.6,395.4 476.0,397.7 488.4,394.2 500.7,395.4 513.1,397.1 525.4,403.5 537.8,417.4 550.1,420.3 562.5,415.1 574.8,407.5 587.2,397.1 599.5,390.1 611.9,396.5 624.2,394.8 636.6,406.4 648.9,420.3 661.3,421.4 673.6,424.3 686.0,418.5" fill="none" stroke="var(--series-3)" stroke-width="2" stroke-linejoin="round"><title>Full human review (baseline, same CI checks)</title></polyline>
+<circle cx="56.0" cy="406.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 1: 0.165 escapes</title></circle>
+<circle cx="68.4" cy="404.6" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 2: 0.168 escapes</title></circle>
+<circle cx="80.7" cy="412.2" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 3: 0.155 escapes</title></circle>
+<circle cx="93.1" cy="413.9" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 4: 0.152 escapes</title></circle>
+<circle cx="105.4" cy="418.0" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 5: 0.145 escapes</title></circle>
+<circle cx="117.8" cy="413.3" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 6: 0.153 escapes</title></circle>
+<circle cx="130.1" cy="415.6" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 7: 0.149 escapes</title></circle>
+<circle cx="142.5" cy="409.9" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 8: 0.159 escapes</title></circle>
+<circle cx="154.8" cy="412.2" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 9: 0.155 escapes</title></circle>
+<circle cx="167.2" cy="422.0" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 10: 0.138 escapes</title></circle>
+<circle cx="179.5" cy="411.6" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 11: 0.156 escapes</title></circle>
+<circle cx="191.9" cy="414.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 12: 0.151 escapes</title></circle>
+<circle cx="204.2" cy="414.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 13: 0.151 escapes</title></circle>
+<circle cx="216.6" cy="411.6" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 14: 0.156 escapes</title></circle>
+<circle cx="228.9" cy="416.2" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 15: 0.148 escapes</title></circle>
+<circle cx="241.3" cy="419.1" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 16: 0.143 escapes</title></circle>
+<circle cx="253.6" cy="418.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 17: 0.144 escapes</title></circle>
+<circle cx="266.0" cy="407.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 18: 0.163 escapes</title></circle>
+<circle cx="278.4" cy="405.8" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 19: 0.166 escapes</title></circle>
+<circle cx="290.7" cy="401.7" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 20: 0.173 escapes</title></circle>
+<circle cx="303.1" cy="391.9" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 21: 0.19 escapes</title></circle>
+<circle cx="315.4" cy="403.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 22: 0.17 escapes</title></circle>
+<circle cx="327.8" cy="406.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 23: 0.165 escapes</title></circle>
+<circle cx="340.1" cy="406.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 24: 0.165 escapes</title></circle>
+<circle cx="352.5" cy="409.9" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 25: 0.159 escapes</title></circle>
+<circle cx="364.8" cy="401.2" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 26: 0.174 escapes</title></circle>
+<circle cx="377.2" cy="391.9" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 27: 0.19 escapes</title></circle>
+<circle cx="389.5" cy="397.1" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 28: 0.181 escapes</title></circle>
+<circle cx="401.9" cy="399.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 29: 0.177 escapes</title></circle>
+<circle cx="414.2" cy="403.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 30: 0.17 escapes</title></circle>
+<circle cx="426.6" cy="409.9" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 31: 0.159 escapes</title></circle>
+<circle cx="438.9" cy="399.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 32: 0.177 escapes</title></circle>
+<circle cx="451.3" cy="394.8" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 33: 0.185 escapes</title></circle>
+<circle cx="463.6" cy="395.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 34: 0.184 escapes</title></circle>
+<circle cx="476.0" cy="397.7" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 35: 0.18 escapes</title></circle>
+<circle cx="488.4" cy="394.2" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 36: 0.186 escapes</title></circle>
+<circle cx="500.7" cy="395.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 37: 0.184 escapes</title></circle>
+<circle cx="513.1" cy="397.1" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 38: 0.181 escapes</title></circle>
+<circle cx="525.4" cy="403.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 39: 0.17 escapes</title></circle>
+<circle cx="537.8" cy="417.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 40: 0.146 escapes</title></circle>
+<circle cx="550.1" cy="420.3" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 41: 0.141 escapes</title></circle>
+<circle cx="562.5" cy="415.1" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 42: 0.15 escapes</title></circle>
+<circle cx="574.8" cy="407.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 43: 0.163 escapes</title></circle>
+<circle cx="587.2" cy="397.1" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 44: 0.181 escapes</title></circle>
+<circle cx="599.5" cy="390.1" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 45: 0.193 escapes</title></circle>
+<circle cx="611.9" cy="396.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 46: 0.182 escapes</title></circle>
+<circle cx="624.2" cy="394.8" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 47: 0.185 escapes</title></circle>
+<circle cx="636.6" cy="406.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 48: 0.165 escapes</title></circle>
+<circle cx="648.9" cy="420.3" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 49: 0.141 escapes</title></circle>
+<circle cx="661.3" cy="421.4" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 50: 0.139 escapes</title></circle>
+<circle cx="673.6" cy="424.3" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 51: 0.134 escapes</title></circle>
+<circle cx="686.0" cy="418.5" r="6" class="hit"><title>Full human review (baseline, same CI checks), week 52: 0.144 escapes</title></circle></svg>
+<table><thead><tr><th>Scenario</th><th>min/wk, weeks 1-4</th><th>min/wk, wk 9-26</th><th>escapes/wk, wk 9-26</th>
+<th>min/wk after drift</th><th>escapes/wk after drift</th></tr></thead><tbody><tr><td>Countersign, 10% spot-checks</td><td>565.29</td><td>510.31</td><td>0.14</td><td>517.07</td><td>0.26</td></tr><tr><td>Countersign, spot-checks off</td><td>548.85</td><td>487.66</td><td>0.15</td><td>495.61</td><td>0.27</td></tr><tr><td>What-if: + weekly canaries, restore after 20 agreeing checks</td><td>708.91</td><td>537.52</td><td>0.13</td><td>671.96</td><td>0.18</td></tr><tr><td>Full human review (baseline, same CI checks)</td><td>710.0</td><td>710.0</td><td>0.16</td><td>710.0</td><td>0.17</td></tr><tr><td>No trust ledger: clearance never withdrawn (table only)</td><td>482.23</td><td>480.4</td><td>0.15</td><td>479.98</td><td>0.28</td></tr></tbody></table>
+<p class="ax" style="fill:none">Every area starts on probation (no track record). Hover a point for its value. Generated by <code>countersign simulate</code>.</p>
+</div></body></html>

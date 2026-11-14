@@ -185,6 +185,27 @@ def cmd_costs(a) -> int:
     return 0
 
 
+def cmd_history(a) -> int:
+    from . import history
+    ws = _ws(a)
+    r = history.replay(ws)
+    out = history.write(ws, r)
+    for mode, s in r["modes"].items():
+        print(f"{mode}: {s['routed_to_humans']}/{s['n']} routed to a human, {s['confusion']['escape_cleared']}/{s['escapes']} escapes cleared")
+    print(f"wrote {out}/results.json, results.md (real data)")
+    return 0
+
+
+def cmd_simulate(a) -> int:
+    from . import simulate
+    ws = _ws(a)
+    r = simulate.simulate(ws, {"weeks": a.weeks, "replicates": a.replicates, "spot_rate": a.spot_rate})
+    out = simulate.write(ws, r, simulate.sensitivity(ws))
+    print(simulate.main_summary(r))
+    print(f"wrote {out}/results.json, sensitivity.json, trust_over_time.html (SIMULATED)")
+    return 0
+
+
 def parser() -> argparse.ArgumentParser:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--root", default=".", help="repo root holding mandate/, requirements/, packs/, ledger/, keys/ (default: .)")
@@ -241,6 +262,11 @@ def parser() -> argparse.ArgumentParser:
     sp.add_argument("--adjudicator", default=None, help="default: the mandate's adjudicator")
     add("costs", cmd_costs, "render docs/COSTS.md from measurement/costs.yaml")
     add("replay", cmd_replay, "run every change (incl. seeded mutants) and write measurement/results.{json,md}")
+    add("history", cmd_history, "route real upstream PRs from their diffs and compare with labelled escapes (measurement/history/)")
+    sp = add("simulate", cmd_simulate, "SIMULATED trust over time; writes measurement/simulation/")
+    sp.add_argument("--weeks", type=int, default=52)
+    sp.add_argument("--replicates", type=int, default=200)
+    sp.add_argument("--spot-rate", type=float, default=0.10)
     return ap
 
 
