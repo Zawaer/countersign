@@ -187,8 +187,8 @@ def cmd_review_llm(a) -> int:
     status = 0
     for change in a.changes:
         try:
-            out = (llm.review_from_raw(ws, change, a.reviewer, a.repo, budget=a.context_chars) if a.from_raw
-                   else llm.run_review(ws, change, a.reviewer, a.repo, budget=a.context_chars))
+            out = (llm.review_from_raw(ws, change, a.reviewer, a.repo, budget=a.context_chars, blind=a.blind) if a.from_raw
+                   else llm.run_review(ws, change, a.reviewer, a.repo, budget=a.context_chars, blind=a.blind))
         except llm.LLMError as e:
             print(f"error: {change}: {e}", file=sys.stderr)
             status = 1
@@ -304,6 +304,8 @@ def parser() -> argparse.ArgumentParser:
     sp.add_argument("--reviewer", required=True, choices=sorted(llm.PRESETS))
     sp.add_argument("--context-chars", type=int, default=None, help=f"context budget in characters (default {llm.DEFAULT_CONTEXT_CHARS})")
     sp.add_argument("--from-raw", action="store_true", help="re-parse the saved raw response instead of calling the API")
+    sp.add_argument("--blind", action=argparse.BooleanOptionalAction, default=True,
+                    help="seeded changes (<n>-mutK, <n>-inject): show the base change's id and no seeding record (default: on)")
     sp = add("adjudicate", cmd_adjudicate, "only if reviewers disagree: the adjudicator's rulings (advisory; never clears)")
     sp.add_argument("changes", nargs="+")
     sp.add_argument("--adjudicator", default=None, help="default: the mandate's adjudicator")
