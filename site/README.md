@@ -9,6 +9,6 @@ python3 site/build.py                                        # stdlib only; read
 python3 -m http.server 3472 --bind 0.0.0.0 --directory site  # then open http://localhost:3472/
 ```
 
-Rerun `build.py` after anything under those folders changes. Missing inputs show as "not recorded yet", never as a made-up number. Design rules: [DESIGN.md](DESIGN.md).
+Rerun `build.py` after anything under those folders changes. The README screenshots in `docs/img/` come from these pages: rerun `python3 scripts/screenshots.py` (Playwright + Pillow; serves `site/` itself, light theme, 1280x800 at 2x) after a page changes. Missing inputs show as "not recorded yet", never as a made-up number. Design rules: [DESIGN.md](DESIGN.md).
 
 **Publishing.** `.github/workflows/pages.yml` rebuilds and publishes `site/` to GitHub Pages on every push to `main` that touches its inputs. It only works once the repository is public (planned for Sunday, by Toivo) and Pages is set to "GitHub Actions" in the repo settings; until then the deploy step fails and the preview at http://localhost:3472/ is the live copy.

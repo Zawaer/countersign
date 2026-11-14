@@ -4,7 +4,15 @@
 
 > **AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.**
 
+![Change 2234 in the demo: the real diff with pins on the lines that matter, the "Fixes a different crash" pin open showing Claude's verified finding, and one verdict at the top: ASK, Toivo must decide](docs/img/scene.png)
+
 **In numbers:** replayed on <!--n:history_prs-->109<!--/n--> real merged MessagePack-CSharp PRs (signed mandate v<!--n:history_mandate-->6<!--/n-->, upstream CI credited as passed), the AI would have cleared <!--n:history_cleared-->24<!--/n--> of them, and <!--n:history_escapes_cleared-->0<!--/n--> of the <!--n:history_escapes-->11<!--/n--> that later needed a revert or a follow-up fix. On Tieto's <!--n:agent_changes-->4<!--/n--> agent-written changes it sent <!--n:agent_routed-->4<!--/n--> to a named owner, each with its reason.
+
+## See it
+
+<img src="docs/img/pr.png" width="32%" alt="The pull request on GitHub: the Countersign App's sticky comment says ask, awaiting Toivo, and its required status blocks merging"> <img src="docs/img/ledger-tamper.png" width="32%" alt="Tour step 6: after pressing Tamper, the ledger check shows LEDGER INVALID at the edited line"> <img src="docs/img/overview.png" width="32%" alt="The numbers page: three headline numbers (past PRs the AI would clear, planted bugs caught by a check, pipeline attacks stopped)">
+
+**On the PR:** the App's required status blocks merging until the owner signs. · **Forge the record:** edit one ledger line and the check says INVALID. · **The numbers:** three, each traceable to its rows.
 
 **Three words used throughout:**
 - **Mandate:** a signed, versioned file per repo that says, area by area, how far the AI may go alone and who owns each area.
