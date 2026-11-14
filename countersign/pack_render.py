@@ -39,14 +39,6 @@ def _short_id(cid: str) -> str:
     return parts[-1] if len(parts) >= 3 else cid
 
 
-def _ruling_text(r: dict) -> str:
-    sup = "; ".join(f"{_name(x.get('reviewer', '?'))}: {x.get('claim', '')} ({x.get('why', '')})" for x in r.get("supported", []))
-    uns = "; ".join(f"{_name(x.get('reviewer', '?'))}: {x.get('claim', '')} ({x.get('why', '')})" for x in r.get("unsupported", []))
-    settle = "; ".join(r.get("evidence_that_would_settle", []))
-    return (f"Supported by the cited evidence: {sup or 'nothing'}. Not supported: {uns or 'nothing'}. "
-            f"What would settle it: {settle or 'not stated'}.")
-
-
 def _rulings(p: dict) -> list[dict]:
     return [r for r in (p.get("adjudication") or {}).get("rulings", []) if not r.get("stale")]
 
@@ -418,26 +410,6 @@ def _md_code(ex: dict, path: str) -> list[str]:
     return [f"{fence}text", f"// {path} @ {ex['sha']}", *body, fence]
 
 
-def _md_ev_link(ref: str, label: str) -> str:
-    return f"[`{label}`](#{ref})"
-
-
-def _md_fold(head: str, rest: str) -> str:
-    """Markdown headline with the rest folded (one line, so it also works inside list items and table cells)."""
-    return f"{head} <details><summary>more</summary>{_html_inline(rest)}</details>" if rest else head
-
-
-def _md_ruling(p: dict, r: dict) -> list[str]:
-    """One line per dispute (the details summary); the adjudicator's note and full ruling folded under it."""
-    def items(xs: list) -> list[str]:
-        flat = (lambda t: str(t or "").replace("\n", " "))
-        return [f"- **{_name(x.get('reviewer', '?'))}**: {flat(x.get('claim'))} ({flat(x.get('why'))})" for x in xs] or ["- nothing"]
-    return ([f"<details><summary>{_html_inline(_ruling_line(p, r))} (advisory)</summary>", ""]
-            + ([str(r["note"]).replace("\n", " "), ""] if r.get("note") else [])
-            + ["**Backed by the cited evidence**", "", *items(r.get("supported", [])), "", "**Not backed**", "", *items(r.get("unsupported", [])), "",
-               "**What would settle it**", "", *(f"- {x}" for x in r.get("evidence_that_would_settle", [])), "", "</details>", ""])
-
-
 def _md_sign(sg: dict) -> list[str]:
     out = [f"**{sg['owner']} signs** ({'required' if sg['required'] else 'not required: AI-cleared, spot-checks apply'}; "
            f"{', '.join(sg['decisions'])})", "", f"```\n{_short_command(sg)}\n```", ""]
@@ -454,146 +426,8 @@ def _md_sign(sg: dict) -> list[str]:
     return out
 
 
-def _md_card(p: dict) -> list[str]:
-    c, s = p["card"], p["story"]
-    rulings = {str(r.get("dispute")): r for r in _rulings(p)}
-    out = [f"#### Sign-off card: change {p['change']} is {p['tier'].upper()}, owner {p['owner']}", "",
-           f"**{s['headline']}**", "", f"{s['what']} {s['why']}", ""]
-    if p.get("mutation"):
-        out += [f"> Seeded mutant of {p['mutation'].get('of')}: {p['mutation'].get('description')}", ""]
-    out += [f"**Why {p['tier']}**", ""]
-    for i, r in enumerate(c["reasons"], 1):
-        head, rest = _split(r["text"], 110, REASON_SEPS)
-        out.append(f"{i}. " + _md_fold(f"{head} ([evidence]({r['link']}))", rest))
-    if c["more_drivers"]:
-        out.append(f"\n<sub>All {c['more_drivers']} tier drivers are under Full detail.</sub>")
-    out += ["", "**Requirement trace**", "", "| Status | Clause | Why |", "|---|---|---|"]
-    for t in c["trace"]:
-        head, rest = _trace_why(p, t)
-        out.append(f"| **{t['label'].upper()}** | [{_short_id(t['id'])}](#{t['anchor']}) | " + _cell(_md_fold(head, rest)) + " |")
-    out.append("")
-    for t in c["trace"]:
-        if t["id"] in rulings:
-            out += _md_ruling(p, rulings[t["id"]])
-    out += ["**What the AI found**", ""]
-    for f in c["found"]:
-        chips = " ".join(_md_ev_link(x["ref"], x["label"]) for x in f["chips"])
-        out.append(f"- **{f['severity']}** [{f['title']}](#{f['anchor']}) ({_name(f['reviewer'])} {f['key'].split(':', 1)[1]}"
-                   + (f", also {', '.join(_name(n) for n in f['shared_with'])}" if f["shared_with"] else "") + f") {chips}")
-    if not c["found"]:
-        out.append("- No verified findings.")
-    if c["found_total"] > len(c["found"]):
-        out.append(f"- +{c['found_total'] - len(c['found'])} more under Evidence.")
-    out.append("")
-    for f in c["found"]:
-        if "finding:" + f["key"] in rulings:
-            out += _md_ruling(p, rulings["finding:" + f["key"]])
-    out += ["<a id=\"refused\"></a>**What the AI refused to decide, and who should**", ""]
-    for g in c["refused"]:
-        out.append(f"- <a id=\"{g['anchor']}\"></a>**{g['topic']}** *Who:* {'; '.join(g['who_should_decide'])} "
-                   f"(raised by {', '.join(_name(n) for n in g['raised_by'])}) <details><summary>why</summary>{_html_inline(g['why'])}</details>")
-    if c["refused_clauses"]:
-        out.append(f"- Whether {', '.join(f'[{_short_id(x)}](#chain-{x})' for x in c['refused_clauses'])} "
-                   f"{'is' if len(c['refused_clauses']) == 1 else 'are'} met: see the trace. *Who:* {p['owner']}")
-    if not (c["refused"] or c["refused_clauses"]):
-        out.append("- Nothing: every clause was proven and no reviewer refused a topic.")
-    if c.get("refused_peripheral"):
-        out += ["", f"<details id=\"refused-peripheral\"><summary>{_peripheral(c)} (out of scope for this change)</summary>"
-                + " · ".join(f"<a id=\"{g['anchor']}\"></a>{_html_inline(g['topic'])} ({_name(g['raised_by'][0])})" for g in c["refused_peripheral"])
-                + "</details>"]
-    out += ["", "**Not checked, and why**", ""]
-    for x in c["not_checked"]:
-        head, rest = _split(x["reason"], 60)
-        out.append(f"- `{x['id']}`: " + _md_fold(head, rest))
-    if c["known_gaps"]:
-        out.append(f"- Standing pipeline gaps: {', '.join(f'`{g}`' for g in c['known_gaps'])}")
-    out += ["", "**Residual risk you accept by signing**", ""] + [f"- {r['text']}" for r in c["residual"]]
-    if c.get("residual_more"):
-        out += ["", f"<details><summary>{_more_risks(c)}</summary>" + " · ".join(_html_inline(r["text"]) for r in c["residual_more"]) + "</details>"]
-    return out + [""] + _md_sign(c["sign"])
-
-
-def _md_trust(p: dict) -> list[str]:
-    ev = p["evidence_index"]
-    out = ["<details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>", ""]
-    for t in p["trust"]:
-        out += [f"<a id=\"{'chain-' + t['id']}\"></a>", f"#### {t['id']}: **{t['label'].upper()}**", "", f"> {t['text']}", ""]
-        if t["status"] in ("proven", "held_before"):
-            held = t["status"] == "held_before"
-            if held:
-                out.append(f"- **Held before:** {t['why']}")
-            out.append("- **Checks passed:** " + (", ".join(f"`{x['id']}` {x['status']}" for x in t["checks"]) or "none mandated"))
-            fails = ", ".join(_md_ev_link(x["ref"], x["name"].rsplit(".", 1)[-1]) if x["ref"] else f"`{x['name'].rsplit('.', 1)[-1]}`"
-                              for x in t["tests_fail_without_fix"])
-            passes = ", ".join(_md_ev_link(x["ref"], x["name"].rsplit(".", 1)[-1]) for x in t["tests_pass_without_fix"])
-            if held:
-                if passes:
-                    out.append("- **The clause's own tests pass without the fix:** " + passes)
-                if fails:
-                    out.append("- **Other cited tests fail without the fix** (not this clause's own tests): " + fails)
-            else:
-                out.append("- **Fails without the fix:** " + (fails or "no cited test does"))
-                if passes:
-                    out.append("- **Passes without the fix too:** " + passes)
-            for r in t["reviewers"]:
-                out.append(f"- **{_name(r['reviewer'])}** says {r['verdict'].replace('_', ' ')} ({r['verified']}/{r['cited']} citations verified): "
-                           + " ".join(_md_ev_link(x, ev[x]["label"]) for x in r["refs"] if x in ev))
-        else:
-            for r in t["reviewers"]:
-                out.append(f"- **{_name(r['reviewer'])}: {r['verdict'].replace('_', ' ')}** ({r['verified']}/{r['cited']} verified). {r['basis']}")
-            for n in t["missing"]:
-                out.append(f"- **{_name(n)}**: no verdict")
-            out.append("- **Checks:** " + (", ".join(f"`{x['id']}` {x['status']}" for x in t["checks"]) or "none mandated"))
-            if t["adjudication"]:
-                out.append(f"- **Adjudicator ({_name(p['adjudication']['reviewer'])}, advisory):** {_ruling_text(t['adjudication'])}")
-            out.append("- **What would settle it:** " + "; ".join(t["settle"]))
-        out.append("")
-    return out + ["</details>", ""]
-
-
-def _md_panel(p: dict) -> list[str]:
-    pv = p["panel"]
-    rows = pv["rows"]
-    out = ["<details><summary><b>Reviewer panel</b> (who said what)</summary>", "<a id=\"panel\"></a>", ""]
-    out += [f"> {x}" for x in pv["callouts"]] + ([""] if pv["callouts"] else [])
-    out += ["| Clause | " + " | ".join(_name(r["reviewer"]) for r in rows) + " | Result |", "|---|" + "---|" * len(rows) + "---|"]
-    for t in p["trust"]:
-        out.append(f"| {t['id']} | " + " | ".join(VERDICT_SHORT.get(r["verdicts"].get(t["id"]), "?") for r in rows) + f" | **{t['label']}** |")
-    out.append("")
-    for r in rows:
-        if r.get("missing"):
-            out.append(f"- **{_name(r['reviewer'])}**: no review on file")
-            continue
-        only = ", ".join(f"[{f['id']}](#f-{r['reviewer']}-{f['id']}) {f['severity']} {f['title']}" + (" (rejected)" if f["status"] == "rejected" else "")
-                         for f in r["only_this_reviewer"])
-        out.append(f"- **{_name(r['reviewer'])}** ({r['model']}, {r['vendor']}{', simulated' if r.get('simulated') else ''}): "
-                   f"citations {r['citations_verified']} verified / {r['citations_rejected']} rejected; findings {r['findings_verified']} verified / "
-                   f"{r['findings_rejected']} rejected; {r['refusals']} refusals." + (f" Only {_name(r['reviewer'])} raised: {only}" if only else ""))
-    if p.get("adjudication"):
-        a = p["adjudication"]
-        out += ["", f"Adjudicator **{_name(a['reviewer'])}** ({a['model']}, {a['prompt_version']}), advisory only: it can add reasons, never clear."]
-        out += [f"- **{r.get('dispute')}**: {_ruling_text(r)}" for r in _rulings(p)] or ["- No rulings on the current disputes (stale file)."]
-    elif p.get("disputes"):
-        out += ["", f"{len(p['disputes'])} disputed item(s), not adjudicated: {', '.join(x['id'] for x in p['disputes'])}"]
-    return out + ["", "</details>", ""]
-
-
 def _md_evidence(p: dict, excerpts: bool = True) -> list[str]:
-    out = ["<details><summary><b>Evidence</b> (findings, cited code, tests and checks)</summary>", ""]
-    for f in p["findings"] + p["rejected_claims"]:
-        tag = "REJECTED: " if f["status"] == "rejected" else ""
-        out += [f"<a id=\"f-{f['reviewer']}-{f['id']}\"></a>",
-                f"#### {tag}{_name(f['reviewer'])} {f['id']} [{f['severity']}, {f['category']}]: {f['title']}", "", f["claim"], ""]
-        out.append("Evidence: " + " ".join(_md_ev_link(e["ref"], e["label"] if "label" in e else p["evidence_index"].get(e.get("ref"), {}).get("label", e.get("kind")))
-                                         + ("" if e["verified"] else " (not verified)") for e in f["evidence"]))
-        if f["status"] == "rejected":
-            out.append(f"\nRejected: {f['rejection_reason']}")
-        else:
-            out.append(f"\nTier effect: {f['tier']}" + (f" ({f['tier_reason']})" if f.get("tier_reason") else ""))
-        if f.get("suggested_fix"):
-            out.append(f"\nSuggested fix: {f['suggested_fix']}")
-        out.append("")
-    out += ["#### Cited evidence", ""]
+    out = ["<details><summary><b>Cited evidence</b> (code excerpts, test runs, checks)</summary>", ""]
     for ref, e in p["evidence_index"].items():
         mark = "verified" if e["verified"] else "NOT verified"
         out += [f"<a id=\"{ref}\"></a>", f"**{e['label']}** ({mark}; cited by {', '.join(e['cited_by'])}): {e['note']}", ""]
@@ -618,7 +452,7 @@ def _md_evidence(p: dict, excerpts: bool = True) -> list[str]:
 def _md_full(p: dict) -> list[str]:
     rp = p["reviewer_panel"]
     ms = p["mandate"]["signature"]
-    out = ["<details><summary><b>Full detail</b>: all tier drivers, risk score, every check, areas, not checked, residual risk</summary>", "",
+    out = ["<details><summary><b>Full detail</b>: tier drivers, risk score, engine codes, areas</summary>", "",
            f"Branch `{p['branch']}` ({p['base']}..{p['head']}), {p['diff']['files']} files, +{p['diff']['insertions']} -{p['diff']['deletions']}. "
            f"Author {p['author']} (agent-written: {p['agent_written']}). Commit: {p['commit_message']}", "",
            f"Mandate `{p['mandate']['id']}` v{p['mandate']['version']} sha256 `{p['mandate']['sha256'][:16]}`, signature: "
@@ -699,6 +533,199 @@ def _md_supply(p: dict) -> list[str]:
     return out
 
 
+# --- the compact Evidence fold in Markdown (pack.md and the PR comment): the same rows as pack.html ----------------
+# GitHub renders no SVG and no Markdown inside <summary>, so a row is `<details><summary>EMOJI <b>name</b> verdict
+# · file:line</summary>` with its few detail lines below in Markdown, and links to the source files for the full text.
+
+MD_MARK = {"pass": "✅", "fail": "❌", "warn": "⚠️", "partial": "⚠️", "unknown": "❓",
+           "pending": "⏳", "finding": "\U0001f41e", "person": "\U0001f464", "adjudicator": "⚖️", "repro": "\U0001f9ea"}
+MD_SEV = {"blocker": "\U0001f534", "major": "\U0001f534", "minor": "\U0001f7e1", "info": "⚪"}
+
+
+def _md_link(rel: str | None, label: str = "full text") -> str:
+    return f"[{label}]({BLOB}{rel})" if rel else ""
+
+
+def _md_short(text, rel: str | None = None, limit: int = 140) -> str:
+    head, cut = _first(text, limit)
+    return head + (" " + _md_link(rel) if cut and rel else "")
+
+
+def _md_row(mark: str, summary: str, body: list[str], anchor: str = "") -> list[str]:
+    """One row: `summary` is HTML (escaped by the caller); `body` Markdown lines, folded under it."""
+    a = [f'<a id="{anchor}"></a>', ""] if anchor else []
+    if not body:
+        return a + [f"{mark} {summary}", ""]
+    return a + [f"<details><summary>{mark} {summary}</summary>", "", *body, "", "</details>", ""]
+
+
+def _md_loc(refs: list, ev: dict) -> tuple[str, str]:
+    """(` · file:line` for the summary, a Markdown link to its excerpt for the body)."""
+    es = [ev[r] for r in refs if r in ev and ev[r]["kind"] == "code"]
+    e = next((x for x in es if x["verified"]), None) or next(iter(es), None)
+    if not e:
+        return "", ""
+    lab = e["label"].removesuffix(" @head")
+    return f" · {_html_inline(lab)}", f"- Cited: [`{lab}`](#{e['ref']})"
+
+
+def _md_ruling_lines(p: dict, r: dict) -> list[str]:
+    settle = r.get("evidence_that_would_settle") or []
+    return [f"- **{_ruling_line(p, r)}** (advisory)" + (f": {_md_short(r['note'])}" if r.get("note") else "")
+            + (f" Would settle it: {_md_short(settle[0], None, 120)}" if settle else "") + f" {_md_link(_adj_path(p), 'full ruling')}"]
+
+
+def _md_clause(p: dict, t: dict, rulings: dict) -> list[str]:
+    ev, ru = p["evidence_index"], rulings.get(t["id"])
+    no = [r for r in t["reviewers"] if r["verdict"] != "met"]
+    loc, cited = _md_loc([x for r in (no or t["reviewers"]) for x in r["refs"]], ev)
+    body = [f"> {_md_short(t['text'], p['inputs']['requirements']['path'], 220)}", ""]
+    if t["status"] == "held_before" or (not no and t["status"] != "proven"):
+        body.append(f"- {_md_short(t['why'], _pack_path(p), 160)}")
+    if t["status"] in ("proven", "held_before"):
+        body.append("- " + ", ".join(f"**{_name(r['reviewer'])}** met ({r['verified']} of {r['cited']} cited verified)" for r in t["reviewers"]))
+    else:
+        body += [f"- **{_name(r['reviewer'])}** {VERDICT_SHORT.get(r['verdict'], r['verdict'])} ({r['verified']} of {r['cited']} cited verified): "
+                 f"{_md_short(r['basis'], _rev_path(p, r['reviewer']))}" for r in t["reviewers"]]
+        body += [f"- **{_name(x)}**: no review" for x in t["missing"]]
+    body.append("- Checks: " + (", ".join(f"`{x['id']}` {x['status']}" for x in t["checks"]) or "none mandated"))
+    fails = ", ".join(f"`{x['name'].rsplit('.', 1)[-1]}`" for x in t["tests_fail_without_fix"])
+    passes = ", ".join(f"`{x['name'].rsplit('.', 1)[-1]}`" for x in t["tests_pass_without_fix"])
+    body += ([f"- Fail without the fix: {fails}"] if fails else []) + ([f"- Pass without the fix: {passes}"] if passes else [])
+    body += _md_ruling_lines(p, ru) if ru else ([f"- Would settle it: {_md_short(t['settle'][0], _pack_path(p), 120)}"] if t.get("settle") else [])
+    body += [cited] if cited else []
+    mark = MD_MARK[{"proven": "pass", "held before": "partial", "refused": "unknown", "not met": "fail"}.get(t["label"], "unknown")]
+    return _md_row(mark, f"<b>{_short_id(t['id'])}</b> {_html_inline(_clause_verdict(p, t, ru))}{loc}", body, f"chain-{t['id']}")
+
+
+def _md_finding(p: dict, f: dict, rulings: dict) -> list[str]:
+    path = _rev_path(p, f["reviewer"])
+    rep = (f.get("repro") or {}).get("status") == "reproduced"
+    loc, cited = _md_loc([e.get("ref") for e in f["evidence"]], p["evidence_index"])
+    body = [f"- {_md_short(f['claim'], path)}"]
+    if f.get("repro"):
+        body.append(f"- {MD_MARK['repro']} `{f['repro'].get('check')}`: {f['repro'].get('summary')}")
+    if f.get("suggested_fix"):
+        body.append(f"- **Fix:** {_md_short(f['suggested_fix'], path)}")
+    body.append(f"- Rejected: {_md_short(f.get('rejection_reason'), path)}" if f["status"] == "rejected"
+                else f"- Sets {f['tier']}: {f.get('tier_reason', '')}")
+    for k, r in rulings.items():
+        if k.startswith("finding:") and _finding_of(p, k) is f:
+            body += _md_ruling_lines(p, r)
+    body += [cited] if cited else []
+    return _md_row(MD_MARK["finding"], f"<b>{_name(f['reviewer'])} {f['id']}</b> {f['severity']}: {_html_inline(f['title'])}"
+                   + (f" {MD_MARK['repro']} reproduced" if rep else "") + loc, body, f"f-{f['reviewer']}-{f['id']}")
+
+
+def _md_findings(p: dict, rulings: dict) -> list[str]:
+    shown = [f for f in p["findings"] if _keep(f)]
+    rest = [f for f in p["findings"] if not _keep(f)] + p["rejected_claims"]
+    out = [x for f in shown for x in _md_finding(p, f, rulings)]
+    if rest:
+        sev = [s for s in SEV_ORDER if any(f["severity"] == s for f in rest)]
+        out += _md_row(MD_MARK["finding"], f"{len(rest)} {'more ' if shown else ''}finding{'' if len(rest) == 1 else 's'} ({', '.join(sev)}"
+                       + (f", {len(p['rejected_claims'])} rejected" if p["rejected_claims"] else "") + ")",
+                       [f"- <a id=\"f-{f['reviewer']}-{f['id']}\"></a>{MD_SEV.get(f['severity'], '')} **{f['severity']}**"
+                        + (" **rejected**" if f["status"] == "rejected" else "")
+                        + f" {f['title']} ({_name(f['reviewer'])} {f['id']}): {_md_short(f['claim'], _rev_path(p, f['reviewer']), 120)}" for f in rest])
+    return out or [f"{MD_MARK['pass']} No findings", ""]
+
+
+def _md_checks(p: dict) -> list[str]:
+    facts = p["inputs"]["facts"]["path"]
+    tools = p["checked_by"]["tools"]
+    ran = [t for t in tools if t["status"] in ("pass", "fail")]
+    ok = [t for t in ran if t["status"] == "pass"]
+    logs = (lambda t: [t["log"]] if isinstance(t.get("log"), str) else (t.get("log") or []))
+    every = [f"- {MD_MARK.get(t['status'], MD_MARK['unknown'])} `{t['id']}`: {_md_short(t.get('summary'), facts, 110)}"
+             + (f" ({_md_link(logs(t)[0], 'log')})" if logs(t) else "") for t in tools]
+    out = _md_row(MD_MARK["pass" if len(ok) == len(ran) else "partial"], f"{len(ok)} of {len(ran)} checks pass", every + ["", _md_link(facts, "facts.json")], "every-check")
+    for t in ran:
+        if t["status"] == "fail":
+            out += _md_row(MD_MARK["fail"], f"<b>{t['id']}</b>: {_html_inline(_check_failed(t))}",
+                           [f"- {_md_short(t.get('summary'), facts, 220)}", f"- {t.get('tool') or ''} {t.get('tool_version') or ''}"
+                            + (f" ({_md_link(logs(t)[0], 'log')})" if logs(t) else "")])
+    sc = p.get("supply_chain")
+    if sc:
+        deps = sc.get("deps") or {}
+        bad = sc["status"] == "fail" or deps.get("vulnerabilities_new") or sc["rules"]
+        line = ("no new packages or advisories" if sc["status"] == "pass" and not bad and not deps.get("packages") and not deps.get("projects_added")
+                else re.sub(r"^deps\.delta pass: ", "", sc["line"].split("; ")[0]).split(" (")[0])
+        out += _md_row(MD_MARK["fail" if bad else "pass" if sc["status"] == "pass" else "unknown"], f"Supply chain: {_html_inline(line)}", _md_supply(p))
+    nc, gaps = p["not_checked"], (p.get("card") or {}).get("known_gaps") or []
+    if nc or gaps:
+        out += _md_row(MD_MARK["unknown"], f"Not run: {len(nc)} check{'' if len(nc) == 1 else 's'}" + (f", {len(gaps)} standing gaps" if gaps else ""),
+                       [f"- `{x['id']}` ({x['source']}): {_md_short(x['reason'], facts, 160)}" for x in nc]
+                       + ([f"- Standing pipeline gaps: {', '.join(f'`{g}`' for g in gaps)}"] if gaps else []), "not-checked")
+    return out
+
+
+def _md_reviewers(p: dict) -> list[str]:
+    out = []
+    for r in p["panel"]["rows"]:
+        if r.get("missing"):
+            out += _md_row(MD_MARK["fail"], f"<b>{_name(r['reviewer'])}</b>: no review on file, every clause waits for it", [])
+            continue
+        vs = list(r["verdicts"].values())
+        met, n = sum(v == "met" for v in vs), r["findings_verified"]
+        only = ", ".join(f"[{f['id']}](#f-{r['reviewer']}-{f['id']})" for f in r["only_this_reviewer"])
+        out += _md_row(MD_MARK["person"], f"<b>{_name(r['reviewer'])}</b> {_html_inline(r['model'].rsplit('/', 1)[-1])}: met {met} of {len(vs)} · "
+                       f"{n} finding{'' if n == 1 else 's'}",
+                       [f"- {r['model']}, {r['vendor']}, prompt {r['prompt_version']}{' (SIMULATED)' if r.get('simulated') else ''}. Citations: "
+                        f"{r['citations_verified']} verified, {r['citations_rejected']} rejected. Findings: {r['findings_verified']} verified, "
+                        f"{r['findings_rejected']} rejected. {r['refusals']} refusals.", *([f"- Only {_name(r['reviewer'])} raised: {only}"] if only else []),
+                        f"- {_md_link(_rev_path(p, r['reviewer']), 'review file')}"])
+    a = p.get("adjudication")
+    if a:
+        rs = _rulings(p)
+        out += _md_row(MD_MARK["adjudicator"], f"<b>{_name(a['reviewer'])}</b> {_html_inline(a['model'])}: adjudicator, {len(rs)} ruling{'' if len(rs) == 1 else 's'}, advisory",
+                       [f"- [{_ruling_line(p, x)}](#{_dispute_anchor(p, str(x.get('dispute')))})" for x in rs]
+                       + [f"- Advisory: adds reasons, never clears. {_md_link(_adj_path(p), 'rulings file')}"])
+    elif p.get("disputes"):
+        out += _md_row(MD_MARK["unknown"], f"{len(p['disputes'])} disputed item(s) not adjudicated: {_html_inline(', '.join(x['id'] for x in p['disputes']))}", [])
+    return out
+
+
+def _md_refusals(p: dict) -> list[str]:
+    c = p["card"]
+    k = len(c["refused"]) + len(c["refused_clauses"])
+    per = c.get("refused_peripheral") or []
+    if not (k or per):
+        return _md_row(MD_MARK["pass"], "No open questions: every clause proven, no topic refused", [], "refused")
+    body = [f"- <a id=\"{g['anchor']}\"></a>**{_md_short(g['topic'], None, 120)}** *Who:* {'; '.join(g['who_should_decide'])} "
+            f"(raised by {', '.join(_name(n) for n in g['raised_by'])}). {_md_short(g['why'], _rev_path(p, g['raised_by'][0]), 120)}" for g in c["refused"]]
+    if c["refused_clauses"]:
+        body.append(f"- Whether {', '.join(f'[{_short_id(x)}](#chain-{x})' for x in c['refused_clauses'])} "
+                    f"{'is' if len(c['refused_clauses']) == 1 else 'are'} met. *Who:* {p['owner']}")
+    if per:
+        body += ["", f"<a id=\"refused-peripheral\"></a>{_peripheral(c)} (out of scope for this change):", ""]
+        body += [f"- <a id=\"{g['anchor']}\"></a>{_md_short(g['topic'], _rev_path(p, g['raised_by'][0]), 120)} (who: {'; '.join(g['who_should_decide'])})" for g in per]
+    return _md_row(MD_MARK["unknown"], f"Open questions: {k} for a human" + (f" (+{len(per)} out of scope)" if per else ""), body, "refused")
+
+
+def _md_why(p: dict) -> list[str]:
+    c, n = p["card"], len(p["card"]["reasons"])
+    body = [f"{i}. {_split(x['text'], 110, REASON_SEPS)[0]} ([see]({x['link']}))" for i, x in enumerate(c["reasons"], 1)]
+    if c["more_drivers"]:
+        body += ["", f"All {c['more_drivers']} tier drivers and the risk factors are under Full detail."]
+    return _md_row(MD_MARK["person"] if p["tier"] in ("ask", "block") else MD_MARK["pass"],
+                   f"<b>Why {p['tier']}</b>: {n} reason{'' if n == 1 else 's'}, risk score {p['risk']['score']}", body, "risk")
+
+
+def _md_residual(p: dict) -> list[str]:
+    items = p["card"]["residual"] + (p["card"].get("residual_more") or [])
+    return _md_row(MD_MARK["warn"], f"You accept {len(items)} residual risk{'' if len(items) == 1 else 's'} by signing",
+                   [f"- {x['text']} ([see]({x['link']}))" for x in items]) if items else []
+
+
+def _md_compact(p: dict) -> list[str]:
+    """The Evidence fold's first level: about 1,500 characters with every row closed."""
+    rulings = {str(r.get("dispute")): r for r in _rulings(p)}
+    return (_md_why(p) + ["**Requirements**", ""] + [x for t in p["trust"] for x in _md_clause(p, t, rulings)]
+            + ["**Findings**", ""] + _md_findings(p, rulings) + ["**Checks**", ""] + _md_checks(p)
+            + ["**Reviewers**", ""] + _md_reviewers(p) + _md_refusals(p) + ["**Sign**", ""] + _md_residual(p) + _md_sign(p["card"]["sign"]))
+
+
 MD_LIMIT = 60000  # GitHub comments stop at 65536 characters
 
 
@@ -720,12 +747,9 @@ def to_markdown(p: dict, ledger: list[dict] | None = None, story: bool = True) -
     `ledger` as in md_story; story=False leaves the card out (the PR comment puts it first itself)."""
     head = md_story(p, ledger) if story else []
     p = view(p)
-    fold = ["<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>", ""]
-    card = _md_card(p) + _md_supply(p)
-    for parts in ((_md_trust(p), _md_panel(p), _md_evidence(p), _md_full(p)),
-                  (_md_trust(p), _md_panel(p), _md_evidence(p, excerpts=False), _md_full(p)),
-                  (_md_trust(p), _md_panel(p), _md_full(p)),
-                  (_md_panel(p),)):
+    fold = ["<details><summary><b>Evidence</b>: requirements, findings, checks, reviewers, how to sign</summary>", ""]
+    card = _md_compact(p)
+    for parts in ((_md_full(p), _md_evidence(p)), (_md_full(p), _md_evidence(p, excerpts=False)), (_md_full(p),), ()):
         text = "\n".join(head + fold + card + [x for part in parts for x in part] + ["</details>", ""])
         if len(text) <= MD_LIMIT:
             return text
@@ -1018,7 +1042,7 @@ def _ruling_detail(p: dict, r: dict) -> str:
         return ", ".join(f"{k} ({v})" for k, v in n.items()) or "none"
     settle = r.get("evidence_that_would_settle") or []
     return (f'<p>{_ic("gavel", "mut")} <b>{_e(_ruling_line(p, r))}</b> <span class="mut">(advisory)</span></p>'
-            + (f'<p>{_short(r["note"], _adj_path(p))}</p>' if r.get("note") else "")
+            + (f'<p>{_short(r["note"])}</p>' if r.get("note") else "")
             + f'<p class="mut">Claims backed: {_e(who(r.get("supported", [])))}; not backed: {_e(who(r.get("unsupported", [])))}. '
             + (f'Would settle it: {_short(settle[0], None, 120)}' if settle else "") + f' {_src(_adj_path(p), "full ruling")}</p>')
 
@@ -1185,7 +1209,7 @@ def _html_refusals(p: dict) -> str:
         d += (f'<p><b>Whether {", ".join(f"<a href=#chain-{_e(x)}>{_e(_short_id(x))}</a>" for x in c["refused_clauses"])} '
               f'{"is" if len(c["refused_clauses"]) == 1 else "are"} met</b> <span class="mut">Who: {_e(p["owner"])}</span></p>')
     if per:
-        d += (f'<p class="mut" id="refused-peripheral">Out of scope for this change:</p>'
+        d += ('<p class="mut" id="refused-peripheral">Out of scope for this change:</p>'
               + "".join(f'<p class="mut" id="{_e(g["anchor"])}">{_short(g["topic"], _rev_path(p, g["raised_by"][0]), 120)} '
                         f'(who: {_e("; ".join(g["who_should_decide"]))})</p>' for g in per))
     return _row(_ic("unknown", "warn" if k else "mut"), f"Open questions: {k} for a human" + (f" (+{len(per)} out of scope)" if per else ""), "", d, rid="refused")

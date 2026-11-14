@@ -57,3 +57,16 @@ def test_2234_evidence_is_short_and_keeps_what_decides():
     assert f'href="{pack_render.BLOB}reviews/2234/claude.json">full text</a>' in html
     assert 'id="chain-REQ-2234-N1"' in html and 'id="f-claude-C1"' in html and 'id="supply-chain"' in html
     assert html.count('class="ev"') == len(p["evidence_index"])  # every cited excerpt is still there, shown on :target
+
+
+def test_2234_markdown_evidence_is_rows_with_links_for_depth():
+    """pack.md and the PR comment: the same rows, emoji marks (no SVG on GitHub), the long texts one fold deeper."""
+    p = json.loads((ROOT / "packs/2234/pack.json").read_text(encoding="utf-8"))
+    md = pack_render.to_markdown(p, [], story=False)
+    first = re.sub(r"<details><summary>(.*?)</summary>.*?\n</details>", r"\1", md.split("\n", 1)[1], flags=re.S)  # innermost folds
+    while "<details>" in first:
+        first = re.sub(r"<details><summary>(.*?)</summary>(?:(?!<details>).)*?\n</details>", r"\1", first, flags=re.S)
+    assert len(first) < 2500, len(first)
+    assert "❌ <b>N1</b> Not met: Claude; met: Codex, Nemotron; Gemini sided with Claude" in md
+    assert "<b>Claude C2</b> minor" in md and "reproduced" in md and "<b>tests.mutation</b>" in md
+    assert f"[full text]({pack_render.BLOB}reviews/2234/claude.json)" in md and "<svg" not in md

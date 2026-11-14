@@ -8,54 +8,156 @@
 - ? Reviewers left 1 question open
 - … Awaiting Toivo's countersignature
 
-<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+<details><summary><b>Evidence</b>: requirements, findings, checks, reviewers, how to sign</summary>
 
-#### Sign-off card: change up-1934 is ASK, owner Toivo
+<a id="risk"></a>
 
-**Change for #1925: Change default Language version of generated code to C# 7.3**
+<details><summary>👤 <b>Why ask</b>: 1 reason, risk score 8.2</summary>
 
-Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 3 requirement clauses from #1925 (placeholder requirement set, not Tieto's official one).
+1. The AI declined to decide 1 question ([see](#refused))
 
-**Why ask**
+All 5 tier drivers and the risk factors are under Full detail.
 
-1. The AI declined to decide 1 question ([evidence](#refused)) <details><summary>more</summary>e.g. Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)</details>
+</details>
 
-<sub>All 5 tier drivers are under Full detail.</sub>
+**Requirements**
 
-**Requirement trace**
+<a id="chain-REQ-up-1934-F1"></a>
 
-| Status | Clause | Why |
-|---|---|---|
-| **PROVEN** | [F1](#chain-REQ-up-1934-F1) | All 3 reviewers say met (13 verified citations); build, tests.targeted pass |
-| **PROVEN** | [F2](#chain-REQ-up-1934-F2) | All 3 reviewers say met (14 verified citations); build, tests.targeted pass |
-| **PROVEN** | [N1](#chain-REQ-up-1934-N1) | All 3 reviewers say met (8 verified citations); build, tests.full_suite pass |
+<details><summary>✅ <b>F1</b> Proven: all 3 reviewers say met, checks pass · CSharpSourceGeneratorVerifier`1+Test.cs:46</summary>
 
-**What the AI found**
+> By default, the source generator tests must compile the test input and the generated code at C# 7.3, the language version a netstandard2.0 project uses by default (issue #1925), so generated code that needs a newer… [full text](https://github.com/Zawaer/countersign/blob/main/requirements/up-1934.yaml)
 
-- **info** [Two generic-constraint tests pin C# 9 although their input uses C# 8 features](#f-claude-C1) (Claude C1) [`GenericsFormatterTests.cs:356 @head`](#ev-6e1d8dd72a) [`GenericsFormatterTests.cs:436 @head`](#ev-8f8ceb66a2)
-- **info** [CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused](#f-claude-C2) (Claude C2) [`CSharpSourceGeneratorCodeFixVerifier`2.cs:22 @head`](#ev-b661201914)
-- **info** [Test name does not match its source](#f-nemotron-F1) (Nemotron F1) [`CustomStringKeyFormatterTests.cs:34 @head`](#ev-94fa3653d3) [`CustomStringKeyFormatterTests.cs:53 @head`](#ev-665e3e1cfc)
+- **Claude** met (4 of 7 cited verified), **Codex** met (3 of 3 cited verified), **Nemotron** met (6 of 7 cited verified)
+- Checks: `build` pass, `tests.targeted` pass
+- Cited: [`CSharpSourceGeneratorVerifier`1+Test.cs:46`](#ev-18f1c5974b)
 
-<a id="refused"></a>**What the AI refused to decide, and who should**
+</details>
 
-- <a id="refusal-3"></a>**Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)** *Who:* CI or area owner (raised by Nemotron) <details><summary>why</summary>Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).</details>
+<a id="chain-REQ-up-1934-F2"></a>
 
-<details id="refused-peripheral"><summary>2 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (Claude) · <a id="refusal-2"></a>facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (Claude)</details>
+<details><summary>✅ <b>F2</b> Proven: all 3 reviewers say met, checks pass · CustomStringKeyFormatterTests.cs:30</summary>
 
-**Not checked, and why**
+> Tests whose input source needs a newer language feature (records, record structs) must set that language version explicitly, and only those.
 
-- `tests.MessagePack.Tests`: runtime library src/MessagePack not modified by the change; suite not run
-- `tests.execution`: ExecutionTests/MapModeExecutionTests not run for this control <details><summary>more</summary>(generator output is covered by the snapshot tests in the full suite)</details>
-- `build.net472/netstandard`: only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
-- `benchmarks`: no runtime serialization hot path touched
-- `tests.fail_without_fix`: skipped: not run: test-only change <details><summary>more</summary>no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)</details>
+- **Claude** met (5 of 7 cited verified), **Codex** met (2 of 3 cited verified), **Nemotron** met (7 of 11 cited verified)
+- Checks: `build` pass, `tests.targeted` pass
+- Cited: [`CustomStringKeyFormatterTests.cs:30`](#ev-1f6d571ea2)
+
+</details>
+
+<a id="chain-REQ-up-1934-N1"></a>
+
+<details><summary>✅ <b>N1</b> Proven: all 3 reviewers say met, checks pass · CSharpSourceGeneratorVerifier`1+Test.cs:48</summary>
+
+> The change touches only test code, and no existing source generator test regresses.
+
+- **Claude** met (2 of 3 cited verified), **Codex** met (2 of 2 cited verified), **Nemotron** met (4 of 4 cited verified)
+- Checks: `build` pass, `tests.full_suite` pass
+- Cited: [`CSharpSourceGeneratorVerifier`1+Test.cs:48`](#ev-cf1b2f86d3)
+
+</details>
+
+**Findings**
+
+<details><summary>🐞 3 findings (info)</summary>
+
+- <a id="f-claude-C1"></a>⚪ **info** Two generic-constraint tests pin C# 9 although their input uses C# 8 features (Claude C1): Generics_Constraints_NullableReferenceType and Generics_Constraints_ReferenceType_Nullable use #nullable enable /… [full text](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/claude.json)
+- <a id="f-claude-C2"></a>⚪ **info** CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused (Claude C2): No test class aliases CSharpSourceGeneratorCodeFixVerifier (I checked every VerifyCS alias at head), so this one-line… [full text](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/claude.json)
+- <a id="f-nemotron-F1"></a>⚪ **info** Test name does not match its source (Nemotron F1): CustomStringKeyFormatterTests.RecordWithWithInitOnlyProps is named for init-only properties (a C# 9 feature) but its… [full text](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/nemotron.json)
+
+</details>
+
+**Checks**
+
+<a id="every-check"></a>
+
+<details><summary>✅ 6 of 6 checks pass</summary>
+
+- ✅ `build`: 0 errors, 1 unique warnings ([log](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/logs/build.log))
+- ✅ `tests.targeted`: 59 passed, 0 failed, 0 skipped (0 new tests in run) ([log](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/logs/tests_targeted.1.log))
+- ❓ `tests.fail_without_fix`: not run: test-only change: no file under src/ changed, so there is no source to revert (see… [full text](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/facts.json)
+- ✅ `tests.full_suite`: tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also… [full text](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/facts.json) ([log](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/logs/tests_full_suite.log))
+- ✅ `public_api`: no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or… [full text](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/facts.json)
+- ✅ `analyzers`: no new warnings
+- ✅ `tests.detects_original_regression`: with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files ->… [full text](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/facts.json) ([log](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/logs/detects_original_regression.newtests.log))
+
+[facts.json](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/facts.json)
+
+</details>
+
+<details><summary>❓ Supply chain: deps.delta not run</summary>
+
+<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
+
+
+</details>
+
+<a id="not-checked"></a>
+
+<details><summary>❓ Not run: 9 checks, 4 standing gaps</summary>
+
+- `tests.MessagePack.Tests` (facts.json not_run): runtime library src/MessagePack not modified by the change; suite not run
+- `tests.execution` (facts.json not_run): ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)
+- `build.net472/netstandard` (facts.json not_run): only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
+- `benchmarks` (facts.json not_run): no runtime serialization hot path touched
+- `tests.fail_without_fix` (check did not pass or fail): skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test… [full text](https://github.com/Zawaer/countersign/blob/main/evidence/up-1934/facts.json)
+- `other-targets` (mandate known gap): Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised
+- `runtime-perf` (mandate known gap): No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through
+- `semantic-intent` (mandate known gap): Correctness beyond what tests and cited evidence show is not established by the AI
+- `provenance` (mandate known gap): Licensing and provenance of agent-written code are not checked
 - Standing pipeline gaps: `other-targets`, `runtime-perf`, `semantic-intent`, `provenance`
 
-**Residual risk you accept by signing**
+</details>
 
-- 1 question the AI declined to decide (listed above) are yours.
+**Reviewers**
 
-<details><summary>3 more risks that do not set the tier</summary>2 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
+<details><summary>👤 <b>Claude</b> claude-opus-5-5: met 3 of 3 · 2 findings</summary>
+
+- claude-opus-5-5, Anthropic, prompt review-v1. Citations: 20 verified, 0 rejected. Findings: 2 verified, 0 rejected. 2 refusals.
+- Only Claude raised: [C1](#f-claude-C1), [C2](#f-claude-C2)
+- [review file](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/claude.json)
+
+</details>
+
+<details><summary>👤 <b>Codex</b> GPT-6: met 3 of 3 · 0 findings</summary>
+
+- GPT-6, OpenAI, prompt review-v1. Citations: 8 verified, 0 rejected. Findings: 0 verified, 0 rejected. 0 refusals.
+- [review file](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/codex.json)
+
+</details>
+
+<details><summary>👤 <b>Nemotron</b> nemotron-3.5-super-vl-120b-a12b: met 3 of 3 · 1 finding</summary>
+
+- nvidia/nemotron-3.5-super-vl-120b-a12b, NVIDIA, prompt review-v1. Citations: 25 verified, 0 rejected. Findings: 1 verified, 0 rejected. 1 refusals.
+- Only Nemotron raised: [F1](#f-nemotron-F1)
+- [review file](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/nemotron.json)
+
+</details>
+
+<a id="refused"></a>
+
+<details><summary>❓ Open questions: 1 for a human (+2 out of scope)</summary>
+
+- <a id="refusal-3"></a>**Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of…** *Who:* CI or area owner (raised by Nemotron). Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so… [full text](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/nemotron.json)
+
+<a id="refused-peripheral"></a>2 peripheral refusals (out of scope for this change):
+
+- <a id="refusal-1"></a>That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (who: area owner)
+- <a id="refusal-2"></a>facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with… [full text](https://github.com/Zawaer/countersign/blob/main/reviews/up-1934/claude.json) (who: countersign evidence maintainer)
+
+</details>
+
+**Sign**
+
+<details><summary>⚠️ You accept 4 residual risks by signing</summary>
+
+- 1 question the AI declined to decide (listed above) are yours. ([see](#refused))
+- 2 peripheral refusals (out of scope for this change) are yours too. ([see](#refused-peripheral))
+- Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix ([see](#not-checked))
+- Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance ([see](#not-checked))
+
+</details>
 
 **Toivo signs** (required; accept, reject, request-changes)
 
@@ -88,94 +190,113 @@ It covers the sha256 of this pack's canonical JSON, the decision, your verdict o
 
 </details>
 
-<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
+<details><summary><b>Full detail</b>: tier drivers, risk score, engine codes, areas</summary>
 
-<details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
+Branch `upstream PR #1934` (7ef21d4b..2f9324f9), 6 files, +26 -22. Author Alan Liu (agent-written: False). Commit: Change default Language version of generated code to C# 7.3
 
-<a id="chain-REQ-up-1934-F1"></a>
-#### REQ-up-1934-F1: **PROVEN**
+Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toivo
 
-> By default, the source generator tests must compile the test input and the generated code at C# 7.3, the language version a netstandard2.0 project uses by default (issue #1925), so generated code that needs a newer language version fails the tests.
+<a id="all-drivers"></a>
+#### All tier drivers (tier = strictest)
 
-- **Checks passed:** `build` pass, `tests.targeted` pass
-- **Fails without the fix:** no cited test does
-- **Claude** says met (4/7 citations verified): [`REQ-up-1934-F1 text`](#ev-71702142d9) [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b) [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`CSharpSourceGeneratorVerifier`1+Test.cs:184 @head`](#ev-4c69e9ef68) [`check tests.detects_original_regression pass`](#ev-6b957d903e) [`test AdditionalAllowTypes failed`](#ev-ab60b0801e)
-- **Codex** says met (3/3 citations verified): [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`check tests.detects_original_regression pass`](#ev-6b957d903e)
-- **Nemotron** says met (6/7 citations verified): [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b) [`CSharpSourceGeneratorCodeFixVerifier`2.cs:22 @head`](#ev-b661201914) [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`check tests.full_suite pass`](#ev-d448f979e6) [`check tests.detects_original_regression pass`](#ev-6b957d903e) [`test ArrayTypedProperty failed`](#ev-cfc8867214)
+- ask: reviewer refusal `nemotron`: Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack) (Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).)
+- notify: reviewer refusal `claude`: That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (Taken from the requirement text; not checkable from the evidence) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
+- notify: reviewer refusal `claude`: facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (Likely renamed theory cases, but the logs were not given) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
+- silent: trust cap `tests`: tests: AI may clear at most to silent (mandate clearance right)
+- silent: risk score `risk`: score 8.2 (notify>=15, ask>=40, block>=130); largest: files_changed 6.3 + lines_changed 1.9
 
-<a id="chain-REQ-up-1934-F2"></a>
-#### REQ-up-1934-F2: **PROVEN**
+#### Who reviewed
 
-> Tests whose input source needs a newer language feature (records, record structs) must set that language version explicitly, and only those.
+Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confidential: no. Rule: proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass.
 
-- **Checks passed:** `build` pass, `tests.targeted` pass
-- **Fails without the fix:** no cited test does
-- **Claude** says met (5/7 citations verified): [`REQ-up-1934-F2 text`](#ev-ed9838ff31) [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`GenerationTests.cs:234 @head`](#ev-dc7a9f9b49) [`GenericsFormatterTests.cs:409 @head`](#ev-df98ec7f6f) [`PrivateMemberAccessTests.cs:10 @head`](#ev-35e3008e34) [`PrivateMemberAccessTests.cs:11 @head`](#ev-daff207533) [`check tests.full_suite pass`](#ev-d448f979e6)
-- **Codex** says met (2/3 citations verified): [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`PrivateMemberAccessTests.cs:11 @head`](#ev-e222ed4080) [`PrivateMemberAccessTests.cs:13 @head`](#ev-8622efff68)
-- **Nemotron** says met (7/11 citations verified): [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`CustomStringKeyFormatterTests.cs:60 @head`](#ev-723e7e3ba3) [`GenerationTests.cs:234 @head`](#ev-dc7a9f9b49) [`GenerationTests.cs:75 @head`](#ev-5d1894b000) [`GenericsFormatterTests.cs:356 @head`](#ev-6e1d8dd72a) [`GenericsFormatterTests.cs:409 @head`](#ev-df98ec7f6f) [`GenericsFormatterTests.cs:436 @head`](#ev-8f8ceb66a2) [`PrivateMemberAccessTests.cs:10 @head`](#ev-35e3008e34) [`PrivateMemberAccessTests.cs:11 @head`](#ev-daff207533) [`PrivateMemberAccessTests.cs:13 @head`](#ev-8622efff68) [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b)
+| Reviewer | Model | Prompt | Verified findings | Rejected | Refusals |
+|---|---|---|---|---|---|
+| claude | claude-opus-5-5 (Anthropic) | review-v1 | 2 | 0 | 2 |
+| codex | GPT-6 (OpenAI) | review-v1 | 0 | 0 | 0 |
+| nemotron | nvidia/nemotron-3.5-super-vl-120b-a12b (NVIDIA) | review-v1 | 1 | 0 | 1 |
 
-<a id="chain-REQ-up-1934-N1"></a>
-#### REQ-up-1934-N1: **PROVEN**
+#### Every check
 
-> The change touches only test code, and no existing source generator test regresses.
+| Check | Status | Tool | Summary |
+|---|---|---|---|
+| build | pass | dotnet build 8.0.402 | 0 errors, 1 unique warnings |
+| tests.targeted | pass | dotnet test 8.0.402 | 59 passed, 0 failed, 0 skipped (0 new tests in run) |
+| tests.fail_without_fix | skipped |   | not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch) |
+| tests.full_suite | pass | dotnet test 8.0.402 | tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base) |
+| public_api | pass | git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/  | no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/ |
+| analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
+| tests.detects_original_regression | pass | dotnet test (full SourceGenerator.Tests) on source before the #1926 fix, old vs new test files 8.0.402 | with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way) |
 
-- **Checks passed:** `build` pass, `tests.full_suite` pass
-- **Fails without the fix:** no cited test does
-- **Claude** says met (2/3 citations verified): [`REQ-up-1934-N1 text`](#ev-1dba18fed5) [`check tests.full_suite pass`](#ev-d448f979e6) [`check public_api pass`](#ev-1494dc6548)
-- **Codex** says met (2/2 citations verified): [`check tests.full_suite pass`](#ev-d448f979e6) [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3)
-- **Nemotron** says met (4/4 citations verified): [`check tests.full_suite pass`](#ev-d448f979e6) [`check tests.targeted pass`](#ev-5ac6625579) [`check public_api pass`](#ev-1494dc6548) [`check analyzers pass`](#ev-6effd1ac04)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
-</details>
+#### Requirement trace (engine codes)
 
-<details><summary><b>Reviewer panel</b> (who said what)</summary>
-<a id="panel"></a>
-
-| Clause | Claude | Codex | Nemotron | Result |
+| Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-up-1934-F1 | met | met | met | **proven** |
-| REQ-up-1934-F2 | met | met | met | **proven** |
-| REQ-up-1934-N1 | met | met | met | **proven** |
+| REQ-up-1934-F1 | proven | claude: met (4/7), codex: met (3/3), nemotron: met (6/7) | build: pass, tests.targeted: pass | - |
+| REQ-up-1934-F2 | proven | claude: met (5/7), codex: met (2/3), nemotron: met (7/11) | build: pass, tests.targeted: pass | - |
+| REQ-up-1934-N1 | proven | claude: met (2/3), codex: met (2/2), nemotron: met (4/4) | build: pass, tests.full_suite: pass | - |
 
-- **Claude** (claude-opus-5-5, Anthropic): citations 20 verified / 0 rejected; findings 2 verified / 0 rejected; 2 refusals. Only Claude raised: [C1](#f-claude-C1) info Two generic-constraint tests pin C# 9 although their input uses C# 8 features, [C2](#f-claude-C2) info CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused
-- **Codex** (GPT-6, OpenAI): citations 8 verified / 0 rejected; findings 0 verified / 0 rejected; 0 refusals.
-- **Nemotron** (nvidia/nemotron-3.5-super-vl-120b-a12b, NVIDIA): citations 25 verified / 0 rejected; findings 1 verified / 0 rejected; 1 refusals. Only Nemotron raised: [F1](#f-nemotron-F1) info Test name does not match its source
+#### What the AI refused to decide (every reviewer refusal)
+
+- **claude** refused: That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs). Why: Taken from the requirement text; not checkable from the evidence Who should decide: area owner
+- **claude** refused: facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed). Why: Likely renamed theory cases, but the logs were not given Who should decide: countersign evidence maintainer
+- **nemotron** refused: Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack). Why: Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run). Who should decide: CI or area owner
+
+<a id="areas"></a>
+#### Areas
+
+| Area | Owner | Sensitivity | AI cap | Files |
+|---|---|---|---|---:|
+| tests | Toivo | low | silent (mandate clearance right) | 6 |
+
+<a id="not-checked"></a>
+#### What was not checked, and why
+
+- `tests.MessagePack.Tests` (facts.json not_run): runtime library src/MessagePack not modified by the change; suite not run
+- `tests.execution` (facts.json not_run): ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)
+- `build.net472/netstandard` (facts.json not_run): only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
+- `benchmarks` (facts.json not_run): no runtime serialization hot path touched
+- `tests.fail_without_fix` (check did not pass or fail): skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)
+- `other-targets` (mandate known gap): Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised
+- `runtime-perf` (mandate known gap): No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through
+- `semantic-intent` (mandate known gap): Correctness beyond what tests and cited evidence show is not established by the AI
+- `provenance` (mandate known gap): Licensing and provenance of agent-written code are not checked
+
+#### Residual risk (every item)
+
+- Reviewer refusal (claude): That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (out of scope: notify)
+- Reviewer refusal (claude): facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (out of scope: notify)
+- Reviewer refusal (nemotron): Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)
+- tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)
+- tests.execution not run (ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite))
+- build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))
+- benchmarks not run (no runtime serialization hot path touched)
+- tests.fail_without_fix not run (skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch))
+- Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
+
+<a id="risk"></a>
+#### Risk score: 8.2 -> silent
+
+| Factor | Points | Reason |
+|---|---:|---|
+| area_sensitivity | 0 | most sensitive area touched: tests (low) |
+| files_changed | 6.3 | 6 files (~1.1 per file while small, log-scaled past 80, cap 45) |
+| lines_changed | 1.9 | 48 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45) |
+| generated_files | 0.0 | 0 generated files x 0.1 (cap 10) |
+| public_api_change | 0 | public_api check: no change |
+| source_without_tests | 0 | no source changed |
+| security_sensitive_paths | 0 | none touched |
+| fail_without_fix_not_shown | 0 | tests.fail_without_fix: skipped (no source changed: nothing to revert) |
+| reviewer_disagreement | 0 | 0 clause(s) x 8 |
+| failed_checks | 0 | 0 failed check(s) x 25 |
+| **total** | **8.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+
+Inputs: facts `evidence/up-1934/facts.json`, requirements `requirements/up-1934.yaml`, reviews `reviews/up-1934/claude.json`, `reviews/up-1934/codex.json`, `reviews/up-1934/nemotron.json`
 
 </details>
 
-<details><summary><b>Evidence</b> (findings, cited code, tests and checks)</summary>
-
-<a id="f-claude-C1"></a>
-#### Claude C1 [info, tests]: Two generic-constraint tests pin C# 9 although their input uses C# 8 features
-
-Generics_Constraints_NullableReferenceType and Generics_Constraints_ReferenceType_Nullable use #nullable enable / nullable constraints (C# 8) but are pinned to C# 9, so C# 9-only syntax emitted by the generator for these constraint shapes would not be caught. I did not run them at C# 8, so whether 8 suffices is unverified.
-
-Evidence: [`GenericsFormatterTests.cs:356 @head`](#ev-6e1d8dd72a) [`GenericsFormatterTests.cs:436 @head`](#ev-8f8ceb66a2)
-
-Tier effect: silent
-
-Suggested fix: Try LanguageVersion.CSharp8 for these two tests and keep the lowest version that compiles the input.
-
-<a id="f-claude-C2"></a>
-#### Claude C2 [info, scope]: CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused
-
-No test class aliases CSharpSourceGeneratorCodeFixVerifier (I checked every VerifyCS alias at head), so this one-line change has no effect today; harmless and consistent, but it is not exercised by the suite.
-
-Evidence: [`CSharpSourceGeneratorCodeFixVerifier`2.cs:22 @head`](#ev-b661201914)
-
-Tier effect: silent
-
-<a id="f-nemotron-F1"></a>
-#### Nemotron F1 [info, tests]: Test name does not match its source
-
-CustomStringKeyFormatterTests.RecordWithWithInitOnlyProps is named for init-only properties (a C# 9 feature) but its source uses { get; set; } auto-properties and calls RunDefaultAsync without a language version, so it runs at the default C# 7.3 and does not exercise init-only properties.
-
-Evidence: [`CustomStringKeyFormatterTests.cs:34 @head`](#ev-94fa3653d3) [`CustomStringKeyFormatterTests.cs:53 @head`](#ev-665e3e1cfc) [`CustomStringKeyFormatterTests.cs:60 @head`](#ev-723e7e3ba3)
-
-Tier effect: silent
-
-Suggested fix: Rename the test, or change the properties to `init` accessors and pass languageVersion: LanguageVersion.CSharp9 so the test actually covers the feature its name promises.
-
-#### Cited evidence
+<details><summary><b>Cited evidence</b> (code excerpts, test runs, checks)</summary>
 
 <a id="ev-71702142d9"></a>
 **REQ-up-1934-F1 text** (verified; cited by claude on REQ-up-1934-F1): REQ-up-1934-F1 text contains the quote
@@ -483,112 +604,6 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
   55 |         [Key("c")]
   56 |         public int Count { get; set; }
 ```
-
-</details>
-
-<details><summary><b>Full detail</b>: all tier drivers, risk score, every check, areas, not checked, residual risk</summary>
-
-Branch `upstream PR #1934` (7ef21d4b..2f9324f9), 6 files, +26 -22. Author Alan Liu (agent-written: False). Commit: Change default Language version of generated code to C# 7.3
-
-Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toivo
-
-<a id="all-drivers"></a>
-#### All tier drivers (tier = strictest)
-
-- ask: reviewer refusal `nemotron`: Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack) (Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).)
-- notify: reviewer refusal `claude`: That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (Taken from the requirement text; not checkable from the evidence) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
-- notify: reviewer refusal `claude`: facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (Likely renamed theory cases, but the logs were not given) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
-- silent: trust cap `tests`: tests: AI may clear at most to silent (mandate clearance right)
-- silent: risk score `risk`: score 8.2 (notify>=15, ask>=40, block>=130); largest: files_changed 6.3 + lines_changed 1.9
-
-#### Who reviewed
-
-Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confidential: no. Rule: proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass.
-
-| Reviewer | Model | Prompt | Verified findings | Rejected | Refusals |
-|---|---|---|---|---|---|
-| claude | claude-opus-5-5 (Anthropic) | review-v1 | 2 | 0 | 2 |
-| codex | GPT-6 (OpenAI) | review-v1 | 0 | 0 | 0 |
-| nemotron | nvidia/nemotron-3.5-super-vl-120b-a12b (NVIDIA) | review-v1 | 1 | 0 | 1 |
-
-#### Every check
-
-| Check | Status | Tool | Summary |
-|---|---|---|---|
-| build | pass | dotnet build 8.0.402 | 0 errors, 1 unique warnings |
-| tests.targeted | pass | dotnet test 8.0.402 | 59 passed, 0 failed, 0 skipped (0 new tests in run) |
-| tests.fail_without_fix | skipped |   | not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch) |
-| tests.full_suite | pass | dotnet test 8.0.402 | tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base) |
-| public_api | pass | git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/  | no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/ |
-| analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
-| tests.detects_original_regression | pass | dotnet test (full SourceGenerator.Tests) on source before the #1926 fix, old vs new test files 8.0.402 | with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way) |
-
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
-
-#### Requirement trace (engine codes)
-
-| Clause | Status | Verdicts | Checks | Reasons |
-|---|---|---|---|---|
-| REQ-up-1934-F1 | proven | claude: met (4/7), codex: met (3/3), nemotron: met (6/7) | build: pass, tests.targeted: pass | - |
-| REQ-up-1934-F2 | proven | claude: met (5/7), codex: met (2/3), nemotron: met (7/11) | build: pass, tests.targeted: pass | - |
-| REQ-up-1934-N1 | proven | claude: met (2/3), codex: met (2/2), nemotron: met (4/4) | build: pass, tests.full_suite: pass | - |
-
-#### What the AI refused to decide (every reviewer refusal)
-
-- **claude** refused: That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs). Why: Taken from the requirement text; not checkable from the evidence Who should decide: area owner
-- **claude** refused: facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed). Why: Likely renamed theory cases, but the logs were not given Who should decide: countersign evidence maintainer
-- **nemotron** refused: Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack). Why: Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run). Who should decide: CI or area owner
-
-<a id="areas"></a>
-#### Areas
-
-| Area | Owner | Sensitivity | AI cap | Files |
-|---|---|---|---|---:|
-| tests | Toivo | low | silent (mandate clearance right) | 6 |
-
-<a id="not-checked"></a>
-#### What was not checked, and why
-
-- `tests.MessagePack.Tests` (facts.json not_run): runtime library src/MessagePack not modified by the change; suite not run
-- `tests.execution` (facts.json not_run): ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)
-- `build.net472/netstandard` (facts.json not_run): only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
-- `benchmarks` (facts.json not_run): no runtime serialization hot path touched
-- `tests.fail_without_fix` (check did not pass or fail): skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)
-- `other-targets` (mandate known gap): Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised
-- `runtime-perf` (mandate known gap): No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through
-- `semantic-intent` (mandate known gap): Correctness beyond what tests and cited evidence show is not established by the AI
-- `provenance` (mandate known gap): Licensing and provenance of agent-written code are not checked
-
-#### Residual risk (every item)
-
-- Reviewer refusal (claude): That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (out of scope: notify)
-- Reviewer refusal (claude): facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (out of scope: notify)
-- Reviewer refusal (nemotron): Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)
-- tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)
-- tests.execution not run (ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite))
-- build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))
-- benchmarks not run (no runtime serialization hot path touched)
-- tests.fail_without_fix not run (skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch))
-- Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
-
-<a id="risk"></a>
-#### Risk score: 8.2 -> silent
-
-| Factor | Points | Reason |
-|---|---:|---|
-| area_sensitivity | 0 | most sensitive area touched: tests (low) |
-| files_changed | 6.3 | 6 files (~1.1 per file while small, log-scaled past 80, cap 45) |
-| lines_changed | 1.9 | 48 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45) |
-| generated_files | 0.0 | 0 generated files x 0.1 (cap 10) |
-| public_api_change | 0 | public_api check: no change |
-| source_without_tests | 0 | no source changed |
-| security_sensitive_paths | 0 | none touched |
-| fail_without_fix_not_shown | 0 | tests.fail_without_fix: skipped (no source changed: nothing to revert) |
-| reviewer_disagreement | 0 | 0 clause(s) x 8 |
-| failed_checks | 0 | 0 failed check(s) x 25 |
-| **total** | **8.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
-
-Inputs: facts `evidence/up-1934/facts.json`, requirements `requirements/up-1934.yaml`, reviews `reviews/up-1934/claude.json`, `reviews/up-1934/codex.json`, `reviews/up-1934/nemotron.json`
 
 </details>
 
