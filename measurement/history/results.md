@@ -9,6 +9,7 @@ Reviewers can only add reasons to route to a human, never remove one, so these t
 - Routed to a human (ask/block): **85 of 109** (78%); tiers: silent 0, notify 24, ask 74, block 11
 - Escapes in the dataset: 11 (6 high-confidence)
 - **Escapes Countersign would have cleared: 0 of 11**
+- Upstream's real time from PR opened to merged (median days, human review as it happened): cleared bucket 0.24, routed bucket 0.85
 
 | | routed to human | cleared by AI |
 |---|---:|---:|
@@ -20,6 +21,7 @@ Reviewers can only add reasons to route to a human, never remove one, so these t
 - Routed to a human (ask/block): **109 of 109** (100%); tiers: silent 0, notify 0, ask 95, block 14
 - Escapes in the dataset: 11 (6 high-confidence)
 - **Escapes Countersign would have cleared: 0 of 11**
+- Upstream's real time from PR opened to merged (median days, human review as it happened): cleared bucket None, routed bucket 0.75
 
 | | routed to human | cleared by AI |
 |---|---:|---:|

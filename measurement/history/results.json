@@ -15,6 +15,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1634",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 72.29,
       "ci-credited": {
         "tier": "ask",
         "score": 53.0,
@@ -61,6 +62,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1667",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 2.42,
       "ci-credited": {
         "tier": "ask",
         "score": 57.0,
@@ -103,6 +105,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1674",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "notify",
         "score": 23.4,
@@ -143,6 +146,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1698",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 8.35,
       "ci-credited": {
         "tier": "notify",
         "score": 29.8,
@@ -184,6 +188,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1727",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.26,
       "ci-credited": {
         "tier": "ask",
         "score": 56.0,
@@ -232,6 +237,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1728",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.32,
       "ci-credited": {
         "tier": "ask",
         "score": 120.0,
@@ -278,6 +284,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1729",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.49,
       "ci-credited": {
         "tier": "ask",
         "score": 53.3,
@@ -324,6 +331,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1730",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.08,
       "ci-credited": {
         "tier": "ask",
         "score": 96.2,
@@ -372,6 +380,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1736",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 7.57,
       "ci-credited": {
         "tier": "block",
         "score": 105,
@@ -415,6 +424,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1743",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 7.05,
       "ci-credited": {
         "tier": "block",
         "score": 97.9,
@@ -458,6 +468,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1754",
       "escape": true,
       "confidence": "medium",
+      "days_open_to_merge": 0.3,
       "ci-credited": {
         "tier": "ask",
         "score": 89.6,
@@ -508,6 +519,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1796",
       "escape": true,
       "confidence": "medium",
+      "days_open_to_merge": 3.9,
       "ci-credited": {
         "tier": "block",
         "score": 89.1,
@@ -551,6 +563,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1798",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.43,
       "ci-credited": {
         "tier": "notify",
         "score": 28.9,
@@ -594,6 +607,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1802",
       "escape": true,
       "confidence": "medium",
+      "days_open_to_merge": 17.37,
       "ci-credited": {
         "tier": "block",
         "score": 90,
@@ -637,6 +651,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1818",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.92,
       "ci-credited": {
         "tier": "ask",
         "score": 45.0,
@@ -679,6 +694,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1824",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.02,
       "ci-credited": {
         "tier": "ask",
         "score": 29.0,
@@ -720,6 +736,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1842",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "notify",
         "score": 23.6,
@@ -760,6 +777,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1850",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 6.92,
       "ci-credited": {
         "tier": "ask",
         "score": 45.8,
@@ -802,6 +820,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1859",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 2.15,
       "ci-credited": {
         "tier": "notify",
         "score": 26.7,
@@ -843,6 +862,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1734",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 171.33,
       "ci-credited": {
         "tier": "block",
         "score": 120.0,
@@ -887,6 +907,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1874",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.81,
       "ci-credited": {
         "tier": "ask",
         "score": 52.2,
@@ -933,6 +954,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1873",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 12.58,
       "ci-credited": {
         "tier": "ask",
         "score": 66.8,
@@ -981,6 +1003,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1872",
       "escape": true,
       "confidence": "high",
+      "days_open_to_merge": 13.8,
       "ci-credited": {
         "tier": "ask",
         "score": 106.1,
@@ -1031,6 +1054,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1888",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.51,
       "ci-credited": {
         "tier": "block",
         "score": 137.1,
@@ -1079,6 +1103,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1890",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.09,
       "ci-credited": {
         "tier": "ask",
         "score": 74.0,
@@ -1125,6 +1150,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1884",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 6.75,
       "ci-credited": {
         "tier": "notify",
         "score": 30.0,
@@ -1166,6 +1192,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1893",
       "escape": true,
       "confidence": "medium",
+      "days_open_to_merge": 2.83,
       "ci-credited": {
         "tier": "ask",
         "score": 67.0,
@@ -1210,6 +1237,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1898",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.02,
       "ci-credited": {
         "tier": "ask",
         "score": 51.4,
@@ -1254,6 +1282,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1905",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.02,
       "ci-credited": {
         "tier": "notify",
         "score": 32.3,
@@ -1297,6 +1326,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1907",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "notify",
         "score": 28.6,
@@ -1341,6 +1371,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1910",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.85,
       "ci-credited": {
         "tier": "notify",
         "score": 32.5,
@@ -1382,6 +1413,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1912",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.19,
       "ci-credited": {
         "tier": "ask",
         "score": 51.2,
@@ -1428,6 +1460,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1921",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.05,
       "ci-credited": {
         "tier": "notify",
         "score": 26.8,
@@ -1471,6 +1504,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1926",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 9.58,
       "ci-credited": {
         "tier": "block",
         "score": 77.9,
@@ -1515,6 +1549,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1936",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.25,
       "ci-credited": {
         "tier": "ask",
         "score": 97.4,
@@ -1563,6 +1598,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1960",
       "escape": true,
       "confidence": "medium",
+      "days_open_to_merge": 0.53,
       "ci-credited": {
         "tier": "ask",
         "score": 60.5,
@@ -1605,6 +1641,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1962",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 62.5,
@@ -1651,6 +1688,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1946",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 20.81,
       "ci-credited": {
         "tier": "notify",
         "score": 31.7,
@@ -1692,6 +1730,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1959",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.92,
       "ci-credited": {
         "tier": "ask",
         "score": 91.3,
@@ -1743,6 +1782,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1922",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 49.37,
       "ci-credited": {
         "tier": "ask",
         "score": 73.3,
@@ -1791,6 +1831,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1968",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.49,
       "ci-credited": {
         "tier": "ask",
         "score": 95.5,
@@ -1839,6 +1880,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1969",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.73,
       "ci-credited": {
         "tier": "ask",
         "score": 56.5,
@@ -1883,6 +1925,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1970",
       "escape": true,
       "confidence": "high",
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 55.5,
@@ -1929,6 +1972,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1978",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.07,
       "ci-credited": {
         "tier": "ask",
         "score": 96.6,
@@ -1977,6 +2021,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1971",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.62,
       "ci-credited": {
         "tier": "ask",
         "score": 44.5,
@@ -2019,6 +2064,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1980",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.02,
       "ci-credited": {
         "tier": "ask",
         "score": 40.9,
@@ -2061,6 +2107,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1982",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.02,
       "ci-credited": {
         "tier": "ask",
         "score": 51.2,
@@ -2107,6 +2154,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1981",
       "escape": true,
       "confidence": "high",
+      "days_open_to_merge": 3.91,
       "ci-credited": {
         "tier": "ask",
         "score": 109.0,
@@ -2155,6 +2203,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1987",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 85.5,
@@ -2203,6 +2252,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1990",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.05,
       "ci-credited": {
         "tier": "ask",
         "score": 95.4,
@@ -2253,6 +2303,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2000",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.32,
       "ci-credited": {
         "tier": "ask",
         "score": 54.5,
@@ -2301,6 +2352,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2002",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.19,
       "ci-credited": {
         "tier": "notify",
         "score": 29.6,
@@ -2344,6 +2396,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2003",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 66.6,
@@ -2388,6 +2441,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2006",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.04,
       "ci-credited": {
         "tier": "ask",
         "score": 78.2,
@@ -2434,6 +2488,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2015",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 106.0,
@@ -2482,6 +2537,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2013",
       "escape": true,
       "confidence": "high",
+      "days_open_to_merge": 0.83,
       "ci-credited": {
         "tier": "ask",
         "score": 61.2,
@@ -2528,6 +2584,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2016",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.13,
       "ci-credited": {
         "tier": "notify",
         "score": 26.5,
@@ -2571,6 +2628,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2021",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 88.2,
@@ -2619,6 +2677,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2022",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "notify",
         "score": 23.2,
@@ -2659,6 +2718,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2023",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "notify",
         "score": 24.0,
@@ -2699,6 +2759,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2028",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.6,
       "ci-credited": {
         "tier": "notify",
         "score": 37.5,
@@ -2742,6 +2803,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2030",
       "escape": true,
       "confidence": "high",
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 57.0,
@@ -2786,6 +2848,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2029",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.41,
       "ci-credited": {
         "tier": "ask",
         "score": 117.2,
@@ -2839,6 +2902,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2031",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "notify",
         "score": 25.7,
@@ -2882,6 +2946,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2032",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 52.1,
@@ -2928,6 +2993,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2033",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.09,
       "ci-credited": {
         "tier": "notify",
         "score": 25.7,
@@ -2971,6 +3037,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2036",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "notify",
         "score": 31.0,
@@ -3014,6 +3081,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2037",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.51,
       "ci-credited": {
         "tier": "notify",
         "score": 26.1,
@@ -3057,6 +3125,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2026",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 5.85,
       "ci-credited": {
         "tier": "ask",
         "score": 75.9,
@@ -3103,6 +3172,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2044",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 93.5,
@@ -3152,6 +3222,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2043",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.1,
       "ci-credited": {
         "tier": "ask",
         "score": 90.5,
@@ -3203,6 +3274,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2045",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 86.2,
@@ -3251,6 +3323,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1986",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 30.86,
       "ci-credited": {
         "tier": "block",
         "score": 146.2,
@@ -3299,6 +3372,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2056",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.33,
       "ci-credited": {
         "tier": "notify",
         "score": 30.6,
@@ -3342,6 +3416,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2057",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.29,
       "ci-credited": {
         "tier": "notify",
         "score": 33.0,
@@ -3383,6 +3458,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2061",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.48,
       "ci-credited": {
         "tier": "ask",
         "score": 62.8,
@@ -3427,6 +3503,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2063",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.85,
       "ci-credited": {
         "tier": "ask",
         "score": 91.2,
@@ -3478,6 +3555,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2059",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 2.2,
       "ci-credited": {
         "tier": "notify",
         "score": 39.2,
@@ -3521,6 +3599,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2070",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.45,
       "ci-credited": {
         "tier": "ask",
         "score": 63.0,
@@ -3565,6 +3644,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2073",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 5.4,
       "ci-credited": {
         "tier": "ask",
         "score": 111.2,
@@ -3618,6 +3698,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2090",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.57,
       "ci-credited": {
         "tier": "ask",
         "score": 120.0,
@@ -3664,6 +3745,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2093",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.17,
       "ci-credited": {
         "tier": "ask",
         "score": 53.6,
@@ -3710,6 +3792,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2094",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.16,
       "ci-credited": {
         "tier": "ask",
         "score": 33.8,
@@ -3751,6 +3834,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2095",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.04,
       "ci-credited": {
         "tier": "block",
         "score": 142.0,
@@ -3797,6 +3881,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2105",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.68,
       "ci-credited": {
         "tier": "ask",
         "score": 66.1,
@@ -3844,6 +3929,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2103",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.7,
       "ci-credited": {
         "tier": "ask",
         "score": 45.0,
@@ -3884,6 +3970,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2106",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.15,
       "ci-credited": {
         "tier": "notify",
         "score": 37.3,
@@ -3927,6 +4014,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2123",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.13,
       "ci-credited": {
         "tier": "ask",
         "score": 51.1,
@@ -3973,6 +4061,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2135",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.17,
       "ci-credited": {
         "tier": "ask",
         "score": 66.2,
@@ -4020,6 +4109,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2119",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 19.43,
       "ci-credited": {
         "tier": "ask",
         "score": 91.2,
@@ -4069,6 +4159,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2134",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 4.17,
       "ci-credited": {
         "tier": "ask",
         "score": 124.2,
@@ -4122,6 +4213,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2136",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 3.87,
       "ci-credited": {
         "tier": "ask",
         "score": 110.2,
@@ -4175,6 +4267,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2139",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 3.2,
       "ci-credited": {
         "tier": "ask",
         "score": 91.2,
@@ -4225,6 +4318,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2150",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.76,
       "ci-credited": {
         "tier": "ask",
         "score": 54.8,
@@ -4271,6 +4365,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2153",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.75,
       "ci-credited": {
         "tier": "ask",
         "score": 41.0,
@@ -4313,6 +4408,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2172",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 1.58,
       "ci-credited": {
         "tier": "ask",
         "score": 66.6,
@@ -4360,6 +4456,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2185",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 56.99,
       "ci-credited": {
         "tier": "block",
         "score": 80.0,
@@ -4402,6 +4499,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2206",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 48.28,
       "ci-credited": {
         "tier": "block",
         "score": 144.3,
@@ -4448,6 +4546,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2212",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 30.22,
       "ci-credited": {
         "tier": "ask",
         "score": 55.5,
@@ -4496,6 +4595,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2225",
       "escape": true,
       "confidence": "high",
+      "days_open_to_merge": 1.35,
       "ci-credited": {
         "tier": "ask",
         "score": 91.1,
@@ -4545,6 +4645,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2224",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 3.76,
       "ci-credited": {
         "tier": "ask",
         "score": 95.3,
@@ -4594,6 +4695,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2226",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 7.39,
       "ci-credited": {
         "tier": "ask",
         "score": 51.2,
@@ -4640,6 +4742,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2235",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 127.6,
       "ci-credited": {
         "tier": "ask",
         "score": 67.8,
@@ -4689,6 +4792,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2260",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 92.2,
@@ -4740,6 +4844,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2256",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 15.32,
       "ci-credited": {
         "tier": "ask",
         "score": 66.2,
@@ -4787,6 +4892,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2262",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.29,
       "ci-credited": {
         "tier": "ask",
         "score": 63.2,
@@ -4831,6 +4937,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2270",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.0,
       "ci-credited": {
         "tier": "ask",
         "score": 66.4,
@@ -4878,6 +4985,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2271",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.01,
       "ci-credited": {
         "tier": "ask",
         "score": 86.2,
@@ -4929,6 +5037,7 @@
       "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2275",
       "escape": false,
       "confidence": null,
+      "days_open_to_merge": 0.0,
       "ci-credited": {
         "tier": "ask",
         "score": 120.1,
@@ -4993,7 +5102,11 @@
       "escapes_cleared": [],
       "escape_recall": 1.0,
       "escape_rate_routed": 0.129,
-      "escape_rate_cleared": 0.0
+      "escape_rate_cleared": 0.0,
+      "median_days_to_merge_upstream": {
+        "cleared": 0.24,
+        "routed": 0.85
+      }
     },
     "diff-only": {
       "n": 109,
@@ -5016,7 +5129,11 @@
       "escapes_cleared": [],
       "escape_recall": 1.0,
       "escape_rate_routed": 0.101,
-      "escape_rate_cleared": null
+      "escape_rate_cleared": null,
+      "median_days_to_merge_upstream": {
+        "cleared": null,
+        "routed": 0.75
+      }
     }
   },
   "unattributed_regressions": [

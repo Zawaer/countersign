@@ -551,11 +551,6 @@
     },
     "reviewer_cross_check": {
       "value": {
-        "codex": {
-          "major_raised_verified": 0,
-          "confirmed_by_another": 0,
-          "missed_others_verified_major": 5
-        },
         "nemotron": {
           "major_raised_verified": 1,
           "confirmed_by_another": 0,
@@ -565,6 +560,11 @@
           "major_raised_verified": 4,
           "confirmed_by_another": 0,
           "missed_others_verified_major": 1
+        },
+        "codex": {
+          "major_raised_verified": 0,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 5
         }
       },
       "simulated": false,
@@ -631,6 +631,10 @@
       "escape_recall": 1.0,
       "escape_rate_routed": 0.129,
       "escape_rate_cleared": 0.0,
+      "median_days_to_merge_upstream": {
+        "cleared": 0.24,
+        "routed": 0.85
+      },
       "escapes_cleared": []
     },
     "diff-only": {
@@ -654,6 +658,10 @@
       "escape_recall": 1.0,
       "escape_rate_routed": 0.101,
       "escape_rate_cleared": null,
+      "median_days_to_merge_upstream": {
+        "cleared": null,
+        "routed": 0.75
+      },
       "escapes_cleared": []
     }
   },
