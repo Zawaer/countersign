@@ -47,7 +47,9 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     earlier = {n: [(pn, verify.verify_review(r, v)) for pn, r in ps] for n, ps in ws.earlier_reviews(change).items() if n in reviews}
     # Trust state, with the release gate applied to the reviewer versions that actually reviewed this change.
     versions = {n: {"model": r.get("model"), "prompt_version": r.get("prompt_version")} for n, r in raw_reviews.items()}
-    state = trust.derive(m, ledger.read(ws) if use_trust else [], versions)
+    # The ledger is verified first (hash chain, signatures): an invalid ledger means no trust event is used and every
+    # area is at ask, with "ledger invalid: <reason>" as the driver (red team L1).
+    state = trust.verified(ws, m, versions)[0] if use_trust else trust.derive(m, [], versions)
     adj_path = ws.adjudication_path(change)
     adj = read_json(adj_path) if adj_path else None
     if adj and adj.get("reviewer") != panel["adjudicator"]:

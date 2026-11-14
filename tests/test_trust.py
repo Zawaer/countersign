@@ -15,9 +15,12 @@ def state(ws, area=AREA, reviewers=None):
     return trust.derive(mandate.load(ws), ledger.read(ws), reviewers)[area]
 
 
-def spot(ws, result="agree", n=1, area=AREA):
+def spot(ws, result="agree", n=1, area=AREA, signer="Toivo"):
+    """n spot-checks of n distinct packs by the area owner (a spot-check counts once per pack, red team L3)."""
     for _ in range(n):
-        ledger.append(ws, "spotcheck", {"change": "9001", "result": result, "areas": [area], "ai_cleared": True}, "Toivo")
+        k = len(ledger.read(ws))
+        ledger.append(ws, "spotcheck", {"change": f"c{k}", "pack_sha256": f"{k:064x}", "result": result, "areas": [area],
+                                        "ai_cleared": True}, signer)
 
 
 def test_escape_on_ai_cleared_change_withdraws_the_area_cap(ws):
@@ -106,3 +109,76 @@ def test_trust_command_prints_the_stage_table(ws, capsys):
     run(ws, "trust")
     out = capsys.readouterr().out
     assert "notify" in out and "agreeing in a row" in out and "released reviewer versions" in out
+
+
+# --- red team fixes (docs/security/REDTEAM.md G1, G3, L1-L3; mandate v5) ----------------------------------------
+
+def test_build_inputs_ci_and_security_tests_are_areas_capped_at_ask(ws):
+    m = mandate.load(ws)
+    want = {"src/Directory.Build.props": "build-config",  # G1: not runtime-core, tests or the generator
+            "src/MessagePack.SourceGenerator/Directory.Build.props": "build-config",
+            "tests/Shared/Directory.Build.targets": "build-config", "src/Directory.Packages.props": "build-config",
+            "global.json": "build-config", "nuget.config": "build-config", ".config/dotnet-tools.json": "build-config",
+            ".github/workflows/build.yml": "ci",  # G3
+            "tests/MessagePack.Tests/MessagePackSecurityTests.cs": "security-tests",
+            "src/MessagePack/MessagePack.csproj": "runtime-core", "tests/MessagePack.Tests/Foo.cs": "tests"}
+    assert {p: m.area_for(p).name for p in want} == want
+    assert {n: (m.area(n).max_ai_tier, m.area(n).owner) for n in ("build-config", "ci", "security-tests")} == {
+        "build-config": ("ask", "Rene"), "ci": ("ask", "Toivo"), "security-tests": ("ask", "Toivo")}
+    assert mandate.matches("tests/MessagePack.Tests/MessagePackSecurityTests.cs", m["security_sensitive_paths"])
+
+
+def test_an_invalid_ledger_puts_every_area_at_ask_with_the_reason(ws):
+    run(ws, "review", "9001", "-q")
+    assert pack.build(ws, "9001")["tier"] == "notify"
+    with ws.ledger_path.open("a") as f:  # L1: an unsigned, unchained line
+        f.write('{"seq": 99, "type": "canary", "prev": "x", "signer": "Toivo", "hash": "x", "sig": "x", "payload": {}}\n')
+    p = pack.build(ws, "9001")
+    assert p["tier"] == "ask"
+    assert any(w["source"] == "trust cap" and "ledger invalid: line 2" in w["why"] for w in p["why"])
+    assert {a["cap"] for a in p["areas"]} == {"ask"}
+    assert pack.build(ws, "9001", use_trust=False)["tier"] == "notify"  # replay ignores the ledger altogether
+
+
+def _new_model(ws):
+    new = make_review("claude")
+    new["model"] = "claude-opus-6"
+    write_json(ws.inputs / "reviews" / "9001" / "claude.json", new)
+
+
+def test_a_canary_releases_only_if_it_covers_the_whole_seeded_set(ws, capsys):
+    _new_model(ws)
+    rel = [{"name": "claude", "model": "claude-opus-6", "prompt_version": "review-v1"}]
+    ledger.append(ws, "canary", {"areas": [], "seeded": 1, "caught": 1, "reviewers": rel}, "Toivo")  # L2
+    some = trust.seeded_set(mandate.load(ws))[:13]
+    ledger.append(ws, "canary", {"areas": [], "seeded": 14, "caught": 14, "defects": some, "reviewers": rel}, "Toivo")
+    assert pack.build(ws, "9001")["tier"] == "ask"
+    run(ws, "trust")
+    out = capsys.readouterr().out
+    assert "covers 0 of the 14 seeded defects" in out and "covers 13 of the 14" in out
+    full = trust.seeded_set(mandate.load(ws))
+    ledger.append(ws, "canary", {"areas": [], "seeded": 14, "caught": 13, "missed": [full[0]], "defects": full, "reviewers": rel}, "Toivo")
+    assert pack.build(ws, "9001")["tier"] == "ask"  # below min_catch_rate
+    run(ws, "canary", "--as", "Toivo", "--seeded", "14", "--caught", "14", "--area", "docs", "--reviewer", "claude=claude-opus-6@review-v1")
+    assert ledger.read(ws)[-1]["payload"]["defects"] == full
+    assert pack.build(ws, "9001")["tier"] == "notify"
+
+
+def test_canary_command_refuses_a_set_size_it_does_not_list(ws):
+    import pytest
+    with pytest.raises(SystemExit):
+        run(ws, "canary", "--as", "Toivo", "--seeded", "1", "--caught", "1")
+
+
+def test_spotchecks_count_once_per_pack_and_only_from_the_area_owner(ws):
+    ledger.append(ws, "escape", {"change": "x", "kind": "revert", "ai_cleared": True, "areas": [AREA]}, "Toivo")
+    for _ in range(50):  # L3: one pack, replayed by a non-owner
+        ledger.append(ws, "spotcheck", {"change": "x", "pack_sha256": "same", "result": "agree", "areas": [AREA]}, "Rene")
+    s = state(ws)
+    assert s["cap"] == "ask" and s["streak"] == 0 and "Rene is not the owner of generator-analyzer-core" in s["history"][-1]
+    for _ in range(3):  # the owner, same pack three times: one spot-check
+        ledger.append(ws, "spotcheck", {"change": "x", "pack_sha256": "same", "result": "agree", "areas": [AREA]}, "Toivo")
+    s = state(ws)
+    assert s["streak"] == 1 and "already spot-checked" in s["history"][-1]
+    ledger.append(ws, "spotcheck", {"change": "y", "result": "agree", "areas": [AREA]}, "Toivo")
+    assert "names no pack" in state(ws)["history"][-1]

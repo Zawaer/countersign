@@ -89,8 +89,10 @@ def cmd_verify_ledger(a) -> int:
 def cmd_trust(a) -> int:
     ws = _ws(a)
     m = mandate_mod.load(ws)
-    entries = ledger.read(ws)
-    state = trust.derive(m, entries)
+    state, problems = trust.verified(ws, m)
+    entries = [] if problems else ledger.read(ws)
+    if problems:
+        print(f"LEDGER INVALID ({len(problems)} problems): no trust event is used, every area is at ask (countersign verify-ledger)")
     print("trust stages (mandate v" + m.version + "): climb one stage when its row holds; drop one stage on an escape on an AI-cleared change,")
     print("a disagreeing spot-check or a missed canary; never above the area's mandate cap")
     print(f"  {'stage':<7} {'agreeing in a row':>17} {'agreement':>10} {'over last':>9} {'no escape in last':>17}")
@@ -104,6 +106,8 @@ def cmd_trust(a) -> int:
     print("released reviewer versions (a review by any other version holds every area at ask):")
     for (n, model, pv), why in earned.items():
         print(f"  {n:<9} {model} / {pv}: {why}")
+    for line in trust.ignored_canaries(m, entries):
+        print(f"  ignored: {line}")
     print()
     print(f"{'area':<26} {'owner':<6} {'mandate':<7} {'cap now':<7} {'next':<7} {'progress':<9} reason")
     for area in m.areas:
@@ -158,8 +162,13 @@ def cmd_canary(a) -> int:
         versions[name] = {"name": name, "model": model or rest, "prompt_version": pv if model else None}
     if a.caught > a.seeded:
         raise SystemExit("caught cannot exceed seeded")
+    # The seeded defects the run covered (trust.release_gate.seeded_set by default): only a run that covers the whole
+    # set can release a reviewer version (red team L2).
+    defects = a.defect or trust.seeded_set(m)
+    if len(defects) != a.seeded:
+        raise SystemExit(f"--seeded {a.seeded}, but the run covers {len(defects)} defects (list them with --defect)")
     areas = a.area or [x.name for x in m.areas]
-    e = ledger.append(ws, "canary", {"areas": areas, "seeded": a.seeded, "caught": a.caught, "missed": a.missed or [],
+    e = ledger.append(ws, "canary", {"areas": areas, "seeded": a.seeded, "caught": a.caught, "missed": a.missed or [], "defects": defects,
                                      "reviewers": list(versions.values()), "note": a.note, "simulated": a.simulated}, a.signer)
     print(f"ledger #{e['seq']}: canary run caught {a.caught}/{a.seeded} seeded defects (areas: {', '.join(areas)})")
     return cmd_trust(a)
@@ -297,6 +306,7 @@ def parser() -> argparse.ArgumentParser:
     sp.add_argument("--seeded", type=int, required=True)
     sp.add_argument("--caught", type=int, required=True)
     sp.add_argument("--missed", action="append", help="seeded defect the panel missed (repeatable)")
+    sp.add_argument("--defect", action="append", help="seeded defect id the run covered (repeatable; default: the mandate's seeded set)")
     sp.add_argument("--area", action="append", help="area the canaries were drawn from (repeatable; default: every area)")
     sp.add_argument("--reviewer", action="append", help="name=model@prompt_version the run used (default: the mandate registry)")
     sp.add_argument("--note", default="")
