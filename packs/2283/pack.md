@@ -68,7 +68,7 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
   --finding claude:C3=<accepted|rejected|unsure>
 ```
 
-<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)
+<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build.egress pass
 
 <details><summary>Supply-chain detail</summary>
 
@@ -76,6 +76,7 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 
 - Already on base (6): Microsoft.NETCore.Jit 1.0.2 high GHSA-xcvr-qv8h-m7xw, NuGet.Packaging 6.8.0 critical GHSA-68w7-72jg-6qpp, NuGet.Packaging 6.8.0 low GHSA-g4vj-cjjj-v7hg, NuGet.Protocol 6.8.0 low GHSA-g4vj-cjjj-v7hg, System.Formats.Asn1 6.0.0 high GHSA-447r-wph3-92pm, System.Text.Encodings.Web 4.5.0 critical GHSA-ghhp-997w-qr28
 - SBOMs (CycloneDX): `evidence/base/sbom.cdx.json`, `evidence/2283/sbom.cdx.json`
+- `build.egress` **pass**: default deny, presets ['github'], 13 TLS host patterns; run https://github.com/Zawaer/countersign/actions/runs/43559078089; policy sha256 `31fafb855e98`
 
 </details>
 
@@ -576,6 +577,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | repro.claude.C1 | pass | dotnet test (reviewer repro test copied into tests/MessagePack.SourceGenerator.Tests/CountersignRepro) 8.0.402 | reproduced by the pipeline: failed on head (claim: failed), passed on base (claim: passed) |
 | injection_scan | pass | countersign.injection (deterministic pattern scan) injection-v1 | no text addressed to automated reviewers in the added lines, commit message or PR text |
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
+| build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 19 logs; every NuGet feed the head declares is inside the policy |
 
 Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
 

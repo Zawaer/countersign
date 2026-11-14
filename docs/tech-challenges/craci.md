@@ -4,28 +4,28 @@
 reviewers (Claude, Codex, Nemotron), and a named human countersigns whatever the AI could not prove. Every job runs on CRACI with its size
 and a deny-by-default network policy. We use it for three things:
 
-**1. Supply-chain risk as review evidence.** An agent can slip in a new package, a moved version or a new NuGet
-feed, and no code reviewer reads `Directory.Packages.props`. The `facts` job restores every `*.csproj` of base and
-head and writes a deterministic CycloneDX 1.6 SBOM for each (purls, SHA-512, the dependency graph, NuGet Audit
-advisories). Diffing the two gives `deps.delta`, a check next to build and tests in the evidence pack: what was added,
-which path pulled it in, and whether the mandate allows it. On the four challenge changes it passes (2129 adds a
-project, no package). CRACI produced the same SBOM serial numbers as our local run. A seeded attack on 2283
-(SharpZipLib 1.2.0 plus a version bump) fails with two advisories that are not on base.
+**1. Supply-chain risk as review evidence.** An agent can slip in a new package, version or NuGet feed, and no
+reviewer reads `Directory.Packages.props`. The `facts` job restores every `*.csproj` of base and head into
+deterministic CycloneDX 1.6 SBOMs (purls, SHA-512, graph, NuGet Audit advisories); their diff is `deps.delta`, a
+check next to build and tests. It passes on the four changes, and CRACI produced the same SBOM serials as our local run. A seeded attack on 2283 (SharpZipLib 1.2.0) fails
+with two advisories not on base.
 
-**2. The egress policy as provenance.** The change is built under a policy that allows only GitHub, the .NET
-download hosts and NuGet. `build.egress` copies that policy into the facts, together with its sha256, the run URL
-and the fingerprint of the CRACI job CA that enforced it. So the pack can state "the build of this change reached
-only these hosts". Status: wired; no committed facts.json carries a `build.egress` result yet. A build step that phones home hits a proxy violation, and the check fails with the host's name.
+**2. The egress policy as provenance.** Each change is built under a policy allowing only GitHub, the .NET
+hosts and NuGet. `build.egress` copies it into the facts with its sha256, the run URL and the CRACI job CA
+fingerprint, so the pack says "the build reached only these hosts". A build that phones home fails with the host.
 
-**3. CRACI's API as an independent record.** A `craci` job pulls CRACI's own SBOM and network trace of the
-`facts` job (`/v1preview1/sbom`, `/v1preview1/network-trace`) and adds them as `craci.sbom` and `craci.network`.
-That means hosts, bytes, the matched rule and every violation, recorded by CRACI, not by our code. The job needs
-a token and never fails without one. Status: no CRACI API token is set, so both checks are `skipped` so far.
+| Change | CRACI run (main) | `facts` job | Statuses matched | Egress allowed | Blocked |
+|---|---|---|---|---|---|
+| 2283 | 43559078089 | 2m24s | 9/9 | 13 TLS patterns | 0 |
+| 2234 | 43559084959 | 3m22s | 12/12 | 13 TLS patterns | 0 |
+| 2129 | 43559092226 | 3m08s | 12/12 | 13 TLS patterns | 0 |
+| 2297 | 43559099382 | 1m56s | 8/8 | 13 TLS patterns | 0 |
 
-**What we learned.** CRACI has no NuGet source type, so NuGet goes through a TLS connection rule. CRACI logs those
-connections but does not inspect them for packages. Our SBOM therefore covers the package graph, and CRACI covers
-the policy, the connections and the violations. We also found that leaving out `presets:` turns on every built-in
-preset, and fixed our own policy.
+**3. CRACI's API as an independent record.** A `craci` job adds CRACI's own SBOM and network trace of `facts`
+(`/v1preview1/sbom`, `/network-trace`) as `craci.sbom`, `craci.network`. No API token is set, so both are `skipped`.
 
-Runs: github.com/Zawaer/countersign/actions/runs/43537739301 (2129), /43537742003 (2283)
+**What we learned.** CRACI has no NuGet source type, so NuGet goes through a TLS rule CRACI logs but does not
+inspect: our SBOM covers packages, CRACI the policy and connections. Omitting `presets:` enables every preset; we fixed ours.
+
+Runs: github.com/Zawaer/countersign/actions/runs/<run> (table); comparisons in `evidence/<n>/ci/compare.md`
 Code: github.com/Zawaer/countersign (`countersign/sbom.py`, `countersign/craci.py`)

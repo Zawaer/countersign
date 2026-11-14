@@ -34,7 +34,7 @@
   "inputs": {
     "facts": {
       "path": "evidence/2234/facts.json",
-      "sha256": "888441d67538299468cea31acc2f9bb4eec9383684b070b3ebc70438c9ca4db3"
+      "sha256": "7e8a21026403756b0fbbaf2126d14ada3115673cca8b801d7697629cf0fc5746"
     },
     "requirements": {
       "path": "requirements/2234.yaml",
@@ -1263,6 +1263,15 @@
         "tool_version": "8.0.402",
         "status": "pass",
         "summary": "238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base)",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "build.egress",
+        "tool": "CRACI network policy (cracicorp/setup@v1) + job log scan",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 40 logs; every NuGet feed the head declares is inside the policy",
         "duration_s": null,
         "log": null
       }
@@ -4858,10 +4867,43 @@
         "head_serial": "urn:uuid:4351f989-c156-501a-a4ff-890d8de81c45"
       }
     },
-    "egress": null,
+    "egress": {
+      "status": "pass",
+      "summary": "built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 40 logs; every NuGet feed the head declares is inside the policy",
+      "reason": null,
+      "policy": {
+        "default": "deny",
+        "presets": [
+          "github"
+        ],
+        "tls_server_name_patterns": [
+          "github.com",
+          "codeload.github.com",
+          "objects.githubusercontent.com",
+          "api.nuget.org",
+          "*.nuget.org",
+          "pkgs.dev.azure.com",
+          "*.vsblob.vsassets.io",
+          "builds.dotnet.microsoft.com",
+          "dotnetcli.azureedge.net",
+          "dotnetcli.blob.core.windows.net",
+          "*.dot.net",
+          "dot.net",
+          "download.visualstudio.microsoft.com"
+        ],
+        "ports": [
+          443
+        ]
+      },
+      "policy_sha256": "31fafb855e985c38a31b18cfa9140b83a5b9caa5539eadbdf7344e88b20d2fa1",
+      "run": "https://github.com/Zawaer/countersign/actions/runs/43559084959",
+      "craci_job_ca_sha256": "baa0ee3ae7ed8f66cd7175b67a7351f91531c53a210f3955fbd6b456ccc79b31",
+      "blocked_hosts": [],
+      "feeds_outside_policy": {}
+    },
     "craci_network": null,
     "craci_sbom": null,
     "status": "pass",
-    "line": "deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)"
+    "line": "deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build.egress pass"
   }
 }

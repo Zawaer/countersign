@@ -611,6 +611,65 @@
         "head_serial": "urn:uuid:4351f989-c156-501a-a4ff-890d8de81c45"
       },
       "scope": "all 30 *.csproj in the tree (src, tests, sandbox, benchmark), restored as one throwaway solution; the graph is NuGet's restore output (obj/**/project.assets.json)"
+    },
+    {
+      "id": "build.egress",
+      "tool": "CRACI network policy (cracicorp/setup@v1) + job log scan",
+      "policy": {
+        "default": "deny",
+        "presets": [
+          "github"
+        ],
+        "tls_server_name_patterns": [
+          "github.com",
+          "codeload.github.com",
+          "objects.githubusercontent.com",
+          "api.nuget.org",
+          "*.nuget.org",
+          "pkgs.dev.azure.com",
+          "*.vsblob.vsassets.io",
+          "builds.dotnet.microsoft.com",
+          "dotnetcli.azureedge.net",
+          "dotnetcli.blob.core.windows.net",
+          "*.dot.net",
+          "dot.net",
+          "download.visualstudio.microsoft.com"
+        ],
+        "tcp_host_patterns": [],
+        "cidrs": [],
+        "ports": [
+          443
+        ]
+      },
+      "policy_text": "default: deny\npresets: [github]\nconnections:\n  - tls:\n      serverNamePatterns: [github.com, codeload.github.com, objects.githubusercontent.com,\n                           api.nuget.org, \"*.nuget.org\", pkgs.dev.azure.com, \"*.vsblob.vsassets.io\",\n                           builds.dotnet.microsoft.com, dotnetcli.azureedge.net, dotnetcli.blob.core.windows.net,\n                           \"*.dot.net\", dot.net, download.visualstudio.microsoft.com]\n      ports: [443]\n",
+      "policy_sha256": "31fafb855e985c38a31b18cfa9140b83a5b9caa5539eadbdf7344e88b20d2fa1",
+      "provenance": {
+        "workflow": ".github/workflows/countersign.yml",
+        "job": "facts",
+        "workflow_commit": "9e708dbb849708b99fe45c3269b04f422e907d93",
+        "run": "https://github.com/Zawaer/countersign/actions/runs/43559084959",
+        "run_attempt": "1",
+        "runner_name": "craci-1-1f0727ec",
+        "craci_job_ca": {
+          "path": "/usr/local/share/ca-certificates/craci.crt",
+          "sha256": "baa0ee3ae7ed8f66cd7175b67a7351f91531c53a210f3955fbd6b456ccc79b31"
+        },
+        "craci_env": []
+      },
+      "logs_scanned": 40,
+      "blocked": [],
+      "blocked_hosts": [],
+      "nuget_feeds_on_head": {
+        "nuget.config:dotnet-tools": "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json",
+        "nuget.config:nuget": "https://api.nuget.org/v3/index.json",
+        "src/MessagePack.UnityClient/Assets/NuGet.config:nuget.org": "https://api.nuget.org/v3/index.json",
+        "src/MessagePack.UnityClient/Assets/NuGet.config:repositoryPath": "./Packages"
+      },
+      "nuget_feeds_outside_policy": {},
+      "authoritative_record": "craci.network (CRACI network trace via the API; needs CRACI_API_TOKEN), or the job's View trace in the CRACI app",
+      "status": "pass",
+      "summary": "built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 40 logs; every NuGet feed the head declares is inside the policy",
+      "run_url": "https://github.com/Zawaer/countersign/actions/runs/43559084959"
     }
   ],
   "not_run": [

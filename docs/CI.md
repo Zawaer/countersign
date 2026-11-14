@@ -73,6 +73,21 @@ The `facts` job records what building the change touched, as checks in facts.jso
   connection with HTTP 403, a reset/EOF or a failed handshake; NuGet reports NU1301) and names the host.
 - `craci.sbom`, `craci.network` (job `craci`, token only): CRACI's own record of the `facts` job.
 
+## Reproduced on CRACI: the four changes
+
+`facts` dispatched on main (9e708db) for each change, 2026-11-14. Every committed check status (and summary text) was
+reproduced; `build.egress` is the one new check, appended to the committed `evidence/<n>/facts.json` with its
+`run_url` (every other check byte-identical). Per-change comparison: `evidence/<n>/ci/compare.md`.
+
+| Change | CRACI run | `facts` job | Statuses matched | Egress hosts allowed | Blocked |
+|---|---|---|---|---|---|
+| 2283 | [43559078089](https://github.com/Zawaer/countersign/actions/runs/43559078089) | 2 min 24 s | 9/9 | 13 TLS patterns, port 443, preset github | 0 (19 logs) |
+| 2234 | [43559084959](https://github.com/Zawaer/countersign/actions/runs/43559084959) | 3 min 22 s | 12/12 | 13 TLS patterns, port 443, preset github | 0 (40 logs) |
+| 2129 | [43559092226](https://github.com/Zawaer/countersign/actions/runs/43559092226) | 3 min 8 s | 12/12 | 13 TLS patterns, port 443, preset github | 0 (29 logs) |
+| 2297 | [43559099382](https://github.com/Zawaer/countersign/actions/runs/43559099382) | 1 min 56 s | 8/8 | 13 TLS patterns, port 443, preset github | 0 (13 logs) |
+
+Policy sha256 `31fafb855e98…` for all four. `craci.sbom` / `craci.network` were skipped (no `CRACI_API_TOKEN`).
+
 ## Where CRACI's SBOM and network trace are
 
 Open the run in the CRACI web app (or follow the CRACI link on the GitHub job). Each job has:
