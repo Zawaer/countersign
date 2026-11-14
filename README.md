@@ -93,7 +93,7 @@ countersign verify-ledger --inputs /tmp/t # LEDGER INVALID: line 2: content does
 countersign trust
 ```
 
-Each area's clearance right from the mandate and from the ledger. Generator/analyzer core may be cleared by the AI up to `notify`; an escape traced to an AI-cleared change drops it to `ask` until three spot-checks in a row agree. TODO(numbers): add the simulated escape-and-recovery run once it is recorded.
+Each area's clearance right from the mandate and from the ledger. Generator/analyzer core may be cleared by the AI up to `notify`; an escape, a disagreeing spot-check or a missed seeded-defect canary drops it one stage, and climbing back to `notify` takes 20 agreeing spot-checks in a row (mandate v3; `countersign trust` prints the table). The simulated escape-and-recovery run is in [docs/MEASUREMENT.md](docs/MEASUREMENT.md).
 
 **What you just saw:** nobody read 262 lines, and the owner still learned that the change's title and its effect don't match, which half of its tests prove nothing, which clause the reviewers disagree on, and exactly what they are signing for.
 
