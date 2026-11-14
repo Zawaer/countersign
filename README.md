@@ -4,7 +4,7 @@
 
 > **AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.**
 
-**In numbers:** replayed on 109 real merged MessagePack-CSharp PRs, the signed mandate would have let the AI clear 24 of them, and none of the 11 that later needed a revert or a follow-up fix. On Tieto's four agent-written changes it sent all four to a named owner, each with its reason.
+**In numbers:** replayed on 109 real merged MessagePack-CSharp PRs (signed mandate v2, upstream CI credited as passed), the AI would have cleared 24 of them, and none of the 11 that later needed a revert or a follow-up fix. On Tieto's four agent-written changes it sent all four to a named owner, each with its reason.
 
 **Three words used throughout:**
 - **Mandate:** a signed, versioned file per repo that says, area by area, how far the AI may go alone and who owns each area.
@@ -58,10 +58,10 @@ Four were written by an agent (Tieto's branches). Three are small merged upstrea
 
 Details and definitions: [docs/MEASUREMENT.md](docs/MEASUREMENT.md).
 
-- **History (real).** 109 merged upstream PRs, routed from their diffs by the signed mandate. 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and **0 of the 11 escapes** ([measurement/history/results.md](measurement/history/results.md)).
-- **Seeded bugs (real).** We planted 14 one-line bugs and 2 prompt-injection changes. Checks alone catch 13 of 16 (11 of 14 bugs and both injections; R-INJECT blocks both). Of the 3 bugs every test missed, Nemotron's blind review points at the planted line in 2 and misses the removed `ContainsSyntaxTree` guard on 2283, which reviewers also called fine on the original.
+- **History (real).** 109 merged upstream PRs, routed from their diffs by the signed mandate (v2, the version signed when the replay ran; upstream CI credited as passed). 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and **0 of the 11 escapes** ([measurement/history/results.md](measurement/history/results.md)).
+- **Seeded changes (real).** We seeded 17 changes: 14 one-line bugs, 2 prompt injections and 1 supply-chain attack. Checks alone catch 14 of 17 (11 of 14 bugs; both injections, which R-INJECT blocks; the supply-chain attack, through `deps.delta`). The 16 with reviews all go to a human (the supply-chain attack has no reviews yet). Of the 3 bugs every test missed, a reviewer flagged the planted line in 2 of 3 with a finding the unmutated original did not already have at that line (3 of 3 counting any finding at that line); Nemotron alone in 2 of 3. It missed the removed `ContainsSyntaxTree` guard on 2283-mut1, the guard all three reviewers accepted (REQ-2283-F3 met) on the original.
 - **Review time (simulated).** A reading model in the mandate, not a stopwatch: about 440 minutes to read all seven diffs, 185 with the packs. On small changes the pack takes longer than the diff.
-- **Trust over time (simulated).** When reviewers get worse, the old rule (3 agreeing spot-checks restore clearance) let escapes rise. 20 checks plus weekly canaries brought them back to the full-review level. That result changed the signed mandate (v3).
+- **Trust over time (simulated).** When reviewers get worse, the old rule (3 agreeing spot-checks restore clearance) let escapes rise. 20 checks plus weekly canaries brought them back to the full-review level. That result changed the signed mandate (v3; the current v4 keeps these trust stages and adds supply-chain rules).
 
 ## What is real, recorded and simulated
 
@@ -75,16 +75,16 @@ Details and definitions: [docs/MEASUREMENT.md](docs/MEASUREMENT.md).
 - It can't judge **intent**: whether this is the change the product needs.
 - It is only as good as the **requirement text**.
 - **Breadth equals the checks.** We have checks for a C# library on net8.0/Linux. Frontend, performance and other targets fall back to humans and are listed as not checked.
-- **Reviewers share blind spots.** Claude and Codex both read the untested 2283 guard as fine.
+- **Reviewers share blind spots.** On the original 2283, all three reviewers said REQ-2283-F3 was met, though no test exercises the guard it depends on.
 - **The merge gate can be forged in the demo.** Any GitHub Actions workflow in the demo repo can post the required status. The fix is a dedicated GitHub App ([docs/security/TRIAGE.md](docs/security/TRIAGE.md), T1).
-- Gemini adjudication has not run, so disputes in the packs say "not adjudicated". Key rotation and revocation are out of scope.
+- Gemini is wired but not run (no key), so disputes in the packs say "not adjudicated". CRACI's own records (`craci.sbom`, `craci.network`) are wired but skipped: no CRACI API token is set. Key rotation and revocation are out of scope.
 
 ## Tech tracks
 
-- **Codex (OpenAI):** a reviewer on all seven changes. Its second pass, given passing tests, said every clause was met and found nothing; the rules are built so that can't clear a change ([docs/CODEX_LOG.md](docs/CODEX_LOG.md)). Codex also did a security review of our own pipeline; the triage confirmed real issues and fixed them, except the merge-gate one above ([docs/security/TRIAGE.md](docs/security/TRIAGE.md)).
-- **Gemini (Google):** the adjudicator. It reads only disputed items with both sides' evidence; the engine never lets it clear anything (`decide.apply_adjudication`). Wired, runs when the key is set; not yet run.
-- **Nemotron (NVIDIA, open weights):** the third reviewer, run live in CI on all seven real changes and all 16 seeded changes. It is the only reviewer marked self-hostable, so it is the one a repo marked confidential may use.
-- **CRACI:** the pipeline and the reviewer jobs run on CRACI runners under a deny-by-default network policy. The facts job also writes `deps.delta` (a CycloneDX SBOM diff of the NuGet graph, base vs head; passes on all four changes, fails on a seeded attack on 2283) and `build.egress` (copies the build's network policy into the evidence; wired, no committed run yet). See [docs/CI.md](docs/CI.md).
+- **Codex (OpenAI):** a reviewer on all seven changes. Its second pass, given passing tests, said every clause was met and found nothing; the rules are built so that can't clear a change ([docs/CODEX_LOG.md](docs/CODEX_LOG.md)). Codex also did a security review of our own pipeline; the triage confirmed 8 issues (4 Codex found, 4 it missed) and fixed or mitigated all but the merge-gate hole T1, which is still open ([docs/security/TRIAGE.md](docs/security/TRIAGE.md)).
+- **Gemini (Google):** the adjudicator. It reads only disputed items with both sides' evidence; the engine never lets it clear anything (`decide.apply_adjudication`). Wired but not run (no key).
+- **Nemotron (NVIDIA, open weights):** the third reviewer, run live in CI on all seven real changes and on the 16 seeded changes that have reviews (all but the supply-chain attack). Of the 3 seeded bugs every test missed, it flagged the planted line in 2. It is the only reviewer marked self-hostable, so it is the one a repo marked confidential may use.
+- **CRACI:** the pipeline and the reviewer jobs run on CRACI runners under a deny-by-default network policy. The facts job also writes `deps.delta` (a CycloneDX SBOM diff of the NuGet graph, base vs head; passes on all four changes, fails on a seeded attack on 2283) and `build.egress` (copies the build's network policy into the evidence; wired, no committed run yet). A `craci` job would add CRACI's own SBOM and network trace (`craci.sbom`, `craci.network`); no CRACI API token is set, so both are skipped. See [docs/CI.md](docs/CI.md).
 
 ## Run it
 

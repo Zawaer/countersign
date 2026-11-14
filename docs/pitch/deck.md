@@ -51,8 +51,8 @@ One message per slide. Visuals are captures of real artifacts unless marked "dia
 ## 6. Trust is earned per area, and measured
 
 - **Message:** The AI earns clearance per area from spot-checks and loses it after one escape; we measure outcomes, not activity.
-- **Visual:** three numbers. History (real): of 109 merged upstream PRs, the AI would clear 24, and none of the 11 later reverted or fixed. Seeded (real): checks alone catch 13 of 16 (11 of 14 bugs and both prompt injections). Trust (SIMULATED): with 20-check restore and weekly canaries, escapes stay at the full-review level when reviewers degrade.
-- **Speaker note:** An area reaches `notify` after 20 agreeing spot-checks in a row; an escape, a disagreeing spot-check or a missed canary drops it a stage, and a new reviewer model starts at `ask`. The simulation showed our first rule, 3 checks, barely reacted, so we changed the signed mandate. Of the 3 seeded bugs every test missed, Nemotron's blind review points at the planted line in 2.
+- **Visual:** three numbers. History (real; mandate v2, upstream CI credited as passed): of 109 merged upstream PRs, the AI would clear 24, and none of the 11 later reverted or fixed. Seeded (real): checks alone catch 14 of 17 seeded changes (11 of 14 one-line bugs, both prompt injections, the supply-chain attack). Trust (SIMULATED): with 20-check restore and weekly canaries, escapes stay at the full-review level when reviewers degrade.
+- **Speaker note:** An area reaches `notify` after 20 agreeing spot-checks in a row; an escape, a disagreeing spot-check or a missed canary drops it a stage, and a new reviewer model starts at `ask`. The simulation showed our first rule, 3 checks, barely reacted, so we changed the signed mandate (v3; now v4). Of the 3 seeded bugs every test missed, a reviewer flagged the planted line in 2 with a finding the original did not already have (3 of 3 by location); Nemotron's blind review alone in 2.
 
 ## 7. What we saw go wrong
 
