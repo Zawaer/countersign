@@ -240,3 +240,12 @@ def test_repro_on_head_and_base_says_present_before(ws):
     review(ws, "claude", make_review("claude", findings=[MAJOR]))
     f = pack.build(ws, "9001")["findings"][0]
     assert f["repro"]["present_before"] and f["repro"]["label"] == "reproduced; also present before this change"
+
+
+def test_refusal_about_resolving_the_changes_own_issue_routes_ask():
+    from countersign.decide import classify_refusal
+    m = {"decision": {"reviewer_refusal_tier": "ask", "out_of_scope_refusal_tier": "notify", "refusal_ask_terms": []}}
+    reqs = {"change": "2234", "requirements": [{"id": "REQ-2234-F1"}]}
+    r = {"topic": "Whether this change resolves issue #2234 for users of the released 3.1.x packages"}
+    assert classify_refusal(r, reqs, [], [], m)[0] == "ask"
+    assert classify_refusal({"topic": "Rendering on GitHub's markdown viewer"}, reqs, [], [], m)[0] == "notify"

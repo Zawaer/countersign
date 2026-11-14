@@ -8,7 +8,7 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 1. Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a different crash ([evidence](#f-claude-C1))
 2. 2 of 4 requirement clauses not proven. REQ-2234-N1: Claude says not met (Codex and Nemotron: met) (+1 more) ([evidence](#chain-REQ-2234-N1))
-3. The AI declined to decide 2 questions, e.g. Runtime library behavior (src/MessagePack) and net472/netstandard builds ([evidence](#refused))
+3. The AI declined to decide 3 questions, e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages ([evidence](#refused))
 
 <sub>All 18 tier drivers are under Full detail.</sub>
 
@@ -30,11 +30,12 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
+- <a id="refusal-1"></a>Whether this change resolves issue #2234 for users of the released 3.1.x packages. *Why:* The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own). *Who:* analyzer area owner / maintainers choosing the target branch (raised by Claude)
 - <a id="refusal-5"></a>Runtime library behavior (src/MessagePack) and net472/netstandard builds. *Why:* Not run; the runtime library was not modified and only net8.0 was built. *Who:* Area owner (raised by Nemotron)
 - <a id="refusal-6"></a>Security review of analyzer deserializing untrusted input. *Why:* No security-specific evidence was provided and no security analysis was performed. *Who:* Security reviewer (raised by Nemotron)
 - Whether [REQ-2234-N1](#chain-REQ-2234-N1), [REQ-2234-N2](#chain-REQ-2234-N2) are met: see the trace. *Who:* Toivo
 
-<details id="refused-peripheral"><summary>4 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Whether this change resolves issue #2234 for users of the released 3.1.x packages (Claude) · <a id="refusal-2"></a>Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Claude) · <a id="refusal-3"></a>Parity with analyzer behavior in version 3.1.0 (Nemotron) · <a id="refusal-4"></a>Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (Nemotron)</details>
+<details id="refused-peripheral"><summary>3 peripheral refusals (out of scope for this change)</summary><a id="refusal-2"></a>Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Claude) · <a id="refusal-3"></a>Parity with analyzer behavior in version 3.1.0 (Nemotron) · <a id="refusal-4"></a>Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (Nemotron)</details>
 
 **Not checked, and why**
 
@@ -47,9 +48,9 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 - Open major finding: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
 - Not proven by the AI: REQ-2234-N1, REQ-2234-N2. Signing means you judge them yourself.
-- 2 questions the AI declined to decide (listed above) are yours.
+- 3 questions the AI declined to decide (listed above) are yours.
 
-<details><summary>5 more risks that do not set the tier</summary>REQ-2234-F1, REQ-2234-F2 already held before this change: met, but not achieved by it. · 4 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks · 2 disputed items not adjudicated · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
+<details><summary>5 more risks that do not set the tier</summary>REQ-2234-F1, REQ-2234-F2 already held before this change: met, but not achieved by it. · 3 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks · 2 disputed items not adjudicated · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: accept, reject, request-changes)
 
@@ -565,13 +566,13 @@ Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toi
 - ask: verified finding `claude:C1`: major: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
 - ask: refused clause `REQ-2234-N1`: not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met, nemotron says met
 - ask: refused clause `REQ-2234-N2`: thin_evidence: codex says met with 0 verified evidence items about the change (of 2 cited; requirement quotes and unclaimed outcomes don't count)
+- ask: reviewer refusal `claude`: Whether this change resolves issue #2234 for users of the released 3.1.x packages (The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).)
 - ask: reviewer refusal `nemotron`: Runtime library behavior (src/MessagePack) and net472/netstandard builds (Not run; the runtime library was not modified and only net8.0 was built.)
 - ask: reviewer refusal `nemotron`: Security review of analyzer deserializing untrusted input (No security-specific evidence was provided and no security analysis was performed.)
 - ask: risk score `risk`: score 67.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6
 - notify: verified finding `claude:C2`: minor: Positional-record Key(null) still crashes the analyzer for suppressed (and other) types (reproduced by the pipeline (repro.claude.C2))
 - notify: verified finding `nemotron:N1`: minor: Duplicate-key diagnostic reports only one diagnostic although two members share the key
 - notify: verified finding `nemotron:N2`: minor: New test file triggers StyleCop SA1649 warning
-- notify: reviewer refusal `claude`: Whether this change resolves issue #2234 for users of the released 3.1.x packages (The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `claude`: Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `nemotron`: Parity with analyzer behavior in version 3.1.0 (No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `nemotron`: Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
@@ -654,7 +655,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4e
 - REQ-2234-N2 not proven: thin_evidence
 - REQ-2234-F1 held before this change (met, but not achieved by it)
 - REQ-2234-F2 held before this change (met, but not achieved by it)
-- Reviewer refusal (claude): Whether this change resolves issue #2234 for users of the released 3.1.x packages (out of scope: notify)
+- Reviewer refusal (claude): Whether this change resolves issue #2234 for users of the released 3.1.x packages
 - Reviewer refusal (claude): Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (out of scope: notify)
 - Reviewer refusal (nemotron): Parity with analyzer behavior in version 3.1.0 (out of scope: notify)
 - Reviewer refusal (nemotron): Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (out of scope: notify)

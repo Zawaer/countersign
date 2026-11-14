@@ -232,7 +232,10 @@ def classify_refusal(r: dict, reqs: dict, areas: list[dict], clauses: list[dict]
     if r.get("blocking"):
         return ask, "marked blocking by the reviewer"
     topic = str(r.get("topic", "")).lower()
-    mandated = {c for a in areas for c in a["checks"]} | {x["id"] for c in clauses for x in c["checks"]}
+    issue = str(reqs.get("change", "")).split("-")[0]
+    if issue.isdigit() and re.search(rf"#{issue}\b|issue {issue}\b", topic) or re.search(r"\b(resolves?|fix(es)?) (the |this )?(reported )?issue\b", topic):
+        return ask, "asks whether the change resolves its own issue (the requirement's root)"
+    mandated ={c for a in areas for c in a["checks"]} | {x["id"] for c in clauses for x in c["checks"]}
     hit = [c for c in sorted(mandated) if re.search(rf"(?<![\w.]){re.escape(c.lower())}(?![\w.])", topic)]
     if hit:
         return ask, f"topic names mandated check {hit[0]}"

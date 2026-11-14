@@ -80,6 +80,12 @@
       "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)"
     },
     {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)"
+    },
+    {
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
@@ -103,6 +109,12 @@
         "thin_evidence"
       ],
       "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)"
     },
     {
       "source": "risk score",
@@ -139,12 +151,6 @@
       "id": "nemotron",
       "tier": "notify",
       "why": "End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "nemotron",
-      "tier": "notify",
-      "why": "Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
     },
     {
       "source": "trust cap",
@@ -1491,8 +1497,8 @@
         "who_should_decide": "area owner or maintainer",
         "reviewer": "nemotron",
         "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-        "routes": "notify",
-        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+        "routes": "ask",
+        "route_reason": "asks whether the change resolves its own issue (the requirement's root)"
       }
     ]
   },
@@ -1545,7 +1551,7 @@
     "Reviewer refusal (claude): Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (out of scope: notify)",
     "Reviewer refusal (codex): Execution-test behavior under a compiler that loads the generator (out of scope: notify)",
     "Reviewer refusal (nemotron): End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (out of scope: notify)",
-    "Reviewer refusal (nemotron): Whether the placeholder requirement set matches the upstream issue #2283 intent (out of scope: notify)",
+    "Reviewer refusal (nemotron): Whether the placeholder requirement set matches the upstream issue #2283 intent",
     "Open major finding claude:C1: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic (reproduced)",
     "tests.execution not run (SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.)",
     "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
@@ -1676,8 +1682,8 @@
         "link": "#chain-REQ-2283-N1"
       },
       {
-        "text": "Risk score 41.1 reaches the ask band (>= 40), mostly most sensitive area touched: generator-analyzer-core (high) (20) and 228 non-generated lines x 4/100 (cap 20) (9.1)",
-        "link": "#risk"
+        "text": "The AI declined to decide 1 question, e.g. Whether the placeholder requirement set matches the upstream issue #2283 intent",
+        "link": "#refused"
       }
     ],
     "more_drivers": 12,
@@ -1777,6 +1783,20 @@
     "rejected_total": 0,
     "refused": [
       {
+        "topic": "Whether the placeholder requirement set matches the upstream issue #2283 intent",
+        "why": "The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner or maintainer"
+        ],
+        "peripheral": false,
+        "anchor": "refusal-5"
+      }
+    ],
+    "refused_peripheral": [
+      {
         "topic": "Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended)",
         "why": "tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.",
         "raised_by": [
@@ -1823,21 +1843,8 @@
         ],
         "peripheral": true,
         "anchor": "refusal-4"
-      },
-      {
-        "topic": "Whether the placeholder requirement set matches the upstream issue #2283 intent",
-        "why": "The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.",
-        "raised_by": [
-          "nemotron"
-        ],
-        "who_should_decide": [
-          "area owner or maintainer"
-        ],
-        "peripheral": true,
-        "anchor": "refusal-5"
       }
     ],
-    "refused_peripheral": [],
     "refused_clauses": [
       "REQ-2283-N1"
     ],
@@ -1875,12 +1882,17 @@
         "text": "Not proven by the AI: REQ-2283-N1. Signing means you judge them yourself.",
         "link": "#chain-REQ-2283-N1",
         "drives": true
+      },
+      {
+        "text": "1 question the AI declined to decide (listed above) are yours.",
+        "link": "#refused",
+        "drives": true
       }
     ],
     "residual_more": [
       {
-        "text": "5 questions the AI declined to decide (listed above) are yours.",
-        "link": "#refused",
+        "text": "4 peripheral refusals (out of scope for this change) are yours too.",
+        "link": "#refused-peripheral",
         "drives": false
       },
       {
