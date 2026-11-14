@@ -15,6 +15,8 @@ import re
 from pathlib import Path
 
 
+TAGLINE = "AI reviews code; a named human signs."  # same line as the site header (site/scene.py)
+
 STATUS = {  # label -> (css class, glyph, what it means)
     "proven": ("proven", "\u2713", "every reviewer said met with verified evidence and the clause's checks pass"),
     "held before": ("held", "=", "met, but already true before this change (its tests pass without the fix)"),
@@ -751,7 +753,7 @@ pre.cmd span{white-space:nowrap}pre.cmd{white-space:pre-wrap;overflow-wrap:norma
 .ok{color:var(--ok);font-weight:600}.no{color:var(--bad);font-weight:600}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .story{min-height:calc(100vh - 160px);min-height:calc(100svh - 160px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px;padding:24px 0}
-.story .brand{font:600 14px/1.4 var(--sans);margin:0}.story h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;max-width:28ch;margin:0;text-wrap:balance}
+.story .brand{font:600 14px/1.4 var(--sans);margin:0}.story .brand .mut{font-weight:400}.story h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;max-width:28ch;margin:0;text-wrap:balance}
 .pill{display:inline-flex;gap:8px;align-items:baseline;border:2px solid currentColor;border-radius:999px;padding:6px 20px;font:600 20px/1.3 var(--sans);margin:0}
 .pill b{font-family:var(--mono);letter-spacing:.04em}
 .why{font-size:clamp(18px,3.6vw,22px);margin:0;max-width:32ch}
@@ -1110,9 +1112,12 @@ def _html_story(p: dict, so: dict | None) -> str:
     """The first screen: verdict pill, the change in one line, one reason, three marks. Status is glyph + words."""
     marks = "".join(f'<li class="m-{c}"><span class="g" aria-hidden="true">{g}</span>{_e(w)}</li>' for c, g, w in _marks(p, so))
     who = f" &rarr; {_e(p['owner'])} decides" if p["tier"] in ("ask", "block") else f" &middot; {_e(p['owner'])} is told"
+    pill = f'<b>{_e(p["tier"].upper())}</b>{who}'
+    if so and so.get("current"):  # already decided: say what the ledger records, not what is still to come
+        pill = f'{_e(so["signer"])} decided: {_e((so.get("decision") or "").replace("-", " "))}'
     return (f'<section class="story" id="card" aria-labelledby="card-h">'
-            f'<p class="brand">Countersign <span class="mut">&middot; change {_e(p["change"])}</span></p>'
-            f'<p class="pill t-{_e(p["tier"])}"><b>{_e(p["tier"].upper())}</b>{who}</p>'
+            f'<p class="brand">Countersign <span class="mut">&middot; {_e(TAGLINE)}</span></p>'
+            f'<p class="pill t-{_e(p["tier"])}">{pill}</p>'
             f'<h1 id="card-h">{_e(_change_line(p))}</h1>'
             f'<p class="why"><b>Why:</b> {_e(_why(p))}</p>'
             f'<ul class="marks" aria-label="Checks, reviewers, signature">{marks}</ul></section>')

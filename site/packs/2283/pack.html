@@ -57,7 +57,7 @@ pre.cmd span{white-space:nowrap}pre.cmd{white-space:pre-wrap;overflow-wrap:norma
 .ok{color:var(--ok);font-weight:600}.no{color:var(--bad);font-weight:600}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .story{min-height:calc(100vh - 160px);min-height:calc(100svh - 160px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px;padding:24px 0}
-.story .brand{font:600 14px/1.4 var(--sans);margin:0}.story h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;max-width:28ch;margin:0;text-wrap:balance}
+.story .brand{font:600 14px/1.4 var(--sans);margin:0}.story .brand .mut{font-weight:400}.story h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;max-width:28ch;margin:0;text-wrap:balance}
 .pill{display:inline-flex;gap:8px;align-items:baseline;border:2px solid currentColor;border-radius:999px;padding:6px 20px;font:600 20px/1.3 var(--sans);margin:0}
 .pill b{font-family:var(--mono);letter-spacing:.04em}
 .why{font-size:clamp(18px,3.6vw,22px);margin:0;max-width:32ch}
@@ -74,7 +74,7 @@ details#evidence>summary::-webkit-details-marker{display:none}details#evidence>s
 <main>
 
 
-<section class="story" id="card" aria-labelledby="card-h"><p class="brand"><a href="../../index.html">← Countersign</a> <span class="mut">&middot; change 2283</span></p><p class="pill t-ask"><b>ASK</b> &rarr; Toivo decides</p><h1 id="card-h">#2283 implementation for #2283</h1><p class="why"><b>Why:</b> Location filter silently drops MsgPack003</p><ul class="marks" aria-label="Checks, reviewers, signature"><li class="m-warn"><span class="g" aria-hidden="true">!</span>Builds, tests pass; 1 other check fail</li><li class="m-bad"><span class="g" aria-hidden="true">✕</span>Reviewers found a major issue</li><li class="m-bad"><span class="g" aria-hidden="true">✕</span>Signed by Toivo: request changes</li></ul></section>
+<section class="story" id="card" aria-labelledby="card-h"><p class="brand"><a href="../../index.html">← Countersign</a> <span class="mut">&middot; AI reviews code; a named human signs.</span></p><p class="pill t-ask">Toivo decided: request changes</p><h1 id="card-h">#2283 implementation for #2283</h1><p class="why"><b>Why:</b> Location filter silently drops MsgPack003</p><ul class="marks" aria-label="Checks, reviewers, signature"><li class="m-warn"><span class="g" aria-hidden="true">!</span>Builds, tests pass; 1 other check fail</li><li class="m-bad"><span class="g" aria-hidden="true">✕</span>Reviewers found a major issue</li><li class="m-bad"><span class="g" aria-hidden="true">✕</span>Signed by Toivo: request changes</li></ul></section>
 <details class="fold" id="evidence"><summary>Evidence</summary>
 <nav class="jump" aria-label="Evidence groups"><a href="#requirements">Requirements</a><a href="#findings">Findings</a><a href="#refused">Refusals</a><a href="#checks">Checks</a><a href="#risk">Risk</a><a href="#sign">Sign</a></nav>
 <p class="story-l">Agent-written change for #2283: implementation for #2283. Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on ju26-issue-2283 by Stelian Vultur. <span class="mut">Judged against 5 requirement clauses from #2283 (placeholder requirement set, not Tieto&#x27;s official one).</span></p>
@@ -118,7 +118,7 @@ details#evidence>summary::-webkit-details-marker{display:none}details#evidence>s
 <p class="sm">Mandate messagepack-csharp v6 <code>71386aa55974f675</code>:
 signed by Toivo. countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974).</p>
 <p class="sm mut">Inputs: facts evidence/2283/facts.json (faf99b6ec907), requirements requirements/2283.yaml,
-reviews claude (8b8a2a678edf), codex (c5730ada03bb), nemotron (5c0c4d94314f). Rendered 2026-11-14T11:26:30+00:00.</p>
+reviews claude (8b8a2a678edf), codex (c5730ada03bb), nemotron (5c0c4d94314f). Rendered 2026-11-14T11:35:35+00:00.</p>
 <h2 id="sign">Sign</h2>
 <div class="sign"><p><b>Toivo signs</b> <span class="mut sm">(required; accept, reject, request-changes)</span></p><pre class="cmd" aria-label="sign command"><span>countersign</span> <span>sign</span> <span>2283</span> <span>--as</span> <span>Toivo</span> <span>--decision</span> <span>…</span> <span>--note</span> <span>&quot;…&quot;</span></pre><details class="mini" id="sign-findings"><summary>and rate the 3 verified findings (full command)</summary><p class="sm">One <code>--finding</code> flag each: <code>accepted</code> (real), <code>rejected</code> (a false positive) or <code>unsure</code>, optionally <code>:reason</code>. A finding without a flag is recorded as <code>unrated</code>.</p><ul class="sm"><li><code>claude:C1</code> <span class="mut">(major)</span> Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic</li><li><code>claude:C2</code> <span class="mut">(minor)</span> BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source</li><li><code>claude:C3</code> <span class="mut">(info)</span> Fix treats the symptom location; metadata struct backing fields are still walked as members</li></ul><pre>countersign sign 2283 --as Toivo --decision &lt;accept|reject|request-changes&gt; --note &quot;...&quot; \
   --finding claude:C1=&lt;accepted|rejected|unsure&gt; \

@@ -4,7 +4,7 @@
 
 > **AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.**
 
-![Change 2234 in the demo: the real diff with pins on the lines that matter, the "Fixes a different crash" pin open showing Claude's verified finding, and one verdict at the top: ASK, Toivo must decide](docs/img/scene.png)
+![The demo's first screen: an AI agent wrote this fix for #2234; it builds, 175/175 tests pass and an AI reviewer says requirements are met, yet it fixes the wrong bug; a second AI reviewer caught it, Toivo, its owner, must decide, with two buttons: Show me where, Try to sneak a bug in](docs/img/scene.png)
 
 **In numbers:** replayed on <!--n:history_prs-->109<!--/n--> real merged MessagePack-CSharp PRs (signed mandate v<!--n:history_mandate-->6<!--/n-->, upstream CI credited as passed), the AI would have cleared <!--n:history_cleared-->24<!--/n--> of them, and <!--n:history_escapes_cleared-->0<!--/n--> of the <!--n:history_escapes-->11<!--/n--> that later needed a revert or a follow-up fix. On Tieto's <!--n:agent_changes-->4<!--/n--> agent-written changes it sent <!--n:agent_routed-->4<!--/n--> to a named owner, each with its reason.
 

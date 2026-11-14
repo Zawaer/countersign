@@ -136,7 +136,7 @@ def hl(s: str) -> str:
         out.append(f'<i class="t{m.lastgroup}">{e(m.group())}</i>')
         i = m.end()
     out.append(e(s[i:]))
-    return "".join(out).replace("​", '<mark class="zw" title="U+200B zero-width space">␣</mark>')
+    return "".join(out).replace("​", '<mark class="zw" title="U+200B zero-width space">[hidden character]</mark>')
 
 
 def dedent(lines: list[str]) -> list[str]:
@@ -244,7 +244,7 @@ def bug_data(mid: str) -> dict | None:
     elif failed:
         res = ("ok", "✓", f"Caught: the {failed[0]['id']} check failed.", failed[0].get("summary", ""))
     elif rpin:
-        res = ("warn", "!", "Tests missed it. A reviewer pointed at the line.", f"{rname}: “{rpin['say']}”")
+        res = ("ok", "✓", "Caught by a reviewer (tests missed it).", f"{rname}: “{rpin['say']}”")
     else:
         res = ("bad", "✕", "It got past the checks and the reviewers.", "")
     return dict(id=mid, file=m["file"], line=m.get("line"), before=m.get("before", ""), after=m.get("after", ""), res=res,
@@ -342,6 +342,8 @@ MORE = """<section class="view plain-list" aria-labelledby="h-more"><a class="ba
 </ul></section>"""
 
 
+TAGLINE = "AI reviews code; a named human signs."
+
 PAGE_CSS = r"""
 :root{--bg:#fff;--bg2:#f6f8fa;--fg:#1f2328;--muted:#59636e;--border:#d1d9e0;--accent:#0969da;
 --ok:#1a7f37;--ok-bg:#dafbe1;--warn:#9a6700;--warn-bg:#fff8c5;--bad:#d1242f;--bad-bg:#ffebe9;
@@ -358,6 +360,7 @@ a{color:var(--accent);text-underline-offset:3px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .top{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;font-size:15px}
 .mark{font-weight:600;color:var(--fg);text-decoration:none}
+.brand{margin:0;display:flex;align-items:baseline;gap:0 10px;flex-wrap:wrap;min-width:0}.tag{color:var(--muted);font-size:14px}
 .top nav{display:flex;gap:16px;align-items:center}.top nav a{color:var(--muted)}
 .top button{background:none;border:0;color:var(--muted);font:inherit;font-size:17px;padding:2px 6px;cursor:pointer}
 main{flex:1;display:flex;flex-direction:column}
@@ -401,7 +404,7 @@ h1,h2,.say,.wrong,.decide{text-wrap:balance}
 .pin{display:flex;align-items:center;gap:8px;margin:4px 14px 8px 56px;color:var(--bad);font:700 16px/1.3 var(--sans)}
 .pin .g{background:var(--bad-bg)}
 i.tk{font-style:normal;color:var(--k)}i.ts{font-style:normal;color:var(--s)}i.tc{color:var(--cm)}i.tn{font-style:normal;color:var(--num)}
-mark.zw{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 2px}
+mark.zw{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 2px;white-space:nowrap}
 .nw{white-space:nowrap}.by{margin:0;color:var(--muted);font-size:15px;max-width:60ch}
 .picks{list-style:none;margin:0;padding:0;display:grid;gap:14px;width:100%;max-width:440px}
 .pick{display:block;padding:22px;border:2px solid var(--border);border-radius:12px;font-size:22px;font-weight:600;color:var(--fg);text-decoration:none}
@@ -436,7 +439,7 @@ def page(title: str, body: str, cls: str = "") -> str:
 <script>try{{var t=localStorage.getItem("cs-theme");if(t)document.documentElement.dataset.theme=t}}catch(_){{}}</script>
 <style>{PAGE_CSS.strip()}</style>
 </head><body class="{cls}">
-<header class="top"><a class="mark" href="index.html">Countersign</a>
+<header class="top"><p class="brand"><a class="mark" href="index.html">Countersign</a><span class="tag">{TAGLINE}</span></p>
 <nav aria-label="Site"><a href="more.html">More</a><button type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav></header>
 <main id="main">{body}</main>
 <script>{SEEN_JS}</script>

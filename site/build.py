@@ -331,13 +331,12 @@ def hero_text(n: dict) -> str:
 
 # ---------------------------------------------------------------- shared page shell
 
-NAV = [("index.html", "Demo"), ("tour.html", "Tour"), ("overview.html", "Numbers"), ("pitch.html", "Pitch"), ("prs.html", "PR flow"), ("packs/2234/pack.html", "Evidence pack")]
+TAGLINE = "AI reviews code; a named human signs."  # same line as site/scene.py and the evidence packs
 
 
 def page(fname: str, title: str, body: str, js: str = "", cls: str = "", desc: str = "") -> str:
     depth = fname.count("/")
     up = "../" * depth
-    nav = "".join(f'<a href="{up}{h}"{" aria-current=page" if h == fname else ""}>{e(t)}</a>' for h, t in NAV)
     sha = git("rev-parse", "--short", "HEAD")
     built = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     return f"""<!doctype html>
@@ -350,9 +349,9 @@ def page(fname: str, title: str, body: str, js: str = "", cls: str = "", desc: s
 </head><body class="{cls}">
 <a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap bar">
-<a class="mark" href="{up}index.html"><span class="sig">✓</span>Countersign</a>
-<nav aria-label="Site">{nav}</nav>
-<button class="theme" type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button>
+<p class="brand"><a class="mark" href="{up}index.html">Countersign</a><span class="tag">{e(TAGLINE)}</span></p>
+<nav aria-label="Site"><a href="{up}more.html"{" aria-current=page" if fname == "more.html" else ""}>More</a>
+<button class="theme" type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav>
 </div></header>
 <main id="main">{body}</main>
 <footer class="foot"><div class="wrap">
@@ -834,13 +833,14 @@ section.wrap{padding-top:40px}
 .muted{color:var(--muted)}.eyebrow{font:12px/1.5 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
 .skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:var(--bg);padding:8px;z-index:9}
 .top{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:5}
-.bar{display:flex;align-items:center;gap:16px;min-height:56px;flex-wrap:wrap}
+.bar{display:flex;align-items:center;gap:16px;min-height:56px}
 .mark{font-weight:600;color:var(--fg);text-decoration:none;display:flex;align-items:center;gap:8px}
 .sig{display:inline-grid;place-items:center;width:24px;height:24px;border:1.5px solid var(--fg);border-radius:6px;font-size:14px}
-.top nav{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
+.brand{margin:0;display:flex;align-items:baseline;gap:0 10px;flex-wrap:wrap;flex:1;min-width:0}.tag{color:var(--muted);font-size:14px}
+.top nav{display:flex;gap:12px;align-items:center;margin-left:auto}
 .top nav a{color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:6px;font-size:14px;white-space:nowrap}
 .top nav a:hover{color:var(--fg);background:var(--bg2)}.top nav a[aria-current]{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px 0 var(--accent);border-radius:0}
-.theme{background:none;border:1px solid var(--border);color:var(--fg);border-radius:6px;width:32px;height:32px;cursor:pointer}
+.theme{background:none;border:0;color:var(--muted);font:inherit;font-size:17px;padding:2px 6px;cursor:pointer}
 .hero{padding-top:48px}.hero h1{max-width:44ch}.hero .muted{font-size:14px}
 .legend{display:flex;flex-wrap:wrap;gap:8px 24px;margin:8px 0 16px;font-size:14px;color:var(--muted)}.legend div{display:flex;gap:8px;align-items:baseline}.legend dt{white-space:nowrap}.legend dd{margin:0}.hero.small h1{max-width:none}
 .h-sm{font-size:20px}
@@ -988,11 +988,11 @@ details.more[open] summary{margin-bottom:8px}
 /* small screens */
 @media (max-width:860px){.story{grid-template-columns:1fr}.stat{border-left:0;border-top:1px solid var(--border)}.stat:first-child{border-top:0}}
 @media (max-width:600px){.hero{padding-top:24px}.lead{font-size:16px}section.wrap{padding-top:32px}
-.top{position:static}.bar{gap:8px;padding:8px 16px;min-height:0}.top nav{order:3;flex-basis:100%}.theme{margin-left:auto}
+.top{position:static}.bar{gap:8px;padding:8px 16px;min-height:0}
 h1{font-size:22px}.hero h1{font-size:22px}.lead{font-size:15px}.h-sm{font-size:18px}
 table.stack thead{display:none}table.stack tr{display:block;border-bottom:1px solid var(--border);padding:8px 0}table.stack tr:last-child{border-bottom:0}
 table.stack td{display:grid;grid-template-columns:96px 1fr;gap:8px;border:0;padding:2px 12px}table.stack td::before{content:attr(data-label);padding-top:2px;font:600 11px/1.5 var(--sans);text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
-.card{padding:12px}.rows li{padding:4px 0}.picker{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr;gap:16px}.pick{padding:8px}.top nav{flex-wrap:wrap;overflow:visible}table.stack td.n{text-align:left}.verdict{padding:12px}
+.card{padding:12px}.rows li{padding:4px 0}.picker{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr;gap:16px}.pick{padding:8px}table.stack td.n{text-align:left}.verdict{padding:12px}
 .big{font-size:24px}.tstep h1{font-size:22px}.tstep .lead{font-size:17px}.nums{grid-template-columns:1fr;gap:8px}.num{flex-direction:row;align-items:baseline;gap:12px;padding:12px 16px}.num b{font-size:36px;min-width:3.2em}.dstat li{grid-template-columns:minmax(0,1fr) 72px;gap:4px 8px}.dstat li .muted,.dstat .nbar{display:none}.dot span{display:none}.slide{padding:24px 16px}.diffs li{padding-left:40px}
 th,td{padding:6px 8px}}
 @media print{.top,.deckbar,.tnav{display:none}.slide{display:block!important;page-break-after:always;min-height:auto}}
