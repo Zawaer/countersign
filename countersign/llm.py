@@ -493,8 +493,12 @@ def _write_review(ws, change, reviewer, cfg, reg, ctx, parsed, repaired, usage: 
                       "category": str(f.get("category") or "correctness"), "claim": f["claim"],
                       "evidence": f.get("evidence", []), **({"suggested_fix": f["suggested_fix"]} if f.get("suggested_fix") else {})}
                      for i, f in enumerate(parsed.get("findings", []), 1)],
-        "refusals": [{"topic": x["topic"], "reason": x["reason"], "who_should_decide": x.get("who_should_decide", "area owner")}
+        "refusals": [{"topic": x["topic"], "reason": x["reason"], "who_should_decide": x.get("who_should_decide", "area owner"),
+                      **({"req": str(x["req"])} if x.get("req") else {}), **({"blocking": True} if x.get("blocking") is True else {})}
                      for x in parsed.get("refusals", [])],
+        # closes an earlier pass's finding only with verified evidence at the same location (decide.carry_forward)
+        "refutations": [{"finding": str(x.get("finding", "")), "reason": str(x.get("reason", "")), "evidence": x.get("evidence", [])}
+                        for x in parsed.get("refutations", []) if isinstance(x, dict)] if isinstance(parsed.get("refutations"), list) else [],
     }
     folder = ws.inputs / "reviews" / change
     write_json(folder / f"{reviewer}.json", review)
