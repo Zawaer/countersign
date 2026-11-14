@@ -1,0 +1,184 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T02:06:29+02:00",
+  "inputs": [
+    "requirements: requirements/up-2022.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2017",
+    "facts: evidence/up-2022/facts.json",
+    "diff f5e104ee..5f4b762a (2 non-generated files)",
+    "file contents: 3 blocks",
+    "context: 78902 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/up-2022/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 26897,
+      "completion_tokens": 10980
+    }
+  },
+  "summary": "The change adds an early guard in FormatterDescriptor.TryCreate so abstract types are never treated as formatters, preventing MsgPack009/MsgPack013 diagnostics for abstract IMessagePackFormatter&lt;T&gt; implementations. A new analyzer test covers the scenario: it fails on the base source (four diagnostics, including MsgPack009) and passes on head. The full suite passes with no regressions, so the fix addresses the root cause and all four requirement clauses are met.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-up-2022-F1",
+      "verdict": "met",
+      "confidence_basis": "TryCreate returns false for abstract types at head (AnalyzerOptions.cs lines 221-225), and the new abstract-formatter test passes with zero diagnostics on head.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 221,
+          "rev": "head",
+          "quote": "if (type.IsAbstract)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 223,
+          "rev": "head",
+          "quote": "formatter = null;"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 224,
+          "rev": "head",
+          "quote": "return false;"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "passed"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-up-2022-F1",
+          "quote": "must not report MsgPack013"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-F2",
+      "verdict": "met",
+      "confidence_basis": "Abstract types are rejected in TryCreate before any formatter-descriptor collision counting, so they cannot trigger MsgPack009; on base source the same test failed with MsgPack009 diagnostics.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 221,
+          "rev": "head",
+          "quote": "if (type.IsAbstract)"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "passed"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-up-2022-F2",
+          "quote": "must not be counted as formatters"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-N1",
+      "verdict": "met",
+      "confidence_basis": "The fail_without_fix check passed: the new test failed on base source with source reverted, proving the tests cover the change.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-up-2022-N1",
+          "quote": "fail without it"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-N2",
+      "verdict": "met",
+      "confidence_basis": "The full suite passed with 150/150 and no failures not present on base (base passed 149/149), so non-abstract formatter behavior is unchanged.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-up-2022-N2",
+          "quote": "no regressions in the existing test suite"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "I1",
+      "title": "TryCreate documentation does not state that abstract types are excluded",
+      "severity": "info",
+      "category": "maintainability",
+      "claim": "The XML documentation for FormatterDescriptor.TryCreate (head line 218) describes the return value but does not mention that abstract types return false and are not treated as formatters, even though the new guard at head lines 221-225 does exactly that; the intent may be unclear to future maintainers.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 218,
+          "rev": "head",
+          "quote": "&lt;returns&gt;&lt;see langword=&quot;true&quot;/&gt; if &lt;paramref name=&quot;type&quot;/&gt; represents a formatter.&lt;/returns&gt;"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 221,
+          "rev": "head",
+          "quote": "if (type.IsAbstract)"
+        }
+      ],
+      "suggested_fix": "Add a sentence to the &lt;returns&gt; documentation noting that abstract types return false and are not treated as formatters."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Runtime deserialization security and execution behavior",
+      "reason": "The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.",
+      "who_should_decide": "area owner / MessagePack maintainer"
+    },
+    {
+      "topic": "Behavior on non-net8.0 target frameworks",
+      "reason": "Build and tests ran only on net8.0 Debug in a Linux container; net472/netstandard builds were not run (listed in not_run).",
+      "who_should_decide": "area owner / maintainer"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T02:09:25+02:00",
+  "inputs": [
+    "requirements: requirements/up-1967.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1967",
+    "facts: evidence/up-1967/facts.json",
+    "diff b9b65ddf..8683d1cd (1 non-generated files)",
+    "file contents: 0 blocks",
+    "context: 6577 chars (budget 180000)"
+  ],
+  "not_given": [
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/up-1967/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 3491,
+      "completion_tokens": 5184
+    }
+  },
+  "summary": "The change is a one-line documentation fix in README.md: the table-of-contents entry “AOT Code Generation (support for Unity/Xamarin)” now links to `#aot` instead of the non-existent `#aot-code-generation-support-for-unityxamarin`. docs.anchors reports the `#aot` link resolves at head and the old anchor was unresolved at base, so the change fixes the root cause (a broken doc anchor) and touches no code or other README content.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-up-1967-F1",
+      "verdict": "met",
+      "confidence_basis": "The TOC entry at README.md line 60 (head) links to `#aot`, docs.anchors reports that link resolves at head, and the old anchor `aot-code-generation-support-for-unityxamarin` was unresolved at base but absent from head's unresolved list.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 60,
+          "rev": "head",
+          "quote": "- [AOT Code Generation (support for Unity/Xamarin)](`#aot`)"
+        },
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 60,
+          "rev": "base",
+          "quote": "- [AOT Code Generation (support for Unity/Xamarin)](`#aot-code-generation-support-for-unityxamarin`)"
+        },
+        {
+          "kind": "check",
+          "id": "docs.anchors",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-1967-N1",
+      "verdict": "met",
+      "confidence_basis": "The diff touches only README.md with +1/-1 (doc kind only), and public_api reports no changes under src/ or to PublicAPI files.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "docs.anchors",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "public_api",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Pre-existing unresolved anchors remain on untouched lines",
+      "severity": "info",
+      "category": "docs",
+      "claim": "README.md still has three unresolved anchors (#author-info, #migration-notes-from-v1x, #rpc) on lines this change did not touch; they were unresolved at base too and are out of scope for this anchor fix.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "docs.anchors",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Whether rendered Markdown HTML actually exposes the `#aot` anchor",
+      "reason": "docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py.",
+      "who_should_decide": "docs owner / area owner"
+    }
+  ]
+}

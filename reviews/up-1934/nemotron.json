@@ -1,0 +1,235 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T02:07:57+02:00",
+  "inputs": [
+    "requirements: requirements/up-1934.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/1925",
+    "facts: evidence/up-1934/facts.json",
+    "diff 7ef21d4b..2f9324f9 (6 non-generated files)",
+    "file contents: 6 blocks",
+    "context: 124123 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/up-1934/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 38975,
+      "completion_tokens": 12254
+    }
+  },
+  "summary": "The change is test-only: it lowers the default LanguageVersion of both source-generator test verifiers from C# 9 to C# 7.3 (the netstandard2.0 default) and gives explicit, higher language versions to tests whose inputs use records, record structs, or nullable reference types. The full generator suite passes at head (123/123, no failures not present on base), and against the pre-#1926 generator the new default fails tests with CS8370 \"target-typed object creation is not available in C# 7.3\", proving it detects the issue #1925 regression. All three requirement clauses are met.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-up-1934-F1",
+      "verdict": "met",
+      "confidence_basis": "Both verifier base classes default LanguageVersion to CSharp7_3, RunDefaultAsync defaults to CSharp7_3 and applies it to TestState (code), the full suite passes at head (check), and the pre-#1926 generator fails under the new default with CS8370 errors showing generated code that needs a newer version now fails the tests (check/test).",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+          "line": 46,
+          "rev": "head",
+          "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs",
+          "line": 22,
+          "rev": "head",
+          "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+          "line": 48,
+          "rev": "head",
+          "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+          "line": 102,
+          "rev": "head",
+          "quote": "LanguageVersion = languageVersion,"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.detects_original_regression",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GenerationTests.ArrayTypedProperty",
+          "outcome": "failed",
+          "check": "tests.detects_original_regression"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-1934-F2",
+      "verdict": "met",
+      "confidence_basis": "Every test whose source uses records, record structs, or nullable features passes an explicit languageVersion (CSharp9/CSharp10/CSharp8), while every other test relies on the new CSharp7_3 default, so explicit versions are set only where needed (code).",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 30,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp9"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 60,
+          "rev": "head",
+          "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+          "line": 234,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp9"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+          "line": 75,
+          "rev": "head",
+          "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 356,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp9"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 409,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp8"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 436,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp9"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+          "line": 10,
+          "rev": "head",
+          "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+          "line": 11,
+          "rev": "head",
+          "quote": "[InlineData(\"record\", LanguageVersion.CSharp9)]"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+          "line": 13,
+          "rev": "head",
+          "quote": "[InlineData(\"record struct\", LanguageVersion.CSharp10)]"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+          "line": 46,
+          "rev": "head",
+          "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-1934-N1",
+      "verdict": "met",
+      "confidence_basis": "All six changed files are test files with no src/ changes (facts diff), the full suite passes 123/123 with zero failures not present on base and targeted tests pass identically on base (checks), and there are no public API changes or new analyzer warnings (checks).",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.targeted",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "public_api",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "analyzers",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "title": "Test name does not match its source",
+      "severity": "info",
+      "category": "tests",
+      "claim": "CustomStringKeyFormatterTests.RecordWithWithInitOnlyProps is named for init-only properties (a C# 9 feature) but its source uses { get; set; } auto-properties and calls RunDefaultAsync without a language version, so it runs at the default C# 7.3 and does not exercise init-only properties.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 34,
+          "rev": "head",
+          "quote": "public async Task RecordWithWithInitOnlyProps()"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 53,
+          "rev": "head",
+          "quote": "public string PhoneNumber { get; set; }"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 60,
+          "rev": "head",
+          "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);"
+        }
+      ],
+      "suggested_fix": "Rename the test, or change the properties to `init` accessors and pass languageVersion: LanguageVersion.CSharp9 so the test actually covers the feature its name promises."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",
+      "reason": "Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).",
+      "who_should_decide": "CI or area owner"
+    }
+  ]
+}
