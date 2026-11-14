@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import math
 import re
 
 from .common import TIERS, strictest
@@ -579,6 +580,17 @@ def fire_rules(ctx: dict, m: Mandate) -> list[dict]:
 
 # --- risk score ---------------------------------------------------------------
 
+def size_points(x: float, w: dict) -> float:
+    """Points for the size of a change, smooth in x (no cliff to stay one file under): `per` points per unit while
+    the change is small, bending logarithmically past `knee` points, at most `cap`. v6 (red team G4): a linear rate
+    with a low cap gave 49 files the same points as 20, so only the >50 split rule saw size at all."""
+    return round(min(w["knee"] * math.log1p(w["per"] * x / w["knee"]), w["cap"]), 1)
+
+
+def size_rule(w: dict, unit: str) -> str:
+    return f"~{w['per']} per {unit} while small, log-scaled past {w['knee']}, cap {w['cap']}"
+
+
 def risk_score(ctx: dict, clauses: list[dict], m: Mandate) -> dict:
     w, facts = m["risk"], ctx["facts"]
     prim = primary_area(ctx["areas"])
@@ -593,12 +605,15 @@ def risk_score(ctx: dict, clauses: list[dict], m: Mandate) -> dict:
     def capped(points, cap):
         return round(min(points, cap), 1)
 
+    files_pts = size_points(n_files, w["files"])
+    lines_pts = round(min(size_points(lines / 100, w["lines"]), max(0.0, w["size_cap"] - files_pts)), 1)
+
     factors = [
         ("area_sensitivity", w["sensitivity_points"][prim["sensitivity"]] if prim else 0,
          f"most sensitive area touched: {prim['name']} ({prim['sensitivity']})" if prim else "no files mapped"),
-        ("files_changed", capped(n_files * w["per_file"], w["files_cap"]), f"{n_files} files x {w['per_file']} (cap {w['files_cap']})"),
-        ("lines_changed", capped(lines / 100 * w["per_100_lines"], w["lines_cap"]),
-         f"{lines} non-generated lines x {w['per_100_lines']}/100 (cap {w['lines_cap']})"),
+        ("files_changed", files_pts, f"{n_files} files ({size_rule(w['files'], 'file')})"),
+        ("lines_changed", lines_pts, f"{lines} non-generated lines ({size_rule(w['lines'], '100 lines')}; "
+                                     f"files and lines together at most {w['size_cap']})"),
         ("generated_files", capped(len(ctx["generated"]) * w["per_generated_file"], w["generated_cap"]),
          f"{len(ctx['generated'])} generated files x {w['per_generated_file']} (cap {w['generated_cap']})"),
         ("public_api_change", w["public_api_change"] if api is not False else 0,

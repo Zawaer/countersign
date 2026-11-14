@@ -6,7 +6,7 @@ Changes 10 source files (Attributes.cs, MsgPack00xMessagePackAnalyzer.cs, Genera
 
 **Why block**
 
-1. Risk score 145.2 reaches the block band (>= 130), mostly 2 failed check(s) x 25: analyzers, solution_membership (50) and most sensitive area touched: annotations-api (critical) (35) ([evidence](#risk))
+1. Risk score 150.2 reaches the block band (>= 130), mostly 2 failed check(s) x 25: analyzers, solution_membership (50) and most sensitive area touched: annotations-api (critical) (35) ([evidence](#risk))
 2. Also routes to a human. Claude found a verified major issue: New public API in MessagePack.Annotations is not tracked by any PublicAPI file (and 1 more finding) ([evidence](#f-claude-C1))
 3. Also routes to a human. The AI declined to decide 2 questions, e.g. Security/trust implications of generating formatters that access members of external types (e.g. non-public members) ([evidence](#refused))
 
@@ -450,12 +450,12 @@ Suggested fix: dotnet sln MessagePack.sln add tests/MessagePack.SourceGenerator.
 
 Branch `ju26-issue-2129` (32258fdb..083afd99), 28 files, +1034 -9. Author Stelian Vultur (agent-written: True). Commit: Agentic implementation of #2129 Feature Request: Allow generation of Formatter for a type in a referenced assembly
 
-Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
+Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
 
-- block: risk score `risk`: score 145.2 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 35 + files_changed 20
+- block: risk score `risk`: score 150.2 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 35 + files_changed 26.1
 - ask: mandate rule `public-api-change`: Public API changed: the owner decides on compatibility [public API added: new public class MessagePack.GeneratedMessagePackFormatterAttribute (with public Type? SurrogateType) in src/MessagePack.Annotations/Attributes.cs; MessagePack.Annotations has no PublicAPI.*.txt tracking so PublicApiAnalyzers did not flag it. Also 4 new public DiagnosticDescriptors MsgPack019-022 (analyzer assembly) and 4 rows added to AnalyzerReleases.Unshipped.md]
 - ask: verified finding `claude:C1`: major: New public API in MessagePack.Annotations is not tracked by any PublicAPI file
 - ask: verified finding `nemotron:N2`: major: Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402
@@ -503,7 +503,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 31 projects; 0 added, 0 version changes, 0 removed; new project(s): tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj; 4 new direct reference(s) to packages already in the graph; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 29 logs; every NuGet feed the head declares is inside the policy |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
 #### Requirement trace (engine codes)
 
@@ -558,13 +558,13 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>
-#### Risk score: 145.2 -> block
+#### Risk score: 150.2 -> block
 
 | Factor | Points | Reason |
 |---|---:|---|
 | area_sensitivity | 35 | most sensitive area touched: annotations-api (critical) |
-| files_changed | 20 | 28 files x 1 (cap 20) |
-| lines_changed | 20 | 1035 non-generated lines x 4/100 (cap 20) |
+| files_changed | 26.1 | 28 files (~1.1 per file while small, log-scaled past 80, cap 45) |
+| lines_changed | 18.9 | 1035 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45) |
 | generated_files | 0.2 | 2 generated files x 0.1 (cap 10) |
 | public_api_change | 20 | public API changed |
 | source_without_tests | 0 | tests changed alongside source |
@@ -572,7 +572,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: pass |
 | reviewer_disagreement | 0 | 0 clause(s) x 8 |
 | failed_checks | 50 | 2 failed check(s) x 25: analyzers, solution_membership |
-| **total** | **145.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| **total** | **150.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2129/facts.json`, requirements `requirements/2129.yaml`, reviews `reviews/2129/claude.json`, `reviews/2129/codex.json`, `reviews/2129/nemotron.json`
 

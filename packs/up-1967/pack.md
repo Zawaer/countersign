@@ -276,7 +276,7 @@ Tier effect: silent
 Branch `upstream PR #1967` (b9b65ddf..8683d1cd), 1 files, +1 -1. Author Ali Makki (agent-written: False). Commit: Fix AOT README anchor
  - fix anchor ref name to `aot`
 
-Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
+Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -284,7 +284,7 @@ Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toi
 - notify: reviewer refusal `claude`: How GitHub actually renders and scrolls to the #aot anchor (docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit <a name> I read) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `nemotron`: Whether rendered Markdown HTML actually exposes the `#aot` anchor (docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - silent: trust cap `docs`: docs: AI may clear at most to silent (mandate clearance right)
-- silent: risk score `risk`: score 1.1 (notify>=15, ask>=40, block>=130); largest: files_changed 1 + lines_changed 0.1
+- silent: risk score `risk`: score 1.2 (notify>=15, ask>=40, block>=130); largest: files_changed 1.1 + lines_changed 0.1
 
 #### Who reviewed
 
@@ -308,7 +308,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | analyzers | skipped |   | not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run |
 | docs.anchors | pass | evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)  | 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
 #### Requirement trace (engine codes)
 
@@ -358,13 +358,13 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>
-#### Risk score: 1.1 -> silent
+#### Risk score: 1.2 -> silent
 
 | Factor | Points | Reason |
 |---|---:|---|
 | area_sensitivity | 0 | most sensitive area touched: docs (low) |
-| files_changed | 1 | 1 files x 1 (cap 20) |
-| lines_changed | 0.1 | 2 non-generated lines x 4/100 (cap 20) |
+| files_changed | 1.1 | 1 files (~1.1 per file while small, log-scaled past 80, cap 45) |
+| lines_changed | 0.1 | 2 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45) |
 | generated_files | 0.0 | 0 generated files x 0.1 (cap 10) |
 | public_api_change | 0 | public_api check: no change |
 | source_without_tests | 0 | no source changed |
@@ -372,7 +372,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: skipped (no source changed: nothing to revert) |
 | reviewer_disagreement | 0 | 0 clause(s) x 8 |
 | failed_checks | 0 | 0 failed check(s) x 25 |
-| **total** | **1.1** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| **total** | **1.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/up-1967/facts.json`, requirements `requirements/up-1967.yaml`, reviews `reviews/up-1967/claude.json`, `reviews/up-1967/codex.json`, `reviews/up-1967/nemotron.json`
 

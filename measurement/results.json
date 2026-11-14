@@ -7,7 +7,7 @@
       "of": null,
       "mutation": null,
       "tier": "block",
-      "score": 145.2,
+      "score": 150.2,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -44,7 +44,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 145.2,
+      "score": 150.2,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -86,7 +86,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 120.2,
+      "score": 125.2,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -109,7 +109,7 @@
       "of": null,
       "mutation": null,
       "tier": "ask",
-      "score": 67.6,
+      "score": 67.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -155,7 +155,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 79.6,
+      "score": 79.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -201,7 +201,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 104.6,
+      "score": 104.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -241,7 +241,7 @@
         "caught_by_any_deterministic_check": false
       },
       "tier": "ask",
-      "score": 70.6,
+      "score": 70.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -294,7 +294,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 104.6,
+      "score": 104.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -342,7 +342,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 104.6,
+      "score": 104.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -399,7 +399,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 79.6,
+      "score": 79.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -478,7 +478,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 104.6,
+      "score": 104.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -530,7 +530,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 79.6,
+      "score": 79.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -557,7 +557,7 @@
       "of": null,
       "mutation": null,
       "tier": "ask",
-      "score": 41.1,
+      "score": 41.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -598,7 +598,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 78.1,
+      "score": 78.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -638,7 +638,7 @@
         "caught_by_any_deterministic_check": false
       },
       "tier": "ask",
-      "score": 69.1,
+      "score": 69.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -690,7 +690,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 103.1,
+      "score": 103.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -775,7 +775,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 78.1,
+      "score": 78.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -818,7 +818,7 @@
         "caught_by_any_deterministic_check": true
       },
       "tier": "block",
-      "score": 78.1,
+      "score": 78.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -858,7 +858,7 @@
         "caught_by_any_deterministic_check": false
       },
       "tier": "ask",
-      "score": 61.1,
+      "score": 61.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -911,7 +911,7 @@
         "caught_by_any_deterministic_check": false
       },
       "tier": "ask",
-      "score": 94.2,
+      "score": 94.1,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -938,7 +938,7 @@
       "of": null,
       "mutation": null,
       "tier": "block",
-      "score": 64.5,
+      "score": 83.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -957,7 +957,7 @@
       "of": null,
       "mutation": null,
       "tier": "ask",
-      "score": 7.9,
+      "score": 8.2,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -976,7 +976,7 @@
       "of": null,
       "mutation": null,
       "tier": "notify",
-      "score": 1.1,
+      "score": 1.2,
       "owner": "Rene",
       "routed_to_human": false,
       "why": [
@@ -996,7 +996,7 @@
       "of": null,
       "mutation": null,
       "tier": "ask",
-      "score": 23.2,
+      "score": 23.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -1368,7 +1368,7 @@
       "original_tier": "notify",
       "routed_to_human": true,
       "attributable": [
-        "risk 33.1 -> 74.2 (failed: )"
+        "risk 33.0 -> 74.1 (failed: )"
       ],
       "reviews": [
         "nemotron"

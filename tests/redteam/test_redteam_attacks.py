@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from attacks import ATTACKS, run  # noqa: E402
 
 # Known misses as of 2026-11-14 (REDTEAM.md, "Misses and fixes").
-KNOWN_MISSES = {"G4", "T1", "S6"}  # still open after the Sat 07:00-07:40 fixes; see REDTEAM.md
+KNOWN_MISSES = {"T1"}  # still open after the Sat 07:00-07:40 fixes (G4, S6 closed in mandate v6); see REDTEAM.md
 
 
 @pytest.mark.parametrize("aid", [pytest.param(a[0], marks=pytest.mark.xfail(strict=True, reason="known miss, see REDTEAM.md"))

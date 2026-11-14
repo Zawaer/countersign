@@ -3,8 +3,9 @@
 
 usage: deps-delta.py <change> [--summary FILE] [--head SHA --standalone DIR]
   For the base and the head of the change: export the tree (git archive, so no worktree is touched), restore every
-  *.csproj in it through a throwaway solution with NuGet Audit on (mode=all), read the restored graph, write a
-  CycloneDX SBOM, then diff them. The check is appended to <EVID>/<change>/facts.json (any older deps.delta is
+  *.csproj in it through a throwaway solution with NuGet Audit on (mode=all), once per configuration (Debug and
+  Release: a PackageReference conditioned on Release is not in a Debug restore), read the union of the restored
+  graphs, write a CycloneDX SBOM, then diff them. The check is appended to <EVID>/<change>/facts.json (any older deps.delta is
   replaced; every other key and check is left as it was) and the SBOMs go to <EVID>/<change>/sbom.cdx.json
   (head) and <EVID>/base/sbom.cdx.json (base).
 
@@ -36,30 +37,55 @@ def git(*a):
     return subprocess.run(["git", "-C", REPO, *a], capture_output=True, text=True, check=True).stdout
 
 
+CONFIGURATIONS = ("Debug", "Release")  # red team S6: a PackageReference can be conditioned on the configuration
+
+
+def restore_configurations(populate, root: Path, log_prefix: Path, *, dotnet: str = "dotnet", env: dict | None = None) -> dict:
+    """Restore every *.csproj of one tree once per configuration and return the union of the package graphs
+    (sbom.merge_configurations: a package in any configuration counts, and records which). `populate(dir)` fills an
+    empty directory with the tree; each configuration gets its own copy under root/<configuration>, because
+    obj/project.assets.json does not depend on the configuration and a second restore in place would overwrite the
+    first. Each copy is restored once (marker file), so a re-run reads the cached graph."""
+    graphs = {}
+    for cfg in CONFIGURATIONS:
+        tree = root / cfg
+        done = tree / ".countersign-restored"
+        log = Path(f"{log_prefix}.{cfg}.restore.log")
+        if not done.exists():
+            shutil.rmtree(tree, ignore_errors=True)
+            tree.mkdir(parents=True)
+            populate(tree)
+            projs = sorted(p.relative_to(tree).as_posix() for p in tree.rglob("*.csproj"))
+            (tree / "projects.txt").write_text("\n".join(projs) + "\n")
+            sln = "countersign-deps.sln"
+            subprocess.run([dotnet, "new", "sln", "-n", "countersign-deps", "-o", str(tree)], capture_output=True, check=True, env=env)
+            subprocess.run([dotnet, "sln", str(tree / sln), "add", *projs], cwd=tree, capture_output=True, check=True, env=env)
+            r = subprocess.run([dotnet, "restore", sln, f"-p:Configuration={cfg}", "-p:NuGetAudit=true", "-p:NuGetAuditMode=all",
+                                "-p:NuGetAuditLevel=low", "-p:TreatWarningsAsErrors=false", "-m:8"],
+                               cwd=tree, capture_output=True, text=True, env=env)
+            log.parent.mkdir(parents=True, exist_ok=True)
+            log.write_text(f"### dotnet restore -p:Configuration={cfg} ({len(projs)} projects) rc={r.returncode}\n{r.stdout}{r.stderr}")
+            done.write_text(str(r.returncode))
+        projs = (tree / "projects.txt").read_text().split()
+        g = sbom.read_graph(tree)
+        sbom.add_unrestored(g, projs, sbom.parse_restore_errors(log.read_text(), tree))
+        graphs[cfg] = g
+    return sbom.merge_configurations(graphs)
+
+
 def restored(sha: str) -> tuple[Path, dict, dict, str]:
-    """Export + restore one commit once (cached under $WORK/deps/<sha>); returns (root, graph, inputs, sdk)."""
+    """Export one commit (git archive, no worktree touched) and restore it in every configuration (cached under
+    $WORK/deps/<sha>/<configuration>); returns (root of the first configuration's tree, merged graph, inputs, sdk)."""
     root = WORK / "deps" / sha
-    done = root / ".countersign-restored"
-    log = WORK / "deps" / f"{sha}.restore.log"
-    if not done.exists():
-        shutil.rmtree(root, ignore_errors=True)
-        root.mkdir(parents=True)
+
+    def populate(tree: Path) -> None:
         arch = subprocess.run(["git", "-C", REPO, "archive", sha], capture_output=True, check=True).stdout
-        subprocess.run(["tar", "-x", "-C", str(root)], input=arch, check=True)
-        projs = sorted(p.relative_to(root).as_posix() for p in root.rglob("*.csproj"))
-        (root / "projects.txt").write_text("\n".join(projs) + "\n")
-        sln = "countersign-deps.sln"
-        subprocess.run(["dotnet", "new", "sln", "-n", "countersign-deps", "-o", str(root)], capture_output=True, check=True)
-        subprocess.run(["dotnet", "sln", str(root / sln), "add", *projs], cwd=root, capture_output=True, check=True)
-        r = subprocess.run(["dotnet", "restore", sln, "-p:NuGetAudit=true", "-p:NuGetAuditMode=all", "-p:NuGetAuditLevel=low",
-                            "-p:TreatWarningsAsErrors=false", "-m:8"], cwd=root, capture_output=True, text=True)
-        log.write_text(f"### dotnet restore ({len(projs)} projects) rc={r.returncode}\n{r.stdout}{r.stderr}")
-        done.write_text(str(r.returncode))
-    projs = (root / "projects.txt").read_text().split()
-    graph = sbom.read_graph(root)
-    sbom.add_unrestored(graph, projs, sbom.parse_restore_errors(log.read_text(), root))
-    sdk = subprocess.run(["dotnet", "--version"], cwd=root, capture_output=True, text=True).stdout.strip()
-    return root, graph, sbom.tree_inputs(root), sdk
+        subprocess.run(["tar", "-x", "-C", str(tree)], input=arch, check=True)
+
+    graph = restore_configurations(populate, root, WORK / "deps" / sha)
+    tree = root / CONFIGURATIONS[0]
+    sdk = subprocess.run(["dotnet", "--version"], cwd=tree, capture_output=True, text=True).stdout.strip()
+    return tree, graph, sbom.tree_inputs(tree), sdk
 
 
 def main():

@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "5",
+    "version": "6",
     "owner": "Toivo",
-    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
+    "sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T05:25:32+00:00",
+      "signed_at": "2026-11-14T05:36:39+00:00",
       "reason": "signature valid"
     }
   },
@@ -98,7 +98,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "silent",
-      "why": "score 7.9 (notify>=15, ask>=40, block>=130); largest: files_changed 6 + lines_changed 1.9"
+      "why": "score 8.2 (notify>=15, ask>=40, block>=130); largest: files_changed 6.3 + lines_changed 1.9"
     }
   ],
   "owner": "Toivo",
@@ -895,7 +895,7 @@
         "refusals": 1
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)"
   },
   "findings": [
     {
@@ -1104,7 +1104,7 @@
     "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
   ],
   "risk": {
-    "score": 7.9,
+    "score": 8.2,
     "tier": "silent",
     "thresholds": {
       "notify": 15,
@@ -1119,13 +1119,13 @@
       },
       {
         "factor": "files_changed",
-        "points": 6,
-        "reason": "6 files x 1 (cap 20)"
+        "points": 6.3,
+        "reason": "6 files (~1.1 per file while small, log-scaled past 80, cap 45)"
       },
       {
         "factor": "lines_changed",
         "points": 1.9,
-        "reason": "48 non-generated lines x 4/100 (cap 20)"
+        "reason": "48 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45)"
       },
       {
         "factor": "generated_files",
@@ -1222,7 +1222,7 @@
     "tier": "ask",
     "owner": "Toivo",
     "fyi": [],
-    "risk_score": 7.9,
+    "risk_score": 8.2,
     "reasons": [
       {
         "text": "The AI declined to decide 1 question, e.g. Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",

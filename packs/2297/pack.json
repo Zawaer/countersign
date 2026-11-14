@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "5",
+    "version": "6",
     "owner": "Toivo",
-    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
+    "sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T05:25:32+00:00",
+      "signed_at": "2026-11-14T05:36:39+00:00",
       "reason": "signature valid"
     }
   },
@@ -114,7 +114,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
-      "why": "score 64.5 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + files_changed 20 + generated_files 10"
+      "why": "score 83.0 (notify>=15, ask>=40, block>=130); largest: files_changed 45 + area_sensitivity 20 + generated_files 10"
     },
     {
       "source": "verified finding",
@@ -892,7 +892,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)"
   },
   "findings": [
     {
@@ -1500,7 +1500,7 @@
     "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
   ],
   "risk": {
-    "score": 64.5,
+    "score": 83.0,
     "tier": "ask",
     "thresholds": {
       "notify": 15,
@@ -1515,13 +1515,13 @@
       },
       {
         "factor": "files_changed",
-        "points": 20,
-        "reason": "237 files x 1 (cap 20)"
+        "points": 45,
+        "reason": "237 files (~1.1 per file while small, log-scaled past 80, cap 45)"
       },
       {
         "factor": "lines_changed",
-        "points": 6.5,
-        "reason": "162 non-generated lines x 4/100 (cap 20)"
+        "points": 0.0,
+        "reason": "162 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45)"
       },
       {
         "factor": "generated_files",
@@ -1657,7 +1657,7 @@
     "fyi": [
       "Rene"
     ],
-    "risk_score": 64.5,
+    "risk_score": 83.0,
     "reasons": [
       {
         "text": "More than 50 files changed: split the change so each part can be reviewed [237 files changed]",

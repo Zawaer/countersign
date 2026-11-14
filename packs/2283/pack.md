@@ -536,7 +536,7 @@ Tier effect: silent
 
 Branch `ju26-issue-2283` (32258fdb..9df83c38), 4 files, +225 -3. Author Stelian Vultur (agent-written: True). Commit: implementation for #2283
 
-Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
+Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -544,7 +544,7 @@ Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toi
 - ask: verified finding `claude:C1`: major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic (reproduced by the pipeline (repro.claude.C1))
 - ask: refused clause `REQ-2283-N1`: not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)
 - ask: reviewer refusal `nemotron`: Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)
-- ask: risk score `risk`: score 41.1 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 9.1 + reviewer_disagreement 8
+- ask: risk score `risk`: score 41.0 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 8.7 + reviewer_disagreement 8
 - notify: verified finding `claude:C2`: minor: BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source
 - notify: reviewer refusal `claude`: Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `claude`: Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
@@ -579,7 +579,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 19 logs; every NuGet feed the head declares is inside the policy |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
 #### Requirement trace (engine codes)
 
@@ -637,13 +637,13 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>
-#### Risk score: 41.1 -> ask
+#### Risk score: 41.0 -> ask
 
 | Factor | Points | Reason |
 |---|---:|---|
 | area_sensitivity | 20 | most sensitive area touched: generator-analyzer-core (high) |
-| files_changed | 4 | 4 files x 1 (cap 20) |
-| lines_changed | 9.1 | 228 non-generated lines x 4/100 (cap 20) |
+| files_changed | 4.3 | 4 files (~1.1 per file while small, log-scaled past 80, cap 45) |
+| lines_changed | 8.7 | 228 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45) |
 | generated_files | 0.0 | 0 generated files x 0.1 (cap 10) |
 | public_api_change | 0 | public_api check: no change |
 | source_without_tests | 0 | tests changed alongside source |
@@ -651,7 +651,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: pass |
 | reviewer_disagreement | 8 | 1 clause(s) x 8: REQ-2283-N1 |
 | failed_checks | 0 | 0 failed check(s) x 25 |
-| **total** | **41.1** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| **total** | **41.0** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2283/facts.json`, requirements `requirements/2283.yaml`, reviews `reviews/2283/claude.json`, `reviews/2283/codex.json`, `reviews/2283/nemotron.json`
 

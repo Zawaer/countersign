@@ -1,4 +1,4 @@
-"""Fixes for red-team misses R1-R4, R7, S2/S3/S7 (docs/security/REDTEAM.md). R6 is in test_engine_rules.py.
+"""Fixes for red-team misses R1-R4, R7, S2/S3/S6/S7, G4 (docs/security/REDTEAM.md). R6 is in test_engine_rules.py.
 
 Verified is not relevant: towards a requirement verdict, code counts only on a line the change touched and only if it
 is real code; a test only if the change adds or edits it or the clause lists it; a check never on its own.
@@ -8,7 +8,7 @@ import subprocess
 
 from conftest import GOOD_CODE, GOOD_TEST, SRC, make_facts, make_review
 
-from countersign import decide, mandate
+from countersign import decide, mandate, sbom
 from countersign.verify import Verifier, verify_review
 
 REQ = "REQ-9001-F1"
@@ -211,3 +211,35 @@ def test_generated_looking_file_classified_as_source_is_a_hand_edit():
 def test_the_mandate_routes_the_new_rules_at_ask(ws):
     rules = {r["when"]: r["tier"] for r in mandate.load(ws)["rules"]}
     assert rules["injection_unscannable"] == rules["generated_hand_edited"] == "ask" and rules["injection_found"] == "block"
+
+
+# --- G4: size grows smoothly; S6: every configuration's graph ---------------------------------
+
+def test_size_points_are_smooth_near_the_split_rule_and_unchanged_for_small_changes(ws):
+    w = mandate.load(ws)["risk"]
+    files = [decide.size_points(n, w["files"]) for n in range(1, 120)]
+    assert all(b >= a for a, b in zip(files, files[1:])) and max(files) == w["files"]["cap"]
+    assert abs(files[48] - files[50]) < 2                 # 49 files score close to 51: no cliff to stay under
+    assert files[48] + decide.size_points(0.49, w["lines"]) >= w["thresholds"]["ask"]
+    assert all(abs(files[n - 1] - n) <= 1.5 for n in range(1, 7))   # small changes: about a point a file, as in v5
+
+
+def _graph(pkgs, direct):
+    return {"projects": {"p/p.csproj": {"name": "p", "tfms": ["net9.0"], "direct": direct, "project_refs": [], "restored": True}},
+            "packages": {k: {"sha512": None, "deps": {}, "direct_in": {"p/p.csproj"} if k[0] in direct else set(),
+                             "in_projects": {"p/p.csproj"}} for k in pkgs},
+            "vulnerabilities": {}}
+
+
+def test_a_release_only_package_counts_and_says_where():
+    common = ("Common", "1.0.0")
+    base = sbom.merge_configurations({"Debug": _graph([common], {"Common": "1.0.0"}), "Release": _graph([common], {"Common": "1.0.0"})})
+    head = sbom.merge_configurations({"Debug": _graph([common], {"Common": "1.0.0"}),
+                                      "Release": _graph([common, ("SharpZipLib", "1.2.0")], {"Common": "1.0.0", "SharpZipLib": "1.2.0"})})
+    d = sbom.delta(base, head, {}, {})
+    assert d["status"] == "fail" and d["new_or_changed"] == ["SharpZipLib@1.2.0"]
+    assert d["packages_added"][0]["configurations"] == ["Release"] and "Release only" in d["summary"]
+    doc = sbom.cyclonedx(head, {}, name="t", sha="h", sdk="9")
+    props = {c["name"]: c.get("properties", []) for c in doc["components"] if c["type"] == "library"}
+    assert {"name": "countersign:configurations", "value": "Release"} in props["SharpZipLib"]
+    assert not any(p["name"] == "countersign:configurations" for p in props["Common"])  # in every configuration: as before

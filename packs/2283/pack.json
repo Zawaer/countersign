@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "5",
+    "version": "6",
     "owner": "Toivo",
-    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
+    "sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T05:25:32+00:00",
+      "signed_at": "2026-11-14T05:36:39+00:00",
       "reason": "signature valid"
     }
   },
@@ -89,7 +89,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
-      "why": "score 41.1 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 9.1 + reviewer_disagreement 8"
+      "why": "score 41.0 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 8.7 + reviewer_disagreement 8"
     }
   ],
   "drivers": [
@@ -120,7 +120,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
-      "why": "score 41.1 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 9.1 + reviewer_disagreement 8"
+      "why": "score 41.0 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 8.7 + reviewer_disagreement 8"
     },
     {
       "source": "verified finding",
@@ -1187,7 +1187,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)"
   },
   "findings": [
     {
@@ -1573,7 +1573,7 @@
     "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
   ],
   "risk": {
-    "score": 41.1,
+    "score": 41.0,
     "tier": "ask",
     "thresholds": {
       "notify": 15,
@@ -1588,13 +1588,13 @@
       },
       {
         "factor": "files_changed",
-        "points": 4,
-        "reason": "4 files x 1 (cap 20)"
+        "points": 4.3,
+        "reason": "4 files (~1.1 per file while small, log-scaled past 80, cap 45)"
       },
       {
         "factor": "lines_changed",
-        "points": 9.1,
-        "reason": "228 non-generated lines x 4/100 (cap 20)"
+        "points": 8.7,
+        "reason": "228 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45)"
       },
       {
         "factor": "generated_files",
@@ -1707,7 +1707,7 @@
     "fyi": [
       "Rene"
     ],
-    "risk_score": 41.1,
+    "risk_score": 41.0,
     "reasons": [
       {
         "text": "Claude found a verified major issue: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",

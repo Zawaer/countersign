@@ -375,7 +375,7 @@ Branch `upstream PR #2022` (f5e104ee..5f4b762a), 2 files, +29 -0. Author Andrew 
 
 Fixes #2017
 
-Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
+Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -385,7 +385,7 @@ Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toi
 - notify: reviewer refusal `claude`: Whether the release notes / analyzer docs should mention the change (Docs for MsgPack009/MsgPack013 were not in the context) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `nemotron`: Behavior on non-net8.0 target frameworks (Build and tests ran only on net8.0 Debug in a Linux container; net472/netstandard builds were not run (listed in not_run).) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: trust cap `generator-analyzer-core`: generator-analyzer-core: AI may clear at most to notify (mandate clearance right)
-- notify: risk score `risk`: score 23.2 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + files_changed 2 + lines_changed 1.2
+- notify: risk score `risk`: score 23.4 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + files_changed 2.2 + lines_changed 1.2
 - silent: trust cap `tests`: tests: AI may clear at most to silent (mandate clearance right)
 
 #### Who reviewed
@@ -409,7 +409,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | public_api | pass | git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/  | no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/ |
 | analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
 #### Requirement trace (engine codes)
 
@@ -460,13 +460,13 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>
-#### Risk score: 23.2 -> notify
+#### Risk score: 23.4 -> notify
 
 | Factor | Points | Reason |
 |---|---:|---|
 | area_sensitivity | 20 | most sensitive area touched: generator-analyzer-core (high) |
-| files_changed | 2 | 2 files x 1 (cap 20) |
-| lines_changed | 1.2 | 29 non-generated lines x 4/100 (cap 20) |
+| files_changed | 2.2 | 2 files (~1.1 per file while small, log-scaled past 80, cap 45) |
+| lines_changed | 1.2 | 29 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45) |
 | generated_files | 0.0 | 0 generated files x 0.1 (cap 10) |
 | public_api_change | 0 | public_api check: no change |
 | source_without_tests | 0 | tests changed alongside source |
@@ -474,7 +474,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: pass |
 | reviewer_disagreement | 0 | 0 clause(s) x 8 |
 | failed_checks | 0 | 0 failed check(s) x 25 |
-| **total** | **23.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| **total** | **23.4** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/up-2022/facts.json`, requirements `requirements/up-2022.yaml`, reviews `reviews/up-2022/claude.json`, `reviews/up-2022/codex.json`, `reviews/up-2022/nemotron.json`
 

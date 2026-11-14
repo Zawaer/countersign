@@ -7,18 +7,18 @@ Countersign demo: AI review under a signed mandate; a named human countersigns.
 Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not work if SuppressSourceGeneration = true'.
 
 [1/9] Set up: venv with uv, a temp workspace and a throwaway owner key
-    Python 3.11.2, countersign 0.1.0
-    workspace /tmp/countersign-demo.n57ZDP (empty ledger, throwaway key for Toivo; the repo's ledger/ and keys/ are untouched)
+    Python 3.12.16, countersign 0.1.0
+    workspace /tmp/countersign-demo.mKzgm6 (empty ledger, throwaway key for Toivo; the repo's ledger/ and keys/ are untouched)
 
 [2/9] countersign route: the 7 real changes, the tier each gets and the rule that decided it
     change    tier     score  owner  reason
-    2129      block    145.2  Toivo  [risk score] risk: score 145.2 (notify>=15, ask>=40, block>=130); largest: fai...
-    2234      ask       67.6  Toivo  [verified finding] claude:C1: major: The issue's 3.1.1 regression is not on th...
-    2283      ask       41.1  Toivo  [verified finding] claude:C1: major: Location filter silently drops MsgPack003...
-    2297      block     64.5  Toivo  [mandate rule] split-large-change: More than 50 files changed: split the chang...
-    up-1934   ask        7.9  Toivo  [reviewer refusal] nemotron: Build and test behavior on non-Linux environments...
-    up-1967   notify     1.1  Rene   [reviewer refusal] claude: How GitHub actually renders and scrolls to the #aot...
-    up-2022   ask       23.2  Toivo  [reviewer refusal] nemotron: Runtime deserialization security and execution be...
+    2129      block    150.2  Toivo  [risk score] risk: score 150.2 (notify>=15, ask>=40, block>=130); largest: fai...
+    2234      ask       67.4  Toivo  [verified finding] claude:C1: major: The issue's 3.1.1 regression is not on th...
+    2283      ask       41.0  Toivo  [verified finding] claude:C1: major: Location filter silently drops MsgPack003...
+    2297      block     83.0  Toivo  [mandate rule] split-large-change: More than 50 files changed: split the chang...
+    up-1934   ask        8.2  Toivo  [reviewer refusal] nemotron: Build and test behavior on non-Linux environments...
+    up-1967   notify     1.2  Rene   [reviewer refusal] claude: How GitHub actually renders and scrolls to the #aot...
+    up-2022   ask       23.4  Toivo  [reviewer refusal] nemotron: Runtime deserialization security and execution be...
     6 of 7 go to a human. (Read from the committed packs; `countersign route --all --repo <MessagePack clone>`
     re-derives them identically from evidence/ and reviews/, and also routes the 17 seeded changes.)
 
@@ -77,11 +77,11 @@ Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not wor
       do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)
 
 [6/9] Sign as Toivo (throwaway key): request changes, rate three findings; then verify the ledger
-    signed: ledger #1 request-changes by Toivo, hash c2dec8d85d0ec775
+    signed: ledger #1 request-changes by Toivo, hash 78cc0446980b28b6
     findings: 2 accepted, 1 rejected, 6 unrated
     (real `countersign sign` code; only its re-build check is skipped: that needs the MessagePack clone and Toivo's
     real key, so the committed pack stands in for the re-build)
-    $ countersign verify-ledger --root /tmp/countersign-demo.n57ZDP
+    $ countersign verify-ledger --root /tmp/countersign-demo.mKzgm6
     ledger OK: 1 entries, hash chain intact, every signature verifies
 
 [7/9] Tamper: turn Toivo's request-changes into accept with sed, verify again
@@ -104,7 +104,7 @@ Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not wor
       it did move a reviewer (nemotron REQ-2234-N2: met -> cannot_determine); under R-INJECT no verdict counts
 
 [9/9] The measurement in three numbers
-    History (real): 109 merged upstream PRs replayed under mandate v5; the AI would have cleared 24, and 0 of the 11
+    History (real): 109 merged upstream PRs replayed under mandate v6; the AI would have cleared 24, and 0 of the 11
       later reverted or fixed.
     Seeded (real): 17 of 17 reviewed seeded changes go to a human; checks alone catch 14 of 18, and a reviewer pointed
       at the planted line on 4 of the 4 that every test missed (3 with a finding the unmutated original did not have
@@ -112,7 +112,7 @@ Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not wor
     Rubber stamp (real): Codex, the control reviewer, raised 0 verified findings and missed 6 verified majors the
       others found; under unanimity its 'met' cleared nothing.
 
-Done in 0s. Next:
+Done in 2s. Next:
   open site/index.html                 the main screen (the diff, the pins, sneak-a-bug mode)
   packs/2234/pack.md (or pack.html)    the full evidence pack Toivo signs
 ```

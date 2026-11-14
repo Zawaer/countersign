@@ -411,7 +411,7 @@ Suggested fix: On the user-declared partial resolver, put the attribute on the g
 
 Branch `ju26-issue-2297` (32258fdb..a0aa5ab2), 237 files, +1383 -9. Author Stelian Vultur (agent-written: True). Commit: implement issue #2297 : Add ExcludeFromCodeCoverage attribute to generated code
 
-Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
+Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -422,7 +422,7 @@ Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toi
 - ask: verified finding `claude:v1.C2`: major: Attribute on the generated half of user-declared partial resolvers can break builds (CS0579) and silently hides user code
 - ask: refused clause `REQ-2297-F1`: not_met: claude: On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission.; reviewers_disagree: claude says not_met, codex says met, nemotron says met
 - ask: reviewer refusal `nemotron`: runtime execution of generated formatters/resolvers (execution tests) (tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change.)
-- ask: risk score `risk`: score 64.5 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + files_changed 20 + generated_files 10
+- ask: risk score `risk`: score 83.0 (notify>=15, ask>=40, block>=130); largest: files_changed 45 + area_sensitivity 20 + generated_files 10
 - notify: verified finding `nemotron:N1`: minor: Unrelated formatting change in TransformUtilities.cs outside the requirement scope
 - notify: reviewer refusal `claude`: Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix (Scoped review: not read individually. tests.full_suite passing shows they match the new generator output, not that the output is otherwise unchanged.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `claude`: Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings (Execution tests not run for this change (tests.execution not run: SDK 8 cannot load the generator); no compile of generated code against net472/netstandard2.0 targets.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
@@ -457,7 +457,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 13 logs; every NuGet feed the head declares is inside the policy |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
 #### Requirement trace (engine codes)
 
@@ -514,13 +514,13 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>
-#### Risk score: 64.5 -> ask
+#### Risk score: 83.0 -> ask
 
 | Factor | Points | Reason |
 |---|---:|---|
 | area_sensitivity | 20 | most sensitive area touched: generator-analyzer-core (high) |
-| files_changed | 20 | 237 files x 1 (cap 20) |
-| lines_changed | 6.5 | 162 non-generated lines x 4/100 (cap 20) |
+| files_changed | 45 | 237 files (~1.1 per file while small, log-scaled past 80, cap 45) |
+| lines_changed | 0.0 | 162 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45) |
 | generated_files | 10 | 228 generated files x 0.1 (cap 10) |
 | public_api_change | 0 | public_api check: no change |
 | source_without_tests | 0 | tests changed alongside source |
@@ -528,7 +528,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: pass |
 | reviewer_disagreement | 8 | 1 clause(s) x 8: REQ-2297-F1 |
 | failed_checks | 0 | 0 failed check(s) x 25 |
-| **total** | **64.5** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| **total** | **83.0** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2297/facts.json`, requirements `requirements/2297.yaml`, reviews `reviews/2297/claude.json`, `reviews/2297/codex.json`, `reviews/2297/nemotron.json`
 

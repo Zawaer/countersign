@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "5",
+    "version": "6",
     "owner": "Toivo",
-    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
+    "sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T05:25:32+00:00",
+      "signed_at": "2026-11-14T05:36:39+00:00",
       "reason": "signature valid"
     }
   },
@@ -66,7 +66,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "block",
-      "why": "score 145.2 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 35 + files_changed 20"
+      "why": "score 150.2 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 35 + files_changed 26.1"
     }
   ],
   "drivers": [
@@ -74,7 +74,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "block",
-      "why": "score 145.2 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 35 + files_changed 20"
+      "why": "score 150.2 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 35 + files_changed 26.1"
     },
     {
       "source": "mandate rule",
@@ -732,7 +732,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)"
   },
   "findings": [
     {
@@ -1077,7 +1077,7 @@
     "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
   ],
   "risk": {
-    "score": 145.2,
+    "score": 150.2,
     "tier": "block",
     "thresholds": {
       "notify": 15,
@@ -1092,13 +1092,13 @@
       },
       {
         "factor": "files_changed",
-        "points": 20,
-        "reason": "28 files x 1 (cap 20)"
+        "points": 26.1,
+        "reason": "28 files (~1.1 per file while small, log-scaled past 80, cap 45)"
       },
       {
         "factor": "lines_changed",
-        "points": 20,
-        "reason": "1035 non-generated lines x 4/100 (cap 20)"
+        "points": 18.9,
+        "reason": "1035 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45)"
       },
       {
         "factor": "generated_files",
@@ -1256,10 +1256,10 @@
     "fyi": [
       "Rene"
     ],
-    "risk_score": 145.2,
+    "risk_score": 150.2,
     "reasons": [
       {
-        "text": "Risk score 145.2 reaches the block band (>= 130), mostly 2 failed check(s) x 25: analyzers, solution_membership (50) and most sensitive area touched: annotations-api (critical) (35)",
+        "text": "Risk score 150.2 reaches the block band (>= 130), mostly 2 failed check(s) x 25: analyzers, solution_membership (50) and most sensitive area touched: annotations-api (critical) (35)",
         "link": "#risk"
       },
       {

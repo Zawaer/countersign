@@ -294,7 +294,7 @@ def _many_files(tmp, cid, n):
 def g4_49_files(tmp):
     r49, r51 = _many_files(Path(tmp) / "a", "g4a", 49), _many_files(Path(tmp) / "b", "g4b", 51)
     return {"actual": f"49 files: {r49['tier']}; 51 files: {r51['tier']}", "caught": r49["tier"] in ("ask", "block"),
-            "caught_by": "risk score (files cap 20)" if r49["tier"] in ("ask", "block") else "-",
+            "caught_by": "risk score (size, log-scaled: no cliff)" if r49["tier"] in ("ask", "block") else "-",
             "detail": f"risk {r49['risk']} at 49 one-line test files; >50 blocks"}
 
 
@@ -497,27 +497,56 @@ def s7_deps_status_ignored(tmp):
             "detail": "deps.delta status fail (a project that restores on base no longer restores on head: its packages are unknown); no rule reads the status"}
 
 
+def _deps_delta_module():
+    import importlib.util
+    path = Path(__file__).resolve().parents[2] / "evidence" / "scripts" / "deps-delta.py"
+    spec = importlib.util.spec_from_file_location("deps_delta", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _nupkg(feed: Path, name: str, version: str) -> None:
+    """A minimal package in a local folder feed, so the restore resolves offline."""
+    import zipfile
+    feed.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(feed / f"{name.lower()}.{version}.nupkg", "w") as z:
+        z.writestr(f"{name}.nuspec", f'<?xml version="1.0"?>\n<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">'
+                                     f"<metadata><id>{name}</id><version>{version}</version><authors>x</authors>"
+                                     f"<description>x</description></metadata></package>\n")
+        z.writestr("lib/netstandard2.0/_._", "")
+
+
 def s6_release_only_reference(tmp):
-    """Needs dotnet (offline): a PackageReference conditioned on Release is not in deps-delta's Debug restore."""
+    """Needs dotnet (offline): a PackageReference conditioned on Release, through deps-delta's own restore
+    (every configuration) and sbom.delta, base (no reference) vs head."""
     dotnet = shutil.which("dotnet") or ("/data/dotnet/dotnet" if Path("/data/dotnet/dotnet").exists() else None)
     if not dotnet:
         return {"actual": "skipped (no dotnet)", "caught": False, "caught_by": "-", "detail": "run tests/redteam/dotnet_demos.sh"}
     root = Path(tmp)
-    (root / "p").mkdir(parents=True)
-    (root / "p" / "p.csproj").write_text('<Project Sdk="Microsoft.NET.Sdk">\n  <PropertyGroup><TargetFramework>net9.0</TargetFramework></PropertyGroup>\n'
-                                         "  <ItemGroup Condition=\"'$(Configuration)' == 'Release'\">\n"
-                                         '    <PackageReference Include="SharpZipLib" Version="1.2.0" />\n  </ItemGroup>\n</Project>\n')
-    (root / "feed").mkdir()
-    (root / "nuget.config").write_text(f'<configuration><packageSources><clear /><add key="local" value="{root / "feed"}" /></packageSources></configuration>\n')
+    _nupkg(root / "feed", "SharpZipLib", "1.2.0")
+    proj = '<Project Sdk="Microsoft.NET.Sdk">\n  <PropertyGroup><TargetFramework>net9.0</TargetFramework></PropertyGroup>\n{}</Project>\n'
+    ref = ("  <ItemGroup Condition=\"'$(Configuration)' == 'Release'\">\n"
+           '    <PackageReference Include="SharpZipLib" Version="1.2.0" />\n  </ItemGroup>\n')
+
+    def tree(body):
+        def populate(d: Path):
+            (d / "p").mkdir()
+            (d / "p" / "p.csproj").write_text(proj.format(body))
+            (d / "nuget.config").write_text(f'<configuration><packageSources><clear /><add key="local" value="{root / "feed"}" /></packageSources></configuration>\n')
+        return populate
     env = {"DOTNET_CLI_TELEMETRY_OPTOUT": "1", "DOTNET_NOLOGO": "1", "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1", "PATH": "/usr/bin:/bin",
            "HOME": str(root), "NUGET_PACKAGES": str(root / "pkgs")}
-    dbg = subprocess.run([dotnet, "restore", "p/p.csproj", "-p:NuGetAudit=false"], cwd=root, capture_output=True, text=True, env=env)
-    graph = sbom.read_graph(root)
-    rel = subprocess.run([dotnet, "restore", "p/p.csproj", "-p:Configuration=Release", "-p:NuGetAudit=false"], cwd=root, capture_output=True, text=True, env=env)
-    in_debug = any(n.lower() == "sharpziplib" for n, _ in graph["packages"])
-    wants = "SharpZipLib" in (rel.stdout + rel.stderr)
-    return {"actual": f"Debug graph has SharpZipLib: {in_debug}; Release restore asks for it: {wants}", "caught": in_debug, "caught_by": "-",
-            "detail": f"deps-delta restores without -c Release (rc {dbg.returncode}); a Release-only PackageReference never enters the graph"}
+    dd = _deps_delta_module()
+    base = dd.restore_configurations(tree(""), root / "base", root / "base", dotnet=dotnet, env=env)
+    head = dd.restore_configurations(tree(ref), root / "head", root / "head", dotnet=dotnet, env=env)
+    inputs = sbom.tree_inputs(root / "head" / "Debug")
+    check = sbom.delta(base, head, inputs, inputs)
+    hit = next((x for x in check["packages_added"] if x["package"].lower() == "sharpziplib"), None)
+    caught = check["status"] == "fail" and hit is not None
+    return {"actual": f"deps.delta {check['status']}" + (f": SharpZipLib {hit['version']} in {', '.join(hit.get('configurations', ['all']))}" if hit else ": not in the graph"),
+            "caught": caught, "caught_by": "deps.delta (restores Debug and Release, union of the graphs)" if caught else "-",
+            "detail": check["summary"]}
 
 
 ATTACKS = [

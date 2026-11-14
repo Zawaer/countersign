@@ -4,7 +4,7 @@
 # Any edit invalidates the signature; until the owner re-signs, nothing clears below `ask`.
 
 id: messagepack-csharp
-version: 5
+version: 6
 owner: Toivo
 repo: https://github.com/te-industry-tech-office/junction26-messagepack-csharp
 
@@ -198,10 +198,12 @@ rules:
 # Risk score: additive, every point has a printed reason. Bands map to tiers.
 risk:
   sensitivity_points: {low: 0, medium: 10, high: 20, critical: 35}
-  per_file: 1
-  files_cap: 20
-  per_100_lines: 4                 # non-generated lines added + removed
-  lines_cap: 20
+  # v6 (red team G4): size grows smoothly, no cliff. points = min(cap, knee * ln(1 + per * size / knee)): about `per`
+  # per unit for a small change, bending logarithmically for a large one. 49 one-line test files now score 43.1 (ask),
+  # close to 51; v5's linear rate capped at 20 scored 49 files like 20. The >50-files split rule is unchanged.
+  files: {per: 1.1, knee: 80, cap: 45}
+  lines: {per: 4, knee: 100, cap: 20}  # size = non-generated lines added + removed, per 100 (per as in v5)
+  size_cap: 45                         # files_changed + lines_changed together (v5: 40): size alone never blocks
   per_generated_file: 0.1
   generated_cap: 10
   public_api_change: 20
