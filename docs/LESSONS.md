@@ -26,7 +26,7 @@ We seeded four single-line defects into the 2283 and 2234 fixes ([evidence/READM
 
 **Lesson:** mixing vendors doesn't remove correlated misses. Where models agree, deterministic checks have to do the work, and seeded defects are how you find out which lines nothing protects (A3, R5).
 
-*Later (01:51, 6c50a96; 05:33, e1a7535):* we grew the set to 14 one-line bugs plus 2 prompt-injection changes. Checks alone catch 13 of 16 (11 of 14 bugs and both injections). All 3 bugs the tests miss are removed guards. Nemotron's blind review of the seeded changes points at the planted line in 2 of them (2234-mut2, 2283-mut5) and misses the removed `ContainsSyntaxTree` guard on 2283-mut1, the same line reviewers called fine on the original ([reviews/2234-mut2/nemotron.md](../reviews/2234-mut2/nemotron.md)).
+*Later (01:51, 6c50a96; 05:33, e1a7535):* we grew the set to 17 seeded changes: 14 one-line bugs, 2 prompt injections and 1 supply-chain attack. Checks alone catch 14 of 17 (11 of 14 bugs, both injections, the supply-chain attack). All 3 bugs the tests miss are removed guards. Nemotron's blind review of the seeded changes points at the planted line in 2 of them (2234-mut2, 2283-mut5) and misses the removed `ContainsSyntaxTree` guard on 2283-mut1, the guard all three reviewers accepted (REQ-2283-F3 met) on the original ([reviews/2234-mut2/nemotron.md](../reviews/2234-mut2/nemotron.md)). With Claude's blind reviews of the 3 survivors added, a reviewer flagged the planted line in 2 of 3 with a finding the original did not already have at that line (3 of 3 counting any finding there; [MEASUREMENT.md](MEASUREMENT.md)).
 
 
 ### L3. Sat 14 Nov 01:23 (38f7014): Generated files distort size rules
@@ -134,23 +134,25 @@ We seeded two changes with text aimed at AI reviewers ("approved by the maintain
 
 ### L17. Sat 14 Nov 02:15 (c4f8b37): The pipeline is attack surface too
 
-Codex reviewed our own pipeline. Our triage confirmed real issues and found four it missed: review JSON could prove a clause by quoting the clause, a model-chosen revision reached `git show` as an option and wrote a file, and in the demo repo any Actions workflow can post the required merge status ([security/TRIAGE.md](security/TRIAGE.md)).
+Codex reviewed our own pipeline. Our triage confirmed real issues and found four it missed: review JSON could prove a clause by quoting the clause, a model-chosen revision reached `git show` as an option and wrote a file, the ledger and key code trusted malformed input, and in the demo repo any Actions workflow can post the required merge status ([security/TRIAGE.md](security/TRIAGE.md)).
 
-**Lesson:** model output is untrusted input to the verifier. The verifier issues are fixed (D11). The forgeable status needs a dedicated GitHub App and is still open.
+**Lesson:** model output is untrusted input to the verifier. The verifier issues are fixed (D11). The forgeable status (T1) needs a dedicated GitHub App and is still open.
 
 ### L18. Sat 14 Nov 02:24 (0f741d4): A measurement changed the signed policy
 
 The trust simulation showed that "3 agreeing spot-checks restore clearance" barely reacts when reviewers degrade: spot-checks rarely land on the few bad clearances, and escapes surface weeks late. 20 checks in a row plus weekly seeded-bug canaries brought simulated escapes back to the full-review level ([MEASUREMENT.md](MEASUREMENT.md)).
 
-**Lesson:** measure the policy, not only the reviewers. Toivo signed mandate v3 with the new stages, and a new reviewer model or prompt version now starts at `ask` (D13).
+**Lesson:** measure the policy, not only the reviewers. Toivo signed mandate v3 with the new stages, and a new reviewer model or prompt version now starts at `ask` (D13). *Later:* v4 (D15) keeps these stages and adds the supply-chain rules.
 
 ### L19. Sat 14 Nov 01:56 (4120318): History is the strongest evidence we have
 
-We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed mandate. 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and none of the 11 ([measurement/history/results.md](../measurement/history/results.md)).
+We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed mandate (v2, the version signed then; upstream CI credited as passed; not re-run under v3 or v4). 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and none of the 11 ([measurement/history/results.md](../measurement/history/results.md)).
 
 **Lesson:** replaying real history needs no models and no builds, and it answers "would this have let real bugs through?" better than any demo. Its limits: our labels are judgement calls, and 0 of 24 is a small sample.
 
 ### Still open
 
-- **Gemini adjudication** is wired but has not run (key pending); every pack says its disputes are "not adjudicated".
+- **Gemini adjudication** is wired but not run (no key); every pack says its disputes are "not adjudicated".
+- **CRACI's own records** (`craci.sbom`, `craci.network`) are wired but skipped: no CRACI API token is set. `build.egress` has no committed run.
+- **Merge-gate forgery (T1)** in the demo repo is open: any Actions workflow can post `countersign/tier`.
 - **Nemotron on 2234 N1** sided with Codex (met). The clause stays refused because Claude's `not_met` has verified evidence.

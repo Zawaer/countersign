@@ -57,7 +57,7 @@ The short version: **the AI gathers and checks evidence, the mandate says how fa
 
 - **Why.** A tie-breaker that can clear is a single model approving the change.
 - **How it's enforced.** The adjudicator (Gemini in the mandate's reviewer registry) reads only disputed items, with both sides' cited evidence and the engine's verification results, and says which claims the evidence supports. `decide.apply_adjudication` can only add reasons and `ask` drivers; it asserts that no refused clause becomes proven.
-- **What it costs.** A third vendor's cost and latency on disputed changes, for advice that never lowers a tier. Status: wired, runs when the key is set; not yet run, so packs say "not adjudicated".
+- **What it costs.** A third vendor's cost and latency on disputed changes, for advice that never lowers a tier. Status: wired but not run (no key), so packs say "not adjudicated".
 
 ## 9. Review depth follows risk, and the risk can be explained line by line
 
@@ -74,7 +74,7 @@ The short version: **the AI gathers and checks evidence, the mandate says how fa
 ## 11. Trust is earned per area and withdrawn after an escape
 
 - **Why.** Tieto: humans spot-check the AI reviewer, track what it misses, and trust is earned per area and withdrawn after escapes.
-- **How it's enforced.** Trust stages in the signed mandate (v3): ask -> notify -> silent, never above the area's cap. Climbing to `notify` takes 20 agreeing spot-checks in a row, 95% agreement over the last 40 and no escape in the last 50 changes; `silent` takes 40, 98% of 80 and 100. One stage is lost on an escape on an AI-cleared change (`countersign escape`), a disagreeing spot-check (`countersign spotcheck`) or a canary run where the reviewers missed a seeded bug. A reviewer model or prompt version that is not released holds every area at `ask`. `countersign trust` shows each area's stage and why. We moved from 3 to 20 checks because a simulation showed 3 restored clearance within days after reviewers degraded ([MEASUREMENT.md](MEASUREMENT.md), decision D13).
+- **How it's enforced.** Trust stages in the signed mandate (since v3; unchanged in the current v4): ask -> notify -> silent, never above the area's cap. Climbing to `notify` takes 20 agreeing spot-checks in a row, 95% agreement over the last 40 and no escape in the last 50 changes; `silent` takes 40, 98% of 80 and 100. One stage is lost on an escape on an AI-cleared change (`countersign escape`), a disagreeing spot-check (`countersign spotcheck`) or a canary run where the reviewers missed a seeded bug. A reviewer model or prompt version that is not released holds every area at `ask`. `countersign trust` shows each area's stage and why. We moved from 3 to 20 checks because a simulation showed 3 restored clearance within days after reviewers degraded ([MEASUREMENT.md](MEASUREMENT.md), decision D13).
 - **What it costs.** Someone has to spot-check changes nobody would otherwise look at, an escape has to be traced back to a change, and canaries cost model calls every week. Clearance comes back slowly. In this demo the spot-checks, escapes and canaries over time are simulated and labelled.
 
 ## 12. Every signature is bound to the exact evidence it covers
