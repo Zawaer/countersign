@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Assemble Countersign stage-1 facts.json files from the raw run outputs in /data/work/out."""
-import json, os, re, shutil, subprocess, xml.etree.ElementTree as ET
+import hashlib, json, os, re, shutil, subprocess, sys, xml.etree.ElementTree as ET
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, '..', '..'))  # the countersign package (injection scanner) lives at the repo root
 
 # Paths default to the original local run; CI (evidence/scripts/ci-facts.sh) overrides them with env vars.
 SRC = os.environ.get('CS_SRC', '/data/src')
@@ -9,6 +12,7 @@ OUT = os.environ.get('CS_OUT', '/data/work/out')
 EVID = os.environ.get('CS_EVID', '/data/worktrees/s_Vga5T2JJtb/evidence')
 SPEC = os.environ.get('CS_SPEC', '/data/work/scripts/spec.json')
 ONLY = os.environ.get('CS_ONLY')  # one change id: build facts for that change only
+REPROS = os.environ.get('CS_REPROS', os.path.join(HERE, '..', 'repros'))  # evidence/repros/<change>/<finding>/repro.json
 OS_DESC = os.environ.get('CS_OS_DESC', 'linux-x64 (container)')
 WT_RE = re.escape(SRC) + r'/mp-[\w-]+/'
 BASE = '32258fdbee4bcd653c79f51b4376b5103c6f4d27'
@@ -355,6 +359,105 @@ def exec_checks(ex, change_dir, newset):
     return out
 
 
+# ---- reviewer repros (evidence/repros/<change>/<finding>/, run by scripts/repro.py -> OUT/repro-<change>-<reviewer>-<finding>-<run>) ----
+
+def repro_checks(n, change_dir):
+    """One check `repro.<reviewer>.<finding>` per repro of change n: the reviewer's claimed defect as an executable test,
+    run on each revision in repro.json. pass = every run gave the outcome the claim predicts (reproduced);
+    fail = at least one did not (not reproduced); error = a run is missing, did not build, ran no test, or used another test file."""
+    root = os.path.join(REPROS, n)
+    out = []
+    for finding in sorted(os.listdir(root)) if os.path.isdir(root) else []:
+        rp = os.path.join(root, finding, 'repro.json')
+        if not os.path.exists(rp):
+            continue
+        spec = json.load(open(rp))
+        cid = f"repro.{spec['reviewer']}.{spec['finding']}"
+        digest = hashlib.sha256(open(os.path.join(root, finding, spec['test_file']), 'rb').read()).hexdigest()
+        runs, problems = [], []
+        for run in spec['runs']:
+            lab = f"repro-{n}-{spec['reviewer']}-{spec['finding']}-{run['label']}"
+            meta = read_meta(lab)
+            rec = {'label': run['label'], 'rev': run['rev'], 'expect': run['expect'], 'why': run.get('why')}
+            if meta is None or 'DONE' not in open(os.path.join(OUT, lab, 'meta.txt')).read():
+                problems.append(f"{run['label']}: not run")
+                runs.append({**rec, 'outcome': 'not_run', 'as_expected': False})
+                continue
+            info = json.load(open(os.path.join(OUT, lab, 'repro.json')))
+            rec['sha'] = info['sha']
+            if info.get('revert'):
+                rec['reverted_to_base'] = info['revert']
+            rec['build'] = 'pass' if meta.get('build_rc') == '0' else 'fail'
+            rec['log'] = [copy_log(os.path.join(OUT, lab, 'build.log'), os.path.join(change_dir, 'logs', f'{cid}.{run["label"]}.build.log'))]
+            if info['test_file_sha256'] != digest:
+                problems.append(f"{run['label']}: ran a different version of {spec['test_file']} (re-run scripts/repro.py)")
+            if rec['build'] == 'fail':
+                problems.append(f"{run['label']}: did not build")
+                runs.append({**rec, 'outcome': 'build_failed', 'as_expected': False})
+                continue
+            rec['log'].append(copy_log(os.path.join(OUT, lab, 'targeted.1.log'), os.path.join(change_dir, 'logs', f'{cid}.{run["label"]}.test.log')))
+            trx = parse_trx(os.path.join(OUT, lab, 'targeted.1.trx')) or []
+            if not trx:
+                problems.append(f"{run['label']}: no test ran")
+                runs.append({**rec, 'outcome': 'no_tests', 'as_expected': False})
+                continue
+            outcome = 'failed' if any(t['outcome'] == 'failed' for t in trx) else ('passed' if all(t['outcome'] == 'passed' for t in trx) else 'skipped')
+            rec.update({'outcome': outcome, 'as_expected': outcome == run['expect'], 'duration_s': float(meta.get('build_s', 0)) + float(meta.get('targeted_1_s', 0)),
+                        'tests': [{'name': t['name'], 'outcome': t['outcome'], **({'error': t['error']} if t['outcome'] == 'failed' else {})} for t in trx]})
+            runs.append(rec)
+        said = ', '.join(f"{r['outcome']} on {r['label']} (claim: {r['expect']})" for r in runs)
+        if problems:
+            status, summary = 'error', 'repro could not be judged: ' + '; '.join(problems)
+        elif all(r['as_expected'] for r in runs):
+            status, summary = 'pass', f"reproduced by the pipeline: {said}"
+        else:
+            status, summary = 'fail', f"not reproduced: {said}"
+        out.append({'id': cid, 'tool': 'dotnet test (reviewer repro test copied into tests/MessagePack.SourceGenerator.Tests/CountersignRepro)',
+                    'tool_version': SDK, 'status': status, 'summary': summary,
+                    'reviewer': spec['reviewer'], 'finding': spec['finding'], 'kind': spec.get('kind'), 'claim': spec['claim'],
+                    'supports': spec.get('supports', []), 'repro': f'evidence/repros/{n}/{finding}/',
+                    'test_file': f"evidence/repros/{n}/{finding}/{spec['test_file']}", 'test_file_sha256': digest,
+                    'filter': f"FullyQualifiedName~{spec['test_class']}", 'runs': runs})
+    return out
+
+
+# ---- injection_scan (countersign/injection.py): text planted for AI reviewers, in every change ----
+
+def injection_check(facts):
+    """Scan what the change adds: `git diff base head` (added lines, every file type), the seeded edit of a mutant
+    (mutation.file/line/after), the commit message and the PR text (facts['pr_text'], if any)."""
+    from countersign import injection
+    base, head = facts.get('base_full') or BASE, facts.get('head_full') or facts['head']
+    diff = subprocess.run(['git', '-C', REPO, 'diff', '--no-color', '--no-ext-diff', base, head], capture_output=True, check=True).stdout.decode('utf-8', 'replace')
+    mut = facts.get('mutation') or {}
+    added = [(mut['file'], int(mut['line']), mut['after'])] if mut.get('file') and mut.get('after') else []
+    src = {'diff': f'git diff {base[:8]} {head[:8]} (added lines only)' + (' + the seeded edit (mutation.after)' if added else ''),
+           'commit_message': 'facts.commit_message', 'pr_text': 'facts.pr_text' if facts.get('pr_text') else 'none: the change has no pull request text'}
+    return injection.scan(diff=diff, commit_message=facts.get('commit_message') or '', pr_text=facts.get('pr_text') or '', added=added, sources=src)
+
+
+def update_injection(ids):
+    """--injection-only: add or replace the injection_scan check in existing evidence/<id>/facts.json files, leaving
+    every other byte as it was (for facts written by other generators, e.g. measurement/mutants/seed.py)."""
+    for n in ids:
+        p = os.path.join(EVID, n, 'facts.json')
+        raw = open(p, encoding='utf-8').read()
+        facts = json.loads(raw)
+        nl = raw.endswith('\n')
+        if json.dumps(facts, indent=2) + ('\n' if nl else '') != raw:
+            print(n, 'SKIPPED: facts.json is not in json.dumps(indent=2) form, so it cannot be rewritten byte-for-byte')
+            continue
+        chk = injection_check(facts)
+        cs = facts['checks']
+        i = next((k for k, c in enumerate(cs) if c['id'] == 'injection_scan'), None)
+        if i is None:
+            cs.append(chk)
+        else:
+            cs[i] = chk
+        open(p, 'w', encoding='utf-8').write(json.dumps(facts, indent=2) + ('\n' if nl else ''))
+        print(n, chk['status'], chk['summary'])
+
+
 def main():
     os.makedirs(EVID, exist_ok=True)
     base_meta = read_meta('base')
@@ -472,7 +575,9 @@ def main():
                 extra = [c for c in extra if c['id'] != 'tests.targeted.execution']
                 checks.extend(ec)
         checks.extend(extra)
+        checks.extend(repro_checks(n, cd))
         facts['checks'] = checks
+        checks.append(injection_check(facts))
         facts['not_run'] = ch.get('not_run', [])
         facts['environment'] = {'sdk': SDK, **({'sdk_execution_tests': SDK9, 'sdk_note': SDK9_NOTE} if 'execution' in ch else {}), 'os': OS_DESC, 'configuration': 'Debug', 'max_cpu': 8}
         json.dump(facts, open(os.path.join(cd, 'facts.json'), 'w'), indent=2)
@@ -480,4 +585,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    if '--injection-only' in sys.argv:
+        update_injection(sys.argv[sys.argv.index('--injection-only') + 1:])
+    else:
+        main()

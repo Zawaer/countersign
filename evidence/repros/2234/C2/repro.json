@@ -1,0 +1,32 @@
+{
+  "change": "2234",
+  "reviewer": "claude",
+  "finding": "C2",
+  "supports": [
+    "REQ-2234-N1"
+  ],
+  "kind": "incomplete_fix",
+  "claim": "With SuppressSourceGeneration = true, a positional record with [property: Key(null)] still crashes the analyzer (AD0001 InvalidCastException, ParameterSyntax cast to PropertyDeclarationSyntax).",
+  "test_file": "ReproClaude2234C2Tests.cs",
+  "test_class": "ReproClaude2234C2Tests",
+  "runs": [
+    {
+      "label": "head",
+      "rev": "head",
+      "expect": "failed",
+      "why": "the analyzer still crashes at the change's head (the defect)"
+    },
+    {
+      "label": "base",
+      "rev": "base",
+      "expect": "failed",
+      "why": "the crash predates the change and the change leaves the hard cast in place (not a regression: an incomplete fix)"
+    },
+    {
+      "label": "control",
+      "rev": "origin/ju26-issue-2283",
+      "expect": "passed",
+      "why": "control: change 2283 (a different branch from the same base) replaced this hard cast with a null-safe location lookup; the same test passes there, so the failure on head/base is the cast, not the test"
+    }
+  ]
+}

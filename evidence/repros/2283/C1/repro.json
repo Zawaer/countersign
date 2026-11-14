@@ -1,0 +1,14 @@
+{
+  "change": "2283",
+  "reviewer": "claude",
+  "finding": "C1",
+  "supports": ["REQ-2283-N1"],
+  "kind": "regression",
+  "claim": "With a generic class from a referenced assembly closed over an app type that lacks [MessagePackObject] (Lib.Item<App.Foo>), base reports MsgPack003 and head reports nothing: the new location filter drops it.",
+  "test_file": "ReproClaude2283C1Tests.cs",
+  "test_class": "ReproClaude2283C1Tests",
+  "runs": [
+    {"label": "head", "rev": "head", "expect": "failed", "why": "the change drops MsgPack003 (the defect)"},
+    {"label": "base", "rev": "base", "expect": "passed", "why": "base reports MsgPack003, so this is a regression"}
+  ]
+}

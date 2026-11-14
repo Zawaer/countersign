@@ -332,6 +332,97 @@
       "new_warnings": [],
       "resolved_warnings": [],
       "base_warning_count": 1
+    },
+    {
+      "id": "repro.claude.C1",
+      "tool": "dotnet test (reviewer repro test copied into tests/MessagePack.SourceGenerator.Tests/CountersignRepro)",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "reproduced by the pipeline: failed on head (claim: failed), passed on base (claim: passed)",
+      "reviewer": "claude",
+      "finding": "C1",
+      "kind": "regression",
+      "claim": "With a generic class from a referenced assembly closed over an app type that lacks [MessagePackObject] (Lib.Item<App.Foo>), base reports MsgPack003 and head reports nothing: the new location filter drops it.",
+      "supports": [
+        "REQ-2283-N1"
+      ],
+      "repro": "evidence/repros/2283/C1/",
+      "test_file": "evidence/repros/2283/C1/ReproClaude2283C1Tests.cs",
+      "test_file_sha256": "1c94fb7c99155da612809d0626434173537ce292dc73ac6b2db27e33fa3c5a9e",
+      "filter": "FullyQualifiedName~ReproClaude2283C1Tests",
+      "runs": [
+        {
+          "label": "head",
+          "rev": "head",
+          "expect": "failed",
+          "why": "the change drops MsgPack003 (the defect)",
+          "sha": "9df83c38409c8bfad0517aebffe48211eda4a5b4",
+          "build": "pass",
+          "log": [
+            "evidence/2283/logs/repro.claude.C1.head.build.log",
+            "evidence/2283/logs/repro.claude.C1.head.test.log"
+          ],
+          "outcome": "failed",
+          "as_expected": true,
+          "duration_s": 7.0,
+          "tests": [
+            {
+              "name": "ReproClaude2283C1Tests.MsgPack003IsReportedForAppTypeArgumentOfGenericFromReferencedAssembly",
+              "outcome": "failed",
+              "error": "expected MsgPack003 (App.Foo is used through Lib.Item<Foo>.Content but lacks [MessagePackObject]); analyzer reported: (no diagnostics)"
+            }
+          ]
+        },
+        {
+          "label": "base",
+          "rev": "base",
+          "expect": "passed",
+          "why": "base reports MsgPack003, so this is a regression",
+          "sha": "32258fdbee4bcd653c79f51b4376b5103c6f4d27",
+          "build": "pass",
+          "log": [
+            "evidence/2283/logs/repro.claude.C1.base.build.log",
+            "evidence/2283/logs/repro.claude.C1.base.test.log"
+          ],
+          "outcome": "passed",
+          "as_expected": true,
+          "duration_s": 8.0,
+          "tests": [
+            {
+              "name": "ReproClaude2283C1Tests.MsgPack003IsReportedForAppTypeArgumentOfGenericFromReferencedAssembly",
+              "outcome": "passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "injection_scan",
+      "tool": "countersign.injection (deterministic pattern scan)",
+      "tool_version": "injection-v1",
+      "status": "pass",
+      "summary": "no text addressed to automated reviewers in the added lines, commit message or PR text",
+      "scanned": {
+        "diff_added_lines": 225,
+        "files": 4,
+        "commit_message": true,
+        "pr_text": false
+      },
+      "patterns": [
+        "addressed_to_ai",
+        "override_instructions",
+        "verdict_steering",
+        "claimed_approval",
+        "role_play",
+        "lgtm",
+        "hidden_unicode"
+      ],
+      "matches": [],
+      "sources": {
+        "diff": "git diff 32258fdb 9df83c38 (added lines only)",
+        "commit_message": "facts.commit_message",
+        "pr_text": "none: the change has no pull request text"
+      }
     }
   ],
   "not_run": [
