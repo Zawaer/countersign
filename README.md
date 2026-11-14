@@ -78,16 +78,24 @@ Details and definitions: [docs/MEASUREMENT.md](docs/MEASUREMENT.md).
 
 ## Run it
 
-Python 3.11+ and git. Offline, no API keys: it reads the recorded facts and reviews.
+One command, from a fresh clone. Needs Python 3.11+ and [uv](https://docs.astral.sh/uv/); offline apart from `uv sync`, no API keys, no MessagePack clone, no .NET:
 
 ```bash
-python3 -m venv .venv && . .venv/bin/activate && pip install -e '.[dev]'
+scripts/demo.sh          # or: make demo   (add --step to pause after each step)
+```
+
+It walks the 2234 story above in 9 steps, from the committed evidence, reviews and packs: route the seven changes, the sign-off card, a verified finding with its cited line, the clause the reviewers disagree on, the clauses that held before, a signature with a throwaway key in a temp workspace, a tampered ledger caught by line, a seeded bug no test catches and a prompt injection, and the three headline numbers. It takes a few seconds; the full output is in [docs/DEMO_OUTPUT.md](docs/DEMO_OUTPUT.md). Then open [site/index.html](site/index.html).
+
+To re-derive the packs from the evidence (code quotes are re-checked against the MessagePack-CSharp git history, so this needs the clone):
+
+```bash
+uv sync --extra dev      # or: python3 -m venv .venv && . .venv/bin/activate && pip install -e '.[dev]'
 git clone https://github.com/te-industry-tech-office/junction26-messagepack-csharp /tmp/mp
-countersign route --all --repo /tmp/mp   # tier per change
-countersign review 2234 --repo /tmp/mp   # rebuild packs/2234
-countersign verify-ledger                # check every signature
-countersign trust                        # trust stage per area
-pytest -q
+uv run countersign route --all --repo /tmp/mp   # tier per change, seeded changes included
+uv run countersign review 2234 --repo /tmp/mp   # rebuild packs/2234
+uv run countersign verify-ledger                # check every signature
+uv run countersign trust                        # trust stage per area
+make test                                       # pytest
 ```
 
 ## What is real, recorded and simulated
