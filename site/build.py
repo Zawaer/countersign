@@ -450,9 +450,10 @@ def build_index(D: Data, n: dict) -> str:
         nums.append((f'{n["mut_checks"]}<small>/{n["mut_total"]}</small>', "planted bugs and attacks failed a check"
                      + (f'<i>{len(surv)} got past; a reviewer flagged {fresh} with a new finding ({len(flagged)} by location)</i>' if surv else ""), "#seeded"))
     if n.get("h_esc") is not None:
-        nums.append((f'{n["h_esc_cleared"]}<small>/{n["h_esc"]}</small>', "real escapes the AI would clear", "#history"))
+        nums.append((f'{n["h_esc_cleared"]}<small>/{n["h_esc"]}</small>', "real escapes the AI would clear"
+                     + (f'<i>it would clear {n["h_cleared"]} of {n["h_n"]} past PRs; {n["h_esc_cleared"]} of the {n["h_esc"]} escapes among them</i>' if n.get("h_cleared") is not None else ""), "#history"))
     if rows:
-        nums.append((f'{n["ask"] + n["block"]}<small>/{n["changes"]}</small>', "agent changes sent to a human", "#changes"))
+        nums.append((f'{n["ask"] + n["block"]}<small>/{n["changes"]}</small>', "agent changes sent to a human<i>each for a verified reason</i>", "#changes"))
     nums_html = "".join(f'<a class="num" href="{h}"><b>{a}</b><span>{b}</span></a>' for a, b, h in nums)
 
     sd_rows, sd_ids = [], []

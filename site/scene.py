@@ -483,7 +483,8 @@ def render_scene(code: Code, cid: str, pins_in: list, verdict: dict, title: str,
     head_html = (f'<div class="title"><a href="{e(verdict.get("issue") or "#")}">#{e(verdict.get("num"))}</a> {"<span class=ag>agent-written</span> " if verdict.get("agent") else ""}{e(title)}</div>'
                  f'<button class="verdict {vcls}" type="button" aria-expanded="false" aria-controls="v-{sid}" data-card="v-{sid}">'
                  f'<b>{e(verdict["tier"].upper())}{owner}</b>{phrase_html}</button>'
-                 f'<div class="card vcard" id="v-{sid}" hidden>{verdict["card"]}</div>')
+                 f'<div class="card vcard" id="v-{sid}" hidden>{verdict["card"]}</div>'
+                 f'<p class="what">{e(what_line(verdict, seeded=bool(mutation)))}</p>')
     return (f'<section class="scene" data-id="{e(sid)}" hidden aria-label="Change {e(sid)}">'
             f'<div class="head">{head_html}</div><div class="code">{"".join(out)}</div></section>')
 
@@ -521,6 +522,16 @@ def row_html(r, ind, pins, sid, key):
             f'<span class="c">{hl(s) if s else " "}{tag}{pins_html}</span></div>{cards}')
 
 
+def what_line(verdict: dict, seeded=False) -> str:
+    """One plain sentence under the verdict: who wrote it, who checked it, who decides (from the pack's tier and owner)."""
+    who = ("Agent-written change plus one seeded bug." if seeded
+           else "An AI agent wrote this change." if verdict.get("agent") else "An upstream control change.")
+    owner, t = verdict.get("owner_any") or "the owner", verdict.get("tier", "")
+    then = {"ask": f"{owner} must decide.", "block": "blocked until fixed.",
+            "notify": f"they cleared it and tell {owner}.", "silent": "they cleared it."}.get(t, f"{owner} decides.")
+    return f"{who} Countersign's AI reviewers checked it; {then}"
+
+
 def verdict_card(cx: Ctx):
     p = cx.pack
     reasons = [r["text"] for r in (p.get("card") or {}).get("reasons", [])][:1]
@@ -550,7 +561,7 @@ def build() -> str:
         if phrase.startswith("pin:"):  # the verdict is the label of a pin (from its record); drop to the pack's tier word if missing
             src_pin = resolve(cx, spec["pins"][int(phrase[4:])], fmt)
             phrase = src_pin["label"][:1].lower() + src_pin["label"][1:] if src_pin else ""
-        verdict = dict(tier=p.get("tier", ""), owner=p.get("owner"), phrase=phrase, card=verdict_card(cx),
+        verdict = dict(tier=p.get("tier", ""), owner=p.get("owner"), owner_any=p.get("owner"), phrase=phrase, card=verdict_card(cx),
                        issue=(p.get("story") or {}).get("issue"), num=num.group(1) if num else cid, agent=p.get("agent_written"))
         headline = (p.get("story") or {}).get("headline", "")
         title = re.sub(rf"^(?:Agent-written )?change for #{re.escape(cid)}:\s*", "", headline, flags=re.I) or spec["title"]
@@ -584,7 +595,7 @@ def build() -> str:
                                     chip("", "reaches a human" if routed else "no human sees it")],
                                ev=[], link=f"overview.html#{mid}", src=f"measurement/results.json → changes {mid}, mutants {mid}"), "x")[len('<div class="card" id="x" hidden>'):-len("</div>")]
         num = re.search(r"(\d+)$", (cx.pack.get("story") or {}).get("issue", ""))
-        verdict = dict(tier=tier, owner=cx.pack.get("owner") if routed else None, phrase=phrase, card=vcard,
+        verdict = dict(tier=tier, owner=cx.pack.get("owner") if routed else None, owner_any=cx.pack.get("owner"), phrase=phrase, card=vcard,
                        issue=(cx.pack.get("story") or {}).get("issue"), num=num.group(1) if num else of, agent=cx.pack.get("agent_written"))
         file_ = m["file"]
         scenes.append(render_scene(code, of, [pin] + ([rpin] if rpin else []), verdict, SCENES[of]["title"], [file_], mutation=m, sid=mid))
@@ -623,6 +634,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .verdict.ok{border-color:var(--ok);background:var(--ok-bg)}.verdict.ok b{color:var(--ok)}
 .verdict b{font-weight:600;white-space:nowrap}
 .vcard{margin-top:10px}
+.what{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.4}
 .code{font:13px/20px var(--mono);padding:8px 0 96px;min-height:calc(100vh - 126px)}
 .file{font:12px/1.4 var(--mono);color:var(--fg);padding:16px 16px 6px;font-weight:600;overflow-wrap:anywhere}.file span{color:var(--muted);font-weight:400}
 .r{display:grid;grid-template-columns:52px 1fr;min-height:20px}
