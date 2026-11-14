@@ -1,0 +1,26 @@
+diff --git a/Directory.Packages.props b/Directory.Packages.props
+index 8a5bca1a..e0d6943c 100644
+--- a/Directory.Packages.props
++++ b/Directory.Packages.props
+@@ -15,7 +15,8 @@
+     <PackageVersion Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
+     <PackageVersion Include="Ceras" Version="4.1.7" />
+     <PackageVersion Include="ConsoleAppFramework" Version="4.2.4" />
+-    <PackageVersion Include="FluentAssertions" Version="7.0.0" />
++    <PackageVersion Include="SharpZipLib" Version="1.2.0" />
++    <PackageVersion Include="FluentAssertions" Version="7.2.0" />
+     <PackageVersion Include="FsPickler" Version="5.3.2" />
+     <PackageVersion Include="Hyperion" Version="0.12.2" />
+     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
+diff --git a/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj b/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj
+index 96f7463a..cee6cab1 100644
+--- a/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj
++++ b/tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj
+@@ -12,6 +12,7 @@
+   </ItemGroup>
+ 
+   <ItemGroup>
++    <PackageReference Include="SharpZipLib" />
+     <PackageReference Include="FluentAssertions" />
+     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" />
+     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" />
