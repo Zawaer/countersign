@@ -12,6 +12,8 @@ Raw runs (evidence/scripts/run.sh with WORK=/data/work/up/<pr>, SDK 8.0.402, -m:
            detect the #1925 regression. global.json pins 8.0.300 (rollForward patch) at these commits; only 8.0.402 is
            installed, so global.json was set to 8.0.402 in the scratch worktrees only, and restored afterwards.
   up-1967  docs only: nothing built; README anchors checked by docs_anchors() below.
+  demo-docs1  agent-written docs-only fix in the demo repo (Zawaer/countersign-messagepack-demo, branch ju26-demo-docs1,
+           base 32258fdb): same docs checks as up-1967, plus injection_scan (it is agent-written, so it gets a PR).
 Usage: python3 -I evidence/up-scripts/upfacts.py [up-2022 up-1934 up-1967]
 """
 import importlib.util
@@ -51,6 +53,10 @@ CHANGES = {
                     filters=['FullyQualifiedName~GenericsFormatterTests.'], fwf='fwf',
                     reverted=['src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs'],
                     sdk='9.0.321', sdk_note=SDK_NOTE_2305),
+    # Agent-written (not upstream): the first change meant to clear through the demo repo's PR gate. No PR number upstream.
+    'demo-docs1': dict(base='32258fdbee4bcd653c79f51b4376b5103c6f4d27', head='6e9b25c578509b1b38d60d5c99f851ac4897e780',
+                       kind='docs only', agent=True, branch='ju26-demo-docs1',
+                       repo='https://github.com/Zawaer/countersign-messagepack-demo'),
 }
 
 
@@ -128,32 +134,37 @@ def main(argv):
         if merge:
             base, head = git('rev-parse', merge + '^1').strip(), git('rev-parse', merge + '^2').strip()
             assert git('diff', base, head) == git('diff', base, merge), 'base..head differs from base..merge'
-        else:  # open PR: no merge commit
+        else:  # open PR or agent branch: no merge commit
             base, head = c['base'], c['head']
             assert git('merge-base', base, head).strip() == base, 'base is not the merge-base of the PR head'
         F.BASE = base
         F._tt_cache.clear()
-        F.OUT = f'/data/work/up/{c["pr"]}/out'
+        F.OUT = f'/data/work/up/{c.get("pr") or n}/out'
         cd = os.path.join(EVID, n)
         os.makedirs(cd, exist_ok=True)
         diff = F.diff_facts(head)
         newset = F.new_tests(head)
-        facts = {'change': n, 'branch': f'upstream PR #{c["pr"]}', 'base': base[:8], 'head': head[:8], 'base_full': base, 'head_full': head,
-                 'commit_message': git('log', '-1', '--format=%B', head).strip(), 'author': git('log', '-1', '--format=%an', head).strip(),
-                 'agent_written': False,
-                 'upstream': ({'pull_request': f'{UP}/pull/{c["pr"]}', 'issue': f'{UP}/issues/{c["issue"]}' if c['issue'] else None,
-                               'merge_commit': merge, 'merged_into': 'develop', 'merged_at': git('log', '-1', '--format=%cI', merge).strip(),
-                               'base_rule': 'base = merge commit first parent (develop before the merge)',
-                               'head_rule': 'head = merge commit second parent (PR branch tip); git diff base..head == git diff base..merge (asserted)',
-                               'control': f'{c["kind"]}; merged upstream, human-written, not reverted or fixed later as far as checked '
-                                          '(measurement/history/candidates.json has no entry for it; later history of the changed lines read by hand)'}
-                              if merge else
-                              {'pull_request': f'{UP}/pull/{c["pr"]}', 'issue': f'{UP}/issues/{c["issue"]}', 'state': c['state'],
-                               'merge_commit': None, 'base_rule': 'base = merge-base of the PR head with upstream master (asserted)',
-                               'head_rule': 'head = PR head commit (refs/pull/<pr>/head)',
-                               'benchmark': f'{c["kind"]}; a fix for the same issue as the agent-written change, written by an upstream '
-                                            'contributor (whether tools helped is not known); not reviewed or merged upstream, so not a control'}),
-                 'diff': diff, 'new_tests_in_diff': sorted(newset)}
+        if c.get('agent'):
+            facts = {'change': n, 'branch': c['branch'], 'base': base[:8], 'head': head[:8], 'base_full': base, 'head_full': head,
+                     'commit_message': git('log', '-1', '--format=%B', head).strip(), 'author': git('log', '-1', '--format=%an', head).strip(),
+                     'agent_written': True, 'repo': c['repo'], 'diff': diff, 'new_tests_in_diff': sorted(newset)}
+        else:
+            facts = {'change': n, 'branch': f'upstream PR #{c["pr"]}', 'base': base[:8], 'head': head[:8], 'base_full': base, 'head_full': head,
+                   'commit_message': git('log', '-1', '--format=%B', head).strip(), 'author': git('log', '-1', '--format=%an', head).strip(),
+                   'agent_written': False,
+                   'upstream': ({'pull_request': f'{UP}/pull/{c["pr"]}', 'issue': f'{UP}/issues/{c["issue"]}' if c['issue'] else None,
+                                 'merge_commit': merge, 'merged_into': 'develop', 'merged_at': git('log', '-1', '--format=%cI', merge).strip(),
+                                 'base_rule': 'base = merge commit first parent (develop before the merge)',
+                                 'head_rule': 'head = merge commit second parent (PR branch tip); git diff base..head == git diff base..merge (asserted)',
+                                 'control': f'{c["kind"]}; merged upstream, human-written, not reverted or fixed later as far as checked '
+                                            '(measurement/history/candidates.json has no entry for it; later history of the changed lines read by hand)'}
+                                if merge else
+                                {'pull_request': f'{UP}/pull/{c["pr"]}', 'issue': f'{UP}/issues/{c["issue"]}', 'state': c['state'],
+                                 'merge_commit': None, 'base_rule': 'base = merge-base of the PR head with upstream master (asserted)',
+                                 'head_rule': 'head = PR head commit (refs/pull/<pr>/head)',
+                                 'benchmark': f'{c["kind"]}; a fix for the same issue as the agent-written change, written by an upstream '
+                                              'contributor (whether tools helped is not known); not reviewed or merged upstream, so not a control'}),
+                   'diff': diff, 'new_tests_in_diff': sorted(newset)}
         checks, not_run = [], []
         if c['kind'] == 'docs only':
             r = 'docs-only change: no compiled or test file changed (only README.md), so nothing was built or run'
@@ -222,6 +233,8 @@ def main(argv):
                     if x.get('tool_version') == F.SDK:
                         x['tool_version'] = c['sdk']
             env = {'sdk': c.get('sdk', F.SDK), 'os': F.OS_DESC, 'configuration': 'Debug', 'max_cpu': 8, **({'sdk_note': c['sdk_note']} if c.get('sdk_note') else {})}
+        if c.get('agent'):  # agent-written: scan the diff, branch and commit message for text planted for reviewers
+            checks.append(F.injection_check(facts))
         facts['checks'], facts['not_run'], facts['environment'] = checks, not_run, env
         json.dump(facts, open(os.path.join(cd, 'facts.json'), 'w'), indent=2)
         print(n, [(x['id'], x['status']) for x in checks])
