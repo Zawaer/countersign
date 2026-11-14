@@ -14,10 +14,10 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-up-2022-F1](#chain-REQ-up-2022-F1) | All 3 reviewers say met (9 verified citations); build, tests.targeted pass |
+| **PROVEN** | [REQ-up-2022-F1](#chain-REQ-up-2022-F1) | All 3 reviewers say met (8 verified citations); build, tests.targeted pass |
 | **PROVEN** | [REQ-up-2022-F2](#chain-REQ-up-2022-F2) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
 | **PROVEN** | [REQ-up-2022-N1](#chain-REQ-up-2022-N1) | All 3 reviewers say met (6 verified citations); build, tests.fail_without_fix pass |
-| **PROVEN** | [REQ-up-2022-N2](#chain-REQ-up-2022-N2) | All 3 reviewers say met (5 verified citations); build, tests.full_suite pass |
+| **PROVEN** | [REQ-up-2022-N2](#chain-REQ-up-2022-N2) | All 3 reviewers say met (3 verified citations); build, tests.full_suite pass |
 
 **What the AI found**
 
@@ -70,7 +70,7 @@ countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> -
 
 - **Checks passed:** `build` pass, `tests.targeted` pass
 - **Fails without the fix:** [`AbstractFormatterDoesNotAttractAttention`](#ev-ec490502a9)
-- **Claude** says met (3/4 citations verified): [`REQ-up-2022-F1 text`](#ev-b1898df7f0) [`AnalyzerOptions.cs:221 @head`](#ev-cd3ad6e495) [`AnalyzerOptions.cs:247 @head`](#ev-bb2c0d462b) [`test AbstractFormatterDoesNotAttractAttention passed`](#ev-ec490502a9)
+- **Claude** says met (2/4 citations verified): [`REQ-up-2022-F1 text`](#ev-b1898df7f0) [`AnalyzerOptions.cs:221 @head`](#ev-cd3ad6e495) [`AnalyzerOptions.cs:247 @head`](#ev-bb2c0d462b) [`test AbstractFormatterDoesNotAttractAttention passed`](#ev-ec490502a9)
 - **Codex** says met (2/2 citations verified): [`AnalyzerOptions.cs:221 @head`](#ev-cd3ad6e495) [`test AbstractFormatterDoesNotAttractAttention passed`](#ev-ec490502a9)
 - **Nemotron** says met (4/5 citations verified): [`AnalyzerOptions.cs:221 @head`](#ev-cd3ad6e495) [`AnalyzerOptions.cs:223 @head`](#ev-4462e470a3) [`AnalyzerOptions.cs:224 @head`](#ev-0104897806) [`test AbstractFormatterDoesNotAttractAttention passed`](#ev-ec490502a9) [`REQ-up-2022-F1 text`](#ev-b1898df7f0)
 
@@ -104,7 +104,7 @@ countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> -
 - **Checks passed:** `build` pass, `tests.full_suite` pass
 - **Fails without the fix:** no cited test does
 - **Passes without the fix too:** [`MessageFormatterAttribute`](#ev-5eb9a35a14)
-- **Claude** says met (3/3 citations verified): [`check tests.full_suite pass`](#ev-d448f979e6) [`test MessageFormatterAttribute passed`](#ev-5eb9a35a14) [`AnalyzerOptions.cs:228 @head`](#ev-d27a42c472)
+- **Claude** says met (1/3 citations verified): [`check tests.full_suite pass`](#ev-d448f979e6) [`test MessageFormatterAttribute passed`](#ev-5eb9a35a14) [`AnalyzerOptions.cs:228 @head`](#ev-d27a42c472)
 - **Codex** says met (1/1 citations verified): [`check tests.full_suite pass`](#ev-d448f979e6)
 - **Nemotron** says met (1/2 citations verified): [`check tests.full_suite pass`](#ev-d448f979e6) [`REQ-up-2022-N2 text`](#ev-d3fe657f03)
 
@@ -181,7 +181,7 @@ Suggested fix: Apply the abstract filter only in the discovery paths (compilatio
 ```
 
 <a id="ev-bb2c0d462b"></a>
-**AnalyzerOptions.cs:247 @head** (verified; cited by claude on REQ-up-2022-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a
+**AnalyzerOptions.cs:247 @head** (verified; cited by claude on REQ-up-2022-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a; context only, not counted: line 247 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)
 
 ```text
 // src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs @ 5f4b762a
@@ -273,14 +273,14 @@ Suggested fix: Apply the abstract filter only in the discovery paths (compilatio
 - log: `evidence/up-2022/logs/tests_full_suite.log`
 
 <a id="ev-5eb9a35a14"></a>
-**test MessageFormatterAttribute passed** (verified; cited by claude on REQ-up-2022-N2): facts.json tests.targeted: passed
+**test MessageFormatterAttribute passed** (verified; cited by claude on REQ-up-2022-N2): facts.json tests.targeted: passed; context only, not counted: test MsgPack00xAnalyzerTests.MessageFormatterAttribute is not added or edited by this change, nor listed in the clause's tests:
 
 - change head (`tests.targeted`): **passed**
 - source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **passed**
 - Without the fix it **passed**: it does not show the change
 
 <a id="ev-d27a42c472"></a>
-**AnalyzerOptions.cs:228 @head** (verified; cited by claude on REQ-up-2022-N2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a
+**AnalyzerOptions.cs:228 @head** (verified; cited by claude on REQ-up-2022-N2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a; context only, not counted: line 228 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)
 
 ```text
 // src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs @ 5f4b762a
@@ -375,7 +375,7 @@ Branch `upstream PR #2022` (f5e104ee..5f4b762a), 2 files, +29 -0. Author Andrew 
 
 Fixes #2017
 
-Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
+Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -409,16 +409,16 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | public_api | pass | git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/  | no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/ |
 | analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
 
 #### Requirement trace (engine codes)
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-up-2022-F1 | proven | claude: met (3/4), codex: met (2/2), nemotron: met (4/5) | build: pass, tests.targeted: pass | - |
+| REQ-up-2022-F1 | proven | claude: met (2/4), codex: met (2/2), nemotron: met (4/5) | build: pass, tests.targeted: pass | - |
 | REQ-up-2022-F2 | proven | claude: met (3/4), codex: met (3/3), nemotron: met (4/5) | build: pass, tests.targeted: pass | - |
 | REQ-up-2022-N1 | proven | claude: met (2/2), codex: met (2/2), nemotron: met (2/3) | build: pass, tests.fail_without_fix: pass | - |
-| REQ-up-2022-N2 | proven | claude: met (3/3), codex: met (1/1), nemotron: met (1/2) | build: pass, tests.full_suite: pass | - |
+| REQ-up-2022-N2 | proven | claude: met (1/3), codex: met (1/1), nemotron: met (1/2) | build: pass, tests.full_suite: pass | - |
 
 #### What the AI refused to decide (every reviewer refusal)
 

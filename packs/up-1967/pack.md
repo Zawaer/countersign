@@ -14,8 +14,8 @@ Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki. Judged against 2 r
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-up-1967-F1](#chain-REQ-up-1967-F1) | All 3 reviewers say met (8 verified citations); docs.anchors pass |
-| **PROVEN** | [REQ-up-1967-N1](#chain-REQ-up-1967-N1) | All 3 reviewers say met (6 verified citations); docs.anchors pass |
+| **PROVEN** | [REQ-up-1967-F1](#chain-REQ-up-1967-F1) | All 3 reviewers say met (6 verified citations); docs.anchors pass |
+| **PROVEN** | [REQ-up-1967-N1](#chain-REQ-up-1967-N1) | All 3 reviewers say met (5 verified citations); docs.anchors pass |
 
 **What the AI found**
 
@@ -70,8 +70,8 @@ countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --
 
 - **Checks passed:** `docs.anchors` pass
 - **Fails without the fix:** no cited test does
-- **Claude** says met (4/5 citations verified): [`REQ-up-1967-F1 text`](#ev-f1f2283cf3) [`README.md:60 @head`](#ev-991c299df9) [`README.md:1602 @head`](#ev-35e50492e6) [`README.md:60 @base`](#ev-1d4d8a33ab) [`check docs.anchors pass`](#ev-889510bd31)
-- **Codex** says met (3/3 citations verified): [`README.md:60 @head`](#ev-ed2280e738) [`README.md:1602 @head`](#ev-da49f192e2) [`check docs.anchors pass`](#ev-889510bd31)
+- **Claude** says met (3/5 citations verified): [`REQ-up-1967-F1 text`](#ev-f1f2283cf3) [`README.md:60 @head`](#ev-991c299df9) [`README.md:1602 @head`](#ev-35e50492e6) [`README.md:60 @base`](#ev-1d4d8a33ab) [`check docs.anchors pass`](#ev-889510bd31)
+- **Codex** says met (2/3 citations verified): [`README.md:60 @head`](#ev-ed2280e738) [`README.md:1602 @head`](#ev-da49f192e2) [`check docs.anchors pass`](#ev-889510bd31)
 - **Nemotron** says met (1/3 citations verified): [`check docs.anchors pass`](#ev-889510bd31)
 
 <a id="chain-REQ-up-1967-N1"></a>
@@ -83,7 +83,7 @@ countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --
 - **Fails without the fix:** no cited test does
 - **Claude** says met (2/3 citations verified): [`REQ-up-1967-N1 text`](#ev-bfe3bfe29b) [`check public_api pass`](#ev-1494dc6548) [`README.md:60 @head`](#ev-6768b6d0b2)
 - **Codex** says met (2/2 citations verified): [`README.md:60 @head`](#ev-ed2280e738) [`check public_api pass`](#ev-1494dc6548)
-- **Nemotron** says met (2/2 citations verified): [`check docs.anchors pass`](#ev-889510bd31) [`check public_api pass`](#ev-1494dc6548)
+- **Nemotron** says met (1/2 citations verified): [`check docs.anchors pass`](#ev-889510bd31) [`check public_api pass`](#ev-1494dc6548)
 
 </details>
 
@@ -143,7 +143,7 @@ Tier effect: silent
 ```
 
 <a id="ev-35e50492e6"></a>
-**README.md:1602 @head** (verified; cited by claude on REQ-up-1967-F1): quote matches README.md:1602 at head 8683d1cd
+**README.md:1602 @head** (verified; cited by claude on REQ-up-1967-F1): quote matches README.md:1602 at head 8683d1cd; context only, not counted: line 1602 of README.md is not a line this change touched (added at head)
 
 ````text
 // README.md @ 8683d1cd
@@ -190,7 +190,7 @@ Tier effect: silent
 ```
 
 <a id="ev-da49f192e2"></a>
-**README.md:1602 @head** (verified; cited by codex on REQ-up-1967-F1): quote matches README.md:1602 at head 8683d1cd
+**README.md:1602 @head** (verified; cited by codex on REQ-up-1967-F1): quote matches README.md:1602 at head 8683d1cd; context only, not counted: line 1602 of README.md is not a line this change touched (added at head)
 
 ````text
 // README.md @ 8683d1cd
@@ -276,7 +276,7 @@ Tier effect: silent
 Branch `upstream PR #1967` (b9b65ddf..8683d1cd), 1 files, +1 -1. Author Ali Makki (agent-written: False). Commit: Fix AOT README anchor
  - fix anchor ref name to `aot`
 
-Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
+Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -308,14 +308,14 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | analyzers | skipped |   | not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run |
 | docs.anchors | pass | evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)  | 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
 
 #### Requirement trace (engine codes)
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-up-1967-F1 | proven | claude: met (4/5), codex: met (3/3), nemotron: met (1/3) | docs.anchors: pass | - |
-| REQ-up-1967-N1 | proven | claude: met (2/3), codex: met (2/2), nemotron: met (2/2) | docs.anchors: pass | - |
+| REQ-up-1967-F1 | proven | claude: met (3/5), codex: met (2/3), nemotron: met (1/3) | docs.anchors: pass | - |
+| REQ-up-1967-N1 | proven | claude: met (2/3), codex: met (2/2), nemotron: met (1/2) | docs.anchors: pass | - |
 
 #### What the AI refused to decide (every reviewer refusal)
 

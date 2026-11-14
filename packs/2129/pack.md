@@ -450,7 +450,7 @@ Suggested fix: dotnet sln MessagePack.sln add tests/MessagePack.SourceGenerator.
 
 Branch `ju26-issue-2129` (32258fdb..083afd99), 28 files, +1034 -9. Author Stelian Vultur (agent-written: True). Commit: Agentic implementation of #2129 Feature Request: Allow generation of Formatter for a type in a referenced assembly
 
-Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
+Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -503,7 +503,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 31 projects; 0 added, 0 version changes, 0 removed; new project(s): tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj; 4 new direct reference(s) to packages already in the graph; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 29 logs; every NuGet feed the head declares is inside the policy |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
 
 #### Requirement trace (engine codes)
 

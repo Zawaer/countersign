@@ -28,7 +28,7 @@ Every number below says whether it is **real** (measured on code and history) or
 | Metric | Value | Source |
 |---|---|---|
 | Seeded defects caught by deterministic checks alone | **14 of 18**; survived: 2234-mut2, 2283-mut1, 2283-mut5, 2283-sec1 | `evidence/*-mut*/facts.json` (`caught_by_any_deterministic_check`) |
-| Seeded defects routed to a human before any AI review | 18 of 18 (13 attributable to the defect); would be AI-cleared: none | `measurement/results.json` `mutants` |
+| Seeded defects routed to a human before any AI review | 16 of 18 (14 attributable to the defect); would be AI-cleared: 2283-mut1, 2283-mut5 | `measurement/results.json` `mutants` |
 | Seeded changes routed to a human, by the signal that caught them | of 17: deterministic check **11**, R-INJECT **2**, reviewer on the planted line **4**, other 0, nothing the defect caused 0 (-), AI-cleared 0 | `measurement/results.json` `seeded_reviewed` |
 | Of the 4 bugs every test missed, the reviewer panel pointed at the planted line in | **4** (2234-mut2: claude finding N1 (blocker), not_met REQ-2234-N1, nemotron finding M1 (major); 2283-mut1: claude finding N1 (major), finding N2 (minor), not_met REQ-2283-F3, nemotron no; 2283-mut5: claude finding N1 (major), nemotron finding M2 (minor); 2283-sec1: nemotron finding S1 (minor)); 3 counting only reviewers that had not flagged that line on the unmutated original | same, `planted_line_flagged` |
 | Planted line flagged, per reviewer (all seeded bugs; same line also flagged on the unmutated original) | claude: 3 of 3, test survivors 3 of 3 (2 also on the original); nemotron: 13 of 15, test survivors 3 of 4 (1 also on the original) | same |
@@ -41,7 +41,7 @@ Every number below says whether it is **real** (measured on code and history) or
 | Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | claude: 9, 1, 1; codex: 0, 0, 6; nemotron: 20, 1, 8 | same |
 | Owner's verdict on the AI's verified findings: accepted (real) / rated, per reviewer | no sign-offs yet (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |
 | Owner overrode the routing | no sign-offs yet | same |
-| Real changes routed to a human | 100% of 7 | same |
+| Real changes routed to a human | 86% of 7 | same |
 | Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2129-mut1: 64,570, 2129-mut2: 64,537, 2234: 275,180, 2234-inject: 52,139, 2234-mut1: 53,920, 2234-mut2: 57,510, 2234-mut3: 51,111, 2234-mut4: 51,730, 2234-mut5: 66,760, 2234-mut6: 69,520, 2234-mut7: 52,962, 2283: 233,512, 2283-inject: 55,323, 2283-mut1: 64,464, 2283-mut2: 60,159, 2283-mut3: 64,814, 2283-mut4: 65,247, 2283-mut5: 65,026, 2283-sec1: 64,204, 2297: 239,227, up-1934: 141,147, up-1967: 98,593, up-2022: 127,795 | `measurement/costs.yaml` |
 
 ### Simulated review time (reading model in the mandate, `simulated: true`)
@@ -53,7 +53,7 @@ Every number below says whether it is **real** (measured on code and history) or
 | 2283 | 23.0 | 29 | -6.0 |
 | 2297 | 260.8 | 32 | 228.8 |
 | up-1934 | 10.0 | 20 | -10.0 |
-| up-1967 | 1.2 | 21 | -19.8 |
+| up-1967 | 1.2 | 1 | 0.2 |
 | up-2022 | 4.4 | 21 | -16.6 |
 
 Routing, on the 109 historical PRs: the 24 the AI would clear (notify) need no human read at all, about 552 of 8256 full-read minutes (7%; same reading model, every line counted as source). Routed changes still get a full read when the owner wants one.

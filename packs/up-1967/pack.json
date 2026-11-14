@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "4",
+    "version": "5",
     "owner": "Toivo",
-    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
+    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T03:40:18+00:00",
+      "signed_at": "2026-11-14T05:25:32+00:00",
       "reason": "signature valid"
     }
   },
@@ -132,7 +132,7 @@
         "claude": {
           "verdict": "met",
           "basis": "The TOC entry at README.md:60 now links #aot, and README.md:1602 declares <a name=\"aot\"> on the AOT Code Generation heading; docs.anchors resolves it at head and listed the old anchor as unresolved at base.",
-          "verified": 4,
+          "verified": 3,
           "verified_any": 5,
           "cited": 5,
           "evidence": [
@@ -163,8 +163,9 @@
               "rev": "head",
               "quote": "## <a name=\"aot\"></a>AOT Code Generation",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches README.md:1602 at head 8683d1cd",
+              "substantive": false,
+              "note": "quote matches README.md:1602 at head 8683d1cd; context only, not counted: line 1602 of README.md is not a line this change touched (added at head)",
+              "context": "line 1602 of README.md is not a line this change touched (added at head)",
               "ref": "ev-35e50492e6"
             },
             {
@@ -192,7 +193,7 @@
         "codex": {
           "verdict": "met",
           "basis": "The TOC link targets #aot, which matches the AOT section’s explicit anchor, and the touched-line anchor check passes.",
-          "verified": 3,
+          "verified": 2,
           "verified_any": 3,
           "cited": 3,
           "evidence": [
@@ -214,8 +215,9 @@
               "rev": "head",
               "quote": "<a name=\"aot\"></a>",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches README.md:1602 at head 8683d1cd",
+              "substantive": false,
+              "note": "quote matches README.md:1602 at head 8683d1cd; context only, not counted: line 1602 of README.md is not a line this change touched (added at head)",
+              "context": "line 1602 of README.md is not a line this change touched (added at head)",
               "ref": "ev-da49f192e2"
             },
             {
@@ -264,7 +266,7 @@
               "status": "pass",
               "verified": true,
               "substantive": true,
-              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc); counts: a check the mandate requires for docs clauses",
               "ref": "ev-889510bd31"
             }
           ]
@@ -354,7 +356,7 @@
         "nemotron": {
           "verdict": "met",
           "basis": "The diff touches only README.md with +1/-1 (doc kind only), and public_api reports no changes under src/ or to PublicAPI files.",
-          "verified": 2,
+          "verified": 1,
           "verified_any": 2,
           "cited": 2,
           "evidence": [
@@ -364,7 +366,7 @@
               "status": "pass",
               "verified": true,
               "substantive": true,
-              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc); counts: a check the mandate requires for docs clauses",
               "ref": "ev-889510bd31"
             },
             {
@@ -372,8 +374,9 @@
               "id": "public_api",
               "status": "pass",
               "verified": true,
-              "substantive": true,
-              "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+              "substantive": false,
+              "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt; context only, not counted: a check may accompany code or test evidence, never count on its own",
+              "context": "a check may accompany code or test evidence, never count on its own",
               "ref": "ev-1494dc6548"
             }
           ]
@@ -519,7 +522,7 @@
         "refusals": 1
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
   },
   "findings": [
     {
@@ -800,14 +803,14 @@
         "id": "REQ-up-1967-F1",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (8 verified citations); docs.anchors pass",
+        "why": "All 3 reviewers say met (6 verified citations); docs.anchors pass",
         "anchor": "chain-REQ-up-1967-F1"
       },
       {
         "id": "REQ-up-1967-N1",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (6 verified citations); docs.anchors pass",
+        "why": "All 3 reviewers say met (5 verified citations); docs.anchors pass",
         "anchor": "chain-REQ-up-1967-N1"
       }
     ],
@@ -972,7 +975,7 @@
       "text": "The README table-of-contents entry \"AOT Code Generation (support for Unity/Xamarin)\" must link to an anchor that exists in README.md (the AOT Code Generation section).",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (8 verified citations); docs.anchors pass",
+      "why": "All 3 reviewers say met (6 verified citations); docs.anchors pass",
       "checks": [
         {
           "id": "docs.anchors",
@@ -986,7 +989,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "The TOC entry at README.md:60 now links #aot, and README.md:1602 declares <a name=\"aot\"> on the AOT Code Generation heading; docs.anchors resolves it at head and listed the old anchor as unresolved at base.",
-          "verified": 4,
+          "verified": 3,
           "cited": 5,
           "refs": [
             "ev-f1f2283cf3",
@@ -1001,7 +1004,7 @@
           "reviewer": "codex",
           "verdict": "met",
           "basis": "The TOC link targets #aot, which matches the AOT section’s explicit anchor, and the touched-line anchor check passes.",
-          "verified": 3,
+          "verified": 2,
           "cited": 3,
           "refs": [
             "ev-ed2280e738",
@@ -1043,7 +1046,7 @@
       "text": "Only documentation changes; no other README content is altered.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (6 verified citations); docs.anchors pass",
+      "why": "All 3 reviewers say met (5 verified citations); docs.anchors pass",
       "checks": [
         {
           "id": "docs.anchors",
@@ -1082,7 +1085,7 @@
           "reviewer": "nemotron",
           "verdict": "met",
           "basis": "The diff touches only README.md with +1/-1 (doc kind only), and public_api reports no changes under src/ or to PublicAPI files.",
-          "verified": 2,
+          "verified": 1,
           "cited": 2,
           "refs": [
             "ev-889510bd31",
@@ -1213,7 +1216,7 @@
       "ref": "ev-35e50492e6",
       "label": "README.md:1602 @head",
       "verified": true,
-      "note": "quote matches README.md:1602 at head 8683d1cd",
+      "note": "quote matches README.md:1602 at head 8683d1cd; context only, not counted: line 1602 of README.md is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-up-1967-F1"
       ],
@@ -1322,7 +1325,7 @@
       "ref": "ev-da49f192e2",
       "label": "README.md:1602 @head",
       "verified": true,
-      "note": "quote matches README.md:1602 at head 8683d1cd",
+      "note": "quote matches README.md:1602 at head 8683d1cd; context only, not counted: line 1602 of README.md is not a line this change touched (added at head)",
       "cited_by": [
         "codex on REQ-up-1967-F1"
       ],

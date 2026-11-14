@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "4",
+    "version": "5",
     "owner": "Toivo",
-    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
+    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T03:40:18+00:00",
+      "signed_at": "2026-11-14T05:25:32+00:00",
       "reason": "signature valid"
     }
   },
@@ -892,7 +892,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
   },
   "findings": [
     {

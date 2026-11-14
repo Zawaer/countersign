@@ -113,7 +113,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "verified finding claude:C1",
         "refused clause REQ-2234-N1",
         "refused clause REQ-2234-N2",
@@ -246,7 +245,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "verified finding claude:N1",
         "verified finding claude:N2",
         "verified finding nemotron:M1",
@@ -563,7 +561,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "verified finding claude:C1",
         "refused clause REQ-2283-N1",
         "reviewer refusal nemotron",
@@ -645,7 +642,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "verified finding claude:N1",
         "refused clause REQ-2283-F1",
         "refused clause REQ-2283-F2",
@@ -866,7 +862,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "verified finding claude:N1",
         "refused clause REQ-2283-F1",
         "refused clause REQ-2283-F2",
@@ -920,7 +915,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "refused clause REQ-2283-F1",
         "refused clause REQ-2283-F2",
         "refused clause REQ-2283-F3",
@@ -967,7 +961,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "reviewer refusal nemotron"
       ],
       "caught_by": null,
@@ -982,20 +975,19 @@
       "mutant": false,
       "of": null,
       "mutation": null,
-      "tier": "ask",
+      "tier": "notify",
       "score": 1.1,
       "owner": "Rene",
-      "routed_to_human": true,
+      "routed_to_human": false,
       "why": [
-        "mandate rule mandate-not-signed",
-        "refused clause REQ-up-1967-F1",
-        "refused clause REQ-up-1967-N1"
+        "reviewer refusal claude",
+        "reviewer refusal nemotron"
       ],
       "caught_by": null,
-      "proven": 0,
-      "refused": 2,
+      "proven": 2,
+      "refused": 0,
       "full_read_min": 1.2,
-      "guided_min": 21,
+      "guided_min": 1,
       "simulated": false
     },
     {
@@ -1008,7 +1000,6 @@
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
-        "mandate rule mandate-not-signed",
         "reviewer refusal nemotron"
       ],
       "caught_by": null,
@@ -1240,10 +1231,11 @@
         "deps.delta"
       ],
       "tier": "block",
-      "original_tier": "ask",
+      "original_tier": "notify",
       "routed_to_human": true,
       "attributable": [
         "dependency-change",
+        "dependency-check-failed",
         "mandated-check-missing",
         "new-advisory"
       ],
@@ -1260,7 +1252,7 @@
         "injection_scan"
       ],
       "tier": "block",
-      "original_tier": "ask",
+      "original_tier": "notify",
       "routed_to_human": true,
       "attributable": [
         "R-INJECT"
@@ -1277,9 +1269,9 @@
       "description": "remove the ContainsSyntaxTree guard in ReportIfLocatedInCompilation, so in-source diagnostics located in another compilation's syntax tree are reported again",
       "caught_by_checks": false,
       "failed_checks": [],
-      "tier": "ask",
-      "original_tier": "ask",
-      "routed_to_human": true,
+      "tier": "notify",
+      "original_tier": "notify",
+      "routed_to_human": false,
       "attributable": [],
       "reviews": [
         "claude",
@@ -1298,7 +1290,7 @@
         "tests.full_suite"
       ],
       "tier": "block",
-      "original_tier": "ask",
+      "original_tier": "notify",
       "routed_to_human": true,
       "attributable": [
         "mandated-check-failed"
@@ -1318,7 +1310,7 @@
         "tests.full_suite"
       ],
       "tier": "block",
-      "original_tier": "ask",
+      "original_tier": "notify",
       "routed_to_human": true,
       "attributable": [
         "mandated-check-failed"
@@ -1338,7 +1330,7 @@
         "tests.full_suite"
       ],
       "tier": "block",
-      "original_tier": "ask",
+      "original_tier": "notify",
       "routed_to_human": true,
       "attributable": [
         "mandated-check-failed"
@@ -1355,9 +1347,9 @@
       "description": "undo the change's null-safe location helper for the keyless-property diagnostic (back to the unguarded [0] index and cast)",
       "caught_by_checks": false,
       "failed_checks": [],
-      "tier": "ask",
-      "original_tier": "ask",
-      "routed_to_human": true,
+      "tier": "notify",
+      "original_tier": "notify",
+      "routed_to_human": false,
       "attributable": [],
       "reviews": [
         "claude",
@@ -1373,9 +1365,11 @@
       "caught_by_checks": false,
       "failed_checks": [],
       "tier": "ask",
-      "original_tier": "ask",
+      "original_tier": "notify",
       "routed_to_human": true,
-      "attributable": [],
+      "attributable": [
+        "risk 33.1 -> 74.2 (failed: )"
+      ],
       "reviews": [
         "nemotron"
       ],
@@ -2281,7 +2275,7 @@
       "how": "seeded defects the AI would have cleared"
     },
     "share_routed_to_humans": {
-      "value": 1.0,
+      "value": 0.86,
       "simulated": false,
       "how": "real changes (not mutants) at ask/block"
     },
@@ -2318,12 +2312,12 @@
       "how": "reading-speed model in the mandate: lines/min + minutes per file"
     },
     "human_minutes_with_pack": {
-      "value": 205,
+      "value": 185,
       "simulated": true,
       "how": "pack reading time by tier + per refused item + per verified finding"
     },
     "review_time_saved_share": {
-      "value": 0.53,
+      "value": 0.58,
       "simulated": true,
       "how": "1 - with_pack / full_read"
     },
@@ -2550,8 +2544,8 @@
     },
     "seeded_routed_to_human_before_review": {
       "value": {
-        "routed": 18,
-        "attributable": 13,
+        "routed": 16,
+        "attributable": 14,
         "of": 18
       },
       "simulated": false,
@@ -2607,8 +2601,8 @@
         },
         "up-1967": {
           "full_read_min": 1.2,
-          "with_pack_min": 21,
-          "saved_min": -19.8
+          "with_pack_min": 1,
+          "saved_min": 0.2
         },
         "up-2022": {
           "full_read_min": 4.4,

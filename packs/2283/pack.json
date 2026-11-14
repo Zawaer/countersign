@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "4",
+    "version": "5",
     "owner": "Toivo",
-    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
+    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T03:40:18+00:00",
+      "signed_at": "2026-11-14T05:25:32+00:00",
       "reason": "signature valid"
     }
   },
@@ -231,7 +231,7 @@
         "claude": {
           "verdict": "met",
           "basis": "Root cause confirmed: Roslyn imports private fields of metadata structs, so the compiler-generated backing field of Item<T> looks like an unkeyed member and the base field path indexed DeclaringSyntaxReferences[0] unconditionally (outside the ?.Invoke), crashing the generator as well as the analyzer; head uses FirstOrDefault there, the three new tests (which also run the generator and assert the resolver hint name and no warnings) pass at head and all 3 fail on base source; my own probe of the exact issue repro (record struct Item<T> in a metadata reference) gave CS8785 + no files on base and App.R.g.cs with no generator diagnostics on head. Runtime round-trip of the generated resolver was not executed (tests.execution not run for this change), so only 'produces a resolver' is established, not that it serializes Item<int> correctly.",
-          "verified": 6,
+          "verified": 5,
           "verified_any": 8,
           "cited": 8,
           "evidence": [
@@ -264,8 +264,9 @@
               "rev": "head",
               "quote": "this.GetObjectInfo(type, callerSymbol);",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38; context only, not counted: line 651 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+              "context": "line 651 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
               "ref": "ev-8dd72e446f"
             },
             {
@@ -752,7 +753,7 @@
         "claude": {
           "verdict": "not_met",
           "basis": "The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
-          "verified": 2,
+          "verified": 1,
           "verified_any": 4,
           "cited": 5,
           "evidence": [
@@ -763,8 +764,9 @@
               "rev": "head",
               "quote": "Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38; context only, not counted: line 1341 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+              "context": "line 1341 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
               "ref": "ev-d1a7e0fbac"
             },
             {
@@ -1185,7 +1187,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
   },
   "findings": [
     {
@@ -1352,7 +1354,7 @@
           "claude": {
             "verdict": "not_met",
             "basis": "The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
-            "verified": 2,
+            "verified": 1,
             "verified_any": 4,
             "cited": 5,
             "evidence": [
@@ -1363,8 +1365,9 @@
                 "rev": "head",
                 "quote": "Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
                 "verified": true,
-                "substantive": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+                "substantive": false,
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38; context only, not counted: line 1341 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+                "context": "line 1341 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
                 "ref": "ev-d1a7e0fbac"
               },
               {
@@ -1725,7 +1728,7 @@
         "id": "REQ-2283-F1",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (13 verified citations); build, tests.targeted pass",
+        "why": "All 3 reviewers say met (12 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-2283-F1"
       },
       {
@@ -1987,7 +1990,7 @@
       "text": "Building a project whose [MessagePackObject] type has a member of a closed generic value type defined in a referenced assembly must not crash the source generator (no CS8785) and must produce a generated resolver.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (13 verified citations); build, tests.targeted pass",
+      "why": "All 3 reviewers say met (12 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -2011,7 +2014,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "Root cause confirmed: Roslyn imports private fields of metadata structs, so the compiler-generated backing field of Item<T> looks like an unkeyed member and the base field path indexed DeclaringSyntaxReferences[0] unconditionally (outside the ?.Invoke), crashing the generator as well as the analyzer; head uses FirstOrDefault there, the three new tests (which also run the generator and assert the resolver hint name and no warnings) pass at head and all 3 fail on base source; my own probe of the exact issue repro (record struct Item<T> in a metadata reference) gave CS8785 + no files on base and App.R.g.cs with no generator diagnostics on head. Runtime round-trip of the generated resolver was not executed (tests.execution not run for this change), so only 'produces a resolver' is established, not that it serializes Item<int> correctly.",
-          "verified": 6,
+          "verified": 5,
           "cited": 8,
           "refs": [
             "ev-600c5196b9",
@@ -2290,7 +2293,7 @@
           "reviewer": "claude",
           "verdict": "not_met",
           "basis": "The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
-          "verified": 2,
+          "verified": 1,
           "cited": 5,
           "refs": [
             "ev-d1a7e0fbac",
@@ -2609,7 +2612,7 @@
       "ref": "ev-8dd72e446f",
       "label": "TypeCollector.cs:651 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38; context only, not counted: line 651 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-2283-F1"
       ],
@@ -3158,7 +3161,7 @@
       "ref": "ev-d1a7e0fbac",
       "label": "TypeCollector.cs:1341 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38; context only, not counted: line 1341 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-2283-N1"
       ],

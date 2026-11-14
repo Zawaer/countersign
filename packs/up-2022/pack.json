@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "4",
+    "version": "5",
     "owner": "Toivo",
-    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
+    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T03:40:18+00:00",
+      "signed_at": "2026-11-14T05:25:32+00:00",
       "reason": "signature valid"
     }
   },
@@ -159,7 +159,7 @@
         "claude": {
           "verdict": "met",
           "basis": "TryCreate now returns false for abstract types before any descriptor (and so any InaccessibleFormatterInstance/MsgPack013 descriptor) is built, and the new test with two abstract formatters expects zero diagnostics and passes on head.",
-          "verified": 3,
+          "verified": 2,
           "verified_any": 4,
           "cited": 4,
           "evidence": [
@@ -190,8 +190,9 @@
               "rev": "head",
               "quote": "instanceProvidingMember is null ? MsgPack00xMessagePackAnalyzer.InaccessibleFormatterInstance :",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a; context only, not counted: line 247 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)",
+              "context": "line 247 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)",
               "ref": "ev-bb2c0d462b"
             },
             {
@@ -593,7 +594,7 @@
         "claude": {
           "verdict": "met",
           "basis": "tests.full_suite passed 150/150 on head (149/149 on base, the difference being the new test), and the guard only adds a branch for IsAbstract, leaving the non-abstract path unchanged.",
-          "verified": 3,
+          "verified": 1,
           "verified_any": 3,
           "cited": 3,
           "evidence": [
@@ -611,8 +612,9 @@
               "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
               "outcome": "passed",
               "verified": true,
-              "substantive": true,
-              "note": "facts.json tests.targeted: passed",
+              "substantive": false,
+              "note": "facts.json tests.targeted: passed; context only, not counted: test MsgPack00xAnalyzerTests.MessageFormatterAttribute is not added or edited by this change, nor listed in the clause's tests:",
+              "context": "test MsgPack00xAnalyzerTests.MessageFormatterAttribute is not added or edited by this change, nor listed in the clause's tests:",
               "ref": "ev-5eb9a35a14"
             },
             {
@@ -622,8 +624,9 @@
               "rev": "head",
               "quote": "AnalyzerUtilities.SearchTypeForFormatterImplementations(type)",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a; context only, not counted: line 228 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)",
+              "context": "line 228 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)",
               "ref": "ev-d27a42c472"
             }
           ]
@@ -805,7 +808,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
   },
   "findings": [
     {
@@ -1150,7 +1153,7 @@
         "id": "REQ-up-2022-F1",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (9 verified citations); build, tests.targeted pass",
+        "why": "All 3 reviewers say met (8 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-up-2022-F1"
       },
       {
@@ -1171,7 +1174,7 @@
         "id": "REQ-up-2022-N2",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (5 verified citations); build, tests.full_suite pass",
+        "why": "All 3 reviewers say met (3 verified citations); build, tests.full_suite pass",
         "anchor": "chain-REQ-up-2022-N2"
       }
     ],
@@ -1346,7 +1349,7 @@
       "text": "The analyzer must not report MsgPack013 (formatter has no accessible instance for the source generated resolver) for an abstract class that implements IMessagePackFormatter<T>.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (9 verified citations); build, tests.targeted pass",
+      "why": "All 3 reviewers say met (8 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -1370,7 +1373,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "TryCreate now returns false for abstract types before any descriptor (and so any InaccessibleFormatterInstance/MsgPack013 descriptor) is built, and the new test with two abstract formatters expects zero diagnostics and passes on head.",
-          "verified": 3,
+          "verified": 2,
           "cited": 4,
           "refs": [
             "ev-b1898df7f0",
@@ -1601,7 +1604,7 @@
       "text": "Non-abstract formatters are still discovered and diagnosed as before (no regressions in the existing test suite).",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (5 verified citations); build, tests.full_suite pass",
+      "why": "All 3 reviewers say met (3 verified citations); build, tests.full_suite pass",
       "checks": [
         {
           "id": "build",
@@ -1625,7 +1628,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "tests.full_suite passed 150/150 on head (149/149 on base, the difference being the new test), and the guard only adds a branch for IsAbstract, leaving the non-abstract path unchanged.",
-          "verified": 3,
+          "verified": 1,
           "cited": 3,
           "refs": [
             "ev-d448f979e6",
@@ -1817,7 +1820,7 @@
       "ref": "ev-bb2c0d462b",
       "label": "AnalyzerOptions.cs:247 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a; context only, not counted: line 247 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-up-2022-F1"
       ],
@@ -2083,7 +2086,7 @@
       "ref": "ev-5eb9a35a14",
       "label": "test MessageFormatterAttribute passed",
       "verified": true,
-      "note": "facts.json tests.targeted: passed",
+      "note": "facts.json tests.targeted: passed; context only, not counted: test MsgPack00xAnalyzerTests.MessageFormatterAttribute is not added or edited by this change, nor listed in the clause's tests:",
       "cited_by": [
         "claude on REQ-up-2022-N2"
       ],
@@ -2120,7 +2123,7 @@
       "ref": "ev-d27a42c472",
       "label": "AnalyzerOptions.cs:228 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a; context only, not counted: line 228 of src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-up-2022-N2"
       ],

@@ -16,7 +16,7 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-2283-F1](#chain-REQ-2283-F1) | All 3 reviewers say met (13 verified citations); build, tests.targeted pass |
+| **PROVEN** | [REQ-2283-F1](#chain-REQ-2283-F1) | All 3 reviewers say met (12 verified citations); build, tests.targeted pass |
 | **PROVEN** | [REQ-2283-F2](#chain-REQ-2283-F2) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
 | **PROVEN** | [REQ-2283-F3](#chain-REQ-2283-F3) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
 | **NOT MET** | [REQ-2283-N1](#chain-REQ-2283-N1) | Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence |
@@ -89,7 +89,7 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 
 - **Checks passed:** `build` pass, `tests.targeted` pass
 - **Fails without the fix:** [`ClosedGenericRecordStruct_FromMetadataReference`](#ev-751fd9609c), [`ClosedGenericStruct_FromMetadataReference`](#ev-f073740910), [`ClosedGenericStruct_FromMetadataReference_UnkeyedMember`](#ev-72235a3098)
-- **Claude** says met (6/8 citations verified): [`TypeCollector.cs:1077 @base`](#ev-600c5196b9) [`TypeCollector.cs:1077 @head`](#ev-e2b1723b1a) [`TypeCollector.cs:651 @head`](#ev-8dd72e446f) [`GenericsFormatterTests.cs:658 @head`](#ev-e27f824d96) [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`test ClosedGenericRecordStruct_FromMetadataReference failed`](#ev-bf91cd8726) [`check tests.fail_without_fix`](#ev-d78b746a74) [`REQ-2283-F1 text`](#ev-19107a84ed)
+- **Claude** says met (5/8 citations verified): [`TypeCollector.cs:1077 @base`](#ev-600c5196b9) [`TypeCollector.cs:1077 @head`](#ev-e2b1723b1a) [`TypeCollector.cs:651 @head`](#ev-8dd72e446f) [`GenericsFormatterTests.cs:658 @head`](#ev-e27f824d96) [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`test ClosedGenericRecordStruct_FromMetadataReference failed`](#ev-bf91cd8726) [`check tests.fail_without_fix`](#ev-d78b746a74) [`REQ-2283-F1 text`](#ev-19107a84ed)
 - **Codex** says met (2/3 citations verified): [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`check tests.fail_without_fix`](#ev-d78b746a74) [`TypeCollector.cs:1446 @head`](#ev-6afda546ae)
 - **Nemotron** says met (5/5 citations verified): [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed`](#ev-72235a3098) [`TypeCollector.cs:1077 @head`](#ev-463700b774) [`check tests.fail_without_fix pass`](#ev-62faeb2508)
 
@@ -120,7 +120,7 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 
 > Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite).
 
-- **Claude: not met** (2/5 verified). The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.
+- **Claude: not met** (1/5 verified). The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.
 - **Codex: met** (0/1 verified). The source-generator test suite passes in full after the change.
 - **Nemotron: met** (1/1 verified). Full suite on head: 170 passed, 0 failed, with no failures that also fail on base and no new failures, so existing analyzer diagnostics for in-compilation types are unchanged.
 - **Checks:** `build` pass, `tests.full_suite` pass
@@ -225,7 +225,7 @@ Tier effect: silent
 ```
 
 <a id="ev-8dd72e446f"></a>
-**TypeCollector.cs:651 @head** (verified; cited by claude on REQ-2283-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38
+**TypeCollector.cs:651 @head** (verified; cited by claude on REQ-2283-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38; context only, not counted: line 651 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
 ```text
 // src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
@@ -410,7 +410,7 @@ Tier effect: silent
 ```
 
 <a id="ev-d1a7e0fbac"></a>
-**TypeCollector.cs:1341 @head** (verified; cited by claude on REQ-2283-N1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38
+**TypeCollector.cs:1341 @head** (verified; cited by claude on REQ-2283-N1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38; context only, not counted: line 1341 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
 ```text
 // src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
@@ -536,7 +536,7 @@ Tier effect: silent
 
 Branch `ju26-issue-2283` (32258fdb..9df83c38), 4 files, +225 -3. Author Stelian Vultur (agent-written: True). Commit: implementation for #2283
 
-Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
+Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -579,16 +579,16 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 19 logs; every NuGet feed the head declares is inside the policy |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
 
 #### Requirement trace (engine codes)
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-2283-F1 | proven | claude: met (6/8), codex: met (2/3), nemotron: met (5/5) | build: pass, tests.targeted: pass | - |
+| REQ-2283-F1 | proven | claude: met (5/8), codex: met (2/3), nemotron: met (5/5) | build: pass, tests.targeted: pass | - |
 | REQ-2283-F2 | proven | claude: met (4/5), codex: met (2/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
 | REQ-2283-F3 | proven | claude: met (4/4), codex: met (2/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
-| REQ-2283-N1 | refused | claude: not_met (2/5), codex: met (0/1), nemotron: met (1/1) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree, thin_evidence |
+| REQ-2283-N1 | refused | claude: not_met (1/5), codex: met (0/1), nemotron: met (1/1) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree, thin_evidence |
 | REQ-2283-N2 | proven | claude: met (3/4), codex: met (1/2), nemotron: met (4/4) | build: pass, tests.fail_without_fix: pass | - |
 
 #### What the AI refused to decide (every reviewer refusal)

@@ -115,16 +115,16 @@ countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --no
 - **Checks passed:** `build` pass, `tests.targeted` pass
 - **Fails without the fix:** no cited test does
 - **Passes without the fix too:** [`SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed`](#ev-165dc4a6ea)
-- **Claude** says met (5/5 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1407 @head`](#ev-337b4ac064) [`TypeCollector.cs:989 @head`](#ev-e5721f8767)
+- **Claude** says met (2/5 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1407 @head`](#ev-337b4ac064) [`TypeCollector.cs:989 @head`](#ev-e5721f8767)
 - **Codex** says met (1/2 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`check tests.fail_without_fix`](#ev-d78b746a74)
-- **Nemotron** says met (4/5 citations verified): [`REQ-2234-F2 text`](#ev-d3c4dd6a49) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1386 @head`](#ev-76656896d1) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea)
+- **Nemotron** says met (2/5 citations verified): [`REQ-2234-F2 text`](#ev-d3c4dd6a49) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1386 @head`](#ev-76656896d1) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea)
 
 <a id="chain-REQ-2234-N1"></a>
 #### REQ-2234-N1: **NOT MET**
 
 > The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.
 
-- **Claude: not met** (2/4 verified). The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.
+- **Claude: not met** (1/4 verified). The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.
 - **Codex: met** (1/2 verified). The full source-generator suite passes, and duplicate-key tests demonstrate that invalid contracts no longer trigger analyzer failure.
 - **Nemotron: met** (4/5 verified). The full suite passes with 0 failures on head, and the previously crashing duplicate-key and mixed-key tests now pass instead of throwing analyzer exceptions.
 - **Checks:** `build` pass, `tests.full_suite` pass
@@ -390,17 +390,17 @@ Suggested fix: Area owner should decide whether to pin the generator to Roslyn 4
 - Without the fix it **passed**: it does not show the change
 
 <a id="ev-6768fd1ae3"></a>
-**TypeCollector.cs:1383 @head** (verified; cited by claude on REQ-2234-F2, nemotron on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1
+**TypeCollector.cs:1383 @head** (verified; cited by claude on REQ-2234-F2, nemotron on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1; context only, not counted: line 1383 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
 `if (suppressSourceGeneration is true)`
 
 <a id="ev-337b4ac064"></a>
-**TypeCollector.cs:1407 @head** (verified; cited by claude on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1
+**TypeCollector.cs:1407 @head** (verified; cited by claude on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1; context only, not counted: line 1407 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
 `MsgPack00xMessagePackAnalyzer.PartialTypeRequired, primaryLocation`
 
 <a id="ev-e5721f8767"></a>
-**TypeCollector.cs:989 @head** (verified; cited by claude on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1
+**TypeCollector.cs:989 @head** (verified; cited by claude on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1; context only, not counted: line 989 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
 `if (suppressSourceGeneration is not true && isInitOnly)`
 
@@ -410,12 +410,12 @@ Suggested fix: Area owner should decide whether to pin the generator to Roslyn 4
 > Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.
 
 <a id="ev-76656896d1"></a>
-**TypeCollector.cs:1386 @head** (verified; cited by nemotron on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1
+**TypeCollector.cs:1386 @head** (verified; cited by nemotron on REQ-2234-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1; context only, not counted: the quote is too short to point at anything (fewer than 12 non-space characters or no identifier)
 
 `return null;`
 
 <a id="ev-4c693214ba"></a>
-**TypeCollector.cs:985 @head** (verified; cited by claude on REQ-2234-N1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1
+**TypeCollector.cs:985 @head** (verified; cited by claude on REQ-2234-N1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1; context only, not counted: line 985 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
 `((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()`
 
@@ -580,7 +580,7 @@ Suggested fix: Area owner should decide whether to pin the generator to Roslyn 4
 
 Branch `ju26-issue-2234` (32258fdb..9007cee1), 4 files, +262 -4. Author Stelian Vultur (agent-written: True). Commit: Implementation for #2234 The analyzer does not work if SuppressSourceGeneration = true
 
-Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
+Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -632,15 +632,15 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 40 logs; every NuGet feed the head declares is inside the policy |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
 
 #### Requirement trace (engine codes)
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
 | REQ-2234-F1 | held_before | claude: met (8/9), codex: met (3/4), nemotron: met (12/13) | build: pass, tests.targeted: pass | held_before |
-| REQ-2234-F2 | held_before | claude: met (5/5), codex: met (1/2), nemotron: met (4/5) | build: pass, tests.targeted: pass | held_before |
-| REQ-2234-N1 | refused | claude: not_met (2/4), codex: met (1/2), nemotron: met (4/5) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree |
+| REQ-2234-F2 | held_before | claude: met (2/5), codex: met (1/2), nemotron: met (2/5) | build: pass, tests.targeted: pass | held_before |
+| REQ-2234-N1 | refused | claude: not_met (1/4), codex: met (1/2), nemotron: met (4/5) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree |
 | REQ-2234-N2 | refused | claude: met (3/7), codex: met (0/2), nemotron: met (6/7) | build: pass, tests.fail_without_fix: pass | thin_evidence |
 
 #### What the AI refused to decide (every reviewer refusal)

@@ -1,6 +1,18 @@
 # Red team: getting a bad agent-written change past Countersign
 
-**We attacked our own pipeline 35 ways; it stopped 7; the 28 that got through are listed below with a fix for each.**
+**We attacked our own pipeline 35 ways. The first run stopped 7; we fixed 25 of the 28 that got through the same morning, so it now stops 32. The 3 still open (G4, T1, S6) are listed with their fixes.**
+
+## After the fixes (Sat 07:45, mandate v5)
+
+Fixed by: areas for build files, CI and security tests, ledger verification before routing, canary and spot-check rules (eb9fd72); injection scanner v2 and stage-1 kinds (994f693); evidence must be about the change, refutations only annotate, held_before from the clause's own tests, dependency/tool/SDK and generated-file rules (6705355, a6d772d). No tier or clause status changed on any of the 24 reviewed changes. Regenerated with `python tests/redteam/attacks.py`; the strict xfails in `tests/redteam/test_redteam_attacks.py` now list only G4, T1, S6.
+
+Still open:
+- **G4** (49 files stays under the split rule): a threshold is always gameable; the real fix is risk that grows with size, not a cliff.
+- **T1** (test theater via reflection): needs mutation testing of the changed lines (a cited test must kill a mutant of the code it claims to test).
+- **S6** (Release-only package): deps.delta restores Debug only; restore every configuration and target framework.
+
+The table below is the original run (before the fixes); `attacks.py` prints the current one.
+
 
 Run on 2026-11-14 against this repo's engine (`countersign/verify.py`, `decide.py`, `injection.py`, `trust.py`,
 `sbom.py`) and stage 1 (`evidence/scripts/facts.py`), under the signed mandate v4. Offline: no model was called and

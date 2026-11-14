@@ -14,8 +14,8 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-up-1934-F1](#chain-REQ-up-1934-F1) | All 3 reviewers say met (16 verified citations); build, tests.targeted pass |
-| **PROVEN** | [REQ-up-1934-F2](#chain-REQ-up-1934-F2) | All 3 reviewers say met (20 verified citations); build, tests.targeted pass |
+| **PROVEN** | [REQ-up-1934-F1](#chain-REQ-up-1934-F1) | All 3 reviewers say met (13 verified citations); build, tests.targeted pass |
+| **PROVEN** | [REQ-up-1934-F2](#chain-REQ-up-1934-F2) | All 3 reviewers say met (14 verified citations); build, tests.targeted pass |
 | **PROVEN** | [REQ-up-1934-N1](#chain-REQ-up-1934-N1) | All 3 reviewers say met (8 verified citations); build, tests.full_suite pass |
 
 **What the AI found**
@@ -73,9 +73,9 @@ countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> -
 
 - **Checks passed:** `build` pass, `tests.targeted` pass
 - **Fails without the fix:** no cited test does
-- **Claude** says met (6/7 citations verified): [`REQ-up-1934-F1 text`](#ev-71702142d9) [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b) [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`CSharpSourceGeneratorVerifier`1+Test.cs:184 @head`](#ev-4c69e9ef68) [`check tests.detects_original_regression pass`](#ev-6b957d903e) [`test AdditionalAllowTypes failed`](#ev-ab60b0801e)
+- **Claude** says met (4/7 citations verified): [`REQ-up-1934-F1 text`](#ev-71702142d9) [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b) [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`CSharpSourceGeneratorVerifier`1+Test.cs:184 @head`](#ev-4c69e9ef68) [`check tests.detects_original_regression pass`](#ev-6b957d903e) [`test AdditionalAllowTypes failed`](#ev-ab60b0801e)
 - **Codex** says met (3/3 citations verified): [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`check tests.detects_original_regression pass`](#ev-6b957d903e)
-- **Nemotron** says met (7/7 citations verified): [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b) [`CSharpSourceGeneratorCodeFixVerifier`2.cs:22 @head`](#ev-b661201914) [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`check tests.full_suite pass`](#ev-d448f979e6) [`check tests.detects_original_regression pass`](#ev-6b957d903e) [`test ArrayTypedProperty failed`](#ev-cfc8867214)
+- **Nemotron** says met (6/7 citations verified): [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b) [`CSharpSourceGeneratorCodeFixVerifier`2.cs:22 @head`](#ev-b661201914) [`CSharpSourceGeneratorVerifier`1+Test.cs:48 @head`](#ev-cf1b2f86d3) [`CSharpSourceGeneratorVerifier`1+Test.cs:102 @head`](#ev-40da86a21d) [`check tests.full_suite pass`](#ev-d448f979e6) [`check tests.detects_original_regression pass`](#ev-6b957d903e) [`test ArrayTypedProperty failed`](#ev-cfc8867214)
 
 <a id="chain-REQ-up-1934-F2"></a>
 #### REQ-up-1934-F2: **PROVEN**
@@ -84,9 +84,9 @@ countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> -
 
 - **Checks passed:** `build` pass, `tests.targeted` pass
 - **Fails without the fix:** no cited test does
-- **Claude** says met (6/7 citations verified): [`REQ-up-1934-F2 text`](#ev-ed9838ff31) [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`GenerationTests.cs:234 @head`](#ev-dc7a9f9b49) [`GenericsFormatterTests.cs:409 @head`](#ev-df98ec7f6f) [`PrivateMemberAccessTests.cs:10 @head`](#ev-35e3008e34) [`PrivateMemberAccessTests.cs:11 @head`](#ev-daff207533) [`check tests.full_suite pass`](#ev-d448f979e6)
-- **Codex** says met (3/3 citations verified): [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`PrivateMemberAccessTests.cs:11 @head`](#ev-e222ed4080) [`PrivateMemberAccessTests.cs:13 @head`](#ev-8622efff68)
-- **Nemotron** says met (11/11 citations verified): [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`CustomStringKeyFormatterTests.cs:60 @head`](#ev-723e7e3ba3) [`GenerationTests.cs:234 @head`](#ev-dc7a9f9b49) [`GenerationTests.cs:75 @head`](#ev-5d1894b000) [`GenericsFormatterTests.cs:356 @head`](#ev-6e1d8dd72a) [`GenericsFormatterTests.cs:409 @head`](#ev-df98ec7f6f) [`GenericsFormatterTests.cs:436 @head`](#ev-8f8ceb66a2) [`PrivateMemberAccessTests.cs:10 @head`](#ev-35e3008e34) [`PrivateMemberAccessTests.cs:11 @head`](#ev-daff207533) [`PrivateMemberAccessTests.cs:13 @head`](#ev-8622efff68) [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b)
+- **Claude** says met (5/7 citations verified): [`REQ-up-1934-F2 text`](#ev-ed9838ff31) [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`GenerationTests.cs:234 @head`](#ev-dc7a9f9b49) [`GenericsFormatterTests.cs:409 @head`](#ev-df98ec7f6f) [`PrivateMemberAccessTests.cs:10 @head`](#ev-35e3008e34) [`PrivateMemberAccessTests.cs:11 @head`](#ev-daff207533) [`check tests.full_suite pass`](#ev-d448f979e6)
+- **Codex** says met (2/3 citations verified): [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`PrivateMemberAccessTests.cs:11 @head`](#ev-e222ed4080) [`PrivateMemberAccessTests.cs:13 @head`](#ev-8622efff68)
+- **Nemotron** says met (7/11 citations verified): [`CustomStringKeyFormatterTests.cs:30 @head`](#ev-1f6d571ea2) [`CustomStringKeyFormatterTests.cs:60 @head`](#ev-723e7e3ba3) [`GenerationTests.cs:234 @head`](#ev-dc7a9f9b49) [`GenerationTests.cs:75 @head`](#ev-5d1894b000) [`GenericsFormatterTests.cs:356 @head`](#ev-6e1d8dd72a) [`GenericsFormatterTests.cs:409 @head`](#ev-df98ec7f6f) [`GenericsFormatterTests.cs:436 @head`](#ev-8f8ceb66a2) [`PrivateMemberAccessTests.cs:10 @head`](#ev-35e3008e34) [`PrivateMemberAccessTests.cs:11 @head`](#ev-daff207533) [`PrivateMemberAccessTests.cs:13 @head`](#ev-8622efff68) [`CSharpSourceGeneratorVerifier`1+Test.cs:46 @head`](#ev-18f1c5974b)
 
 <a id="chain-REQ-up-1934-N1"></a>
 #### REQ-up-1934-N1: **PROVEN**
@@ -199,7 +199,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 ```
 
 <a id="ev-4c69e9ef68"></a>
-**CSharpSourceGeneratorVerifier`1+Test.cs:184 @head** (verified; cited by claude on REQ-up-1934-F1): quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9
+**CSharpSourceGeneratorVerifier`1+Test.cs:184 @head** (verified; cited by claude on REQ-up-1934-F1): quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9; context only, not counted: line 184 of tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs is not a line this change touched (added at head)
 
 ```text
 // tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs @ 2f9324f9
@@ -220,7 +220,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 - log: `evidence/up-1934/logs/detects_original_regression.oldtests.log`
 
 <a id="ev-ab60b0801e"></a>
-**test AdditionalAllowTypes failed** (verified; cited by claude on REQ-up-1934-F1): facts.json tests.detects_original_regression: failed
+**test AdditionalAllowTypes failed** (verified; cited by claude on REQ-up-1934-F1): facts.json tests.detects_original_regression: failed; context only, not counted: test GenerationTests.AdditionalAllowTypes is not added or edited by this change, nor listed in the clause's tests:
 
 - change head (`tests.targeted`): **passed**
 - change head (`tests.detects_original_regression`): **failed**
@@ -246,7 +246,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 - log: `evidence/up-1934/logs/tests_full_suite.log`
 
 <a id="ev-cfc8867214"></a>
-**test ArrayTypedProperty failed** (verified; cited by nemotron on REQ-up-1934-F1): facts.json tests.detects_original_regression: failed
+**test ArrayTypedProperty failed** (verified; cited by nemotron on REQ-up-1934-F1): facts.json tests.detects_original_regression: failed; context only, not counted: test GenerationTests.ArrayTypedProperty is not added or edited by this change, nor listed in the clause's tests:
 
 - change head (`tests.targeted`): **passed**
 - change head (`tests.detects_original_regression`): **failed**
@@ -313,7 +313,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 ```
 
 <a id="ev-daff207533"></a>
-**PrivateMemberAccessTests.cs:11 @head** (verified; cited by claude on REQ-up-1934-F2, nemotron on REQ-up-1934-F2): quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9
+**PrivateMemberAccessTests.cs:11 @head** (verified; cited by claude on REQ-up-1934-F2, nemotron on REQ-up-1934-F2): quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9; context only, not counted: line 11 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)
 
 ```text
 // tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs @ 2f9324f9
@@ -341,7 +341,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 ```
 
 <a id="ev-8622efff68"></a>
-**PrivateMemberAccessTests.cs:13 @head** (verified; cited by codex on REQ-up-1934-F2, nemotron on REQ-up-1934-F2): quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9
+**PrivateMemberAccessTests.cs:13 @head** (verified; cited by codex on REQ-up-1934-F2, nemotron on REQ-up-1934-F2): quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9; context only, not counted: line 13 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)
 
 ```text
 // tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs @ 2f9324f9
@@ -355,7 +355,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 ```
 
 <a id="ev-723e7e3ba3"></a>
-**CustomStringKeyFormatterTests.cs:60 @head** (verified; cited by nemotron on REQ-up-1934-F2, nemotron:F1): quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9
+**CustomStringKeyFormatterTests.cs:60 @head** (verified; cited by nemotron on REQ-up-1934-F2, nemotron:F1): quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9; context only, not counted: line 60 of tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs is not a line this change touched (added at head)
 
 ```text
 // tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs @ 2f9324f9
@@ -368,7 +368,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 ```
 
 <a id="ev-5d1894b000"></a>
-**GenerationTests.cs:75 @head** (verified; cited by nemotron on REQ-up-1934-F2): quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9
+**GenerationTests.cs:75 @head** (verified; cited by nemotron on REQ-up-1934-F2): quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9; context only, not counted: line 75 of tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs is not a line this change touched (added at head)
 
 ```text
 // tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs @ 2f9324f9
@@ -464,7 +464,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 
 Branch `upstream PR #1934` (7ef21d4b..2f9324f9), 6 files, +26 -22. Author Alan Liu (agent-written: False). Commit: Change default Language version of generated code to C# 7.3
 
-Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
+Mandate `messagepack-csharp` v5 sha256 `0b09c5be0fecc478`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -497,14 +497,14 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
 | tests.detects_original_regression | pass | dotnet test (full SourceGenerator.Tests) on source before the #1926 fix, old vs new test files 8.0.402 | with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)
 
 #### Requirement trace (engine codes)
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-up-1934-F1 | proven | claude: met (6/7), codex: met (3/3), nemotron: met (7/7) | build: pass, tests.targeted: pass | - |
-| REQ-up-1934-F2 | proven | claude: met (6/7), codex: met (3/3), nemotron: met (11/11) | build: pass, tests.targeted: pass | - |
+| REQ-up-1934-F1 | proven | claude: met (4/7), codex: met (3/3), nemotron: met (6/7) | build: pass, tests.targeted: pass | - |
+| REQ-up-1934-F2 | proven | claude: met (5/7), codex: met (2/3), nemotron: met (7/11) | build: pass, tests.targeted: pass | - |
 | REQ-up-1934-N1 | proven | claude: met (2/3), codex: met (2/2), nemotron: met (4/4) | build: pass, tests.full_suite: pass | - |
 
 #### What the AI refused to decide (every reviewer refusal)

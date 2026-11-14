@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "4",
+    "version": "5",
     "owner": "Toivo",
-    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
+    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T03:40:18+00:00",
+      "signed_at": "2026-11-14T05:25:32+00:00",
       "reason": "signature valid"
     }
   },
@@ -141,7 +141,7 @@
         "claude": {
           "verdict": "met",
           "basis": "Both the Test.LanguageVersion property and the RunDefaultAsync parameter default to CSharp7_3, the value is applied to the parse options, and the regression check shows generated code failing with CS8370 at 7.3 on the pre-fix generator.",
-          "verified": 6,
+          "verified": 4,
           "verified_any": 7,
           "cited": 7,
           "evidence": [
@@ -194,8 +194,9 @@
               "rev": "head",
               "quote": "WithLanguageVersion(this.LanguageVersion)",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9",
+              "substantive": false,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9; context only, not counted: line 184 of tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs is not a line this change touched (added at head)",
+              "context": "line 184 of tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs is not a line this change touched (added at head)",
               "ref": "ev-4c69e9ef68"
             },
             {
@@ -213,8 +214,9 @@
               "outcome": "failed",
               "check": "tests.detects_original_regression",
               "verified": true,
-              "substantive": true,
-              "note": "facts.json tests.detects_original_regression: failed",
+              "substantive": false,
+              "note": "facts.json tests.detects_original_regression: failed; context only, not counted: test GenerationTests.AdditionalAllowTypes is not added or edited by this change, nor listed in the clause's tests:",
+              "context": "test GenerationTests.AdditionalAllowTypes is not added or edited by this change, nor listed in the clause's tests:",
               "ref": "ev-ab60b0801e"
             }
           ]
@@ -262,7 +264,7 @@
         "nemotron": {
           "verdict": "met",
           "basis": "Both verifier base classes default LanguageVersion to CSharp7_3, RunDefaultAsync defaults to CSharp7_3 and applies it to TestState (code), the full suite passes at head (check), and the pre-#1926 generator fails under the new default with CS8370 errors showing generated code that needs a newer version now fails the tests (check/test).",
-          "verified": 7,
+          "verified": 6,
           "verified_any": 7,
           "cited": 7,
           "evidence": [
@@ -334,8 +336,9 @@
               "outcome": "failed",
               "check": "tests.detects_original_regression",
               "verified": true,
-              "substantive": true,
-              "note": "facts.json tests.detects_original_regression: failed",
+              "substantive": false,
+              "note": "facts.json tests.detects_original_regression: failed; context only, not counted: test GenerationTests.ArrayTypedProperty is not added or edited by this change, nor listed in the clause's tests:",
+              "context": "test GenerationTests.ArrayTypedProperty is not added or edited by this change, nor listed in the clause's tests:",
               "ref": "ev-cfc8867214"
             }
           ]
@@ -362,7 +365,7 @@
         "claude": {
           "verdict": "met",
           "basis": "Every explicit opt-in I read has input needing more than C# 7.3 (records -> 9, record struct -> 10, #nullable/notnull -> 8/9) while the class/struct rows were lowered to 7.3, and the full suite passing at the 7.3 default shows no test that needs newer syntax was left on the default.",
-          "verified": 6,
+          "verified": 5,
           "verified_any": 7,
           "cited": 7,
           "evidence": [
@@ -426,8 +429,9 @@
               "rev": "head",
               "quote": "[InlineData(\"record\", LanguageVersion.CSharp9)]",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9",
+              "substantive": false,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9; context only, not counted: line 11 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
+              "context": "line 11 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
               "ref": "ev-daff207533"
             },
             {
@@ -444,7 +448,7 @@
         "codex": {
           "verdict": "met",
           "basis": "Tests using records and record structs specify C# 9 or C# 10 explicitly, while the ordinary class and struct cases use C# 7.3.",
-          "verified": 3,
+          "verified": 2,
           "verified_any": 3,
           "cited": 3,
           "evidence": [
@@ -477,8 +481,9 @@
               "rev": "head",
               "quote": "[InlineData(\"record struct\", LanguageVersion.CSharp10)]",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9",
+              "substantive": false,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9; context only, not counted: line 13 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
+              "context": "line 13 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
               "ref": "ev-8622efff68"
             }
           ]
@@ -486,7 +491,7 @@
         "nemotron": {
           "verdict": "met",
           "basis": "Every test whose source uses records, record structs, or nullable features passes an explicit languageVersion (CSharp9/CSharp10/CSharp8), while every other test relies on the new CSharp7_3 default, so explicit versions are set only where needed (code).",
-          "verified": 11,
+          "verified": 7,
           "verified_any": 11,
           "cited": 11,
           "evidence": [
@@ -508,8 +513,9 @@
               "rev": "head",
               "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9",
+              "substantive": false,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9; context only, not counted: line 60 of tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs is not a line this change touched (added at head)",
+              "context": "line 60 of tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs is not a line this change touched (added at head)",
               "ref": "ev-723e7e3ba3"
             },
             {
@@ -530,8 +536,9 @@
               "rev": "head",
               "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9",
+              "substantive": false,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9; context only, not counted: line 75 of tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs is not a line this change touched (added at head)",
+              "context": "line 75 of tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs is not a line this change touched (added at head)",
               "ref": "ev-5d1894b000"
             },
             {
@@ -585,8 +592,9 @@
               "rev": "head",
               "quote": "[InlineData(\"record\", LanguageVersion.CSharp9)]",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9",
+              "substantive": false,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9; context only, not counted: line 11 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
+              "context": "line 11 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
               "ref": "ev-daff207533"
             },
             {
@@ -596,8 +604,9 @@
               "rev": "head",
               "quote": "[InlineData(\"record struct\", LanguageVersion.CSharp10)]",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9",
+              "substantive": false,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9; context only, not counted: line 13 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
+              "context": "line 13 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
               "ref": "ev-8622efff68"
             },
             {
@@ -886,7 +895,7 @@
         "refusals": 1
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
   },
   "findings": [
     {
@@ -1226,14 +1235,14 @@
         "id": "REQ-up-1934-F1",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (16 verified citations); build, tests.targeted pass",
+        "why": "All 3 reviewers say met (13 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-up-1934-F1"
       },
       {
         "id": "REQ-up-1934-F2",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (20 verified citations); build, tests.targeted pass",
+        "why": "All 3 reviewers say met (14 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-up-1934-F2"
       },
       {
@@ -1437,7 +1446,7 @@
       "text": "By default, the source generator tests must compile the test input and the generated code at C# 7.3, the language version a netstandard2.0 project uses by default (issue #1925), so generated code that needs a newer language version fails the tests.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (16 verified citations); build, tests.targeted pass",
+      "why": "All 3 reviewers say met (13 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -1461,7 +1470,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "Both the Test.LanguageVersion property and the RunDefaultAsync parameter default to CSharp7_3, the value is applied to the parse options, and the regression check shows generated code failing with CS8370 at 7.3 on the pre-fix generator.",
-          "verified": 6,
+          "verified": 4,
           "cited": 7,
           "refs": [
             "ev-71702142d9",
@@ -1491,7 +1500,7 @@
           "reviewer": "nemotron",
           "verdict": "met",
           "basis": "Both verifier base classes default LanguageVersion to CSharp7_3, RunDefaultAsync defaults to CSharp7_3 and applies it to TestState (code), the full suite passes at head (check), and the pre-#1926 generator fails under the new default with CS8370 errors showing generated code that needs a newer version now fails the tests (check/test).",
-          "verified": 7,
+          "verified": 6,
           "cited": 7,
           "refs": [
             "ev-18f1c5974b",
@@ -1523,7 +1532,7 @@
       "text": "Tests whose input source needs a newer language feature (records, record structs) must set that language version explicitly, and only those.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (20 verified citations); build, tests.targeted pass",
+      "why": "All 3 reviewers say met (14 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -1547,7 +1556,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "Every explicit opt-in I read has input needing more than C# 7.3 (records -> 9, record struct -> 10, #nullable/notnull -> 8/9) while the class/struct rows were lowered to 7.3, and the full suite passing at the 7.3 default shows no test that needs newer syntax was left on the default.",
-          "verified": 6,
+          "verified": 5,
           "cited": 7,
           "refs": [
             "ev-ed9838ff31",
@@ -1564,7 +1573,7 @@
           "reviewer": "codex",
           "verdict": "met",
           "basis": "Tests using records and record structs specify C# 9 or C# 10 explicitly, while the ordinary class and struct cases use C# 7.3.",
-          "verified": 3,
+          "verified": 2,
           "cited": 3,
           "refs": [
             "ev-1f6d571ea2",
@@ -1577,7 +1586,7 @@
           "reviewer": "nemotron",
           "verdict": "met",
           "basis": "Every test whose source uses records, record structs, or nullable features passes an explicit languageVersion (CSharp9/CSharp10/CSharp8), while every other test relies on the new CSharp7_3 default, so explicit versions are set only where needed (code).",
-          "verified": 11,
+          "verified": 7,
           "cited": 11,
           "refs": [
             "ev-1f6d571ea2",
@@ -1881,7 +1890,7 @@
       "ref": "ev-4c69e9ef68",
       "label": "CSharpSourceGeneratorVerifier`1+Test.cs:184 @head",
       "verified": true,
-      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9",
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9; context only, not counted: line 184 of tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-up-1934-F1"
       ],
@@ -1932,7 +1941,7 @@
       "ref": "ev-ab60b0801e",
       "label": "test AdditionalAllowTypes failed",
       "verified": true,
-      "note": "facts.json tests.detects_original_regression: failed",
+      "note": "facts.json tests.detects_original_regression: failed; context only, not counted: test GenerationTests.AdditionalAllowTypes is not added or edited by this change, nor listed in the clause's tests:",
       "cited_by": [
         "claude on REQ-up-1934-F1"
       ],
@@ -2023,7 +2032,7 @@
       "ref": "ev-cfc8867214",
       "label": "test ArrayTypedProperty failed",
       "verified": true,
-      "note": "facts.json tests.detects_original_regression: failed",
+      "note": "facts.json tests.detects_original_regression: failed; context only, not counted: test GenerationTests.ArrayTypedProperty is not added or edited by this change, nor listed in the clause's tests:",
       "cited_by": [
         "nemotron on REQ-up-1934-F1"
       ],
@@ -2191,7 +2200,7 @@
       "ref": "ev-daff207533",
       "label": "PrivateMemberAccessTests.cs:11 @head",
       "verified": true,
-      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9",
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9; context only, not counted: line 11 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-up-1934-F2",
         "nemotron on REQ-up-1934-F2"
@@ -2248,7 +2257,7 @@
       "ref": "ev-8622efff68",
       "label": "PrivateMemberAccessTests.cs:13 @head",
       "verified": true,
-      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9",
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9; context only, not counted: line 13 of tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs is not a line this change touched (added at head)",
       "cited_by": [
         "codex on REQ-up-1934-F2",
         "nemotron on REQ-up-1934-F2"
@@ -2277,7 +2286,7 @@
       "ref": "ev-723e7e3ba3",
       "label": "CustomStringKeyFormatterTests.cs:60 @head",
       "verified": true,
-      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9",
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9; context only, not counted: line 60 of tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs is not a line this change touched (added at head)",
       "cited_by": [
         "nemotron on REQ-up-1934-F2",
         "nemotron:F1"
@@ -2305,7 +2314,7 @@
       "ref": "ev-5d1894b000",
       "label": "GenerationTests.cs:75 @head",
       "verified": true,
-      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9",
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9; context only, not counted: line 75 of tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs is not a line this change touched (added at head)",
       "cited_by": [
         "nemotron on REQ-up-1934-F2"
       ],

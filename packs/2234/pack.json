@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "4",
+    "version": "5",
     "owner": "Toivo",
-    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
+    "sha256": "0b09c5be0fecc478ce309060dcc38fdfbb25db6faa20432260678b632a17869d",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T03:40:18+00:00",
+      "signed_at": "2026-11-14T05:25:32+00:00",
       "reason": "signature valid"
     }
   },
@@ -595,7 +595,7 @@
         "claude": {
           "verdict": "met",
           "basis": "Holds at head, but it already held on base and this change did nothing for it: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes in tests.fail_without_fix (base source). The suppression early return still sits before the partial-type check (MsgPack011), and the AOT-only diagnostics are gated on suppressSourceGeneration is not true. The diff does not touch these lines.",
-          "verified": 5,
+          "verified": 2,
           "verified_any": 5,
           "cited": 5,
           "evidence": [
@@ -625,8 +625,9 @@
               "rev": "head",
               "quote": "if (suppressSourceGeneration is true)",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1; context only, not counted: line 1383 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+              "context": "line 1383 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
               "ref": "ev-6768fd1ae3"
             },
             {
@@ -636,8 +637,9 @@
               "rev": "head",
               "quote": "MsgPack00xMessagePackAnalyzer.PartialTypeRequired, primaryLocation",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1; context only, not counted: line 1407 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+              "context": "line 1407 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
               "ref": "ev-337b4ac064"
             },
             {
@@ -647,8 +649,9 @@
               "rev": "head",
               "quote": "if (suppressSourceGeneration is not true && isInitOnly)",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1; context only, not counted: line 989 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+              "context": "line 989 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
               "ref": "ev-e5721f8767"
             }
           ]
@@ -682,7 +685,7 @@
         "nemotron": {
           "verdict": "met",
           "basis": "Suppressed types return null from GetObjectInfo before generation-time checks are reached, and the SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed test passes on head; base-source behavior for generation-only checks is not covered by the fail_without_fix run, so the negative half rests on code inspection plus one passing head test.",
-          "verified": 4,
+          "verified": 2,
           "verified_any": 5,
           "cited": 5,
           "evidence": [
@@ -702,8 +705,9 @@
               "rev": "head",
               "quote": "if (suppressSourceGeneration is true)",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1; context only, not counted: line 1383 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+              "context": "line 1383 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
               "ref": "ev-6768fd1ae3"
             },
             {
@@ -713,8 +717,9 @@
               "rev": "head",
               "quote": "return null;",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1; context only, not counted: the quote is too short to point at anything (fewer than 12 non-space characters or no identifier)",
+              "context": "the quote is too short to point at anything (fewer than 12 non-space characters or no identifier)",
               "ref": "ev-76656896d1"
             },
             {
@@ -768,7 +773,7 @@
         "claude": {
           "verdict": "not_met",
           "basis": "The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.",
-          "verified": 2,
+          "verified": 1,
           "verified_any": 4,
           "cited": 4,
           "evidence": [
@@ -779,8 +784,9 @@
               "rev": "head",
               "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
               "verified": true,
-              "substantive": true,
-              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+              "substantive": false,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1; context only, not counted: line 985 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+              "context": "line 985 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
               "ref": "ev-4c693214ba"
             },
             {
@@ -1332,7 +1338,7 @@
         "refusals": 4
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v5 (0b09c5be0fec)"
   },
   "findings": [
     {
@@ -1727,7 +1733,7 @@
           "claude": {
             "verdict": "not_met",
             "basis": "The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.",
-            "verified": 2,
+            "verified": 1,
             "verified_any": 4,
             "cited": 4,
             "evidence": [
@@ -1738,8 +1744,9 @@
                 "rev": "head",
                 "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
                 "verified": true,
-                "substantive": true,
-                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+                "substantive": false,
+                "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1; context only, not counted: line 985 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
+                "context": "line 985 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
                 "ref": "ev-4c693214ba"
               },
               {
@@ -2849,7 +2856,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "Holds at head, but it already held on base and this change did nothing for it: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes in tests.fail_without_fix (base source). The suppression early return still sits before the partial-type check (MsgPack011), and the AOT-only diagnostics are gated on suppressSourceGeneration is not true. The diff does not touch these lines.",
-          "verified": 5,
+          "verified": 2,
           "cited": 5,
           "refs": [
             "ev-165dc4a6ea",
@@ -2876,7 +2883,7 @@
           "reviewer": "nemotron",
           "verdict": "met",
           "basis": "Suppressed types return null from GetObjectInfo before generation-time checks are reached, and the SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed test passes on head; base-source behavior for generation-only checks is not covered by the fail_without_fix run, so the negative half rests on code inspection plus one passing head test.",
-          "verified": 4,
+          "verified": 2,
           "cited": 5,
           "refs": [
             "ev-d3c4dd6a49",
@@ -2944,7 +2951,7 @@
           "reviewer": "claude",
           "verdict": "not_met",
           "basis": "The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.",
-          "verified": 2,
+          "verified": 1,
           "cited": 4,
           "refs": [
             "ev-4c693214ba",
@@ -3915,7 +3922,7 @@
       "ref": "ev-6768fd1ae3",
       "label": "TypeCollector.cs:1383 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1383 at head 9007cee1; context only, not counted: line 1383 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-2234-F2",
         "nemotron on REQ-2234-F2"
@@ -3944,7 +3951,7 @@
       "ref": "ev-337b4ac064",
       "label": "TypeCollector.cs:1407 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1407 at head 9007cee1; context only, not counted: line 1407 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-2234-F2"
       ],
@@ -3972,7 +3979,7 @@
       "ref": "ev-e5721f8767",
       "label": "TypeCollector.cs:989 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:989 at head 9007cee1; context only, not counted: line 989 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-2234-F2"
       ],
@@ -4013,7 +4020,7 @@
       "ref": "ev-76656896d1",
       "label": "TypeCollector.cs:1386 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1386 at head 9007cee1; context only, not counted: the quote is too short to point at anything (fewer than 12 non-space characters or no identifier)",
       "cited_by": [
         "nemotron on REQ-2234-F2"
       ],
@@ -4041,7 +4048,7 @@
       "ref": "ev-4c693214ba",
       "label": "TypeCollector.cs:985 @head",
       "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1",
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9007cee1; context only, not counted: line 985 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)",
       "cited_by": [
         "claude on REQ-2234-N1"
       ],

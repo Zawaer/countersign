@@ -53,10 +53,10 @@ _Minutes come from the mandate's reading model (`measurement` block: lines per m
 | 2283 | ask | 23.0 | 29 | -6.0 | $0.00 + unknown |
 | 2297 | block | 260.8 | 32 | 228.8 | $0.00 + unknown |
 | up-1934 | ask | 10.0 | 20 | -10.0 | $0.00 + unknown |
-| up-1967 | ask | 1.2 | 21 | -19.8 | $0.00 + unknown |
+| up-1967 | notify | 1.2 | 1 | 0.2 | $0.00 + unknown |
 | up-2022 | ask | 4.4 | 21 | -16.6 | $0.00 + unknown |
 
-Simulated totals: full read 439.9 min, with the pack 205 min (7 of 7 changes still routed to a human).
+Simulated totals: full read 439.9 min, with the pack 185 min (6 of 7 changes still routed to a human).
 
 ## Prices used
 

@@ -13,8 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from attacks import ATTACKS, run  # noqa: E402
 
 # Known misses as of 2026-11-14 (REDTEAM.md, "Misses and fixes").
-KNOWN_MISSES = {"I2", "I3", "I4", "I5", "I6", "I7", "I8", "R1", "R2", "R3", "R4", "R6", "R7", "G1", "G1b", "G2", "G3", "G4",
-                "G6", "T1", "L1", "L2", "L3", "S2", "S3", "S4", "S6", "S7"}
+KNOWN_MISSES = {"G4", "T1", "S6"}  # still open after the Sat 07:00-07:40 fixes; see REDTEAM.md
 
 
 @pytest.mark.parametrize("aid", [pytest.param(a[0], marks=pytest.mark.xfail(strict=True, reason="known miss, see REDTEAM.md"))
