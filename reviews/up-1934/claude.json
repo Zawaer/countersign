@@ -1,0 +1,195 @@
+{
+ "reviewer": "claude",
+ "model": "claude-opus-5-5",
+ "vendor": "Anthropic",
+ "prompt_version": "review-v1",
+ "reviewed_at": "2026-11-14T12:00:00+02:00",
+ "inputs": [
+  "diff 7ef21d4b..2f9324f9",
+  "facts.json",
+  "requirements/up-1934.yaml",
+  "head files read beyond the context: Verifiers/CSharpCodeFixVerifier`2+Test.cs and the VerifyCS aliases of all SourceGenerator test classes"
+ ],
+ "summary": "Test-only change: the source generator test verifier now defaults to C# 7.3 (applied through CreateParseOptions, so test input and generated code are compiled at 7.3), and the tests whose input needs newer syntax opt in explicitly. tests.detects_original_regression shows the new default catches the #1925 regression (61 listed tests fail with CS8370 in the generated resolver on the pre-#1926 generator, all passing with the old test files), and the full suite passes 123/123. I additionally read the analyzer verifier and the VerifyCS aliases: the changed CSharpSourceGeneratorCodeFixVerifier default has no users. All clauses met; two info notes.",
+ "requirement_verdicts": [
+  {
+   "req": "REQ-up-1934-F1",
+   "verdict": "met",
+   "confidence_basis": "Both the Test.LanguageVersion property and the RunDefaultAsync parameter default to CSharp7_3, the value is applied to the parse options, and the regression check shows generated code failing with CS8370 at 7.3 on the pre-fix generator.",
+   "evidence": [
+    {
+     "kind": "requirement",
+     "req": "REQ-up-1934-F1",
+     "quote": "compile the test input and the generated code at C# 7.3"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+     "line": 46,
+     "rev": "head",
+     "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+     "line": 48,
+     "rev": "head",
+     "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+     "line": 102,
+     "rev": "head",
+     "quote": "LanguageVersion = languageVersion,"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+     "line": 184,
+     "rev": "head",
+     "quote": "WithLanguageVersion(this.LanguageVersion)"
+    },
+    {
+     "kind": "check",
+     "id": "tests.detects_original_regression",
+     "status": "pass"
+    },
+    {
+     "kind": "test",
+     "name": "GenerationTests.AdditionalAllowTypes",
+     "outcome": "failed",
+     "check": "tests.detects_original_regression"
+    }
+   ]
+  },
+  {
+   "req": "REQ-up-1934-F2",
+   "verdict": "met",
+   "confidence_basis": "Every explicit opt-in I read has input needing more than C# 7.3 (records -> 9, record struct -> 10, #nullable/notnull -> 8/9) while the class/struct rows were lowered to 7.3, and the full suite passing at the 7.3 default shows no test that needs newer syntax was left on the default.",
+   "evidence": [
+    {
+     "kind": "requirement",
+     "req": "REQ-up-1934-F2",
+     "quote": "must set that language version explicitly, and only those"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+     "line": 30,
+     "rev": "head",
+     "quote": "languageVersion: LanguageVersion.CSharp9"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+     "line": 234,
+     "rev": "head",
+     "quote": "languageVersion: LanguageVersion.CSharp9"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+     "line": 409,
+     "rev": "head",
+     "quote": "languageVersion: LanguageVersion.CSharp8"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+     "line": 10,
+     "rev": "head",
+     "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+     "line": 11,
+     "rev": "head",
+     "quote": "[InlineData(\"record\", LanguageVersion.CSharp9)]"
+    },
+    {
+     "kind": "check",
+     "id": "tests.full_suite",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "req": "REQ-up-1934-N1",
+   "verdict": "met",
+   "confidence_basis": "facts.json classifies all 6 changed files as test, public_api shows no src change, and tests.full_suite passes 123/123 with 123/123 on base.",
+   "evidence": [
+    {
+     "kind": "requirement",
+     "req": "REQ-up-1934-N1",
+     "quote": "The change touches only test code"
+    },
+    {
+     "kind": "check",
+     "id": "tests.full_suite",
+     "status": "pass"
+    },
+    {
+     "kind": "check",
+     "id": "public_api",
+     "status": "pass"
+    }
+   ]
+  }
+ ],
+ "findings": [
+  {
+   "id": "C1",
+   "title": "Two generic-constraint tests pin C# 9 although their input uses C# 8 features",
+   "severity": "info",
+   "category": "tests",
+   "claim": "Generics_Constraints_NullableReferenceType and Generics_Constraints_ReferenceType_Nullable use #nullable enable / nullable constraints (C# 8) but are pinned to C# 9, so C# 9-only syntax emitted by the generator for these constraint shapes would not be caught. I did not run them at C# 8, so whether 8 suffices is unverified.",
+   "evidence": [
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+     "line": 356,
+     "rev": "head",
+     "quote": "languageVersion: LanguageVersion.CSharp9"
+    },
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+     "line": 436,
+     "rev": "head",
+     "quote": "languageVersion: LanguageVersion.CSharp9"
+    }
+   ],
+   "suggested_fix": "Try LanguageVersion.CSharp8 for these two tests and keep the lowest version that compiles the input."
+  },
+  {
+   "id": "C2",
+   "title": "CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused",
+   "severity": "info",
+   "category": "scope",
+   "claim": "No test class aliases CSharpSourceGeneratorCodeFixVerifier (I checked every VerifyCS alias at head), so this one-line change has no effect today; harmless and consistent, but it is not exercised by the suite.",
+   "evidence": [
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs",
+     "line": 22,
+     "rev": "head",
+     "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;"
+    }
+   ]
+  }
+ ],
+ "refusals": [
+  {
+   "topic": "That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs)",
+   "reason": "Taken from the requirement text; not checkable from the evidence",
+   "who_should_decide": "area owner"
+  },
+  {
+   "topic": "facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed)",
+   "reason": "Likely renamed theory cases, but the logs were not given",
+   "who_should_decide": "countersign evidence maintainer"
+  }
+ ]
+}

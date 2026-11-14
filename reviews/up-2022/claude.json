@@ -1,0 +1,180 @@
+{
+ "reviewer": "claude",
+ "model": "claude-opus-5-5",
+ "vendor": "Anthropic",
+ "prompt_version": "review-v1",
+ "reviewed_at": "2026-11-14T12:00:00+02:00",
+ "inputs": [
+  "diff f5e104ee..5f4b762a",
+  "facts.json",
+  "requirements/up-2022.yaml",
+  "head files read beyond the context: TypeCollector.cs (GetSpecialFormatter), Utils/AnalyzerUtilities.cs (ParseKnownFormatterAttribute), GeneratorUtilities.cs, Analyzers/MsgPack00xMessagePackAnalyzer.cs (SearchForFormatters)"
+ ],
+ "summary": "Adds an early `type.IsAbstract` return to FormatterDescriptor.TryCreate so abstract IMessagePackFormatter<T> implementations are no longer treated as formatters, which removes the MsgPack013 and MsgPack009 noise at its source; the new test fails on base (MsgPack009) and passes on head, and the full SourceGenerator suite passes 150/150. Beyond the given context I read the other TryCreate callers (TypeCollector.GetSpecialFormatter, AnalyzerUtilities.ParseKnownFormatterAttribute, GeneratorUtilities, the analyzer's SearchForFormatters): the guard also silently changes how an abstract type named in [MessagePackFormatter]/[MessagePackKnownFormatter] is handled, which is untested (minor). All four clauses met.",
+ "requirement_verdicts": [
+  {
+   "req": "REQ-up-2022-F1",
+   "verdict": "met",
+   "confidence_basis": "TryCreate now returns false for abstract types before any descriptor (and so any InaccessibleFormatterInstance/MsgPack013 descriptor) is built, and the new test with two abstract formatters expects zero diagnostics and passes on head.",
+   "evidence": [
+    {
+     "kind": "requirement",
+     "req": "REQ-up-2022-F1",
+     "quote": "must not report MsgPack013"
+    },
+    {
+     "kind": "code",
+     "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+     "line": 221,
+     "rev": "head",
+     "quote": "if (type.IsAbstract)"
+    },
+    {
+     "kind": "code",
+     "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+     "line": 247,
+     "rev": "head",
+     "quote": "instanceProvidingMember is null ? MsgPack00xMessagePackAnalyzer.InaccessibleFormatterInstance :"
+    },
+    {
+     "kind": "test",
+     "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+     "outcome": "passed"
+    }
+   ]
+  },
+  {
+   "req": "REQ-up-2022-F2",
+   "verdict": "met",
+   "confidence_basis": "Abstract types never become FormatterDescriptors, so they never reach the collision map in KnownFormatters; the new test reported MsgPack009 on base source and nothing on head.",
+   "evidence": [
+    {
+     "kind": "requirement",
+     "req": "REQ-up-2022-F2",
+     "quote": "must not be counted as formatters"
+    },
+    {
+     "kind": "code",
+     "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+     "line": 224,
+     "rev": "head",
+     "quote": "return false;"
+    },
+    {
+     "kind": "test",
+     "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+     "outcome": "failed",
+     "check": "tests.fail_without_fix"
+    },
+    {
+     "kind": "test",
+     "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+     "outcome": "passed"
+    }
+   ]
+  },
+  {
+   "req": "REQ-up-2022-N1",
+   "verdict": "met",
+   "confidence_basis": "tests.fail_without_fix passed: with AnalyzerOptions.cs reverted the one new test fails (1/1) and only it fails in the full suite (1 of 150).",
+   "evidence": [
+    {
+     "kind": "check",
+     "id": "tests.fail_without_fix",
+     "status": "pass"
+    },
+    {
+     "kind": "test",
+     "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+     "outcome": "failed",
+     "check": "tests.fail_without_fix"
+    }
+   ]
+  },
+  {
+   "req": "REQ-up-2022-N2",
+   "verdict": "met",
+   "confidence_basis": "tests.full_suite passed 150/150 on head (149/149 on base, the difference being the new test), and the guard only adds a branch for IsAbstract, leaving the non-abstract path unchanged.",
+   "evidence": [
+    {
+     "kind": "check",
+     "id": "tests.full_suite",
+     "status": "pass"
+    },
+    {
+     "kind": "test",
+     "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
+     "outcome": "passed"
+    },
+    {
+     "kind": "code",
+     "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+     "line": 228,
+     "rev": "head",
+     "quote": "AnalyzerUtilities.SearchTypeForFormatterImplementations(type)"
+    }
+   ]
+  }
+ ],
+ "findings": [
+  {
+   "id": "C1",
+   "title": "Abstract type named in [MessagePackFormatter]/[MessagePackKnownFormatter] is now silently ignored",
+   "severity": "minor",
+   "category": "correctness",
+   "claim": "TryCreate is not only used for discovery: it also resolves the type in a member's [MessagePackFormatter(typeof(X))] (TypeCollector.GetSpecialFormatter) and in [MessagePackKnownFormatter(typeof(X))]. For an abstract X these now return 'not a formatter', and the else branch that should report it is commented out, so a user who points an attribute at an abstract formatter gets no diagnostic (on base the KnownFormatter path would have produced MsgPack013 for the missing instance) and the generator falls back to treating the member as if it had no custom formatter. Nothing in the diff tests these paths; I did not run them, so the exact downstream diagnostics/codegen are unverified.",
+   "evidence": [
+    {
+     "kind": "code",
+     "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+     "line": 720,
+     "rev": "head",
+     "quote": "if (FormatterDescriptor.TryCreate(name, out FormatterDescriptor? descriptor))"
+    },
+    {
+     "kind": "code",
+     "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+     "line": 725,
+     "rev": "head",
+     "quote": "// this.reportDiagnostic();"
+    },
+    {
+     "kind": "code",
+     "file": "src/MessagePack.SourceGenerator/Utils/AnalyzerUtilities.cs",
+     "line": 95,
+     "rev": "head",
+     "quote": "FormatterDescriptor.TryCreate(formatterType, out FormatterDescriptor? formatter)"
+    }
+   ],
+   "suggested_fix": "Apply the abstract filter only in the discovery paths (compilation scan / SearchForFormatters), or report a diagnostic when an attribute names an abstract formatter type; add a test for [MessagePackFormatter(typeof(AbstractFormatter))]."
+  },
+  {
+   "id": "C2",
+   "title": "New test covers the analyzer path only",
+   "severity": "info",
+   "category": "tests",
+   "claim": "The test runs VerifyAnalyzerAsync with no expected diagnostics; the generator's own scan (GeneratorUtilities) shares the same TryCreate, so it is covered by construction, but no generator snapshot test pins that abstract formatters stay out of the generated resolver.",
+   "evidence": [
+    {
+     "kind": "code",
+     "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+     "line": 932,
+     "rev": "head",
+     "quote": "await VerifyCS.VerifyAnalyzerAsync(test);"
+    }
+   ]
+  }
+ ],
+ "refusals": [
+  {
+   "topic": "Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after",
+   "reason": "Not exercised by any test in facts.json; would need a run I was not given",
+   "who_should_decide": "source generator area owner"
+  },
+  {
+   "topic": "Whether the release notes / analyzer docs should mention the change",
+   "reason": "Docs for MsgPack009/MsgPack013 were not in the context",
+   "who_should_decide": "area owner"
+  }
+ ]
+}

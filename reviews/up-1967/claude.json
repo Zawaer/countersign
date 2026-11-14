@@ -1,0 +1,108 @@
+{
+ "reviewer": "claude",
+ "model": "claude-opus-5-5",
+ "vendor": "Anthropic",
+ "prompt_version": "review-v1",
+ "reviewed_at": "2026-11-14T12:00:00+02:00",
+ "inputs": [
+  "diff b9b65ddf..8683d1cd",
+  "facts.json",
+  "requirements/up-1967.yaml",
+  "README.md at head and base (headings and anchors, as the brief allows)"
+ ],
+ "summary": "Docs-only one-line fix: the README table-of-contents link for AOT Code Generation pointed at a GitHub slug (#aot-code-generation-support-for-unityxamarin) that no heading produces, and now points at #aot, the explicit <a name=\"aot\"> on the section heading that other README links already use. I read README.md at head (TOC and headings) to confirm the anchor; facts.json docs.anchors agrees. Both clauses met; the neighbouring #rpc TOC link remains broken (out of scope).",
+ "requirement_verdicts": [
+  {
+   "req": "REQ-up-1967-F1",
+   "verdict": "met",
+   "confidence_basis": "The TOC entry at README.md:60 now links #aot, and README.md:1602 declares <a name=\"aot\"> on the AOT Code Generation heading; docs.anchors resolves it at head and listed the old anchor as unresolved at base.",
+   "evidence": [
+    {
+     "kind": "requirement",
+     "req": "REQ-up-1967-F1",
+     "quote": "must link to an anchor that exists in README.md"
+    },
+    {
+     "kind": "code",
+     "file": "README.md",
+     "line": 60,
+     "rev": "head",
+     "quote": "- [AOT Code Generation (support for Unity/Xamarin)](#aot)"
+    },
+    {
+     "kind": "code",
+     "file": "README.md",
+     "line": 1602,
+     "rev": "head",
+     "quote": "## <a name=\"aot\"></a>AOT Code Generation"
+    },
+    {
+     "kind": "code",
+     "file": "README.md",
+     "line": 60,
+     "rev": "base",
+     "quote": "(#aot-code-generation-support-for-unityxamarin)"
+    },
+    {
+     "kind": "check",
+     "id": "docs.anchors",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "req": "REQ-up-1967-N1",
+   "verdict": "met",
+   "confidence_basis": "facts.json records one file (README.md, kind doc) with 1 insertion and 1 deletion, the changed line being only the link target; public_api confirms no src change.",
+   "evidence": [
+    {
+     "kind": "requirement",
+     "req": "REQ-up-1967-N1",
+     "quote": "Only documentation changes"
+    },
+    {
+     "kind": "check",
+     "id": "public_api",
+     "status": "pass"
+    },
+    {
+     "kind": "code",
+     "file": "README.md",
+     "line": 60,
+     "rev": "head",
+     "quote": "(#aot)"
+    }
+   ]
+  }
+ ],
+ "findings": [
+  {
+   "id": "C1",
+   "title": "Other broken TOC anchors remain, including the next line (#rpc)",
+   "severity": "info",
+   "category": "docs",
+   "claim": "docs.anchors still reports #rpc, #author-info and #migration-notes-from-v1x unresolved at head; #rpc is the TOC line right after the fixed one. Outside this change's scope, noted for a follow-up.",
+   "evidence": [
+    {
+     "kind": "code",
+     "file": "README.md",
+     "line": 61,
+     "rev": "head",
+     "quote": "- [RPC](#rpc)"
+    },
+    {
+     "kind": "check",
+     "id": "docs.anchors",
+     "status": "pass"
+    }
+   ]
+  }
+ ],
+ "refusals": [
+  {
+   "topic": "How GitHub actually renders and scrolls to the #aot anchor",
+   "reason": "docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit <a name> I read",
+   "who_should_decide": "docs owner"
+  }
+ ]
+}
