@@ -2825,6 +2825,11 @@
     },
     "reviewer_cross_check": {
       "value": {
+        "codex": {
+          "major_raised_verified": 0,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 6
+        },
         "claude": {
           "major_raised_verified": 9,
           "confirmed_by_another": 1,
@@ -2834,11 +2839,6 @@
           "major_raised_verified": 28,
           "confirmed_by_another": 1,
           "missed_others_verified_major": 8
-        },
-        "codex": {
-          "major_raised_verified": 0,
-          "confirmed_by_another": 0,
-          "missed_others_verified_major": 6
         }
       },
       "simulated": false,
