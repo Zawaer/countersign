@@ -51,7 +51,8 @@ FADE = 0.015
 out.mkdir(parents=True, exist_ok=True)
 for L, (lid, _, _, text) in enumerate(v.LINES):
     a, b = cuts[L], cuts[L + 1]
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", mp3, "-ss", f"{a:.3f}"] + (["-to", f"{b:.3f}"] if b else []) +
+    # seek on the input (-ss/-t before -i), so the clip's timestamps start at 0 and the fades land on the clip
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{a:.3f}"] + (["-t", f"{b - a:.3f}"] if b else []) + ["-i", mp3] +
                    ["-af", f"afade=t=in:d={FADE}" + (f",afade=t=out:st={max(0.0, b - a - FADE):.3f}:d={FADE}" if b else ""),
                     "-c:a", "libmp3lame", "-q:a", "2", str(out / f"{lid}.mp3")], check=True)
     chars, st, en = [], [], []
