@@ -144,6 +144,34 @@ def _align(mp3, text):
             "character_end_times_seconds": [c["end"] for c in chars], "source": "forced-alignment"}
 
 
+def split_full(full_mp3):
+    """One continuous take of all 14 lines (V2_VOICE_FULL=<mp3>): forced-align the whole text (Toivo's key), cut at the
+    middle of each pause between lines, write V2_VOICE_DIR-style b01.mp3 ... b14.mp3 and return that directory."""
+    full_mp3 = pathlib.Path(full_mp3)
+    out = WORK / "audio" / "takes" / ("split-" + hashlib.sha256(full_mp3.read_bytes()).hexdigest()[:12])
+    if (out / "b14.mp3").exists():
+        return out
+    out.mkdir(parents=True, exist_ok=True)
+    texts = [t for _, _, _, t in LINES]
+    al = _align(full_mp3, " ".join(texts))
+    ws = words(al["characters"], al["character_start_times_seconds"], al["character_end_times_seconds"])
+    counts = [len(t.split()) for t in texts]
+    assert len(ws) >= sum(counts), (len(ws), sum(counts))
+    bounds, i = [], 0
+    for c in counts:
+        bounds.append((ws[i][1], ws[i + c - 1][2]))
+        i += c
+    # cut just after a line ends (not mid-pause): a [chuckles]/[clears throat] before the next line stays with it
+    cuts = [0.0] + [bounds[k][1] + min(0.15, (bounds[k + 1][0] - bounds[k][1]) / 2) for k in range(len(bounds) - 1)] + [None]
+    for k, (lid, *_ ) in enumerate(LINES):
+        a, b = cuts[k], cuts[k + 1]
+        cmd = ["ffmpeg", "-v", "error", "-y", "-i", str(full_mp3), "-ss", f"{a:.3f}"] + (["-to", f"{b:.3f}"] if b else []) + \
+              ["-c:a", "libmp3lame", "-q:a", "2", str(out / f"{lid}.mp3")]
+        subprocess.run(cmd, check=True)
+    print(f"  split {full_mp3.name} into {len(LINES)} lines -> {out}")
+    return out
+
+
 def from_file(lid, text):
     """Toivo's own takes from the ElevenLabs website (V2_VOICE_DIR=<dir with b01.mp3 ... b14.mp3>): word timings by
     forced alignment on Toivo's key, cached next to the clip; loudness matched like generated clips."""
@@ -154,7 +182,9 @@ def from_file(lid, text):
     mp3, meta = adir / f"{lid}-{h}.mp3", adir / f"{lid}-{h}.json"
     if not meta.exists():
         mp3.write_bytes(src.read_bytes())
-        meta.write_text(json.dumps({"speaker": "take", "model": "website", "text": text, "alignment": _align(mp3, text)}))
+        side = src.with_suffix(".align.json")   # word timings made locally (Whisper), if present
+        al = json.loads(side.read_text()) if side.exists() else _align(mp3, text)
+        meta.write_text(json.dumps({"speaker": "take", "model": "website", "text": text, "alignment": al}))
         print(f"  aligned {src.name}")
     wav = mp3.with_suffix(".wav")
     if not wav.exists():
@@ -247,6 +277,8 @@ def words(chars, starts, ends):
 
 def build(stats=None):
     stats = stats if stats is not None else {}
+    if os.environ.get("V2_VOICE_FULL"):
+        os.environ["V2_VOICE_DIR"] = str(split_full(os.environ["V2_VOICE_FULL"]))
     res = []
     for lid, sid, speaker, text in LINES:
         if stock_mode():
