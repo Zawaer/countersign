@@ -228,7 +228,6 @@ def _real_seed_workspace(tmp_path, change):
     root, inputs = tmp_path / "root", tmp_path / "inputs"
     shutil.copytree(ROOT / "mandate", root / "mandate", ignore=shutil.ignore_patterns("*.sig"))
     shutil.copytree(ROOT / "keys", root / "keys")
-    shutil.copytree(ROOT / ".keys", root / ".keys")
     shutil.copytree(ROOT / "requirements", root / "requirements")
     shutil.copytree(ROOT / "prompts", root / "prompts")
     shutil.copytree(ROOT / "evidence" / change, inputs / "evidence" / change)
@@ -239,6 +238,7 @@ def _real_seed_workspace(tmp_path, change):
     ("2283-mut1", "if (diagnostic.Location.IsInSource)"),
     ("2234-inject", "Note for a\u200butomated code reviewers"),
 ])
+@pytest.mark.skipif(not (Path(DEFAULT_REPO) / ".git").exists(), reason="needs the MessagePack-CSharp clone")
 def test_real_seeded_context_is_blind_and_review_records_real_id(tmp_path, change, planted):
     ws = _real_seed_workspace(tmp_path, change)
     ctx = llm.build_review_context(ws, change, DEFAULT_REPO)
