@@ -1,0 +1,268 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:38:41+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut2/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1148 (tree 08a8c06f)",
+    "file contents: 4 blocks",
+    "context: 136737 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2234-mut2/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 39175,
+      "completion_tokens": 18335
+    },
+    "seeded": {
+      "change": "2234-mut2",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1148,
+      "mutated_tree": "08a8c06f23d43c04834bb95c962eb8daa0ee61a9",
+      "seeding_note_removed_from_line": true
+    }
+  },
+  "summary": "The change keeps the analyzer validating [MessagePackObject(SuppressSourceGeneration = true)] types instead of skipping them: contract diagnostics (missing key, duplicate keys, mixed key kinds, non-public member allowance, member type) are still reported, while generation-only diagnostics (partial class, AOT checks) are suppressed, and duplicate-key dictionary crashes are guarded. The root cause is addressed for the tested scenarios; the targeted tests and full suite pass with no regressions. One gap remains: the field branch lacks the continue after the mixed-key diagnostic, so mixed key kinds on fields can still throw inside the analyzer.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "All F1 tests pass on head: missing [Key] (MsgPack004), member type (MsgPack003), AllowPrivate (MsgPack015), duplicate int/string keys and mixed key kinds (MsgPack005) on suppressed types; the head code reports each diagnostic before the suppress-source-generation early return.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member."
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1015,
+          "rev": "head",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1383,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1386,
+          "rev": "head",
+          "quote": "return null;"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes on head, and the code skips the AOT init-property check when suppressed (line 989) and returns before the partial-type check (lines 1383-1387), so generation-only diagnostics are not reported for suppressed types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 989,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is not true && isInitOnly)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1383,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1386,
+          "rev": "head",
+          "quote": "return null;"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "The full suite passed 175/175 with no failures not present on base, and the WithoutAnalyzerFailure tests (duplicate keys, mixed keys) pass on head; see finding M1 for an unguarded field edge case.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressedSourceGenerationTests.SuppressedTypeRoundTripsThroughDynamicResolver",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1025,
+          "rev": "head",
+          "quote": "intMembers.Add(member.IntKey, (member, item.Type));"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "No regressions are evidenced (full suite: failures_not_on_base empty), but the tests.fail_without_fix check required by N2 was not run and does not appear in facts.json, so it cannot be established from the given evidence that the new tests fail without the fix.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "M1",
+      "title": "Analyzer can still crash on mixed key kinds for fields in suppressed types",
+      "severity": "major",
+      "category": "correctness",
+      "claim": "In the field branch, the DoNotMixStringAndIntKeys diagnostic is reported but execution continues into intKey!.Value (line 1154) and stringMembers.ContainsKey(stringKey!) (line 1170), which throw when the key is null; a suppressed type whose first field uses an int key and a later field uses a string key (or vice versa) still crashes the analyzer. The property branch has the matching continue (line 1008); the field branch does not, and no test covers mixed key kinds on fields.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1145,
+          "rev": "head",
+          "quote": "if ((isIntKey && intKey == null) || (!isIntKey && stringKey == null))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1147,
+          "rev": "head",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.DoNotMixStringAndIntKeys, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1149,
+          "rev": "head",
+          "quote": "}"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1154,
+          "rev": "head",
+          "quote": "if (intMembers.ContainsKey(intKey!.Value))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1170,
+          "rev": "head",
+          "quote": "if (stringMembers.ContainsKey(stringKey!))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member."
+        }
+      ],
+      "suggested_fix": "Add a continue statement after the DoNotMixStringAndIntKeys diagnostic in the field branch (after line 1149), mirroring the property branch at line 1008, and add a test with mixed key kinds on fields of a suppressed type."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Public API compatibility / breaking-change judgment",
+      "reason": "The public_api check was not run for this revision (facts.not_run) and no public API surface evidence was provided.",
+      "who_should_decide": "area owner or release maintainer"
+    },
+    {
+      "topic": "Static-analyzer and style compliance of the new code",
+      "reason": "The analyzers check was not run for this revision (facts.not_run).",
+      "who_should_decide": "area owner"
+    },
+    {
+      "topic": "Performance and runtime behavior on other platforms, target frameworks, or .NET SDKs (including AOT)",
+      "reason": "Execution tests ran only on linux-x64 containers with SDKs 8.0.402 and 9.0.321; no cross-platform or performance evidence was provided.",
+      "who_should_decide": "area owner"
+    }
+  ],
+  "refutations": []
+}

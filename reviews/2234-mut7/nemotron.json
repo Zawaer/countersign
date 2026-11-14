@@ -1,0 +1,194 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:50:24+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut7/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1241 (tree 95cf0a24)",
+    "file contents: 4 blocks",
+    "context: 137830 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2234-mut7/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 39349,
+      "completion_tokens": 13613
+    },
+    "seeded": {
+      "change": "2234-mut7",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "off-by-one",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1241,
+      "mutated_tree": "95cf0a24856e59b7f313eba639da65fc1327ff20",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change fixes the analyzer crash for [MessagePackObject(SuppressSourceGeneration = true)] types with invalid contracts: after reporting a mixed-key diagnostic it now skips the member, and duplicate-key dictionary inserts are guarded so duplicate keys no longer throw. All 8 new targeted analyzer/execution tests pass and the build passes. However, the same diff changes deserializing constructor parameter matching (`ctorParamIndex = 1`) for all types, breaking six previously-passing tests in the full suite, and the fail-without-fix check was not run, so the fix's test coverage is unverified and the change currently introduces regressions.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The contract-diagnostic tests for suppressed types pass (missing key MsgPack004, member type MsgPack003, allow-private MsgPack015), and the code still reports these diagnostics via reportDiagnostic; the fix keeps the analyzer from crashing while reporting them.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 929,
+          "rev": "head",
+          "quote": "Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, identifier?.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes, confirming that source-generation-only checks (partial-class, AOT-only) are not raised for a suppressed type.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "The three WithoutAnalyzerFailure tests (duplicate int keys, duplicate string keys, mixed key kinds) pass on head, demonstrating the analyzer no longer crashes on invalid contracts for suppressed types; the full-suite failures are unrelated constructor/generation regressions covered in finding N1.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member."
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "not_met",
+      "confidence_basis": "tests.fail_without_fix was not run, so 'tests fail without the fix' is unverified, and the full suite shows six new failures (regressions), violating 'no regressions in the existing test suite'.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Change breaks six previously-passing tests (regression)",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "The full suite reports six tests that pass on base but fail on head (GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_Incompatible, GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_MemberAssignsToParamType, GenerationTests.NoPrivateAccessNeeded, GenerationTests.NonDefaultDeserializingConstructor_Private, MsgPack00xAnalyzerTests.AddAttributeToTypeForRecordPrimaryConstructor, MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordWithPrimaryCtor). This violates REQ-2234-N2's 'no regressions' and blocks merging. The likely cause is the constructor-parameter index change (`ctorParamIndex = 1` at head line 1241 vs `0` at base line 1227), which alters deserializing-constructor matching for all types, not just SuppressSourceGeneration types.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1241,
+          "rev": "head",
+          "quote": "var ctorParamIndex = 1;"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1227,
+          "rev": "base",
+          "quote": "var ctorParamIndex = 0;"
+        }
+      ],
+      "suggested_fix": "Revert or scope the ctorParamIndex change, then re-run the full suite and tests.fail_without_fix before merging."
+    },
+    {
+      "id": "N2",
+      "title": "fail_without_fix check was not run; fix coverage unverified",
+      "severity": "major",
+      "category": "tests",
+      "claim": "REQ-2234-N2 requires automated tests that fail without the fix, but tests.fail_without_fix was not executed (listed in not_run). The new targeted tests pass on head, but their fail-without-fix behavior is unconfirmed, so the coverage requirement cannot be verified.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        }
+      ],
+      "suggested_fix": "Run tests.fail_without_fix (source-reverted) to confirm the new tests fail without the fix."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Precise root cause of the six full-suite failures",
+      "reason": "Attributing the regressions definitively to the ctorParamIndex change would require running fail-without-fix or targeted regression tests, which were not executed; the change is the only difference between base and head, so the link is strong but not test-confirmed.",
+      "who_should_decide": "Area owner / change author",
+      "req": "REQ-2234-N2"
+    }
+  ],
+  "refutations": []
+}

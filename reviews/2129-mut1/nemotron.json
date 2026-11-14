@@ -1,0 +1,169 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:32:21+02:00",
+  "inputs": [
+    "requirements: requirements/2129.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2129",
+    "facts: evidence/2129-mut1/facts.json",
+    "diff 32258fdb..083afd99 (26 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs:57 (tree 6b2f3274)",
+    "file contents: 22 blocks",
+    "context: 182671 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the contents and diffs of 2 generated files (listed above by name only)",
+    "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt at base: not provided (did not fit the context budget)",
+    "src/MessagePack.SourceGenerator/Utils/Constants.cs at base: not provided (did not fit the context budget)",
+    "src/MessagePack.Annotations/Attributes.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.Annotations/Attributes.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack019.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack020.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack021.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack022.md: diff only, full file not provided (doc)",
+    "doc/analyzers/index.md: diff only, full file not provided (doc)",
+    "src/MessagePack.SourceGenerator/AnalyzerReleases.Unshipped.md: diff only, full file not provided (build)",
+    "tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj: diff only, full file not provided (build)",
+    "tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj: diff only, full file not provided (build)",
+    "tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj: diff only, full file not provided (build)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2129-mut1/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 51847,
+      "completion_tokens": 12723
+    },
+    "seeded": {
+      "change": "2129-mut1",
+      "shown_as": "2129",
+      "blind": true,
+      "kind": "off-by-one",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+      "line": 57,
+      "mutated_tree": "6b2f32747fa72da6641872a5a124c9b5b3705452",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change implements issue #2129: a new [GeneratedMessagePackFormatter] attribute lets the source generator write a formatter body into a user-declared partial class for a type in another assembly, with optional surrogate-based key/membership control, four new analyzer diagnostics (MsgPack019-MsgPack022), generator wiring, template and doc updates, and new tests. The solution builds, but the full suite fails: GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT fails because a formatter class with no IMessagePackFormatter<T> makes the generator crash with CS8785 instead of reporting MsgPack020. In GeneratedFormatterCollector.Collect the check `if (formatterInterfaces.Length > 1)` lets the zero-interface case fall through to `formatterInterfaces[0]`, which throws. The end-to-end execution tests for external types were not run, so the feature itself cannot be confirmed from the given evidence.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2129-F1",
+      "verdict": "cannot_determine",
+      "confidence_basis": "The feature code is present and the build passes, but the MsgPack020 diagnostic path crashes the generator (test failure) and the external-type execution tests were not run, so the requirement cannot be confirmed met.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2129-F1",
+          "quote": "Feature Request: Allow generation of Formatter for a type in a referenced assembly"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.Annotations/Attributes.cs",
+          "line": 166,
+          "rev": "head",
+          "quote": "public class GeneratedMessagePackFormatterAttribute : Attribute"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+          "line": 34,
+          "rev": "head",
+          "quote": "internal static FullModel? Collect("
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+          "line": 29,
+          "rev": "head",
+          "quote": "var generatedFormatters = context.SyntaxProvider.ForAttributeWithMetadataName("
+        },
+        {
+          "kind": "check",
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT",
+          "outcome": "failed"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Formatter without IMessagePackFormatter<T> crashes the generator instead of reporting MsgPack020",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "GeneratedFormatterCollector.Collect only reports MsgPack020 when more than one IMessagePackFormatter<T> interface is implemented (`if (formatterInterfaces.Length > 1)`). With zero interfaces it falls through to `formatterInterfaces[0].TypeArguments[0]`, which throws on the empty array and fails the generator (observed as warning CS8785: Generator 'MessagePackGenerator' failed to generate source), so the documented diagnostic is never produced. This is exactly the failure in GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT, which failed in both the targeted run and the full suite.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+          "line": 57,
+          "rev": "head",
+          "quote": "if (formatterInterfaces.Length > 1)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+          "line": 63,
+          "rev": "head",
+          "quote": "ITypeSymbol dataTypeSymbol = formatterInterfaces[0].TypeArguments[0];"
+        },
+        {
+          "kind": "test",
+          "name": "GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT",
+          "outcome": "failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "check",
+          "id": "tests.targeted",
+          "status": "fail"
+        }
+      ],
+      "suggested_fix": "Change `if (formatterInterfaces.Length > 1)` to `if (formatterInterfaces.Length != 1)` so a formatter with zero IMessagePackFormatter<T> interfaces reports MsgPack020 and returns null instead of indexing an empty array."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "End-to-end behavior of generated formatters for external types (round-trip serialization, surrogate keys, resolver registration)",
+      "reason": "The tests/MessagePack.SourceGenerator.ExecutionTests project and its new tests (GeneratedFormatterForExternalTypesTests) are not among the facts.json checks, so no pass/fail evidence exists for the core feature; tests.fail_without_fix was also not run.",
+      "who_should_decide": "area owner / maintainer (run the execution tests before merge)",
+      "req": "REQ-2129-F1",
+      "blocking": true
+    },
+    {
+      "topic": "Contents of the two generated template outputs (FormatterTemplate.cs, StringKeyFormatterTemplate.cs)",
+      "reason": "Only the .tt templates were provided; the generated .cs files' contents and diffs were not given, so the exact generated code text could not be verified.",
+      "who_should_decide": "area owner"
+    },
+    {
+      "topic": "Public API surface and analyzer rule checks",
+      "reason": "The public_api and analyzers checks were not run for this revision.",
+      "who_should_decide": "area owner"
+    }
+  ],
+  "refutations": []
+}

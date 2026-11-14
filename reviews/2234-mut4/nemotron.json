@@ -1,0 +1,176 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:42:21+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut4/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1016 (tree a3c16ed1)",
+    "file contents: 4 blocks",
+    "context: 133162 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2234-mut4/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 38125,
+      "completion_tokens": 13605
+    },
+    "seeded": {
+      "change": "2234-mut4",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "swallowed diagnostic",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1016,
+      "mutated_tree": "a3c16ed144da2eb69d6852c712b741ee506bcae3",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change keeps the analyzer validating [MessagePackObject(SuppressSourceGeneration = true)] types and guards dictionary inserts so duplicate keys no longer throw, but it also comments out the int-key KeysMustBeUnique (MsgPack005) diagnostic in the property loop. As a result duplicate integer keys are reported for neither suppressed nor generated types, and two new tests fail expecting one diagnostic and getting none. The crash is fixed, but the contract diagnostic the requirement demands is lost, so the change does not satisfy REQ-2234-F1 as written.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "not_met",
+      "confidence_basis": "Duplicate integer keys produce no diagnostic: DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed expecting 1 diagnostic and getting 0, because the KeysMustBeUnique call for int keys in the property loop is commented out at head; the other F1 cases (missing key, messagepack-object type, allow-private, mixed kinds, string duplicate keys) pass.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "outcome": "failed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1016,
+          "rev": "head",
+          "quote": "// this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed, confirming generation-only diagnostics (MsgPack011/016/017) are not reported for suppressed types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "No analyzer crash was observed: the full suite ran to completion and its two failures are Verify assertion mismatches (expected 1 diagnostic, got 0), not analyzer exceptions or crashes, and neither failure also occurs on base.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "outcome": "failed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "tests.fail_without_fix was not run, so it cannot be confirmed that the new tests fail without the fix; the full suite shows no regression in pre-existing tests (the two failures are new tests and none also fail on base).",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "error"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Int-key KeysMustBeUnique diagnostic removed, so duplicate keys go unreported",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "The KeysMustBeUnique (MsgPack005) diagnostic call for integer keys in the property loop is commented out (head TypeCollector.cs line 1016). Because the comment is not gated on SuppressSourceGeneration, duplicate [Key(n)] members produce no diagnostic for suppressed types and also regress generated types. This breaks REQ-2234-F1 and makes DuplicateIntKeysAreReportedWithoutAnalyzerFailure and DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes fail (expected 1 diagnostic, actual 0). The guard that skips re-adding a duplicate key (the real fix for the ArgumentException crash) should be kept; the diagnostic call should be restored to match the field loop and string-key handling.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1016,
+          "rev": "head",
+          "quote": "// this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "outcome": "failed"
+        }
+      ],
+      "suggested_fix": "Restore reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, ...)) for int keys in the property loop, keeping the if (!intMembers.ContainsKey(member.IntKey)) guard around intMembers.Add so the duplicate is not re-added and no crash occurs."
+    }
+  ],
+  "refusals": [],
+  "refutations": []
+}

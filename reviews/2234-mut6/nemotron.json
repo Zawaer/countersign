@@ -1,0 +1,247 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:47:22+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut6/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1005 (tree 2bed956d)",
+    "file contents: 4 blocks",
+    "context: 149721 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2234-mut6/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 42123,
+      "completion_tokens": 27397
+    },
+    "seeded": {
+      "change": "2234-mut6",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "wrong key kind",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1005,
+      "mutated_tree": "2bed956df687c76f3bd88bd807ed1289aab55435",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change adds guards against duplicate-key dictionary inserts in TypeCollector.GetObjectInfo and adds tests for SuppressSourceGeneration = true validation, but it inverts the mixed-key-detection condition at TypeCollector.cs lines 1005 and 1145. On head this crashes the analyzer (AD0001/NullReferenceException) on mixed int/string keys, emits false MsgPack005 diagnostics and drops members 2+ from generated formatters for every multi-key type, producing 34 new full-suite failures. The duplicate-key crash is fixed, but the mixed-key crash from base is not resolved and a broad regression is introduced; build passes and fail-without-fix was not run. Overall: blocker, do not merge until the condition is reverted and tests re-run.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "All three F1-listed tests pass on head: missing-[Key] (MsgPack004), non-MessagePackObject member type (MsgPack003), and AllowPrivate required (MsgPack015) are all reported for suppressed types. The mixed-key-kind example named in F1's text is exercised under N1 and crashes there.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "not_met",
+      "confidence_basis": "Its covering test expects zero diagnostics for a suppressed type, but head reports a false MsgPack005 mixed-key diagnostic for Prop1, so the no-extra-diagnostics requirement is not demonstrated (the failure is the same inverted condition bug, not an F2-category diagnostic).",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "failed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1005,
+          "rev": "head",
+          "quote": "if ((isIntKey && stringKey == null) || (!isIntKey && intKey == null))"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "not_met",
+      "confidence_basis": "MixedKeyKindsAreReportedWithoutAnalyzerFailure crashes with AD0001 instead of reporting MsgPack005, and tests.full_suite fails with 34 new failures, so the analyzer/generator still crashes on invalid contracts in suppressed types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1005,
+          "rev": "head",
+          "quote": "if ((isIntKey && stringKey == null) || (!isIntKey && intKey == null))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1005,
+          "rev": "base",
+          "quote": "if ((isIntKey && intKey == null) || (!isIntKey && stringKey == null))"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "not_met",
+      "confidence_basis": "tests.fail_without_fix was not run, so it is unconfirmed that the new tests fail without the fix, and tests.full_suite has 34 regressions not present on base, violating the no-regression clause.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "title": "Mixed-key detection condition inverted; analyzer crashes on mixed int/string keys",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "TypeCollector.cs lines 1005 and 1145 use `(isIntKey && stringKey == null) || (!isIntKey && intKey == null)`, the inverse of the base condition. For a mixed type (int key then string key) no diagnostic is emitted and execution falls through to `intKey!.Value`/member.IntKey with a null key, throwing NullReferenceException (reported as analyzer crash AD0001). Base had the same crash at the unguarded `intMembers.Add`, so the change does not resolve the mixed-key crash from issue #2234.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1005,
+          "rev": "head",
+          "quote": "if ((isIntKey && stringKey == null) || (!isIntKey && intKey == null))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member."
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1005,
+          "rev": "base",
+          "quote": "if ((isIntKey && intKey == null) || (!isIntKey && stringKey == null))"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        }
+      ],
+      "suggested_fix": "Restore the base condition `(isIntKey && intKey == null) || (!isIntKey && stringKey == null)` at both sites; keep the `continue` and the `ContainsKey` guards."
+    },
+    {
+      "id": "F2",
+      "title": "Same inverted condition reports false MsgPack005 and drops members 2+ from generated output",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "For any type with two or more same-kind keys, the second and later members satisfy `stringKey == null` (int keys) or `intKey == null` (string keys), so the condition falsely reports DoNotMixStringAndIntKeys (MsgPack005) and the `continue` skips the `intMembers.Add`/`stringMembers.Add`. Generated formatters omit members after the first, and analyzer tests see spurious MsgPack005 diagnostics.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1005,
+          "rev": "head",
+          "quote": "if ((isIntKey && stringKey == null) || (!isIntKey && intKey == null))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1025,
+          "rev": "head",
+          "quote": "intMembers.Add(member.IntKey, (member, item.Type));"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ],
+      "suggested_fix": "Restore the base condition `(isIntKey && intKey == null) || (!isIntKey && stringKey == null)` at both sites; keep the `continue` and the `ContainsKey` guards."
+    },
+    {
+      "id": "F3",
+      "title": "Full-suite regressions; fail-without-fix not run",
+      "severity": "major",
+      "category": "tests",
+      "claim": "tests.full_suite fails with 34 newly failing tests (0 also failing on base), including MsgPack00xAnalyzerTests false MsgPack005 diagnostics and GenerationTests/GenericsFormatterTests source-output mismatches, violating N2's no-regression clause. tests.fail_without_fix was not run, so coverage-without-fix is unconfirmed.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ],
+      "suggested_fix": "Revert the condition flip, re-run fail-without-fix and the full suite, and require zero new failures before merge."
+    },
+    {
+      "id": "F4",
+      "title": "Test-file hygiene issues",
+      "severity": "minor",
+      "category": "tests",
+      "claim": "DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes tests a non-suppressed `[MessagePackObject]` type but lives in the suppressed-type analyzer test file, and the REQ-2234-F1 test list duplicates MemberWithoutKeyIsReported while omitting the duplicate/mixed-key tests.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+          "line": 150,
+          "rev": "head",
+          "quote": "[MessagePackObject]"
+        }
+      ],
+      "suggested_fix": "Move the non-suppressed duplicate-key test out of the suppressed analyzer test file and correct the REQ-2234-F1 test list."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Root-cause confirmation on base / whether tests fail without the fix",
+      "reason": "tests.fail_without_fix was not run for this revision, so I cannot confirm the new tests fail without the fix or that the change resolves the original #2234 crash on base.",
+      "who_should_decide": "area owner / decision engine",
+      "req": "REQ-2234-N2"
+    },
+    {
+      "topic": "Performance impact of the change",
+      "reason": "No performance benchmarks or timing data were provided; the change's effect on analyzer/generator speed is unassessed.",
+      "who_should_decide": "performance reviewer or area owner"
+    }
+  ],
+  "refutations": []
+}

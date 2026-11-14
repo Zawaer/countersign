@@ -1,0 +1,244 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:59:41+02:00",
+  "inputs": [
+    "requirements: requirements/2283.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "facts: evidence/2283-mut4/facts.json",
+    "diff 32258fdb..9df83c38 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 (tree 6ad866f3)",
+    "file contents: 3 blocks",
+    "context: 156029 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack004.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2283-mut4/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 45668,
+      "completion_tokens": 19579
+    },
+    "seeded": {
+      "change": "2283-mut4",
+      "shown_as": "2283",
+      "blind": true,
+      "kind": "swallowed diagnostic",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "mutated_tree": "6ad866f344d9db62068ffbbabd4724c78175543e",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "Change 2283 makes the source generator and MsgPack00x analyzer tolerate closed generic value types (including record structs) from referenced assemblies used as members of [MessagePackObject] types: member-location access is null-safe (FirstOrDefault()?) and analyzer diagnostics are filtered through ReportIfLocatedInCompilation so metadata-declared members are not reported against locations outside the compilation. Three new tests pass and the build passes, but the full suite has a new failure (MsgPack00xAnalyzerTests.NullStringKey, expected 1 diagnostic, actual 0) because the BothStringAndIntKeyAreNull diagnostic for properties was commented out rather than made null-safe, so REQ-2283-N1 is not met and REQ-2283-N2 cannot be evidenced (tests.fail_without_fix was not run).",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "The three new metadata-reference tests pass on head and the build passes; head TypeCollector.cs guards member-location access with FirstOrDefault()? (line 1077) so metadata-declared closed generic members no longer crash the generator, and the resolver is asserted to be generated.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1077,
+          "rev": "head",
+          "quote": "Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name)"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "met",
+      "confidence_basis": "The new tests run the analyzer over usage source referencing a metadata-only defining assembly and fail on any diagnostic, so an AD0001 analyzer throw would fail them; all three pass and the build passes.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "build",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "All analyzer diagnostics are routed through ReportIfLocatedInCompilation (head line 239), which reports only when the diagnostic location is in a syntax tree contained in the compilation (head line 1446), and the metadata unkeyed-member test passes with no diagnostics.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 239,
+          "rev": "head",
+          "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "not_met",
+      "confidence_basis": "tests.full_suite failed with MsgPack00xAnalyzerTests.NullStringKey expecting 1 diagnostic but getting 0, listed under failures_not_on_base, so it is a regression introduced by this change.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.NullStringKey",
+          "outcome": "failed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "head",
+          "quote": "// this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "base",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "tests.fail_without_fix was not run for this revision (listed in not_run), so there is no evidence that the new tests fail without the fix.",
+      "evidence": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Existing analyzer diagnostic disabled: MsgPack00xAnalyzerTests.NullStringKey now fails",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "The BothStringAndIntKeyAreNull diagnostic invocation for properties was commented out (head TypeCollector.cs line 985) while it was active on base (base line 985), so MsgPack00xAnalyzerTests.NullStringKey expects 1 diagnostic but gets 0; this failure is not present on base. The null-safe helper GetPropertyIdentifierLocation is already referenced in the commented code, so the crash-prone indexing should have been replaced with it instead of disabling the diagnostic, which also suppresses it for in-source types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.NullStringKey",
+          "outcome": "failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "head",
+          "quote": "// this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "base",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));"
+        }
+      ],
+      "suggested_fix": "Restore the property diagnostic using GetPropertyIdentifierLocation(item) (which returns null for metadata-declared properties and is dropped by ReportIfLocatedInCompilation) so in-source diagnostics are preserved while metadata members are skipped; then re-run the full suite."
+    },
+    {
+      "id": "N2",
+      "title": "Inconsistent BothStringAndIntKeyAreNull handling between properties and fields",
+      "severity": "minor",
+      "category": "maintainability",
+      "claim": "The property form of BothStringAndIntKeyAreNull is disabled (commented out at head line 985) while the field form remains active (head line 1128) using the null-safe FirstOrDefault()? pattern, and the commented property code is dead code.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "head",
+          "quote": "// this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1128,
+          "rev": "head",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));"
+        }
+      ],
+      "suggested_fix": "Restore the property invocation with GetPropertyIdentifierLocation(item) or remove the commented block, keeping property and field handling consistent."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "REQ-2283-N2 test-without-fix coverage",
+      "reason": "tests.fail_without_fix was not run for this revision, so coverage of the fix by tests that fail without it cannot be evidenced from the given facts.",
+      "who_should_decide": "change owner / CI to run tests.fail_without_fix",
+      "req": "REQ-2283-N2"
+    },
+    {
+      "topic": "one unique build warning",
+      "reason": "the build summary reports 0 errors and 1 unique warning, but the build log was not provided, so I cannot identify or assess the warning.",
+      "who_should_decide": "area owner"
+    }
+  ],
+  "refutations": []
+}

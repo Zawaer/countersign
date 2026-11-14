@@ -1,0 +1,217 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T05:02:00+02:00",
+  "inputs": [
+    "requirements: requirements/2283.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "facts: evidence/2283-mut5/facts.json",
+    "diff 32258fdb..9df83c38 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 (tree fc9117b7)",
+    "file contents: 3 blocks",
+    "context: 155251 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack004.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2283-mut5/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 45639,
+      "completion_tokens": 19387
+    },
+    "seeded": {
+      "change": "2283-mut5",
+      "shown_as": "2283",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "mutated_tree": "fc9117b767cd2199a447ec5d34e68514bf7bb0db",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change makes the source generator and analyzer tolerate closed generic value types (including record structs) from referenced assemblies used as members of [MessagePackObject] types. It stops crashing when a metadata member has no declaring syntax (replacing DeclaringSyntaxReferences[0] with FirstOrDefault()?) and drops diagnostics whose location is outside the compilation being analyzed via ReportIfLocatedInCompilation. All available checks pass (build, 170-test suite, three new targeted tests), but the fail_without_fix check was not run, so test coverage of the fix cannot be confirmed.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "The generator no longer indexes DeclaringSyntaxReferences directly for metadata members, and the three new metadata-reference tests pass, each asserting no generator diagnostics and that the expected resolver hint name is generated.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1077,
+          "rev": "head",
+          "quote": "Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "build",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "met",
+      "confidence_basis": "The same FirstOrDefault()? change removes the index-out-of-range throw that surfaced as AD0001, and the new tests run the analyzer through VerifyCS with no diagnostics reported.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1077,
+          "rev": "head",
+          "quote": "Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "reportDiagnostic is now wrapped in ReportIfLocatedInCompilation, which reports only diagnostics whose location is in source and belongs to the compilation being analyzed; the unkeyed-member metadata test passes with no diagnostics reported in the consuming compilation.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 239,
+          "rev": "head",
+          "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "The full source-generator test suite passes with 170 passed and 0 failed, with no failures on base and no new failures, so existing diagnostics for in-compilation types are unchanged.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "The fail_without_fix check was not run for this revision (listed in not_run), so there is no evidence that the new tests fail without the fix.",
+      "evidence": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "M1",
+      "title": "New GetPropertyIdentifierLocation helper duplicates inline logic",
+      "severity": "minor",
+      "category": "maintainability",
+      "claim": "TypeCollector.cs adds a private GetPropertyIdentifierLocation helper, but the property diagnostic path still computes the identifier inline instead of calling it, so the helper duplicates existing logic and should either be used or removed.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1434,
+          "rev": "head",
+          "quote": "private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 925,
+          "rev": "head",
+          "quote": "var syntax = item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax();"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 926,
+          "rev": "head",
+          "quote": "var identifier = (syntax as PropertyDeclarationSyntax)?.Identifier ?? (syntax as ParameterSyntax)?.Identifier;"
+        }
+      ],
+      "suggested_fix": "Replace the inline computation at lines 925-926 with a call to GetPropertyIdentifierLocation, or remove the unused helper."
+    },
+    {
+      "id": "M2",
+      "title": "Keyed property from metadata can still crash on DeclaringSyntaxReferences[0]",
+      "severity": "minor",
+      "category": "correctness",
+      "claim": "The field diagnostic was fixed to use FirstOrDefault()?, but the keyed-property BothStringAndIntKeyAreNull diagnostic still indexes DeclaringSyntaxReferences[0] directly, which throws the same way for a metadata-origin property and would resurface as CS8785/AD0001. This is pre-existing and outside the issue's tested cases.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "head",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));"
+        }
+      ],
+      "suggested_fix": "Guard the property syntax access with FirstOrDefault()? and a null location, consistent with the field fix."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Whether the new tests fail without the fix (REQ-2283-N2)",
+      "reason": "tests.fail_without_fix was not run for this revision (listed in not_run), so the evidence required by N2 does not exist.",
+      "who_should_decide": "area owner / maintainer to run the source-reverted test check",
+      "req": "REQ-2283-N2"
+    }
+  ],
+  "refutations": []
+}

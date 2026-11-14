@@ -1,0 +1,156 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:33:55+02:00",
+  "inputs": [
+    "requirements: requirements/2129.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2129",
+    "facts: evidence/2129-mut2/facts.json",
+    "diff 32258fdb..083afd99 (26 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs:181 (tree f024f205)",
+    "file contents: 22 blocks",
+    "context: 183237 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the contents and diffs of 2 generated files (listed above by name only)",
+    "src/MessagePack.SourceGenerator/MessagePackGenerator.cs at base: not provided (did not fit the context budget)",
+    "src/MessagePack.SourceGenerator/Utils/Constants.cs at base: not provided (did not fit the context budget)",
+    "src/MessagePack.Annotations/Attributes.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/GeneratorUtilities.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/MessagePackGenerator.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.Annotations/Attributes.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack019.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack020.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack021.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack022.md: diff only, full file not provided (doc)",
+    "doc/analyzers/index.md: diff only, full file not provided (doc)",
+    "src/MessagePack.SourceGenerator/AnalyzerReleases.Unshipped.md: diff only, full file not provided (build)",
+    "tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj: diff only, full file not provided (build)",
+    "tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj: diff only, full file not provided (build)",
+    "tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj: diff only, full file not provided (build)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2129-mut2/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 52060,
+      "completion_tokens": 12477
+    },
+    "seeded": {
+      "change": "2129-mut2",
+      "shown_as": "2129",
+      "blind": true,
+      "kind": "wrong key kind",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+      "line": 181,
+      "mutated_tree": "f024f205eb0194118080c9ccbcda8f94a00dd04b",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change adds [GeneratedMessagePackFormatter] so the MessagePack source generator writes a formatter for a type declared in another assembly, with contractless mode and an optional surrogate type, plus four new analyzer diagnostics (MsgPack019–MsgPack022), docs, and tests. The build passes, the targeted tests pass, and the full source-generator suite passes (173/173); the contractless external-type tests and the resolver-registration test pass. However, the execution suite has one confirmed failure: GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership fails because GeneratedFormatterCollector.cs inverts the surrogate key-kind test (`key is string` instead of `key is int`), so integer-keyed surrogates are treated as string-keyed and emitted as maps rather than sparse arrays. The feature works for contractless mode but surrogate mode is broken, so the change should not merge as-is.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2129-F1",
+      "verdict": "not_met",
+      "confidence_basis": "Contractless formatters for external types round-trip and are registered (tests pass; full suite passes), but surrogate mode with integer keys is broken: GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership failed in the execution suite, and GeneratedFormatterCollector.cs line 181 inverts the key-kind test (`key is string` rather than `key is int`), so isIntKey is the opposite of the actual key kind.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GeneratedFormatterForExternalTypesTests.ContractlessClassRoundTrips",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GeneratedFormatterForExternalTypesTests.GeneratedFormattersAreRegisteredInGeneratedResolver",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership",
+          "outcome": "failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.execution_full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+          "line": 181,
+          "rev": "head",
+          "quote": "bool memberIsIntKey = key is string;"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Surrogate integer keys are treated as string keys, breaking surrogate mode",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "In GeneratedFormatterCollector.CreateSurrogateMembers, `bool memberIsIntKey = key is string;` is inverted: integer keys are classified as string keys and vice versa, so the emitted isIntKey flag is the opposite of the actual key kind. An integer-keyed surrogate is therefore serialized as a string-key map instead of a sparse array with MaxKey+1 slots. This is confirmed by the failing test GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership (execution suite: 40 passed, 1 failed). String-keyed surrogates would be broken the other way (array instead of map) but are not covered by a test.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+          "line": 181,
+          "rev": "head",
+          "quote": "bool memberIsIntKey = key is string;"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+          "line": 211,
+          "rev": "head",
+          "quote": "isIntKey = keyKindIsInt ?? false;"
+        },
+        {
+          "kind": "test",
+          "name": "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership",
+          "outcome": "failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.execution_full_suite",
+          "status": "fail"
+        }
+      ],
+      "suggested_fix": "Change `bool memberIsIntKey = key is string;` to `bool memberIsIntKey = key is int;` in GeneratedFormatterCollector.cs so integer-keyed surrogates use array mode and string-keyed surrogates use map mode."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Contents of the two generated .cs files (FormatterTemplate.cs, StringKeyFormatterTemplate.cs)",
+      "reason": "Their contents and diffs were not provided, so I cannot verify the emitted source for user-declared formatters; only the .tt templates were reviewed.",
+      "who_should_decide": "area owner"
+    },
+    {
+      "topic": "Unrun checks: tests.fail_without_fix, public_api, analyzers",
+      "reason": "These checks were not run for this revision, so I cannot verify that the new tests fail without the fix or assess public-API/analyzer impact.",
+      "who_should_decide": "CI or area owner"
+    }
+  ],
+  "refutations": []
+}

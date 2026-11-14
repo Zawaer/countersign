@@ -1,0 +1,247 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:40:46+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut3/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1039 (tree f730ebb4)",
+    "file contents: 4 blocks",
+    "context: 132166 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2234-mut3/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 37976,
+      "completion_tokens": 13135
+    },
+    "seeded": {
+      "change": "2234-mut3",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1039,
+      "mutated_tree": "f730ebb42157debb92e41662d25d087ea06b89ed",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change makes the MessagePack analyzer keep validating [MessagePackObject(SuppressSourceGeneration = true)] types while skipping source generation for them. The three F1 contract-diagnostic tests pass and the F2 test (source-generation-only diagnostics not reported) passes, but the analyzer still crashes with AD0001 on duplicate string keys in a suppressed type, so the full suite fails one new test and N1 is not met; tests.fail_without_fix was not run, so N2 cannot be determined.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "All three F1 tests pass on head: MemberWithoutKeyIsReported (MsgPack004), MemberTypeMustBeMessagePackObjectIsReported (MsgPack003), and AllowPrivateRequiredIsReported (MsgPack015); the duplicate-key diagnostic MsgPack005 is also reported (the duplicate-string test fails only on the extra analyzer-crash diagnostic, tracked under N1).",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes on head, and the code skips the AOT init-property check when suppressed (line 989) and returns before the partial-type check when SuppressSourceGeneration is true (lines 1383-1386).",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 989,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is not true && isInitOnly)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1383,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1386,
+          "rev": "head",
+          "quote": "return null;"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "not_met",
+      "confidence_basis": "The full suite fails because DuplicateStringKeysAreReportedWithoutAnalyzerFailure produces a second diagnostic AD0001 (analyzer crash) in addition to the expected MsgPack005, so the analyzer still crashes on duplicate string keys in a suppressed type.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1039,
+          "rev": "head",
+          "quote": "if (true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1041,
+          "rev": "head",
+          "quote": "stringMembers.Add(member.StringKey, (member, item.Type));"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "The tests.fail_without_fix check was not run for this revision, so it cannot be established that the new tests fail without the fix and pass with it; additionally DuplicateStringKeysAreReportedWithoutAnalyzerFailure fails on head, so pass-with-fix does not hold for every new test.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Analyzer crashes (AD0001) on duplicate string keys in a suppressed type",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "GetObjectInfo reports MsgPack005 for the duplicate key but then executes `if (true) { stringMembers.Add(...) }` for properties, which throws ArgumentException on the already-existing key and crashes the analyzer, producing an extra AD0001 diagnostic. The intMembers and field-stringMembers branches guard with ContainsKey, but the property stringMembers branch does not.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1039,
+          "rev": "head",
+          "quote": "if (true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1041,
+          "rev": "head",
+          "quote": "stringMembers.Add(member.StringKey, (member, item.Type));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1179,
+          "rev": "head",
+          "quote": "if (!stringMembers.ContainsKey(member.StringKey))"
+        }
+      ],
+      "suggested_fix": "Change line 1039 from `if (true)` to `if (!stringMembers.ContainsKey(member.StringKey))` so the property branch matches the intMembers and field branches and does not re-add an already-reported duplicate key."
+    },
+    {
+      "id": "N2",
+      "title": "Inconsistent duplicate-key guard and dead `if (true)` block",
+      "severity": "minor",
+      "category": "maintainability",
+      "claim": "The property branch wraps stringMembers.Add in `if (true)` (always true), while the equivalent intMembers and field-stringMembers branches use `if (!ContainsKey(...))`. The `if (true)` block is dead-looking code and is the direct cause of finding N1.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1039,
+          "rev": "head",
+          "quote": "if (true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1179,
+          "rev": "head",
+          "quote": "if (!stringMembers.ContainsKey(member.StringKey))"
+        }
+      ],
+      "suggested_fix": "Replace `if (true)` with `if (!stringMembers.ContainsKey(member.StringKey))` for consistency with the other two branches."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Performance impact of the added ContainsKey checks in TypeCollector",
+      "reason": "No performance check was run for this revision; the cost of the extra dictionary lookups is not measured.",
+      "who_should_decide": "area owner / performance reviewer"
+    },
+    {
+      "topic": "Public API and analyzer-rule impact",
+      "reason": "The public_api and analyzers checks were not run for this revision, so any impact on the public API or analyzer rules is undecided.",
+      "who_should_decide": "area owner"
+    }
+  ],
+  "refutations": []
+}

@@ -1,0 +1,232 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:44:02+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut5/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1163 (tree 348150fc)",
+    "file contents: 4 blocks",
+    "context: 138585 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2234-mut5/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 39152,
+      "completion_tokens": 27608
+    },
+    "seeded": {
+      "change": "2234-mut5",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "inverted condition",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1163,
+      "mutated_tree": "348150fc0b40e357e96f6060a78f337a967a5eb7",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change stops the analyzer from crashing on [MessagePackObject(SuppressSourceGeneration = true)] types with duplicate or mixed keys: the contract diagnostics are reported and the offending member is skipped instead of throwing. All eight targeted analyzer tests pass. However, the field-handling guard is inverted (missing '!'), so int-keyed fields are silently dropped and duplicate int-keyed fields evade MsgPack005, and the full suite regresses with 14 newly failing generation tests. The change should not merge as-is.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The three F1 tests pass on head (missing key/MsgPack004, member type/MsgPack003, allow-private/MsgPack015), and the code reports these diagnostics for suppressed types before the suppress-source-generation early return, confirming no regression in contract-diagnostic reporting; they exercise non-crash paths, while the crash fix is evidenced under N1.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1378,
+          "rev": "head",
+          "quote": "this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MessagePackObjectAllowPrivateRequired, location));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1383,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "The SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed test passes on head expecting zero diagnostics, and the code suppresses AOT-only checks (line 989) and returns before the partial-class check (line 1383) for suppressed types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 989,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is not true && isInitOnly)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1383,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "The duplicate-int-key, duplicate-string-key, and mixed-key-kind tests for suppressed types pass on head with no analyzer crash, and the code now skips the offending member (continue) and guards the dictionary Adds, removing the crash paths; the separate field-omission defect (C1) is a silent omission, not a crash, and is reported separately.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member."
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "not_met",
+      "confidence_basis": "tests.full_suite failed with 14 failures that all pass on base (regressions), violating the “no regressions in the existing test suite” clause, and tests.fail_without_fix was not run so the “fail without fix” clause is unconfirmed.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "GenerationTests.CustomFormatterForGenericWithConstraints",
+          "outcome": "failed"
+        },
+        {
+          "kind": "test",
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"class\", version: CSharp7_3)",
+          "outcome": "failed"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "C1",
+      "title": "Int-keyed fields silently dropped; duplicate int-keyed fields not reported",
+      "severity": "major",
+      "category": "correctness",
+      "claim": "In the field-handling branch, the guard is missing '!': line 1163 adds an int-keyed field only when its key is already present, but the first occurrence is never added (line 1163 is false), so ContainsKey never becomes true. As a result every int-keyed field is silently omitted from the serialization model and duplicate int-keyed fields never reach line 1154’s KeysMustBeUnique diagnostic (no MsgPack005, no crash, silent data omission). The equivalent property branch correctly uses 'if (!intMembers.ContainsKey(...))' at line 1023; the base code added unconditionally at line 1155, so head regresses field handling versus base as well.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1163,
+          "rev": "head",
+          "quote": "if (intMembers.ContainsKey(member.IntKey))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1155,
+          "rev": "base",
+          "quote": "intMembers.Add(member.IntKey, (member, item.Type));"
+        }
+      ],
+      "suggested_fix": "Change line 1163 to 'if (!intMembers.ContainsKey(member.IntKey))' to match the property branch, so the first int-keyed field is registered and duplicates are reported once without crashing."
+    },
+    {
+      "id": "R1",
+      "title": "Full test suite regresses: 14 generation tests newly fail on head",
+      "severity": "blocker",
+      "category": "tests",
+      "claim": "tests.full_suite reports 14 failed, 14 of which are “not failing on base” and 0 also failing on base. All are source-generator snapshot tests failing with “Expected source file list to match” and an unexpected extra generated file (MessagePack.GeneratedMessagePackResolver.g.cs). This violates REQ-2234-N2’s “no regressions in the existing test suite” clause; the root cause (why head changes generation output for previously passing types) is not established by the evidence given.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "GenerationTests.CustomFormatterForGenericWithConstraints",
+          "outcome": "failed"
+        },
+        {
+          "kind": "test",
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"class\", version: CSharp7_3)",
+          "outcome": "failed"
+        }
+      ],
+      "suggested_fix": "Investigate why head emits an extra/changed generated file for these types (test isolation, static resolver state, or a real generation-model change such as C1), restore baselines only after the cause is understood, and do not merge with existing-test regressions."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Whether the new tests fail without the fix",
+      "reason": "tests.fail_without_fix was not run for this revision (listed in not_run), so the “fail without it” clause of REQ-2234-N2 cannot be confirmed from evidence; the code strongly suggests the duplicate/mixed-key tests would crash on base, but that is not a substitute for the check.",
+      "who_should_decide": "area owner or release engineer to run the source-reverted test pass",
+      "req": "REQ-2234-N2"
+    }
+  ],
+  "refutations": []
+}

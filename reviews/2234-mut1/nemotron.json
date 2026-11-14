@@ -1,0 +1,170 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T04:36:56+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut1/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1023 (tree c0d716e0)",
+    "file contents: 4 blocks",
+    "context: 133035 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/2234-mut1/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 38231,
+      "completion_tokens": 15689
+    },
+    "seeded": {
+      "change": "2234-mut1",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1023,
+      "mutated_tree": "c0d716e058e9078eb69ee060f322be651583101f",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change makes the analyzer validate [MessagePackObject(SuppressSourceGeneration = true)] types and guards duplicate-key handling in TypeCollector.cs, but the property int-key path still calls intMembers.Add unconditionally behind `if (true)`, so the analyzer crashes with AD0001 on duplicate int keys. Two new tests fail and the full suite is red, so the root cause is only partially fixed and the change should not merge as-is.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "All three F1 tests pass on head: MemberWithoutKeyIsReported, MemberTypeMustBeMessagePackObjectIsReported, and AllowPrivateRequiredIsReported each report the expected contract diagnostic for a suppressed type.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "The F2 test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes on head, confirming generation-only diagnostics (MsgPack011/016/017) are not reported for a suppressed type.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "not_met",
+      "confidence_basis": "The full suite fails on two duplicate-key tests because the analyzer still crashes (AD0001) instead of reporting only the contract diagnostic, including for a suppressed type.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "outcome": "failed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "The tests.fail_without_fix check required by N2 was not run and is absent from facts.json, so it cannot be established that the new tests fail without the fix; the suite shows no pre-existing regressions (0 failures also on base).",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Analyzer still crashes (AD0001) on duplicate int keys",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "The property int-key path in GetObjectInfo still inserts into intMembers unconditionally behind `if (true)`, so a duplicate int key throws ArgumentException and surfaces as an AD0001 analyzer crash in addition to the MsgPack005 diagnostic. The field int-key path and both string-key paths are correctly guarded, showing the fix pattern was known but not applied here.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1025,
+          "rev": "head",
+          "quote": "intMembers.Add(member.IntKey, (member, item.Type));"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1163,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "outcome": "failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "fail"
+        }
+      ],
+      "suggested_fix": "Replace `if (true)` at TypeCollector.cs:1023 with `if (!intMembers.ContainsKey(member.IntKey))` so duplicate int keys are reported once without crashing, matching the field and string-key guard paths."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Whether the new tests fail without the fix (tests.fail_without_fix)",
+      "reason": "The tests.fail_without_fix check was not run and is not present in facts.json, so fail-without-fix outcomes cannot be verified from the given evidence.",
+      "who_should_decide": "area owner or decision engine",
+      "req": "REQ-2234-N2"
+    }
+  ],
+  "refutations": []
+}
