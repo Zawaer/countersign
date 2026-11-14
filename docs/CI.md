@@ -7,6 +7,8 @@ its VM size and a **deny-by-default network policy**. CRACI reads that step when
 actions are pinned to full commit SHAs (version in a comment). The CRACI GitHub App has access to
 `Zawaer/countersign`; running jobs needs no CRACI token.
 
+Run links below are to runs made during the event in the development repository, which stays private; their outputs are committed under `evidence/` and `reviews/`. The latest run in this repository: [43606322156](https://github.com/Zawaer/countersign/actions/runs/43606322156).
+
 ```
 push / pull_request / dispatch ──► pipeline                     (always)
 workflow_dispatch job=reviewers ──► reviewers                    (Nemotron reviews; Gemini adjudication if its key exists)
