@@ -1,0 +1,263 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T12:28:31+02:00",
+  "inputs": [
+    "requirements: requirements/var-2234-v2.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/var-2234-v2/facts.json",
+    "diff 32258fdb..6a3d2cb0 (3 non-generated files)",
+    "file contents: 4 blocks",
+    "context: 165326 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the contents and diffs of 6 generated files (listed above by name only)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2234-v2/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 46684,
+      "completion_tokens": 22523
+    }
+  },
+  "summary": "The change keeps the analyzer validating [MessagePackObject(SuppressSourceGeneration = true)] types while skipping only source generation: member types are no longer recursively collected during generation, closed generics whose definition is suppressed are not registered in the resolver, and duplicate/mixed keys no longer crash the analyzer (AD0001 replaced by MsgPack005). All 183 tests pass on head, the new tests fail on base source and pass with the fix, and mutation testing killed 7 of 8 mutants. Overall the change fixes the root cause and is well covered; REQ-2234-F2 lacks a dedicated test in facts.json.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The analyzer validates members of suppressed types (collectMemberTypes only gates recursive type collection, not diagnostics) and reports MsgPack004/MsgPack005/MsgPack003; duplicate and mixed keys no longer crash (AD0001 removed). Contract-diagnostic tests pass on head and fail on base with AD0001.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_MissingKeyOnProperty",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_MissingKeyOnField",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_MissingKeyInBaseType",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_KeyValidation",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_KeyValidation",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_KeyValidationOnFields",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_KeyValidationOnFields",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_AllowPrivateRequired",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_MemberTypeNotSerializable",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_ValidTypeHasNoDiagnostics",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.DuplicateKeysAreReportedWithoutCrashing",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.DuplicateKeysAreReportedWithoutCrashing",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MixedKeysAreReportedWithoutCrashing",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MixedKeysAreReportedWithoutCrashing",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 729,
+          "rev": "head",
+          "quote": "bool collectMemberTypes = suppressSourceGeneration is not true || !this.options.IsGeneratingSource;"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1030,
+          "rev": "head",
+          "quote": "if (isIntKey && intKey is not null)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1046,
+          "rev": "head",
+          "quote": "else if (!isIntKey && stringKey is not null)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1065,
+          "rev": "head",
+          "quote": "if (messagePackFormatter == null && collectMemberTypes)"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "The clause's named test (SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed) is not in facts.json; available tests pass but none isolates that source-generation-only diagnostics such as partial-class requirements are suppressed for SuppressSourceGeneration types, and the tail of GetObjectInfo where those requirements surface was not provided.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SuppressSourceGeneration_ValidTypeHasNoDiagnostics",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1007,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is not true && isInitOnly)"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "The full suite passes on head (183/183, 0 failed) and the invalid-contract tests that crashed on base with AD0001 now pass on head, reporting MsgPack005 instead.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.DuplicateKeysAreReportedWithoutCrashing",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MixedKeysAreReportedWithoutCrashing",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "met",
+      "confidence_basis": "8 of the 16 new tests fail on base source and pass on head (fail_without_fix check passes), and the full suite on head passes with no regressions (no failures not on base, none also on base).",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GenerationTests.SuppressSourceGeneration_ClosedGenericIsNotRegistered",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "mutation-survivor-857",
+      "title": "Mutation survivor on collectMemberTypes guard at TypeCollector.cs:857",
+      "severity": "info",
+      "category": "tests",
+      "claim": "The negated-condition mutant of `if (specialFormatter is null && collectMemberTypes)` at line 857 survived mutation testing: no new test fails on it, so this hunk's suppression of recursive member-type collection is not specifically covered by a new test. Three pre-existing EnumFormatter map-mode tests do fail on the mutant, so the guard is behaviorally significant but not newly covered.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.mutation",
+          "status": "fail"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 857,
+          "rev": "head",
+          "quote": "if (specialFormatter is null && collectMemberTypes)"
+        }
+      ],
+      "suggested_fix": "Add a targeted generation test that fails when the line-857 collectMemberTypes guard is removed, or accept existing coverage as sufficient."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Contents of the 6 generated test fixture files",
+      "reason": "Generated file contents and diffs were not provided, so I cannot independently verify they match the generator output.",
+      "who_should_decide": "area owner / CI"
+    },
+    {
+      "topic": "Documentation impact",
+      "reason": "No README, analyzer docs, or release notes were provided or changed, so I cannot verify documentation describes the new analyzer behavior.",
+      "who_should_decide": "area owner"
+    },
+    {
+      "topic": "Multi-target build (net472/netstandard)",
+      "reason": "Only the net8.0 slice was built; the net472/netstandard build was not run.",
+      "who_should_decide": "area owner"
+    }
+  ],
+  "refutations": []
+}

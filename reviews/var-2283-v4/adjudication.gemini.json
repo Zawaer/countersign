@@ -1,0 +1,89 @@
+{
+  "reviewer": "gemini",
+  "model": "gemini-4-hydrogen",
+  "vendor": "Google",
+  "prompt_version": "adjudicate-v1",
+  "reviewed_at": "2026-11-14T12:38:03+02:00",
+  "role": "adjudicator: advisory; can add reasons and route to a human, never clears",
+  "disputes_given": [
+    "finding:nemotron:S1",
+    "finding:nemotron:S2",
+    "finding:nemotron:T1"
+  ],
+  "runner": {
+    "tool": "countersign adjudicate",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2283-v4/raw/adjudication.gemini.response.json"
+  },
+  "rulings": [
+    {
+      "dispute": "finding:nemotron:S1",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "MessagePackSecurity.UntrustedData.HashCollisionResistant was changed from true at base to false at head, and 5 tests in tests.runtime_suite failed.",
+          "why": "Verified code quotes at src/MessagePack/MessagePackSecurity.cs:37 (base and head) show HashCollisionResistant changed from true to false, and facts.json tests.runtime_suite reports 5 failed of 991 tests."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "UntrustedData dictionaries fall back to EqualityComparer<T>.Default, and the 5 failed tests are specific MessagePackSecurityTests.",
+          "why": "All 5 named MessagePackSecurityTests have engine_verified: false (not in facts.json), and no code was cited showing how HashCollisionResistant controls dictionary equality comparers."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "Test runner output for tests.runtime_suite listing the 5 failing test names and failure details, plus whether they pass on base.",
+        "Code in MessagePackSecurity (or its callers) showing how HashCollisionResistant affects equality comparer selection."
+      ],
+      "route_to": "security / MessagePackSecurity owner",
+      "note": "The edit to MessagePackSecurity.cs:37 and the 5 runtime suite failures are verified, though the specific test names and comparer fallback mechanism are not in the cited verified evidence."
+    },
+    {
+      "dispute": "finding:nemotron:S2",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "MessagePackSecurity.cs:37 was modified to set HashCollisionResistant = false, which is not covered by the REQ-2283-* requirement clauses, and tests.runtime_suite has 5 failures.",
+          "why": "Verified head code at src/MessagePack/MessagePackSecurity.cs:37 shows HashCollisionResistant = false, none of REQ-2283-F1..N2 mention hashing configuration, and facts.json shows tests.runtime_suite failed (980 passed, 5 failed, 6 skipped)."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "The edit addresses hashing performance on hot paths, and the 5 runtime failures are security failures caused by bundling this edit.",
+          "why": "No PR/commit text or benchmark evidence was cited for the intent of the edit, and facts.json does not identify the 5 failing tests or their causes."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "Confirmation from the PR author or area owner on whether the MessagePackSecurity.cs change was intended for #2283 or should be reverted.",
+        "Detailed failure output from tests.runtime_suite on head and base."
+      ],
+      "route_to": "PR author / area owner"
+    },
+    {
+      "dispute": "finding:nemotron:T1",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "Mutation testing failed with 4 of 4 mutants surviving across TypeCollector.cs:985 and TypeCollector.cs:1050.",
+          "why": "facts.json tests.mutation (verified) reports 4 mutants of the changed source lines: 0 killed, 4 survived, at surviving hunks TypeCollector.cs:985 and TypeCollector.cs:1050; verified code quotes show the diagnostic report at line 985 and the field-skip guard at line 1050."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "Specific mutant definitions (M1 removing BothStringAndIntKeyAreNull, M2-M4 weakening/dropping the guard) and what the new tests specifically assert.",
+          "why": "facts.json only provides aggregate mutant counts and line numbers without individual mutant descriptions, and no test code was cited to show what the new tests assert."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "Automated tests that assert the BothStringAndIntKeyAreNull diagnostic and its location (for REQ-2283-F3) and that compiler-generated fields from referenced assemblies are skipped.",
+        "Re-running tests.mutation to confirm mutants at TypeCollector.cs:985 and TypeCollector.cs:1050 are killed."
+      ],
+      "route_to": "SourceGenerator area owner"
+    }
+  ]
+}

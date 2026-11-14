@@ -1,0 +1,232 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T12:32:37+02:00",
+  "inputs": [
+    "requirements: requirements/var-2234-v3.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/var-2234-v3/facts.json",
+    "diff 32258fdb..4f1f9988 (2 non-generated files)",
+    "file contents: 3 blocks",
+    "context: 153712 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2234-v3/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 47294,
+      "completion_tokens": 20906
+    }
+  },
+  "summary": "The change adds a documentation comment to TypeCollector.cs explaining that the SuppressSourceGeneration opt-out early return must stay after all diagnostic analysis, and adds one analyzer test. No behavior changes: the early return already follows analysis on base, and the new test passes on base as well as on head. The analyzer reports contract diagnostics for suppressed types (F1 met, already on base) and generation-only checks are guarded off for suppressed types (F2 met by code inspection, but no negative test); the full suite passes (N1 met). However the regression test does not fail without the change, so REQ-2234-N2 is not met.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "REQ-2234-F1 is met already on base and unchanged by this diff: the opt-out early return follows all diagnostic analysis (head TypeCollector.cs line 1371 `if (suppressSourceGeneration is true)` then line 1374 `return null;`, identical ordering on base line 1369/1372), and the new test confirms MsgPack003/004 are reported for suppressed types and passes on head. Note the requirement's listed SuppressSourceGenerationAnalyzerTests.* tests do not exist in this change; the added MsgPack00x test covers the substance.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1371,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1374,
+          "rev": "head",
+          "quote": "return null;"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1369,
+          "rev": "base",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "REQ-2234-F2 is met by construction on base and unchanged by this diff: generation-only checks are guarded so they cannot run for suppressed types (head line 989 `if (suppressSourceGeneration is not true && isInitOnly)` for AOTInitProperty; head line 1371 early return precedes the PartialTypeRequired check at line 1382). No test asserts this negative, tracked as finding F2.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 989,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is not true && isInitOnly)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1371,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1382,
+          "rev": "head",
+          "quote": "if (nestedFormatterRequired && nonPublicMembersAreSerialized)"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "REQ-2234-N1 is met: tests.full_suite passes (status pass, 168 passed / 0 failed), and the new test exercises invalid contracts (missing [Key], unattributed member type) in SuppressSourceGeneration types without crashing.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "not_met",
+      "confidence_basis": "REQ-2234-N2 is not met: tests.fail_without_fix has status fail with new_failed 0 ('tests do NOT demonstrate the change'); the new test passes on base source, so no test fails without the change and the diff delivers no behavioral fix.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "title": "Regression test passes on base; does not fail without the change",
+      "severity": "major",
+      "category": "tests",
+      "claim": "REQ-2234-N2 is not met: the new test MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics passes on base source (tests.fail_without_fix reports new_failed 0, summary 'tests do NOT demonstrate the change'), so no test fails without the change; the diff is a comment only with no behavioral delta.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1369,
+          "rev": "head",
+          "quote": "// This check must stay *after* all the analysis above, so that the analyzer keeps reporting"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1374,
+          "rev": "head",
+          "quote": "return null;"
+        }
+      ],
+      "suggested_fix": "Either introduce a behavioral fix plus a test that fails on base (e.g. move the opt-out early return before analysis and confirm the new test catches it), or have the area owner explicitly accept a documentation-only change and relax N2."
+    },
+    {
+      "id": "F2",
+      "title": "No test asserts that generation-only diagnostics are suppressed",
+      "severity": "minor",
+      "category": "tests",
+      "claim": "REQ-2234-F2's negative behavior (no partial-class/AOT-only diagnostics for SuppressSourceGeneration types) is not exercised: the added test only marks MsgPack003/004, and its types do not trigger PartialTypeRequired or AOTInitProperty paths, so a regression in those guards would not be caught.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 989,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is not true && isInitOnly)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1382,
+          "rev": "head",
+          "quote": "if (nestedFormatterRequired && nonPublicMembersAreSerialized)"
+        }
+      ],
+      "suggested_fix": "Add a test with a suppressed type that would trigger PartialTypeRequired (non-partial type with private members) or AOTInitProperty (init-only property with initializer) and assert no diagnostic is reported."
+    },
+    {
+      "id": "F3",
+      "title": "Change is documentation-only; behavior already correct on base",
+      "severity": "info",
+      "category": "maintainability",
+      "claim": "The diff adds only a comment to TypeCollector.cs; the opt-out early return already follows all analysis on base (base line 1369), so REQ-2234-F1 and REQ-2234-F2 were already satisfied before this change and no functional fix is delivered.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1369,
+          "rev": "base",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1371,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "refusals": [],
+  "refutations": []
+}

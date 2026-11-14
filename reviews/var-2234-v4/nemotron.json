@@ -1,0 +1,242 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T12:35:37+02:00",
+  "inputs": [
+    "requirements: requirements/var-2234-v4.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/var-2234-v4/facts.json",
+    "diff 32258fdb..8e768a8b (2 non-generated files)",
+    "file contents: 3 blocks",
+    "context: 104913 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2234-v4/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 34842,
+      "completion_tokens": 15458
+    }
+  },
+  "summary": "The change adds one analyzer regression test (MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed) and raises UntrustedData.MaximumObjectGraphDepth from 500 to 5000. There is no analyzer or generator source-code change, so the claimed fix for issue #2234 is absent; the new test passes on base source, meaning the MsgPack004 diagnostic on suppressed types already worked. The depth-lift is unrelated to #2234 and weakens a documented stack-overflow guard for untrusted input.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The new test asserts MsgPack004 is reported for a SuppressSourceGeneration type and passes on head; it also passes on base source, so the analyzer already reports this contract diagnostic and the requirement was already met on base (unchanged by this PR, which touches no analyzer code). Only the missing-key case is directly evidenced.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 131,
+          "rev": "head",
+          "quote": "[MessagePackObject(SuppressSourceGeneration = true)]"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 134,
+          "rev": "head",
+          "quote": "public string {|MsgPack004:Member1|} { get; set; }"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-F1",
+          "quote": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0."
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "No analyzer or generator source file is changed, and the specific held test SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed is not in the provided results, so we cannot confirm source-generation-only diagnostics are suppressed for these types.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-F2",
+          "quote": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true."
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "The full source-generator test suite passes (168 passed, 0 failed), so the analyzer/generator did not crash on the contracts in the suite.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "not_met",
+      "confidence_basis": "The fail_without_fix check failed: the new test passes on base source, so it does not fail without the change; the suite has no regressions, but the coverage requirement is not satisfied.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "title": "No analyzer/generator source-code fix; claimed behavior already exists on base",
+      "severity": "major",
+      "category": "correctness",
+      "claim": "The commit says it keeps reporting diagnostics for SuppressSourceGeneration types, but the only source change is MessagePackSecurity.cs (depth limit); no analyzer or generator file is modified. The new analyzer test passes on base source, so the reported behavior pre-exists and this branch implements no analyzer fix.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack/MessagePackSecurity.cs",
+          "line": 38,
+          "rev": "head",
+          "quote": "MaximumObjectGraphDepth = 5000,"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "fail"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        }
+      ],
+      "suggested_fix": "Either remove the non-fix test/depth change and add the actual analyzer fix for #2234, or document that the issue was already resolved on base and keep only a meaningful regression test."
+    },
+    {
+      "id": "F2",
+      "title": "New regression test passes without the fix (REQ-2234-N2 not satisfied)",
+      "severity": "major",
+      "category": "tests",
+      "claim": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed passes on head and also passes when the source fix is reverted, so it does not fail without the change and cannot demonstrate the fix.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "fail"
+        }
+      ],
+      "suggested_fix": "Add a test that actually fails on base (requires a real analyzer change), or revert the test if no fix is needed."
+    },
+    {
+      "id": "F3",
+      "title": "UntrustedData.MaximumObjectGraphDepth raised 500 -> 5000, unrelated to #2234, weakens DoS guard",
+      "severity": "major",
+      "category": "security",
+      "claim": "The depth-limit change has nothing to do with analyzer diagnostics for #2234. It raises the untrusted deserialization depth from 500 to 5000 while the property documentation describes 500 as a conservative value to defend against stack-overflow attacks on untrusted input. This is a security-relevant default change with no accompanying test or rationale.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack/MessagePackSecurity.cs",
+          "line": 38,
+          "rev": "base",
+          "quote": "MaximumObjectGraphDepth = 500,"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack/MessagePackSecurity.cs",
+          "line": 38,
+          "rev": "head",
+          "quote": "MaximumObjectGraphDepth = 5000,"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack/MessagePackSecurity.cs",
+          "line": 84,
+          "rev": "head",
+          "quote": "Since stack space occupied may vary by the kind of object deserialized, a conservative value for this property to defend against stack overflow attacks might be 500."
+        }
+      ],
+      "suggested_fix": "Revert MaximumObjectGraphDepth to 500 for UntrustedData, or have the security/area owner approve 5000 with a documented rationale and a deserialization test."
+    },
+    {
+      "id": "F4",
+      "title": "Requirement F1's held tests are not the test added by this change",
+      "severity": "info",
+      "category": "tests",
+      "claim": "REQ-2234-F1 names SuppressSourceGenerationAnalyzerTests.* as its held tests, but the change adds MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed; the listed tests are not in the provided results.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-F1",
+          "quote": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0."
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Upstream issue root cause and intended fix",
+      "reason": "Only the issue URL was provided; the issue page itself was not fetched, so we cannot confirm the intended root cause or whether the analyzer was already fixed on base.",
+      "who_should_decide": "area owner or issue author"
+    },
+    {
+      "topic": "Whether MaximumObjectGraphDepth = 5000 is acceptable for UntrustedData",
+      "reason": "Security judgment beyond the evidence: the docs describe 500 as conservative for stack-overflow defense, and no test or threat analysis supports 5000.",
+      "who_should_decide": "security area owner",
+      "blocking": true
+    }
+  ],
+  "refutations": []
+}

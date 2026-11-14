@@ -1013,6 +1013,200 @@
       "full_read_min": 4.4,
       "guided_min": 21,
       "simulated": false
+    },
+    {
+      "change": "var-2234-v1",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 1.8,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "refused clause REQ-2234-F1",
+        "refused clause REQ-2234-F2",
+        "refused clause REQ-2234-N1",
+        "refused clause REQ-2234-N2",
+        "reviewer refusal nemotron",
+        "reviewer refusal nemotron"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 4,
+      "full_read_min": 2.5,
+      "guided_min": 31,
+      "simulated": false
+    },
+    {
+      "change": "var-2234-v2",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 73.3,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "refused clause REQ-2234-F1",
+        "refused clause REQ-2234-F2",
+        "refused clause REQ-2234-N1",
+        "refused clause REQ-2234-N2",
+        "reviewer refusal nemotron",
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 4,
+      "full_read_min": 54.0,
+      "guided_min": 28,
+      "simulated": false
+    },
+    {
+      "change": "var-2234-v3",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "block",
+      "score": 65.1,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "mandate rule mandated-check-failed"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 4,
+      "full_read_min": 8.2,
+      "guided_min": 21,
+      "simulated": false
+    },
+    {
+      "change": "var-2234-v4",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 103.0,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "failing check principle-0",
+        "verified finding nemotron:F1",
+        "verified finding nemotron:F2",
+        "verified finding nemotron:F3",
+        "refused clause REQ-2234-F1",
+        "refused clause REQ-2234-F2",
+        "refused clause REQ-2234-N1",
+        "refused clause REQ-2234-N2",
+        "adjudicator finding:nemotron:F1",
+        "adjudicator finding:nemotron:F2",
+        "adjudicator finding:nemotron:F3",
+        "reviewer refusal nemotron",
+        "trust cap runtime-core",
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 4,
+      "full_read_min": 3.7,
+      "guided_min": 31,
+      "simulated": false
+    },
+    {
+      "change": "var-2283-v1",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 77.9,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "refused clause REQ-2283-F1",
+        "refused clause REQ-2283-F2",
+        "refused clause REQ-2283-F3",
+        "refused clause REQ-2283-N1",
+        "refused clause REQ-2283-N2",
+        "reviewer refusal nemotron",
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 5,
+      "full_read_min": 11.5,
+      "guided_min": 27,
+      "simulated": false
+    },
+    {
+      "change": "var-2283-v2",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 58.6,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "refused clause REQ-2283-F1",
+        "refused clause REQ-2283-F2",
+        "refused clause REQ-2283-F3",
+        "refused clause REQ-2283-N1",
+        "refused clause REQ-2283-N2",
+        "reviewer refusal nemotron",
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 5,
+      "full_read_min": 25.8,
+      "guided_min": 27,
+      "simulated": false
+    },
+    {
+      "change": "var-2283-v3",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "ask",
+      "score": 50.4,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "verified finding nemotron:M1",
+        "refused clause REQ-2283-F1",
+        "refused clause REQ-2283-F2",
+        "refused clause REQ-2283-F3",
+        "refused clause REQ-2283-N1",
+        "refused clause REQ-2283-N2",
+        "adjudicator finding:nemotron:M1",
+        "risk score risk"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 5,
+      "full_read_min": 8.8,
+      "guided_min": 22,
+      "simulated": false
+    },
+    {
+      "change": "var-2283-v4",
+      "mutant": false,
+      "of": null,
+      "mutation": null,
+      "tier": "block",
+      "score": 116.5,
+      "owner": "Toivo",
+      "routed_to_human": true,
+      "why": [
+        "verified finding nemotron:S1"
+      ],
+      "caught_by": null,
+      "proven": 0,
+      "refused": 5,
+      "full_read_min": 10.0,
+      "guided_min": 29,
+      "simulated": false
     }
   ],
   "skipped": [
@@ -1022,38 +1216,6 @@
     },
     {
       "change": "up-2305",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2234-v1",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2234-v2",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2234-v3",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2234-v4",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2283-v1",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2283-v2",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2283-v3",
-      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
-    },
-    {
-      "change": "var-2283-v4",
       "reason": "no reviews yet (stage 2 not run); excluded from every metric"
     }
   ],
@@ -2311,7 +2473,7 @@
       "how": "seeded defects the AI would have cleared"
     },
     "share_routed_to_humans": {
-      "value": 0.86,
+      "value": 0.93,
       "simulated": false,
       "how": "real changes (not mutants) at ask/block"
     },
@@ -2333,9 +2495,9 @@
         },
         "nemotron": {
           "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-          "verified": 42,
+          "verified": 63,
           "rejected": 1,
-          "refusals": 37,
+          "refusals": 47,
           "rejected_share": 0.02
         }
       },
@@ -2343,17 +2505,17 @@
       "how": "verified vs rejected (unsupported) findings over all replayed changes"
     },
     "human_minutes_full_read": {
-      "value": 439.9,
+      "value": 564.4,
       "simulated": true,
       "how": "reading-speed model in the mandate: lines/min + minutes per file"
     },
     "human_minutes_with_pack": {
-      "value": 188,
+      "value": 404,
       "simulated": true,
       "how": "pack reading time by tier + per refused item + per verified finding"
     },
     "review_time_saved_share": {
-      "value": 0.57,
+      "value": 0.28,
       "simulated": true,
       "how": "1 - with_pack / full_read"
     },
@@ -2636,15 +2798,15 @@
           "confirmed_by_another": 1,
           "missed_others_verified_major": 1
         },
-        "nemotron": {
-          "major_raised_verified": 20,
-          "confirmed_by_another": 1,
-          "missed_others_verified_major": 8
-        },
         "codex": {
           "major_raised_verified": 0,
           "confirmed_by_another": 0,
           "missed_others_verified_major": 6
+        },
+        "nemotron": {
+          "major_raised_verified": 28,
+          "confirmed_by_another": 1,
+          "missed_others_verified_major": 8
         }
       },
       "simulated": false,
@@ -2686,6 +2848,46 @@
           "full_read_min": 4.4,
           "with_pack_min": 21,
           "saved_min": -16.6
+        },
+        "var-2234-v1": {
+          "full_read_min": 2.5,
+          "with_pack_min": 31,
+          "saved_min": -28.5
+        },
+        "var-2234-v2": {
+          "full_read_min": 54.0,
+          "with_pack_min": 28,
+          "saved_min": 26.0
+        },
+        "var-2234-v3": {
+          "full_read_min": 8.2,
+          "with_pack_min": 21,
+          "saved_min": -12.8
+        },
+        "var-2234-v4": {
+          "full_read_min": 3.7,
+          "with_pack_min": 31,
+          "saved_min": -27.3
+        },
+        "var-2283-v1": {
+          "full_read_min": 11.5,
+          "with_pack_min": 27,
+          "saved_min": -15.5
+        },
+        "var-2283-v2": {
+          "full_read_min": 25.8,
+          "with_pack_min": 27,
+          "saved_min": -1.2
+        },
+        "var-2283-v3": {
+          "full_read_min": 8.8,
+          "with_pack_min": 22,
+          "saved_min": -13.2
+        },
+        "var-2283-v4": {
+          "full_read_min": 10.0,
+          "with_pack_min": 29,
+          "saved_min": -19.0
         }
       },
       "simulated": true,
@@ -2716,7 +2918,15 @@
         "2283-mut3": 64814,
         "2283-mut4": 65247,
         "2283-mut5": 65026,
-        "2283-sec1": 64204
+        "2283-sec1": 64204,
+        "var-2283-v1": 116134,
+        "var-2283-v2": 60926,
+        "var-2283-v3": 59024,
+        "var-2283-v4": 74619,
+        "var-2234-v1": 31095,
+        "var-2234-v2": 69207,
+        "var-2234-v3": 71434,
+        "var-2234-v4": 55377
       },
       "simulated": false,
       "how": "measurement/costs.yaml; estimates where the row says so"

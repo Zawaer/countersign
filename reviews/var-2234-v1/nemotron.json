@@ -1,0 +1,219 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T12:27:03+02:00",
+  "inputs": [
+    "requirements: requirements/var-2234-v1.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/var-2234-v1/facts.json",
+    "diff 32258fdb..8c168b56 (1 non-generated files)",
+    "file contents: 1 blocks",
+    "context: 52272 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2234-v1/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 19518,
+      "completion_tokens": 11577
+    }
+  },
+  "summary": "The change is test-only: it adds MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed, which asserts that MsgPack004 (missing [Key]) is still reported for a type annotated with [MessagePackObject(SuppressSourceGeneration = true)]. The new test passes at head and the full suite is green (168 passed, 0 failed), but no source was changed — per the commit message the base already reports the diagnostic, so the test locks existing behavior rather than verifying a fix, and tests.fail_without_fix was skipped (no source to revert). REQ-2234-F1 is met by the passing test; REQ-2234-N1 is met by the full suite; REQ-2234-F2 and the fail-without-fix half of REQ-2234-N2 cannot be determined from the evidence provided.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The added regression test asserts MsgPack004 is reported for a SuppressSourceGeneration type with a missing [Key] and passes at head.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-F1",
+          "quote": "The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0."
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 131,
+          "rev": "head",
+          "quote": "[MessagePackObject(SuppressSourceGeneration = true)]"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 134,
+          "rev": "head",
+          "quote": "public string {|MsgPack004:Member1|} { get; set; }"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "No test or source evidence for source-generation-only diagnostics was provided; the named F2 test is not in the diff and no src/ files were given.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-F2",
+          "quote": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true."
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "The full test suite passed 168/168 with 0 failures (check tests.full_suite status pass).",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-N1",
+          "quote": "The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types."
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "tests.fail_without_fix was skipped (test-only change, no source to revert), so fail-without-fix coverage cannot be established, although the full suite shows no regressions.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-N2",
+          "quote": "The fix is covered by automated tests that fail without it; no regressions in the existing test suite."
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "skipped"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "R1",
+      "title": "fail-without-fix evidence is missing for a test-only change",
+      "severity": "minor",
+      "category": "tests",
+      "claim": "REQ-2234-N2 requires tests that fail without the fix, but tests.fail_without_fix was skipped because no src/ file changed. The new test passes at head and, per the commit message, the base already reports the diagnostic, so it likely passes on base too — it locks existing behavior rather than verifying a fix.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "skipped"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 134,
+          "rev": "head",
+          "quote": "public string {|MsgPack004:Member1|} { get; set; }"
+        }
+      ],
+      "suggested_fix": "The area owner should accept this as a regression-lock test, or demonstrate fail-without-fix by temporarily disabling the analyzer behavior. Not a merge block since the suite is green."
+    },
+    {
+      "id": "R2",
+      "title": "REQ-2234-F2 has no test or code evidence in this change",
+      "severity": "minor",
+      "category": "tests",
+      "claim": "F2 requires that source-generation-only diagnostics are not reported for SuppressSourceGeneration types, but the change adds only a missing-[Key] test; the named F2 test does not appear in the diff and no analyzer source was provided for review.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-F2",
+          "quote": "Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true."
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        }
+      ],
+      "suggested_fix": "Confirm F2 is covered by another change or add the named suppression test; it cannot be judged from this change alone."
+    },
+    {
+      "id": "R3",
+      "title": "New test covers only one example of REQ-2234-F1",
+      "severity": "info",
+      "category": "tests",
+      "claim": "F1 mentions missing [Key], duplicate keys and mixed key kinds; the added test only exercises missing [Key] (MsgPack004). The clause says 'e.g.', so this is partial coverage rather than a gap.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 134,
+          "rev": "head",
+          "quote": "public string {|MsgPack004:Member1|} { get; set; }"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "id": "R4",
+      "title": "Requirement test names do not match the added test",
+      "severity": "info",
+      "category": "scope",
+      "claim": "REQ-2234-F1 lists SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported, MemberTypeMustBeMessagePackObjectIsReported and AllowPrivateRequiredIsReported, but the change adds MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed; the named tests are not in the diff.",
+      "evidence": [
+        {
+          "kind": "requirement",
+          "req": "REQ-2234-F1",
+          "quote": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Analyzer source code and TypeCollector.GetObjectInfo early-return placement",
+      "reason": "No files under src/ were provided or changed; only the test file contents were given, so I cannot verify the analyzer root-cause behavior described in the issue.",
+      "who_should_decide": "area owner or change author",
+      "req": "REQ-2234-F1"
+    },
+    {
+      "topic": "Whether the new test fails on base (fail-without-fix)",
+      "reason": "The fail_without_fix check was skipped (test-only change, no source to revert); establishing this would require reverting analyzer behavior that was never changed.",
+      "who_should_decide": "area owner",
+      "req": "REQ-2234-N2"
+    }
+  ],
+  "refutations": []
+}

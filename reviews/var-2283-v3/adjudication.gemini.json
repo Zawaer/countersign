@@ -1,0 +1,44 @@
+{
+  "reviewer": "gemini",
+  "model": "gemini-4-hydrogen",
+  "vendor": "Google",
+  "prompt_version": "adjudicate-v1",
+  "reviewed_at": "2026-11-14T12:37:54+02:00",
+  "role": "adjudicator: advisory; can add reasons and route to a human, never clears",
+  "disputes_given": [
+    "finding:nemotron:M1"
+  ],
+  "runner": {
+    "tool": "countersign adjudicate",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2283-v3/raw/adjudication.gemini.response.json"
+  },
+  "rulings": [
+    {
+      "dispute": "finding:nemotron:M1",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "All 4 mutants on the changed lines survived (0 killed at TypeCollector.cs:985 and TypeCollector.cs:1050), meaning the test suite does not catch regressions in the diagnostic call at line 985 or the !item.CanBeReferencedByName guard at line 1050.",
+          "why": "Verified facts.json check tests.mutation reports 4 mutants of the changed source lines with 0 killed and 4 survived at TypeCollector.cs:985 and TypeCollector.cs:1050, and the verified code quotes at those lines match the BothStringAndIntKeyAreNull diagnostic call and the CanBeReferencedByName guard."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "The new tests assert only the absence of CS8785/AD0001 and resolver generation.",
+          "why": "No test file code was cited to verify the exact assertions in the new tests, although tests.mutation confirms none of the tests kill the mutants at lines 985 and 1050."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "Automated tests that assert BothStringAndIntKeyAreNull is reported at the property identifier location (killing mutants at TypeCollector.cs:985).",
+        "Automated tests covering a [MessagePackObject] type from a referenced assembly with unspeakable-name backing fields that assert MemberNeedsKey is not emitted for those fields (killing mutants of !item.CanBeReferencedByName at TypeCollector.cs:1050).",
+        "Re-running tests.mutation showing the mutants at TypeCollector.cs:985 and TypeCollector.cs:1050 are killed."
+      ],
+      "route_to": "MessagePack.SourceGenerator area owner",
+      "note": "Mutation survival at both cited hunks is confirmed by facts.json; tests targeting those diagnostic and guard branches are needed to settle the finding."
+    }
+  ]
+}

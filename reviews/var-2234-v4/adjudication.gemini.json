@@ -1,0 +1,84 @@
+{
+  "reviewer": "gemini",
+  "model": "gemini-4-hydrogen",
+  "vendor": "Google",
+  "prompt_version": "adjudicate-v1",
+  "reviewed_at": "2026-11-14T12:38:33+02:00",
+  "role": "adjudicator: advisory; can add reasons and route to a human, never clears",
+  "disputes_given": [
+    "finding:nemotron:F1",
+    "finding:nemotron:F2",
+    "finding:nemotron:F3"
+  ],
+  "runner": {
+    "tool": "countersign adjudicate",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2234-v4/raw/adjudication.gemini.response.json"
+  },
+  "rulings": [
+    {
+      "dispute": "finding:nemotron:F1",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "The new analyzer test passes on base source and MessagePackSecurity.cs was modified at line 38.",
+          "why": "Verified facts.json check tests.fail_without_fix fails because MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed passed on base source, and verified code at src/MessagePack/MessagePackSecurity.cs:38 (head) shows MaximumObjectGraphDepth = 5000."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "MessagePackSecurity.cs is the only source change (no analyzer or generator file modified) and the commit claims to keep reporting diagnostics.",
+          "why": "No full diff, changed-file list, or commit message was cited to verify that no other source files were modified or what the commit states."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "Full list of modified files between base and head (e.g. git diff --stat) to confirm whether any analyzer or generator files were changed.",
+        "An automated test covering REQ-2234-F1/F2/N1 that fails on base source and passes on head."
+      ],
+      "route_to": "analyzer area owner",
+      "note": "Verified test results confirm the new test passes on base source, but the full scope of modified files and commit message were not cited."
+    },
+    {
+      "dispute": "finding:nemotron:F2",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "MsgPack00xAnalyzerTests.MissingKeyAttribute_SourceGenerationSuppressed passes on head and also passes on base source without the fix.",
+          "why": "Verified facts.json results show the test passed in both tests.targeted and tests.fail_without_fix, and tests.fail_without_fix failed with 0/1 new tests failing on base source."
+        }
+      ],
+      "unsupported": [],
+      "evidence_that_would_settle": [
+        "A new or updated regression test for SuppressSourceGeneration = true diagnostics that fails on base source and passes on head, turning tests.fail_without_fix to pass."
+      ],
+      "route_to": "analyzer area owner",
+      "note": "All cited evidence is engine-verified and directly supports the finding."
+    },
+    {
+      "dispute": "finding:nemotron:F3",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "UntrustedData.MaximumObjectGraphDepth was raised from 500 to 5000 despite XML docs warning that ~2000 nested arrays can overflow a 1MB stack and recommending 500 as a conservative defense.",
+          "why": "Verified code quotes at src/MessagePack/MessagePackSecurity.cs:38 (base vs head) show 500 changed to 5000, and lines 83-84 (head) document the ~2000 nested array stack-overflow risk and 500 conservative limit."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "The change has no accompanying test or rationale.",
+          "why": "No PR description, commit message, or test-file diff was cited to establish the absence of rationale or tests for the depth limit."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "Confirmation from the PR author or security owner on whether raising UntrustedData.MaximumObjectGraphDepth to 5000 is intentional or should be reverted.",
+        "If intentional, a stack-depth/DoS test and updated XML documentation justifying 5000."
+      ],
+      "route_to": "security and MessagePack runtime area owner",
+      "note": "The 500-to-5000 change and its contradiction with the surrounding stack-overflow documentation are verified in MessagePackSecurity.cs."
+    }
+  ]
+}

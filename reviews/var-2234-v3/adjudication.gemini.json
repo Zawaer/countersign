@@ -1,0 +1,43 @@
+{
+  "reviewer": "gemini",
+  "model": "gemini-4-hydrogen",
+  "vendor": "Google",
+  "prompt_version": "adjudicate-v1",
+  "reviewed_at": "2026-11-14T12:38:21+02:00",
+  "role": "adjudicator: advisory; can add reasons and route to a human, never clears",
+  "disputes_given": [
+    "finding:nemotron:F1"
+  ],
+  "runner": {
+    "tool": "countersign adjudicate",
+    "endpoint": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews/var-2234-v3/raw/adjudication.gemini.response.json"
+  },
+  "rulings": [
+    {
+      "dispute": "finding:nemotron:F1",
+      "supported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "The new test MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics passes on base source and does not fail without the change.",
+          "why": "Verified facts.json check tests.fail_without_fix has status fail ('new tests pass on base source: 0/1 failed -> tests do NOT demonstrate the change') and lists MsgPack00xAnalyzerTests.SourceGenerationDisabled_AnalyzerStillReportsDiagnostics as passed on base."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "nemotron",
+          "claim": "The diff is a comment only with no behavioral delta.",
+          "why": "The cited code evidence only shows TypeCollector.cs lines 1369 and 1374 at head (with line 1374 marked non-substantive context); no base-vs-head diff is cited to establish that only a comment changed."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "An automated test in MsgPack00xAnalyzerTests asserting the required diagnostics for [MessagePackObject(SuppressSourceGeneration = true)] types that fails on the base revision (making tests.fail_without_fix pass).",
+        "The base-to-head diff of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs to confirm whether any behavioral change was made."
+      ],
+      "route_to": "MessagePack.SourceGenerator area owner",
+      "note": "facts.json confirms the new test passes on base, leaving the regression-test requirement unverified."
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T12:15:09+02:00",
+  "inputs": [
+    "requirements: requirements/var-2283-v1.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "facts: evidence/var-2283-v1/facts.json",
+    "diff 32258fdb..60d651e8 (2 non-generated files)",
+    "file contents: 3 blocks",
+    "context: 139787 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the contents and diffs of 3 generated files (listed above by name only)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "https://integrate.api.nvidia.com/v1",
+    "self_hostable": true,
+    "calls": 2,
+    "json_repaired": true,
+    "raw": "reviews/var-2283-v1/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 84755,
+      "completion_tokens": 31379
+    }
+  },
+  "summary": "The change replaces unguarded DeclaringSyntaxReferences[0] indexing with FirstOrDefault() for the MemberNeedsKey and BothStringAndIntKeyAreNull diagnostic locations in TypeCollector.cs, which is the root cause: closed generic value types from referenced assemblies have symbols with no syntax (including compiler-generated backing fields), so the old [0] access threw IndexOutOfRangeException and crashed the source generator (missing generated resolver). The new regression test fails on base and passes on head, the full suite has no regressions, and the only blemish is a new SA1515 style warning in the test file.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "The new regression test passes on head and fails on base because MyGenericStructFormatter`1.g.cs is missing (the generator crashed), and TypeCollector.cs head line 1077 now uses FirstOrDefault() for the MemberNeedsKey location instead of indexing DeclaringSyntaxReferences[0], which was the crash site for syntax-less metadata members.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1077,
+          "rev": "head",
+          "quote": "Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "head",
+          "quote": "(item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation()"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_ValueType_Defined_In_ReferencedProject",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_ValueType_Defined_In_ReferencedProject",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "cannot_determine",
+      "confidence_basis": "facts.json records no analyzer execution or AD0001 check for this input; the executed test is a source-generator verification whose base failure was a missing generated file (CS8785), not an analyzer exception. The code fix removes the IndexOutOfRangeException in the shared TypeCollector diagnostic path, but no analyzer run confirms the analyzer does not throw on this input.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_ValueType_Defined_In_ReferencedProject",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "For members with no syntax (metadata/referenced-assembly types), the diagnostic location is now FirstOrDefault()?.GetSyntax().GetLocation(), which yields null rather than a location outside the compilation, and non-public metadata members such as backing fields are not reported unless non-public members are serialized; the test passes without the generator emitting fatal diagnostics.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1077,
+          "rev": "head",
+          "quote": "item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 931,
+          "rev": "head",
+          "quote": "if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_ValueType_Defined_In_ReferencedProject",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "tests.full_suite passed: 168 passed, 0 failed, with no failures that are new on head and no failures that also fail on base, so existing diagnostics keep working unchanged.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "met",
+      "confidence_basis": "tests.fail_without_fix passed: the new test Generics_ValueType_Defined_In_ReferencedProject failed on base source (missing generated formatter) and passes on head, so the fix is covered by a test that fails without it.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_ValueType_Defined_In_ReferencedProject",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_ValueType_Defined_In_ReferencedProject",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "M1",
+      "title": "BothStringAndIntKeyAreNull branch at TypeCollector.cs:985 is not exercised by a failing test",
+      "severity": "info",
+      "category": "tests",
+      "claim": "The new test marks the property with [Key(0)], so intKey is non-null and the intKey == null && stringKey == null branch at line 985 is never reached; mutation M1 (remove_call on that line) survived with no test killing it. Only the MemberNeedsKey path (line 1077, hit by the metadata backing field) is covered by a test that fails on base. The line 985 change is still a correct defensive fix matching neighboring diagnostics.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "head",
+          "quote": "(item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation()"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 514,
+          "rev": "head",
+          "quote": "[Key(0)]"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_ValueType_Defined_In_ReferencedProject",
+          "outcome": "passed"
+        }
+      ],
+      "suggested_fix": "Add a regression case where a metadata-declared value type member has no usable key (both int and string key null) so the BothStringAndIntKeyAreNull path is covered by a test that fails without the FirstOrDefault() guard."
+    },
+    {
+      "id": "W1",
+      "title": "New SA1515 style warning introduced in GenericsFormatterTests.cs",
+      "severity": "minor",
+      "category": "maintainability",
+      "claim": "The analyzers check reports one new warning vs base: SA1515 (single-line comment should be preceded by blank line) in GenericsFormatterTests.cs. The comment at line 532 (`// Reference the defining assembly as metadata ...`) directly follows line 531 (`\"\"\";`) with no blank line between them. The build still passes, but the analyzer warning count increases.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "analyzers",
+          "status": "fail"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 532,
+          "rev": "head",
+          "quote": "// Reference the defining assembly as metadata (not as a project) so its symbols have no syntax."
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 531,
+          "rev": "head",
+          "quote": "\"\";"
+        }
+      ],
+      "suggested_fix": "Insert a blank line before the single-line comment at line 532 (or reformat the preceding statement) to satisfy SA1515."
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "MsgPack00x analyzer AD0001 behavior on the referenced-assembly value-type input",
+      "reason": "facts.json contains no analyzer execution result for this input; the executed test is a source-generator verification (base failure was a missing generated file, i.e. CS8785), so I cannot confirm from the provided evidence that the analyzer does not throw on this input. The code fix removes the IndexOutOfRangeException in the shared TypeCollector diagnostic path.",
+      "who_should_decide": "area owner",
+      "req": "REQ-2283-F2"
+    }
+  ],
+  "refutations": []
+}
