@@ -101,7 +101,7 @@ def main():
     hits, nlogs = blocked_in_logs(logs)
     hosts = sorted({h for x in hits for h in x["hosts"]})
     fd = feeds(facts_path.parent / "sbom.cdx.json")
-    feed_hosts = {k: (URL.match(v)[1] if URL.match(v) else v) for k, v in fd.items()}
+    feed_hosts = {k: URL.match(v)[1] for k, v in fd.items() if URL.match(v)}  # local folder feeds need no network
     outside = {k: h for k, h in feed_hosts.items() if not allowed(h, pol["tls_server_name_patterns"])}
     check = {"id": "build.egress", "tool": "CRACI network policy (cracicorp/setup@v1) + job log scan", "policy": pol,
              "policy_text": text, "policy_sha256": hashlib.sha256(text.encode()).hexdigest(), "provenance": prov,

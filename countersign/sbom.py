@@ -26,6 +26,7 @@ from pathlib import Path
 TOOL = {"name": "countersign-deps", "version": "1"}
 AUDIT_RE = re.compile(r"Package '(?P<name>[^']+)' (?P<version>\S+) has a known (?P<severity>\w+) severity vulnerability, (?P<url>\S+)")
 SEVERITY_RANK = {"low": 1, "moderate": 2, "high": 3, "critical": 4}
+CDX_SEVERITY = {"low": "low", "moderate": "medium", "high": "high", "critical": "critical"}  # NuGet -> CycloneDX enum
 CS_NS = uuid.UUID("6f1c2d7e-5a3b-4c8d-9e0f-1a2b3c4d5e6f")  # namespace for deterministic SBOM serial numbers
 
 
@@ -190,7 +191,7 @@ def cyclonedx(graph: dict, inputs: dict, *, name: str, sha: str, sdk: str) -> di
     for (pn, pv, url), v in sorted(graph["vulnerabilities"].items()):
         vulns.append({"bom-ref": f"vuln:{pn}@{pv}:{url.rsplit('/', 1)[-1]}", "id": url.rsplit("/", 1)[-1],
                       "source": {"name": "nuget.org vulnerability database (NuGet Audit)", "url": url},
-                      "ratings": [{"severity": v["severity"] if v["severity"] in SEVERITY_RANK else "unknown"}],
+                      "ratings": [{"severity": CDX_SEVERITY.get(v["severity"], "unknown")}],
                       "affects": [{"ref": purl(pn, pv)}]})
     doc = {"bomFormat": "CycloneDX", "specVersion": "1.6", "version": 1,
            "metadata": {"tools": {"components": [{"type": "application", **TOOL},
