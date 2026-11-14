@@ -643,15 +643,15 @@
     },
     "reviewer_cross_check": {
       "value": {
-        "claude": {
-          "major_raised_verified": 5,
-          "confirmed_by_another": 0,
-          "missed_others_verified_major": 1
-        },
         "nemotron": {
           "major_raised_verified": 1,
           "confirmed_by_another": 0,
           "missed_others_verified_major": 5
+        },
+        "claude": {
+          "major_raised_verified": 5,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 1
         },
         "codex": {
           "major_raised_verified": 0,
@@ -711,7 +711,23 @@
         "2297": 239227,
         "up-2022": 127795,
         "up-1934": 141147,
-        "up-1967": 98593
+        "up-1967": 98593,
+        "2129-mut1": 64570,
+        "2129-mut2": 64537,
+        "2234-inject": 52139,
+        "2234-mut1": 53920,
+        "2234-mut2": 57510,
+        "2234-mut3": 51111,
+        "2234-mut4": 51730,
+        "2234-mut5": 66760,
+        "2234-mut6": 69520,
+        "2234-mut7": 52962,
+        "2283-inject": 55323,
+        "2283-mut1": 64464,
+        "2283-mut2": 60159,
+        "2283-mut3": 64814,
+        "2283-mut4": 65247,
+        "2283-mut5": 65026
       },
       "simulated": false,
       "how": "measurement/costs.yaml; estimates where the row says so"

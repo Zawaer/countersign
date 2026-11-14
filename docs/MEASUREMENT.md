@@ -31,9 +31,9 @@ Every number below says whether it is **real** (measured on code and history) or
 | Escape rate, routed vs cleared bucket | 0.129 vs 0.0 | same |
 | Upstream median days from PR opened to merged | cleared bucket 0.24, routed bucket 0.85 | GitHub `createdAt` / `mergedAt` |
 | Findings per reviewer (verified / rejected as unsupported) | claude: 16 / 2; codex: 0 / 0; nemotron: 13 / 0 | `measurement/results.json` |
-| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | claude: 5, 0, 1; nemotron: 1, 0, 5; codex: 0, 0, 6 | same |
+| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | nemotron: 1, 0, 5; claude: 5, 0, 1; codex: 0, 0, 6 | same |
 | Real changes routed to a human | 86% of 7 | same |
-| Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2234: 275,180, 2283: 233,512, 2297: 239,227, up-1934: 141,147, up-1967: 98,593, up-2022: 127,795 | `measurement/costs.yaml` |
+| Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2129-mut1: 64,570, 2129-mut2: 64,537, 2234: 275,180, 2234-inject: 52,139, 2234-mut1: 53,920, 2234-mut2: 57,510, 2234-mut3: 51,111, 2234-mut4: 51,730, 2234-mut5: 66,760, 2234-mut6: 69,520, 2234-mut7: 52,962, 2283: 233,512, 2283-inject: 55,323, 2283-mut1: 64,464, 2283-mut2: 60,159, 2283-mut3: 64,814, 2283-mut4: 65,247, 2283-mut5: 65,026, 2297: 239,227, up-1934: 141,147, up-1967: 98,593, up-2022: 127,795 | `measurement/costs.yaml` |
 
 ### Simulated review time (reading model in the mandate, `simulated: true`)
 
