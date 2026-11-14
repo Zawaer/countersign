@@ -27,7 +27,7 @@ checked with screenshots at 390 and 1280 px (5c00775).
 inside our container, so no command ran. Our script still committed, so two commits (5e366b5, 32eeaa0) were
 labelled as Codex work that was not. CODEX_LOG records the correction.
 
-**Tokens.** About <!--n:codex_tokens_k-->1,015<!--/n-->k in the <!--n:codex_runs-->4<!--/n--> read-only runs (three reviews, one security review), 19k in the
+**Tokens.** About <!--n:codex_tokens_k-->1,076<!--/n-->k in the <!--n:codex_runs-->5<!--/n--> read-only runs (three reviews, one security review), 19k in the
 failed ones (`measurement/costs.yaml`).
 
 Code: github.com/Zawaer/countersign (`reviews/*/codex.json`, `docs/security/`)

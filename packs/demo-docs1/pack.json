@@ -1,0 +1,1526 @@
+{
+  "schema": "countersign.pack/v1",
+  "change": "demo-docs1",
+  "branch": "ju26-demo-docs1",
+  "base": "32258fdb",
+  "head": "6e9b25c5",
+  "commit_message": "docs: fix broken README anchor for migration notes\n\nThe table of contents linked to #migration-notes-from-v1x, but the section\nis headed \"Migration notes from prior versions\", so the link went nowhere.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+  "author": "Zawaer",
+  "agent_written": true,
+  "diff": {
+    "files": 1,
+    "insertions": 1,
+    "deletions": 1
+  },
+  "simulated": false,
+  "mutation": null,
+  "engine": {
+    "name": "countersign",
+    "version": "0.1.0"
+  },
+  "mandate": {
+    "path": "mandate/messagepack.mandate.yaml",
+    "id": "messagepack-csharp",
+    "version": "6",
+    "owner": "Toivo",
+    "sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
+    "signature": {
+      "valid": true,
+      "signed_by": "Toivo",
+      "signed_at": "2026-11-14T05:36:39+00:00",
+      "reason": "signature valid"
+    }
+  },
+  "inputs": {
+    "facts": {
+      "path": "evidence/demo-docs1/facts.json",
+      "sha256": "b388eee4eb8dac5c03977cec9574259328854e0b59ccbc411d4e3598baed1723"
+    },
+    "requirements": {
+      "path": "requirements/demo-docs1.yaml",
+      "sha256": "06482657441fad55bae5331b46fcbb30adfed3912c93c99ac1fca60aa0c21b34"
+    },
+    "reviews": {
+      "claude": {
+        "path": "reviews/demo-docs1/claude.json",
+        "sha256": "eaef7858e7014d203ffd834464d6ea9d4177ea0b33dc02f5ab854847b72e4d5e"
+      },
+      "codex": {
+        "path": "reviews/demo-docs1/codex.json",
+        "sha256": "7f1ae90f9106096feab43a39f47c02a33f0e1cfb4972cb39bee255966909acab"
+      },
+      "nemotron": {
+        "path": "reviews/demo-docs1/nemotron.json",
+        "sha256": "536fb30d2e46c7a579234299f4ab54a98e39651ad9f7d03a86999f5361721947"
+      }
+    }
+  },
+  "requirement_set": {
+    "source": "https://github.com/Zawaer/countersign-messagepack-demo/tree/ju26-demo-docs1",
+    "official": false
+  },
+  "tier": "notify",
+  "ai_recommendation": "notify",
+  "why": [
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "How GitHub actually renders and scrolls to the new anchor (docs.rendering was not run; resolution relies on re-implemented slug rules plus the heading I read) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "notify",
+      "why": "Whether README.md renders correctly in the GitHub UI (docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py, so visual rendering was not verified.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    }
+  ],
+  "drivers": [
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "How GitHub actually renders and scrolls to the new anchor (docs.rendering was not run; resolution relies on re-implemented slug rules plus the heading I read) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "notify",
+      "why": "Whether README.md renders correctly in the GitHub UI (docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py, so visual rendering was not verified.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "trust cap",
+      "id": "docs",
+      "tier": "silent",
+      "why": "docs: AI may clear at most to silent (mandate clearance right)"
+    },
+    {
+      "source": "risk score",
+      "id": "risk",
+      "tier": "silent",
+      "why": "score 1.2 (notify>=15, ask>=40, block>=130); largest: files_changed 1.1 + lines_changed 0.1"
+    }
+  ],
+  "owner": "Rene",
+  "primary_area": "docs",
+  "notify": [],
+  "areas": [
+    {
+      "name": "docs",
+      "owner": "Rene",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "README.md"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-demo-docs1-F1",
+      "type": "docs",
+      "text": "The README table-of-contents entry \"Migration notes from v1.x\" must link to an anchor that exists in README.md and resolves to the intended section (\"Migration notes from prior versions\", under Installation).",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "README.md:22 now links #migration-notes-from-prior-versions, which is the slug of the heading at README.md:101 (the Installation subsection the entry names), and docs.anchors passes with the link resolving at head.",
+          "verified": 3,
+          "verified_any": 5,
+          "cited": 5,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-demo-docs1-F1",
+              "quote": "must link to an anchor that exists in README.md",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-demo-docs1-F1 text contains the quote",
+              "ref": "ev-f329bfeb4b"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "head",
+              "quote": "[Migration notes from v1.x](#migration-notes-from-prior-versions)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at head 6e9b25c5",
+              "ref": "ev-ed83d70a20"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 101,
+              "rev": "head",
+              "quote": "### Migration notes from prior versions",
+              "verified": true,
+              "substantive": false,
+              "note": "quote matches README.md:101 at head 6e9b25c5; context only, not counted: line 101 of README.md is not a line this change touched (added at head)",
+              "context": "line 101 of README.md is not a line this change touched (added at head)",
+              "ref": "ev-7ee09de8c5"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "base",
+              "quote": "(#migration-notes-from-v1x)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at base 32258fdb",
+              "ref": "ev-fc29488a6a"
+            },
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+              "ref": "ev-889510bd31"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The updated TOC link targets the heading under Installation, and the deterministic anchor check reports that the changed link resolves at head.",
+          "verified": 2,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "head",
+              "quote": "    - [Migration notes from v1.x](#migration-notes-from-prior-versions)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at head 6e9b25c5",
+              "ref": "ev-f315fb38c4"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 101,
+              "rev": "head",
+              "quote": "### Migration notes from prior versions",
+              "verified": true,
+              "substantive": false,
+              "note": "quote matches README.md:101 at head 6e9b25c5; context only, not counted: line 101 of README.md is not a line this change touched (added at head)",
+              "context": "line 101 of README.md is not a line this change touched (added at head)",
+              "ref": "ev-7ee09de8c5"
+            },
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+              "ref": "ev-889510bd31"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The diff changes only README.md line 22 to \"- [Migration notes from v1.x](#migration-notes-from-prior-versions)\", and the docs.anchors check (status pass) reports that link on line 22 resolves at head with 0 unresolved anchors on touched lines, whereas base left #migration-notes-from-v1x unresolved.",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "head",
+              "quote": "[Migration notes from v1.x](#migration-notes-from-prior-versions)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at head 6e9b25c5",
+              "ref": "ev-ed83d70a20"
+            },
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+              "ref": "ev-889510bd31"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-demo-docs1-N1",
+      "type": "docs",
+      "text": "Only that link changes; no other README content and no other file is altered.",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "facts.json records one file (README.md, kind doc) with 1 insertion and 1 deletion, and the diff changes only the link target on line 22; public_api confirms no src change.",
+          "verified": 2,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-demo-docs1-N1",
+              "quote": "Only that link changes",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-demo-docs1-N1 text contains the quote",
+              "ref": "ev-d71cae5f53"
+            },
+            {
+              "kind": "check",
+              "id": "public_api",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+              "ref": "ev-1494dc6548"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "head",
+              "quote": "(#migration-notes-from-prior-versions)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at head 6e9b25c5",
+              "ref": "ev-f91e270150"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The supplied diff shows one README link replacement, and the change summary reports one changed file with one insertion and one deletion.",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "base",
+              "quote": "    - [Migration notes from v1.x](#migration-notes-from-v1x)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at base 32258fdb",
+              "ref": "ev-50cd6358cd"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "head",
+              "quote": "    - [Migration notes from v1.x](#migration-notes-from-prior-versions)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at head 6e9b25c5",
+              "ref": "ev-f315fb38c4"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The diff touches exactly one file (README.md) with one insertion and one deletion on line 22, replacing #migration-notes-from-v1x with #migration-notes-from-prior-versions; docs.anchors reports exactly one intra-document link on the touched lines and no source, test, or generated file changed.",
+          "verified": 3,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "base",
+              "quote": "[Migration notes from v1.x](#migration-notes-from-v1x)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at base 32258fdb",
+              "ref": "ev-5c6c2d8ab9"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 22,
+              "rev": "head",
+              "quote": "[Migration notes from v1.x](#migration-notes-from-prior-versions)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:22 at head 6e9b25c5",
+              "ref": "ev-ed83d70a20"
+            },
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+              "ref": "ev-889510bd31"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    }
+  ],
+  "reviewer_panel": {
+    "confidential": false,
+    "why": "repo and touched areas are not confidential",
+    "reviewers": [
+      "claude",
+      "codex",
+      "nemotron"
+    ],
+    "adjudicator": "gemini",
+    "excluded": [],
+    "ignored_files": [],
+    "rule": "proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass"
+  },
+  "disputes": [],
+  "adjudication": null,
+  "checked_by": {
+    "tools": [
+      {
+        "id": "build",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.targeted",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.full_suite",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "public_api",
+        "tool": "git diff --name-only (no file under src/ changed)",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "analyzers",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "docs.anchors",
+        "tool": "evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "injection_scan",
+        "tool": "countersign.injection (deterministic pattern scan)",
+        "tool_version": "injection-v2",
+        "status": "pass",
+        "summary": "no text addressed to automated reviewers in the added lines, file paths, branch, commit message or PR text",
+        "duration_s": null,
+        "log": null
+      }
+    ],
+    "reviewers": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T14:35:00+02:00",
+        "inputs": [
+          "diff 32258fdb..6e9b25c5",
+          "facts.json",
+          "requirements/demo-docs1.yaml",
+          "README.md at head and base (the TOC line and the section heading, as the brief allows)"
+        ],
+        "findings": 2,
+        "verified": 2,
+        "rejected": 0,
+        "refusals": 1
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T14:40:00+02:00",
+        "inputs": [
+          "prompts/review-v1.md",
+          "context from countersign.llm.build_review_context (/tmp/dd1/context.txt)",
+          "repo /data/src/mp",
+          "base 32258fdbee4bcd653c79f51b4376b5103c6f4d27",
+          "head 6e9b25c578509b1b38d60d5c99f851ac4897e780"
+        ],
+        "findings": 0,
+        "verified": 0,
+        "rejected": 0,
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T14:41:48+02:00",
+        "inputs": [
+          "requirements: requirements/demo-docs1.yaml",
+          "issue: https://github.com/Zawaer/countersign-messagepack-demo/tree/ju26-demo-docs1",
+          "facts: evidence/demo-docs1/facts.json",
+          "diff 32258fdb..6e9b25c5 (1 non-generated files)",
+          "file contents: 0 blocks",
+          "context: 7351 chars (budget 180000)"
+        ],
+        "findings": 0,
+        "verified": 0,
+        "rejected": 0,
+        "refusals": 1
+      }
+    ],
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)"
+  },
+  "findings": [
+    {
+      "id": "C1",
+      "title": "TOC entry text still says \"v1.x\"; heading says \"prior versions\"",
+      "severity": "info",
+      "category": "docs",
+      "claim": "The link now reaches the right section, but its label differs from the heading it points to. Harmless; renaming the label would be a separate wording change outside this fix's scope.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 22,
+          "rev": "head",
+          "quote": "[Migration notes from v1.x]",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches README.md:22 at head 6e9b25c5",
+          "ref": "ev-b3299a2245"
+        },
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 101,
+          "rev": "head",
+          "quote": "Migration notes from prior versions",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches README.md:101 at head 6e9b25c5",
+          "ref": "ev-9ff1cbd8ec"
+        }
+      ],
+      "verified_count": 2,
+      "substantive_count": 2,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "C2",
+      "title": "Two other broken README anchors remain (#rpc, #author-info)",
+      "severity": "info",
+      "category": "docs",
+      "claim": "docs.anchors still reports #rpc and #author-info unresolved on lines the change did not touch. Outside this change's scope; a follow-up.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "docs.anchors",
+          "status": "pass",
+          "verified": true,
+          "substantive": true,
+          "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+          "ref": "ev-889510bd31"
+        }
+      ],
+      "verified_count": 1,
+      "substantive_count": 1,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "silent",
+      "confirmed_by": []
+    }
+  ],
+  "refused": {
+    "clauses": [],
+    "reviewer_refusals": [
+      {
+        "topic": "How GitHub actually renders and scrolls to the new anchor",
+        "reason": "docs.rendering was not run; resolution relies on re-implemented slug rules plus the heading I read",
+        "who_should_decide": "docs owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      },
+      {
+        "topic": "Whether README.md renders correctly in the GitHub UI",
+        "reason": "docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py, so visual rendering was not verified.",
+        "who_should_decide": "docs/area owner",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      }
+    ]
+  },
+  "rejected_claims": [],
+  "not_checked": [
+    {
+      "id": "docs.rendering",
+      "reason": "Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "docs.external_links",
+      "reason": "links to other files or URLs were not followed (offline)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "build",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "tests.targeted",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "tests.full_suite",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "analyzers",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "other-targets",
+      "reason": "Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "runtime-perf",
+      "reason": "No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "semantic-intent",
+      "reason": "Correctness beyond what tests and cited evidence show is not established by the AI",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "provenance",
+      "reason": "Licensing and provenance of agent-written code are not checked",
+      "source": "mandate known gap"
+    }
+  ],
+  "residual_risk": [
+    "Reviewer refusal (claude): How GitHub actually renders and scrolls to the new anchor (out of scope: notify)",
+    "Reviewer refusal (nemotron): Whether README.md renders correctly in the GitHub UI (out of scope: notify)",
+    "docs.rendering not run (Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py)",
+    "docs.external_links not run (links to other files or URLs were not followed (offline))",
+    "build not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "tests.targeted not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "tests.fail_without_fix not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "tests.full_suite not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "analyzers not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
+  ],
+  "risk": {
+    "score": 1.2,
+    "tier": "silent",
+    "thresholds": {
+      "notify": 15,
+      "ask": 40,
+      "block": 130
+    },
+    "factors": [
+      {
+        "factor": "area_sensitivity",
+        "points": 0,
+        "reason": "most sensitive area touched: docs (low)"
+      },
+      {
+        "factor": "files_changed",
+        "points": 1.1,
+        "reason": "1 files (~1.1 per file while small, log-scaled past 80, cap 45)"
+      },
+      {
+        "factor": "lines_changed",
+        "points": 0.1,
+        "reason": "2 non-generated lines (~4 per 100 lines while small, log-scaled past 100, cap 20; files and lines together at most 45)"
+      },
+      {
+        "factor": "generated_files",
+        "points": 0.0,
+        "reason": "0 generated files x 0.1 (cap 10)"
+      },
+      {
+        "factor": "public_api_change",
+        "points": 0,
+        "reason": "public_api check: no change"
+      },
+      {
+        "factor": "source_without_tests",
+        "points": 0,
+        "reason": "no source changed"
+      },
+      {
+        "factor": "security_sensitive_paths",
+        "points": 0,
+        "reason": "none touched"
+      },
+      {
+        "factor": "fail_without_fix_not_shown",
+        "points": 0,
+        "reason": "tests.fail_without_fix: skipped (no source changed: nothing to revert)"
+      },
+      {
+        "factor": "reviewer_disagreement",
+        "points": 0,
+        "reason": "0 clause(s) x 8"
+      },
+      {
+        "factor": "failed_checks",
+        "points": 0,
+        "reason": "0 failed check(s) x 25"
+      }
+    ]
+  },
+  "rules_fired": [],
+  "reviewers_untrusted": null,
+  "carried_forward": [],
+  "refuted_findings": [],
+  "reproduced": {},
+  "signoff": {
+    "required": false,
+    "owner": "Rene",
+    "allowed_decisions": [
+      "accept",
+      "reject",
+      "request-changes"
+    ],
+    "command": "countersign sign demo-docs1 --as Rene --decision <accept|reject|request-changes> --note \"...\"",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "TOC entry text still says \"v1.x\"; heading says \"prior versions\"",
+        "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "claude:C2",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Two other broken README anchors remain (#rpc, #author-info)",
+        "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+      }
+    ],
+    "command_with_findings": "countersign sign demo-docs1 --as Rene --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C2=<accepted|rejected|unsure>",
+    "statement": "I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  },
+  "story": {
+    "headline": "Agent-written change for https://github.com/Zawaer/countersign-messagepack-demo/tree/ju26-demo-docs1: docs: fix broken README anchor for migration notes The table of contents linked to #migration-notes-from-v1x, but the section is headed \"Migration notes from prior versions\", so the link went nowhere. Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "what": "Changes 1 doc file (+1 -1) on ju26-demo-docs1 by Zawaer.",
+    "why": "Judged against 2 requirement clauses from https://github.com/Zawaer/countersign-messagepack-demo/tree/ju26-demo-docs1 (placeholder requirement set, not Tieto's official one).",
+    "touches": [
+      {
+        "area": "docs",
+        "owner": "Rene",
+        "sensitivity": "low",
+        "files": 1
+      }
+    ],
+    "issue": "https://github.com/Zawaer/countersign-messagepack-demo/tree/ju26-demo-docs1"
+  },
+  "card": {
+    "tier": "notify",
+    "owner": "Rene",
+    "fyi": [],
+    "risk_score": 1.2,
+    "reasons": [
+      {
+        "text": "The AI declined to decide 2 questions, e.g. How GitHub actually renders and scrolls to the new anchor",
+        "link": "#refused"
+      }
+    ],
+    "more_drivers": 4,
+    "trace": [
+      {
+        "id": "REQ-demo-docs1-F1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (7 verified citations); docs.anchors pass",
+        "anchor": "chain-REQ-demo-docs1-F1"
+      },
+      {
+        "id": "REQ-demo-docs1-N1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (7 verified citations); docs.anchors pass",
+        "anchor": "chain-REQ-demo-docs1-N1"
+      }
+    ],
+    "found": [
+      {
+        "key": "claude:C1",
+        "anchor": "f-claude-C1",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "TOC entry text still says \"v1.x\"; heading says \"prior versions\"",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-b3299a2245",
+            "label": "README.md:22 @head"
+          },
+          {
+            "ref": "ev-9ff1cbd8ec",
+            "label": "README.md:101 @head"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "claude:C2",
+        "anchor": "f-claude-C2",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Two other broken README anchors remain (#rpc, #author-info)",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-889510bd31",
+            "label": "check docs.anchors pass"
+          }
+        ],
+        "shared_with": []
+      }
+    ],
+    "found_total": 2,
+    "rejected_total": 0,
+    "refused": [
+      {
+        "topic": "How GitHub actually renders and scrolls to the new anchor",
+        "why": "docs.rendering was not run; resolution relies on re-implemented slug rules plus the heading I read",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "docs owner"
+        ],
+        "peripheral": true,
+        "anchor": "refusal-1"
+      },
+      {
+        "topic": "Whether README.md renders correctly in the GitHub UI",
+        "why": "docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py, so visual rendering was not verified.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "docs/area owner"
+        ],
+        "peripheral": true,
+        "anchor": "refusal-2"
+      }
+    ],
+    "refused_peripheral": [],
+    "refused_clauses": [],
+    "not_checked": [
+      {
+        "id": "docs.rendering",
+        "reason": "Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py"
+      },
+      {
+        "id": "docs.external_links",
+        "reason": "links to other files or URLs were not followed (offline)"
+      },
+      {
+        "id": "build",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "tests.targeted",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "tests.full_suite",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "analyzers",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      }
+    ],
+    "known_gaps": [
+      "other-targets",
+      "runtime-perf",
+      "semantic-intent",
+      "provenance"
+    ],
+    "residual": [
+      {
+        "text": "2 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused",
+        "drives": true
+      }
+    ],
+    "residual_more": [
+      {
+        "text": "Not run: docs.rendering, docs.external_links, build, tests.targeted, tests.fail_without_fix, tests.full_suite, analyzers",
+        "link": "#not-checked",
+        "drives": false
+      },
+      {
+        "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
+        "link": "#not-checked",
+        "drives": false
+      }
+    ],
+    "sign": {
+      "owner": "Rene",
+      "required": false,
+      "decisions": [
+        "accept",
+        "reject",
+        "request-changes"
+      ],
+      "statement": "I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+      "command": "countersign sign demo-docs1 --as Rene --decision <accept|reject|request-changes> --note \"...\"",
+      "findings": [
+        {
+          "ref": "claude:C1",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "TOC entry text still says \"v1.x\"; heading says \"prior versions\"",
+          "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "claude:C2",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "Two other broken README anchors remain (#rpc, #author-info)",
+          "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+        }
+      ],
+      "command_with_findings": "countersign sign demo-docs1 --as Rene --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C2=<accepted|rejected|unsure>"
+    },
+    "reviewers": 3
+  },
+  "trust": [
+    {
+      "id": "REQ-demo-docs1-F1",
+      "text": "The README table-of-contents entry \"Migration notes from v1.x\" must link to an anchor that exists in README.md and resolves to the intended section (\"Migration notes from prior versions\", under Installation).",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (7 verified citations); docs.anchors pass",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass",
+          "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+          "logs": []
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "README.md:22 now links #migration-notes-from-prior-versions, which is the slug of the heading at README.md:101 (the Installation subsection the entry names), and docs.anchors passes with the link resolving at head.",
+          "verified": 3,
+          "cited": 5,
+          "refs": [
+            "ev-f329bfeb4b",
+            "ev-ed83d70a20",
+            "ev-7ee09de8c5",
+            "ev-fc29488a6a",
+            "ev-889510bd31"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The updated TOC link targets the heading under Installation, and the deterministic anchor check reports that the changed link resolves at head.",
+          "verified": 2,
+          "cited": 3,
+          "refs": [
+            "ev-f315fb38c4",
+            "ev-7ee09de8c5",
+            "ev-889510bd31"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The diff changes only README.md line 22 to \"- [Migration notes from v1.x](#migration-notes-from-prior-versions)\", and the docs.anchors check (status pass) reports that link on line 22 resolves at head with 0 unresolved anchors on touched lines, whereas base left #migration-notes-from-v1x unresolved.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-ed83d70a20",
+            "ev-889510bd31"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-demo-docs1-N1",
+      "text": "Only that link changes; no other README content and no other file is altered.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (7 verified citations); docs.anchors pass",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass",
+          "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+          "logs": []
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "facts.json records one file (README.md, kind doc) with 1 insertion and 1 deletion, and the diff changes only the link target on line 22; public_api confirms no src change.",
+          "verified": 2,
+          "cited": 3,
+          "refs": [
+            "ev-d71cae5f53",
+            "ev-1494dc6548",
+            "ev-f91e270150"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The supplied diff shows one README link replacement, and the change summary reports one changed file with one insertion and one deletion.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-50cd6358cd",
+            "ev-f315fb38c4"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The diff touches exactly one file (README.md) with one insertion and one deletion on line 22, replacing #migration-notes-from-v1x with #migration-notes-from-prior-versions; docs.anchors reports exactly one intra-document link on the touched lines and no source, test, or generated file changed.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-5c6c2d8ab9",
+            "ev-ed83d70a20",
+            "ev-889510bd31"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    }
+  ],
+  "panel": {
+    "rows": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-demo-docs1-F1": "met",
+          "REQ-demo-docs1-N1": "met"
+        },
+        "citations_verified": 11,
+        "citations_rejected": 0,
+        "findings_verified": 2,
+        "findings_rejected": 0,
+        "only_this_reviewer": [
+          {
+            "id": "C1",
+            "severity": "info",
+            "title": "TOC entry text still says \"v1.x\"; heading says \"prior versions\"",
+            "status": "verified"
+          },
+          {
+            "id": "C2",
+            "severity": "info",
+            "title": "Two other broken README anchors remain (#rpc, #author-info)",
+            "status": "verified"
+          }
+        ],
+        "refusals": 1
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-demo-docs1-F1": "met",
+          "REQ-demo-docs1-N1": "met"
+        },
+        "citations_verified": 5,
+        "citations_rejected": 0,
+        "findings_verified": 0,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-demo-docs1-F1": "met",
+          "REQ-demo-docs1-N1": "met"
+        },
+        "citations_verified": 5,
+        "citations_rejected": 0,
+        "findings_verified": 0,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 1
+      }
+    ],
+    "callouts": [],
+    "adjudicator": "gemini"
+  },
+  "evidence_index": {
+    "ev-f329bfeb4b": {
+      "kind": "requirement",
+      "quote": "must link to an anchor that exists in README.md",
+      "req": "REQ-demo-docs1-F1",
+      "ref": "ev-f329bfeb4b",
+      "label": "REQ-demo-docs1-F1 text",
+      "verified": true,
+      "note": "REQ-demo-docs1-F1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-demo-docs1-F1"
+      ],
+      "clause_text": "The README table-of-contents entry \"Migration notes from v1.x\" must link to an anchor that exists in README.md and resolves to the intended section (\"Migration notes from prior versions\", under Installation)."
+    },
+    "ev-ed83d70a20": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 22,
+      "rev": "head",
+      "quote": "[Migration notes from v1.x](#migration-notes-from-prior-versions)",
+      "ref": "ev-ed83d70a20",
+      "label": "README.md:22 @head",
+      "verified": true,
+      "note": "quote matches README.md:22 at head 6e9b25c5",
+      "cited_by": [
+        "claude on REQ-demo-docs1-F1",
+        "nemotron on REQ-demo-docs1-F1",
+        "nemotron on REQ-demo-docs1-N1"
+      ],
+      "excerpt": {
+        "sha": "6e9b25c5",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "- [Installation](#installation)",
+          "    - [NuGet packages](#nuget-packages)",
+          "    - [Unity](#unity)",
+          "    - [Migration notes from v1.x](#migration-notes-from-prior-versions)",
+          "- [Quick Start](#quick-start)",
+          "- [Analyzer](#analyzer)",
+          "- [Built-in supported types](#built-in-supported-types)"
+        ]
+      }
+    },
+    "ev-7ee09de8c5": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 101,
+      "rev": "head",
+      "quote": "### Migration notes from prior versions",
+      "ref": "ev-7ee09de8c5",
+      "label": "README.md:101 @head",
+      "verified": true,
+      "note": "quote matches README.md:101 at head 6e9b25c5; context only, not counted: line 101 of README.md is not a line this change touched (added at head)",
+      "cited_by": [
+        "claude on REQ-demo-docs1-F1",
+        "codex on REQ-demo-docs1-F1"
+      ],
+      "excerpt": {
+        "sha": "6e9b25c5",
+        "start": 98,
+        "highlight": 101,
+        "lines": [
+          "",
+          "For Unity projects, please read the [Unity Support](#unity-support) section to install.",
+          "",
+          "### Migration notes from prior versions",
+          "",
+          "Migrating from a prior major version of MessagePack to the latest?",
+          "Check out [these instructions](doc/migration.md)."
+        ]
+      }
+    },
+    "ev-fc29488a6a": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 22,
+      "rev": "base",
+      "quote": "(#migration-notes-from-v1x)",
+      "ref": "ev-fc29488a6a",
+      "label": "README.md:22 @base",
+      "verified": true,
+      "note": "quote matches README.md:22 at base 32258fdb",
+      "cited_by": [
+        "claude on REQ-demo-docs1-F1"
+      ],
+      "excerpt": {
+        "sha": "32258fdb",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "- [Installation](#installation)",
+          "    - [NuGet packages](#nuget-packages)",
+          "    - [Unity](#unity)",
+          "    - [Migration notes from v1.x](#migration-notes-from-v1x)",
+          "- [Quick Start](#quick-start)",
+          "- [Analyzer](#analyzer)",
+          "- [Built-in supported types](#built-in-supported-types)"
+        ]
+      }
+    },
+    "ev-889510bd31": {
+      "kind": "check",
+      "id": "docs.anchors",
+      "status": "pass",
+      "ref": "ev-889510bd31",
+      "label": "check docs.anchors pass",
+      "verified": true,
+      "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+      "cited_by": [
+        "claude on REQ-demo-docs1-F1",
+        "codex on REQ-demo-docs1-F1",
+        "nemotron on REQ-demo-docs1-F1",
+        "nemotron on REQ-demo-docs1-N1",
+        "claude:C2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 3 unresolved of 63, head has 2 unresolved on lines the change did not touch (#author-info, #rpc)",
+        "tool": "evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-f315fb38c4": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 22,
+      "rev": "head",
+      "quote": "    - [Migration notes from v1.x](#migration-notes-from-prior-versions)",
+      "ref": "ev-f315fb38c4",
+      "label": "README.md:22 @head",
+      "verified": true,
+      "note": "quote matches README.md:22 at head 6e9b25c5",
+      "cited_by": [
+        "codex on REQ-demo-docs1-F1",
+        "codex on REQ-demo-docs1-N1"
+      ],
+      "excerpt": {
+        "sha": "6e9b25c5",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "- [Installation](#installation)",
+          "    - [NuGet packages](#nuget-packages)",
+          "    - [Unity](#unity)",
+          "    - [Migration notes from v1.x](#migration-notes-from-prior-versions)",
+          "- [Quick Start](#quick-start)",
+          "- [Analyzer](#analyzer)",
+          "- [Built-in supported types](#built-in-supported-types)"
+        ]
+      }
+    },
+    "ev-d71cae5f53": {
+      "kind": "requirement",
+      "quote": "Only that link changes",
+      "req": "REQ-demo-docs1-N1",
+      "ref": "ev-d71cae5f53",
+      "label": "REQ-demo-docs1-N1 text",
+      "verified": true,
+      "note": "REQ-demo-docs1-N1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-demo-docs1-N1"
+      ],
+      "clause_text": "Only that link changes; no other README content and no other file is altered."
+    },
+    "ev-1494dc6548": {
+      "kind": "check",
+      "id": "public_api",
+      "status": "pass",
+      "ref": "ev-1494dc6548",
+      "label": "check public_api pass",
+      "verified": true,
+      "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+      "cited_by": [
+        "claude on REQ-demo-docs1-N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+        "tool": "git diff --name-only (no file under src/ changed)",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-f91e270150": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 22,
+      "rev": "head",
+      "quote": "(#migration-notes-from-prior-versions)",
+      "ref": "ev-f91e270150",
+      "label": "README.md:22 @head",
+      "verified": true,
+      "note": "quote matches README.md:22 at head 6e9b25c5",
+      "cited_by": [
+        "claude on REQ-demo-docs1-N1"
+      ],
+      "excerpt": {
+        "sha": "6e9b25c5",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "- [Installation](#installation)",
+          "    - [NuGet packages](#nuget-packages)",
+          "    - [Unity](#unity)",
+          "    - [Migration notes from v1.x](#migration-notes-from-prior-versions)",
+          "- [Quick Start](#quick-start)",
+          "- [Analyzer](#analyzer)",
+          "- [Built-in supported types](#built-in-supported-types)"
+        ]
+      }
+    },
+    "ev-50cd6358cd": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 22,
+      "rev": "base",
+      "quote": "    - [Migration notes from v1.x](#migration-notes-from-v1x)",
+      "ref": "ev-50cd6358cd",
+      "label": "README.md:22 @base",
+      "verified": true,
+      "note": "quote matches README.md:22 at base 32258fdb",
+      "cited_by": [
+        "codex on REQ-demo-docs1-N1"
+      ],
+      "excerpt": {
+        "sha": "32258fdb",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "- [Installation](#installation)",
+          "    - [NuGet packages](#nuget-packages)",
+          "    - [Unity](#unity)",
+          "    - [Migration notes from v1.x](#migration-notes-from-v1x)",
+          "- [Quick Start](#quick-start)",
+          "- [Analyzer](#analyzer)",
+          "- [Built-in supported types](#built-in-supported-types)"
+        ]
+      }
+    },
+    "ev-5c6c2d8ab9": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 22,
+      "rev": "base",
+      "quote": "[Migration notes from v1.x](#migration-notes-from-v1x)",
+      "ref": "ev-5c6c2d8ab9",
+      "label": "README.md:22 @base",
+      "verified": true,
+      "note": "quote matches README.md:22 at base 32258fdb",
+      "cited_by": [
+        "nemotron on REQ-demo-docs1-N1"
+      ],
+      "excerpt": {
+        "sha": "32258fdb",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "- [Installation](#installation)",
+          "    - [NuGet packages](#nuget-packages)",
+          "    - [Unity](#unity)",
+          "    - [Migration notes from v1.x](#migration-notes-from-v1x)",
+          "- [Quick Start](#quick-start)",
+          "- [Analyzer](#analyzer)",
+          "- [Built-in supported types](#built-in-supported-types)"
+        ]
+      }
+    },
+    "ev-b3299a2245": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 22,
+      "rev": "head",
+      "quote": "[Migration notes from v1.x]",
+      "ref": "ev-b3299a2245",
+      "label": "README.md:22 @head",
+      "verified": true,
+      "note": "quote matches README.md:22 at head 6e9b25c5",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "6e9b25c5",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "- [Installation](#installation)",
+          "    - [NuGet packages](#nuget-packages)",
+          "    - [Unity](#unity)",
+          "    - [Migration notes from v1.x](#migration-notes-from-prior-versions)",
+          "- [Quick Start](#quick-start)",
+          "- [Analyzer](#analyzer)",
+          "- [Built-in supported types](#built-in-supported-types)"
+        ]
+      }
+    },
+    "ev-9ff1cbd8ec": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 101,
+      "rev": "head",
+      "quote": "Migration notes from prior versions",
+      "ref": "ev-9ff1cbd8ec",
+      "label": "README.md:101 @head",
+      "verified": true,
+      "note": "quote matches README.md:101 at head 6e9b25c5",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "6e9b25c5",
+        "start": 98,
+        "highlight": 101,
+        "lines": [
+          "",
+          "For Unity projects, please read the [Unity Support](#unity-support) section to install.",
+          "",
+          "### Migration notes from prior versions",
+          "",
+          "Migrating from a prior major version of MessagePack to the latest?",
+          "Check out [these instructions](doc/migration.md)."
+        ]
+      }
+    }
+  },
+  "supply_chain": {
+    "recorded": false,
+    "rules": [],
+    "egress": null,
+    "craci_network": null,
+    "craci_sbom": null,
+    "status": "not run",
+    "line": "deps.delta not run; build egress not recorded (local run, not on CRACI)"
+  }
+}

@@ -50,3 +50,11 @@ Two `codex exec` runs (write mode, started from a script during Claude downtime)
 - **Changes:** build the landing scene from pack/facts/review evidence, attach compact status pins to cited diff/test lines, provide evidence cards and scene switching (including seeded bugs), and simplify the top navigation and mobile layout. Light is the default; the theme control supports dark mode.
 - **Files changed:** `site/scene.py`, generated site pages under `site/`, and this log entry.
 - **Visual review:** Playwright screenshots at 390px and 1280px; two removal passes removed mobile title truncation and a duplicate verdict phrase. Final screenshot paths: `/data/work/screenshots/countersign/scene-390-final.png` and `/data/work/screenshots/countersign/scene-1280-final.png`.
+
+## 2026-11-14 14:40 (Europe/Helsinki): review of demo-docs1 (agent-written README anchor fix in the demo repo)
+
+- **Purpose:** independent second-vendor review (reviewer "codex") of demo-docs1, the one-line README link fix meant to be the first change that clears through the demo repo's PR gate.
+- **Prompt summary:** one short run: follow prompts/review-v1.md exactly, read the context `countersign.llm.build_review_context` produced (/tmp/dd1/context.txt), optionally read README.md at head and base with `git show` in /data/src/mp, return only the JSON object.
+- **Mode:** read-only (`readOnly: true`). Codex changed no files.
+- **Model:** self-reported "GPT-6" (tool default model). Run id 01a1da15-14af-71e1-88de-535172b767ac, 60,039 tokens in and 780 out (reported by the tool).
+- **Use of output:** saved to reviews/demo-docs1/codex.json with the runner fields (reviewer, model, vendor, prompt_version, reviewed_at = run start, inputs) added; Codex's JSON unchanged. Both clauses met, no findings, no refusals.
