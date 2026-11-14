@@ -1,13 +1,13 @@
 {
-  "seq": 10,
-  "ts": "2026-11-14T09:05:06+00:00",
+  "seq": 14,
+  "ts": "2026-11-14T10:15:45+00:00",
   "type": "signoff",
   "payload": {
     "change": "2297",
     "pack_path": "packs/2297/pack.json",
-    "pack_sha256": "4ae1c9eea9d6e339b77b2fb04f69cd26fc9534307b1acf383e913566830fbd39",
+    "pack_sha256": "39321d2e9240861a680c9055bed31da872f98bdb3dc3fe4ba033fec4348c0b1e",
     "decision": "request-changes",
-    "note": "Split the change; the #if premise is wrong (the attribute exists on netstandard2.0 and .NET Framework).",
+    "note": "Split the change; the #if premise is wrong (the attribute exists on netstandard2.0 and .NET Framework). Re-signed Sat 12:20 after new evidence (mutation testing, Gemini adjudication, CRACI network trace); decision and ratings unchanged.",
     "tier": "block",
     "ai_cleared": false,
     "areas": [
@@ -49,8 +49,8 @@
     ],
     "simulated": false
   },
-  "prev": "703cd1e4e3a268475ad8d4977968ce1f7d13aa7ecf76efe136daac7e2952e229",
+  "prev": "15d0b04247d17a1abbdfd6e245030188669c1ef790d0cbfec469843146cbe9b7",
   "signer": "Toivo",
-  "hash": "48498e3bfa77b0ff4f25689b8c4c62cabec3657246e1ab869333507ec4e322ef",
-  "sig": "uoiE1TC/4a8uUUC5qj9xfOqa7bewAQYw6/SR36l08B4x4pQXmEBihIqHiKn/snTfEjQ7NMWX2h3aG4z4BUfSDA=="
+  "hash": "c789255bd4dad08621983abcf1ced333357e7dffeae8403e0c097d1819d50d6d",
+  "sig": "ZmUCFhjP8mWXuA26XEa4U/0u/wms7tViIhhfBYtyTmcUEPDOZoDz8NRrFUjptUrvUGzcvrv2Jz1Z39fsmVIOCw=="
 }

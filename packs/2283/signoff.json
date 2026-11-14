@@ -1,13 +1,13 @@
 {
-  "seq": 8,
-  "ts": "2026-11-14T09:05:05+00:00",
+  "seq": 12,
+  "ts": "2026-11-14T10:15:45+00:00",
   "type": "signoff",
   "payload": {
     "change": "2283",
     "pack_path": "packs/2283/pack.json",
-    "pack_sha256": "c46fa2579947bae4adaf2ea616348c68e446d9d9996020acf25f3c252a8ea375",
+    "pack_sha256": "ec728b0ca151a11ef219e5ff6e85039d54f849eba4c5d4e8a13a472f5883f9d4",
     "decision": "request-changes",
-    "note": "The fix silences MsgPack003 for in-compilation types reached through a metadata generic (reproduced regression).",
+    "note": "The fix silences MsgPack003 for in-compilation types reached through a metadata generic (reproduced regression). Re-signed Sat 12:20 after new evidence (mutation testing, Gemini adjudication, CRACI network trace); decision and ratings unchanged.",
     "tier": "ask",
     "ai_cleared": false,
     "areas": [
@@ -42,8 +42,8 @@
     ],
     "simulated": false
   },
-  "prev": "4f1b465c34d58b5729c8be568c44c40891aef753ef520f4c12353e8e7a5f09fe",
+  "prev": "278cfd7161082c0659ecb73c65841d214afbaf713ad5c26b16aea38956fbf507",
   "signer": "Toivo",
-  "hash": "4637b8f940e9f5295c094277e35f58e7190c41a889efe2103e7b4e00046becff",
-  "sig": "LXCNXMPw/Qt6hxYsccoBlRjotyE+mTCfBDO0gw2Jm2MrD4Xu99OY+7bpQLQzfgY15aCjr0lEgqV2KCRqCCvbAA=="
+  "hash": "039fbe5ad796a7a4e9db67223e9915078addd18caf8532c42a7b1640f1c6ccb7",
+  "sig": "ePrdyt4i14tA78i3z19X0eDuioFILO+S7opHvYKU91tV41imLEGIygwt7NqWoFlk53Wa8e9s5dKT2AZWt8NTBg=="
 }

@@ -1,13 +1,13 @@
 {
-  "seq": 9,
-  "ts": "2026-11-14T09:05:05+00:00",
+  "seq": 13,
+  "ts": "2026-11-14T10:15:45+00:00",
   "type": "signoff",
   "payload": {
     "change": "2129",
     "pack_path": "packs/2129/pack.json",
-    "pack_sha256": "b7880487224f59abde3ac554165160c5ae60618dadcf1aa8d26f8def32830e74",
+    "pack_sha256": "83e73e7bb6b59f75ba560cb8a7e667b924ab046db7aba2b9a2b4ba263d77dc5a",
     "decision": "request-changes",
-    "note": "New public API in MessagePack.Annotations is untracked; the new test project is missing from the solution.",
+    "note": "New public API in MessagePack.Annotations is untracked; the new test project is missing from the solution. Re-signed Sat 12:20 after new evidence (mutation testing, Gemini adjudication, CRACI network trace); decision and ratings unchanged.",
     "tier": "block",
     "ai_cleared": false,
     "areas": [
@@ -72,8 +72,8 @@
     ],
     "simulated": false
   },
-  "prev": "4637b8f940e9f5295c094277e35f58e7190c41a889efe2103e7b4e00046becff",
+  "prev": "039fbe5ad796a7a4e9db67223e9915078addd18caf8532c42a7b1640f1c6ccb7",
   "signer": "Toivo",
-  "hash": "703cd1e4e3a268475ad8d4977968ce1f7d13aa7ecf76efe136daac7e2952e229",
-  "sig": "JJq11yOx4zQe7k2Zl6jXhZ5dGOf5lbFhROkg7ezTf1m7AKvwL5aPrIGdJbg/VLh9zXJHW3V5E220KKm+MOXWDw=="
+  "hash": "15d0b04247d17a1abbdfd6e245030188669c1ef790d0cbfec469843146cbe9b7",
+  "sig": "Qu+z8KmRXoCPI7pH68Qnr8odDsNgpdZHIxucOvirt1fEqI+z8keJrzPhPdeznMLR3i53pWXwhAgd+XamhE2BBA=="
 }

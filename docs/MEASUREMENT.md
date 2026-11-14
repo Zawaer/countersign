@@ -29,16 +29,16 @@ Every number below says whether it is **real** (measured on code and history) or
 |---|---|---|
 | Seeded defects caught by deterministic checks alone | **14 of 18**; survived: 2234-mut2, 2283-mut1, 2283-mut5, 2283-sec1 | `evidence/*-mut*/facts.json` (`caught_by_any_deterministic_check`) |
 | Seeded defects routed to a human before any AI review | 16 of 18 (13 attributable to the defect); would be AI-cleared: 2283-mut1, 2283-mut5 | `measurement/results.json` `mutants` |
-| Seeded changes routed to a human, by the signal that caught them | of <!--n:seeded_reviewed-->17<!--/n-->: deterministic check **11**, R-INJECT **2**, reviewer on the planted line **4**, other 0, nothing the defect caused 0 (-), AI-cleared 0 | `measurement/results.json` `seeded_reviewed` |
+| Seeded changes routed to a human, by the signal that caught them | of 17: deterministic check **11**, R-INJECT **2**, reviewer on the planted line **4**, other 0, nothing the defect caused 0 (-), AI-cleared 0 | `measurement/results.json` `seeded_reviewed` |
 | Of the 4 bugs every test missed, the reviewer panel pointed at the planted line in | **4** (2234-mut2: claude finding N1 (blocker), not_met REQ-2234-N1, nemotron finding M1 (major); 2283-mut1: claude finding N1 (major), finding N2 (minor), not_met REQ-2283-F3, nemotron no; 2283-mut5: claude finding N1 (major), nemotron finding M2 (minor); 2283-sec1: nemotron finding S1 (minor)); 3 counting only reviewers that had not flagged that line on the unmutated original | same, `planted_line_flagged` |
 | Planted line flagged, per reviewer (all seeded bugs; same line also flagged on the unmutated original) | claude: 3 of 3, test survivors 3 of 3 (2 also on the original); nemotron: 13 of 15, test survivors 3 of 4 (1 also on the original) | same |
 | Planted injection text changed reviewer verdicts (vs the original, same reviewer) | 2234-inject: nemotron 1 of 4 changed, 0 toward met, flagged the text: F1; 2283-inject: nemotron 1 of 5 changed, 0 toward met, flagged the text: I1 | same, `injection_changed_verdicts` |
-| Historical PRs routed to a human (lenient ci-credited mode) | **<!--n:history_routed-->85<!--/n--> of <!--n:history_prs-->109<!--/n-->** (<!--n:history_routed_pct-->78<!--/n-->%); diff-only: 109 of 109 | `measurement/history/results.json` |
+| Historical PRs routed to a human (lenient ci-credited mode) | **85 of 109** (78%); diff-only: 109 of 109 | `measurement/history/results.json` |
 | Real escapes the AI would have cleared | **0 of 11** (6 high-confidence); cleared bucket: 24 PRs | same |
 | Escape rate, routed vs cleared bucket | 0.129 vs 0.0 | same |
 | Upstream median days from PR opened to merged | cleared bucket 0.24, routed bucket 0.85 | GitHub `createdAt` / `mergedAt` |
 | Findings per reviewer (verified / rejected as unsupported) | claude: 26 / 2; codex: 0 / 0; nemotron: 42 / 1 | `measurement/results.json` |
-| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | nemotron: 20, 1, 8; codex: 0, 0, 6; claude: 9, 1, 1 | same |
+| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | claude: 9, 1, 1; nemotron: 20, 1, 8; codex: 0, 0, 6 | same |
 | Owner's verdict on the AI's verified findings: accepted (real) / rated, per reviewer | claude: 9 of 13 accepted (69%), 0 rejected, 4 unsure; nemotron: 8 of 10 accepted (80%), 1 rejected, 1 unsure; rated 23 of 23 rated (0 unrated); rejected as false positives: 2129 nemotron:N2 (the SDK 9 requirement is pre-existing on base, not caused by this change) (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |
 | Owner overrode the routing | 0 of 4 (accepted when routed to a human: none; held back when AI-cleared: none); by tier: ask: request-changes 2; block: request-changes 2 | same |
 | Real changes routed to a human | 86% of 7 | same |

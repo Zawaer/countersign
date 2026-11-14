@@ -1023,6 +1023,38 @@
     {
       "change": "up-2305",
       "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2234-v1",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2234-v2",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2234-v3",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2234-v4",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2283-v1",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2283-v2",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2283-v3",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
+    },
+    {
+      "change": "var-2283-v4",
+      "reason": "no reviews yet (stage 2 not run); excluded from every metric"
     }
   ],
   "mutants": [
@@ -2599,6 +2631,11 @@
     },
     "reviewer_cross_check": {
       "value": {
+        "claude": {
+          "major_raised_verified": 9,
+          "confirmed_by_another": 1,
+          "missed_others_verified_major": 1
+        },
         "nemotron": {
           "major_raised_verified": 20,
           "confirmed_by_another": 1,
@@ -2608,11 +2645,6 @@
           "major_raised_verified": 0,
           "confirmed_by_another": 0,
           "missed_others_verified_major": 6
-        },
-        "claude": {
-          "major_raised_verified": 9,
-          "confirmed_by_another": 1,
-          "missed_others_verified_major": 1
         }
       },
       "simulated": false,
