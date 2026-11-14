@@ -22,6 +22,8 @@ def fws(tmp_path):
     # registry so they are replayed under the panel they were written for.
     mp = tmp_path / "mandate" / "messagepack.mandate.yaml"
     mp.write_text("\n".join(line for line in mp.read_text().splitlines() if not line.lstrip().startswith(("nemotron:", "note: \"open weights"))) + "\n")
+    # ...and the fixtures' Codex reviews name the model they were recorded with: release that version (trust.release_gate).
+    mp.write_text(mp.read_text().replace("model: GPT-6,", "model: gpt-5.5-codex,"))
     w = Workspace.at(tmp_path, inputs=tmp_path / "inputs")
     keys.keygen(w, "Toivo")
     mandate.sign(w, "Toivo")

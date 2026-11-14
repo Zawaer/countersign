@@ -138,4 +138,7 @@ def verify_review(review: dict, v: Verifier) -> dict:
         f["reviewer"] = out.get("reviewer")
         if f["status"] == "rejected":
             f["rejection_reason"] = "no cited evidence could be verified: " + "; ".join(e["note"] for e in f["evidence"]) if f["evidence"] else "no evidence cited"
+    for r in out.get("refutations", []):  # a later pass saying an earlier finding is not a defect (see decide.carry_forward)
+        r["evidence"] = [v.item(e) for e in r.get("evidence", [])]
+        r["verified_count"] = sum(e["verified"] for e in r["evidence"])
     return out

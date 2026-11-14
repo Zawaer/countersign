@@ -84,6 +84,16 @@ class Workspace:
         folder = self.inputs / "reviews" / change
         return {p.stem: read_json(p) for p in sorted(folder.glob("*.json")) if "." not in p.stem} if folder.is_dir() else {}
 
+    def earlier_reviews(self, change: str) -> dict[str, list[tuple[str, dict]]]:
+        """Superseded passes reviews/<change>/<reviewer>.v<k>.json, per reviewer, newest first: [("v2", {...}), ("v1", {...})]."""
+        folder = self.inputs / "reviews" / change
+        out: dict[str, list[tuple[str, dict]]] = {}
+        for p in sorted(folder.glob("*.v*.json")) if folder.is_dir() else []:
+            m = re.fullmatch(r"([a-z0-9_-]+)\.(v\d+)", p.stem)
+            if m:
+                out.setdefault(m.group(1), []).append((m.group(2), read_json(p)))
+        return {n: sorted(ps, key=lambda x: -int(x[0][1:])) for n, ps in out.items()}
+
     def adjudication_path(self, change: str) -> Path | None:
         folder = self.inputs / "reviews" / change
         found = sorted(folder.glob("adjudication.*.json")) if folder.is_dir() else []

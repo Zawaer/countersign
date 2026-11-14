@@ -7,8 +7,8 @@ pull_request: https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1967
 official: false
 requirements:
   - id: REQ-up-1967-F1
-    type: functional
+    type: docs
     text: "The README table-of-contents entry \"AOT Code Generation (support for Unity/Xamarin)\" must link to an anchor that exists in README.md (the AOT Code Generation section)."
   - id: REQ-up-1967-N1
-    type: non-functional
+    type: docs
     text: "Only documentation changes; no other README content is altered."

@@ -33,7 +33,6 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     reqs = ws.requirements(change)
     m = mandate_mod.load(ws)
     msig = mandate_mod.signature_status(ws, m)
-    state = trust.derive(m, ledger.read(ws) if use_trust else [])
 
     v = verify.Verifier(ws.repo, facts, reqs, m["decision"]["code_line_tolerance"])
     # Who may read this change (reviewer registry + confidentiality). Reviews by anyone else are not used.
@@ -44,14 +43,19 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
                                           "not a participating reviewer in the mandate's registry")}
                for n in all_reviews if n not in raw_reviews]
     reviews = {name: verify.verify_review(r, v) for name, r in raw_reviews.items()}
+    # Earlier passes (<reviewer>.v1.json): their open blocker/major findings carry forward (decide.carry_forward).
+    earlier = {n: [(pn, verify.verify_review(r, v)) for pn, r in ps] for n, ps in ws.earlier_reviews(change).items() if n in reviews}
+    # Trust state, with the release gate applied to the reviewer versions that actually reviewed this change.
+    versions = {n: {"model": r.get("model"), "prompt_version": r.get("prompt_version")} for n, r in raw_reviews.items()}
+    state = trust.derive(m, ledger.read(ws) if use_trust else [], versions)
     adj_path = ws.adjudication_path(change)
     adj = read_json(adj_path) if adj_path else None
     if adj and adj.get("reviewer") != panel["adjudicator"]:
         ignored.append({"name": adj_path.name, "reason": f"{adj.get('reviewer')} is not the adjudicator allowed for this change"})
         adj = None
-    d = decide_mod.decide(facts, reviews, reqs, m, msig, trust.caps(state), panel, deepcopy(adj))
+    d = decide_mod.decide(facts, reviews, reqs, m, msig, trust.caps(state), panel, deepcopy(adj), deepcopy(earlier))
     # What the AI would recommend under the mandate's own caps. During probation this is what spot-checks grade.
-    ai_alone = decide_mod.decide(facts, reviews, reqs, m, msig, {}, panel, deepcopy(adj))["tier"]
+    ai_alone = decide_mod.decide(facts, reviews, reqs, m, msig, {}, panel, deepcopy(adj), deepcopy(earlier))["tier"]
 
     req_file = ws.root / reqs["_path"] if not Path(reqs["_path"]).is_absolute() else Path(reqs["_path"])
     inputs = {"facts": _file_ref(facts_path, ws.root), "requirements": _file_ref(req_file, ws.root),
@@ -84,8 +88,14 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     rejected = [f for f in d["findings"] if f["status"] == "rejected"]
     residual = [f"{c['id']} not proven: " + _codes(c) for c in d["clauses"] if c["status"] == "refused"]
     residual += [f"{c['id']} held before this change (met, but not achieved by it)" for c in d["clauses"] if c["status"] == "held_before"]
-    residual += [f"Reviewer refusal ({r['reviewer']}): {r['topic']}" for r in d["reviewer_refusals"]]
-    residual += [f"Open {f['severity']} finding {f['reviewer']}:{f['id']}: {f['title']}" for f in verified if f["severity"] in ("blocker", "major")]
+    if d.get("reviewers_untrusted"):
+        residual.insert(0, "Reviewers saw planted instructions (R-INJECT); their verdicts don't count: " + "; ".join(d["reviewers_untrusted"]["lines"]))
+    residual += [f"Reviewer refusal ({r['reviewer']}): {r['topic']}" + ("" if r.get("routes") == "ask" else " (out of scope: notify)")
+                 for r in d["reviewer_refusals"]]
+    residual += [f"Open {f['severity']} finding {f['reviewer']}:{f['id']}: {f['title']}"
+                 + (f" (carried forward from {f['carried_forward']['from']})" if f.get("carried_forward") else "")
+                 + (f" ({f['repro']['status'].replace('_', ' ')})" if f.get("repro") else "")
+                 for f in verified if f["severity"] in ("blocker", "major")]
     residual += [f"Unsupported {f['severity']} claim {f['reviewer']}:{f['id']} was rejected for lack of evidence, not disproven: {f['title']}"
                  for f in rejected if f["severity"] in ("blocker", "major")]
     residual += [f"{x['id']} not run ({x['reason']})" for x in not_checked if x["source"] != "mandate known gap"]
@@ -131,6 +141,10 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
         "residual_risk": residual,
         "risk": d["risk"],
         "rules_fired": d["rules_fired"],
+        "reviewers_untrusted": d.get("reviewers_untrusted"),
+        "carried_forward": d.get("carried_forward", []),
+        "refuted_findings": d.get("refuted", []),
+        "reproduced": d.get("reproduced", {}),
         "signoff": {
             "required": tier in HUMAN_TIERS,
             "owner": d["owner"],

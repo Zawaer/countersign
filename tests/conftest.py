@@ -41,11 +41,13 @@ def make_facts(**over):
 
 
 GOOD_CODE = {"kind": "code", "file": SRC, "line": 5, "rev": "head", "quote": "if (!members.ContainsKey(key))"}
+# the reviewer versions the signed mandate trusts (trust.release_gate)
+MODELS = {"claude": "claude-opus-5-5", "codex": "GPT-6", "nemotron": "nvidia/nemotron-3.5-super-vl-120b-a12b"}
 GOOD_TEST = {"kind": "test", "name": "CollectorTests.DuplicateKeys", "outcome": "passed"}
 
 
 def make_review(name, verdict="met", evidence=None, findings=(), refusals=()):
-    return {"reviewer": name, "model": f"{name}-model", "vendor": name.title(), "prompt_version": "review-v1",
+    return {"reviewer": name, "model": MODELS.get(name, f"{name}-model"), "vendor": name.title(), "prompt_version": "review-v1",
             "reviewed_at": "2026-11-14T03:00:00+02:00", "inputs": ["diff"],
             "requirement_verdicts": [{"req": "REQ-9001-F1", "verdict": verdict, "confidence_basis": "test passes",
                                       "evidence": evidence if evidence is not None else [GOOD_CODE, GOOD_TEST]}],
