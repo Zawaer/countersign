@@ -75,6 +75,8 @@ jobs:
           echo "COUNTERSIGN_REPO=$RUNNER_TEMP/mp" >> "$GITHUB_ENV"   # also lets the fixture tests run
       - name: pytest
         run: uv run pytest -q
+      - name: Docs' headline numbers match the result files (scripts/sync_numbers.py)
+        run: python3 scripts/sync_numbers.py --check
       - name: Verify the signed ledger
         run: uv run countersign verify-ledger
       - name: Route every change
