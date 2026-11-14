@@ -11,6 +11,7 @@ named in the signed mandate assigned:
 | [#2](https://github.com/Zawaer/countersign-messagepack-demo/pull/2) | 2234, 4 files | ask | pending: awaiting countersignature by Toivo | Toivo (Zawaer) |
 | [#3](https://github.com/Zawaer/countersign-messagepack-demo/pull/3) | 2129, 28 files | block | failure: risk score (failing checks, critical area, size) | Toivo (Zawaer) |
 | [#4](https://github.com/Zawaer/countersign-messagepack-demo/pull/4) | 2297, 237 files | block | failure: split-large-change | Toivo (Zawaer) |
+| [#11](https://github.com/Zawaer/countersign-messagepack-demo/pull/11) | demo-docs1, 1 file (merged) | notify | success: AI-cleared: notify under mandate v6 | Rene (notified) |
 
 ## The flow
 
@@ -73,6 +74,16 @@ only grow; `countersign verify-ledger` re-checks the whole chain and every signa
 enforced for admins too, so not even the repo owner can merge an `ask` PR without the countersignature (pushing a
 new snapshot to `main` means switching that off for the push and back on).
 
+### First AI-cleared merge
+
+[PR #11](https://github.com/Zawaer/countersign-messagepack-demo/pull/11) is an agent-written one-line README fix (change
+`demo-docs1`, branch `ju26-demo-docs1`): the table-of-contents link `#migration-notes-from-v1x` pointed nowhere, and now
+points to `#migration-notes-from-prior-versions`. All three reviewers proved both docs clauses and `docs.anchors` passed;
+two questions they declined (Markdown rendering was not checked) made it `notify`, not `silent`. The Countersign Gate App
+posted `countersign/tier` = success ("AI-cleared: notify under mandate v6"), the PR was `CLEAN`, and it merged with a
+plain `gh pr merge --merge`: no bypass, no `--admin`, no countersignature. **40 seconds from PR opened to merged** (the
+check took 22 s). The owner, Rene, was notified by the sticky comment ("No signature needed: Rene is told"), not asked.
+
 ## What is real in the demo, and what is recorded
 
 Real, on every run: the PRs and their commits; the diff recomputed from git and compared with the recorded evidence;
@@ -84,8 +95,7 @@ Recorded: the reviewers' output (`reviews/<n>/`), the adjudication and the build
 come from Zawaer/countersign at the pinned commit (`.countersign/snapshot/PINNED`). Every comment says so:
 *"Recorded reviews; a live run calls the reviewers with the same prompt"* (`prompts/review-v1.md`). A live run adds
 `countersign review-llm` per reviewer (API keys as CI secrets, as in Zawaer/countersign's own CI) and the dotnet
-facts job before the pack step. The demo has no `silent`/`notify` change, so the green AI-cleared path is exercised only
-by tests.
+facts job before the pack step. The green AI-cleared path is exercised once for real, on PR #11 (below), and otherwise by tests.
 
 Why vendored: Zawaer/countersign is private, and we did not want to add a cross-repo secret for a demo. The pipeline
 code and recorded inputs are copied into `.countersign/snapshot/` with the source commit in `PINNED`
