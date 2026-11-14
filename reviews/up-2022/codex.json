@@ -1,0 +1,94 @@
+{
+  "reviewer": "codex",
+  "model": "GPT-6",
+  "vendor": "OpenAI",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T02:06:41+02:00",
+  "inputs": [
+    "/tmp/up-briefs/2022.md",
+    "repo /data/src/mp",
+    "base f5e104eec56d53df064126de8dd5bd4e533e7ea8",
+    "head 5f4b762a00b7f21940c2b737498205481b725156"
+  ],
+  "summary": "The change filters abstract formatter types out before constructing formatter descriptors, and adds a test with two abstract formatters for the same type. This addresses the reported false diagnostics at their common discovery point; the targeted test fails with the source fix reverted, and the full source generator test suite passes.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-up-2022-F1",
+      "verdict": "met",
+      "confidence_basis": "Formatter discovery returns false for abstract types, and the new abstract-formatter analyzer test passes.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 221,
+          "rev": "head",
+          "quote": "if (type.IsAbstract)"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-F2",
+      "verdict": "met",
+      "confidence_basis": "The same early filter prevents abstract types from becoming formatter descriptors, and the test exercises two such formatters for object.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 223,
+          "rev": "head",
+          "quote": "formatter = null;"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 913,
+          "rev": "head",
+          "quote": "public async Task AbstractFormatterDoesNotAttractAttention()"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-N1",
+      "verdict": "met",
+      "confidence_basis": "The new test fails when the source change is reverted, and the corresponding check passed.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-N2",
+      "verdict": "met",
+      "confidence_basis": "The full source generator test suite passed with no regressions reported against base.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}

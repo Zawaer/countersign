@@ -1,0 +1,91 @@
+{
+  "reviewer": "codex",
+  "model": "GPT-6",
+  "vendor": "OpenAI",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T02:06:41+02:00",
+  "inputs": [
+    "/tmp/up-briefs/1934.md",
+    "repo /data/src/mp",
+    "base 7ef21d4b6ea661cd346b5beeabfc3545106d83b6",
+    "head 2f9324f9987410677a310a633232411eb978a699"
+  ],
+  "summary": "The test verifier now defaults to C# 7.3 and accepts explicit language versions for test inputs that use newer syntax. This makes the tests exercise the intended language baseline and makes the existing generator regression visible; the full suite passes, and the recorded regression-detection check reports failures on the pre-fix generator that pass with the updated test settings.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-up-1934-F1",
+      "verdict": "met",
+      "confidence_basis": "The verifier defaults to C# 7.3 and assigns the selected version to the test compilation; the regression-detection check confirms the updated settings expose the prior generator regression.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+          "line": 48,
+          "rev": "head",
+          "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+          "line": 102,
+          "rev": "head",
+          "quote": "LanguageVersion = languageVersion,"
+        },
+        {
+          "kind": "check",
+          "id": "tests.detects_original_regression",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-1934-F2",
+      "verdict": "met",
+      "confidence_basis": "Tests using records and record structs specify C# 9 or C# 10 explicitly, while the ordinary class and struct cases use C# 7.3.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 30,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp9"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+          "line": 11,
+          "rev": "head",
+          "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+          "line": 13,
+          "rev": "head",
+          "quote": "[InlineData(\"record struct\", LanguageVersion.CSharp10)]"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-1934-N1",
+      "verdict": "met",
+      "confidence_basis": "The change is confined to test files, and the full source generator test suite passes.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+          "line": 48,
+          "rev": "head",
+          "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}

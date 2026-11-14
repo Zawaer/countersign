@@ -1,0 +1,63 @@
+{
+  "reviewer": "codex",
+  "model": "GPT-6",
+  "vendor": "OpenAI",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T02:06:41+02:00",
+  "inputs": [
+    "/tmp/up-briefs/1967.md",
+    "repo /data/src/mp",
+    "base b9b65ddfb898bbcbb2d14d435efed6ae0592907b",
+    "head 8683d1cde17f4c67bc60fb75935b090923d80601"
+  ],
+  "summary": "The README table-of-contents link now points to the existing AOT section anchor. The change is limited to that link correction, and the recorded anchor check confirms the touched link resolves.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-up-1967-F1",
+      "verdict": "met",
+      "confidence_basis": "The TOC link targets #aot, which matches the AOT section’s explicit anchor, and the touched-line anchor check passes.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 60,
+          "rev": "head",
+          "quote": "[AOT Code Generation (support for Unity/Xamarin)](#aot)"
+        },
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 1602,
+          "rev": "head",
+          "quote": "<a name=\"aot\"></a>"
+        },
+        {
+          "kind": "check",
+          "id": "docs.anchors",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-1967-N1",
+      "verdict": "met",
+      "confidence_basis": "The provided diff changes one README table-of-contents link, and the public API check confirms no API files changed.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 60,
+          "rev": "head",
+          "quote": "[AOT Code Generation (support for Unity/Xamarin)](#aot)"
+        },
+        {
+          "kind": "check",
+          "id": "public_api",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": []
+}
