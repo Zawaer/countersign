@@ -213,3 +213,17 @@ def test_docs_clauses_need_the_docs_check(ws):
     p = pack.build(ws, "9001")
     assert [x["id"] for x in p["requirements"][0]["checks"]] == ["docs.anchors"]
     assert p["requirements"][0]["status"] == "refused"  # absent is not pass
+
+
+def test_seeded_variants_map_to_their_change():
+    from countersign.common import base_change, is_mutant
+    assert base_change("2283-inject") == "2283" and base_change("2234-mut7") == "2234" and base_change("up-1967") == "up-1967"
+    assert is_mutant("2283-inject") and not is_mutant("2283")
+
+
+def test_repro_on_head_and_base_says_present_before(ws):
+    with_check(ws, {"id": "repro.claude.M", "status": "pass", "summary": "s",
+                    "runs": [{"label": "head", "outcome": "failed"}, {"label": "base", "outcome": "failed"}]})
+    review(ws, "claude", make_review("claude", findings=[MAJOR]))
+    f = pack.build(ws, "9001")["findings"][0]
+    assert f["repro"]["present_before"] and f["repro"]["label"] == "reproduced; also present before this change"

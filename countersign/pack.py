@@ -94,7 +94,7 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
                  for r in d["reviewer_refusals"]]
     residual += [f"Open {f['severity']} finding {f['reviewer']}:{f['id']}: {f['title']}"
                  + (f" (carried forward from {f['carried_forward']['from']})" if f.get("carried_forward") else "")
-                 + (f" ({f['repro']['status'].replace('_', ' ')})" if f.get("repro") else "")
+                 + (f" ({f['repro']['label']})" if f.get("repro") else "")
                  for f in verified if f["severity"] in ("blocker", "major")]
     residual += [f"Unsupported {f['severity']} claim {f['reviewer']}:{f['id']} was rejected for lack of evidence, not disproven: {f['title']}"
                  for f in rejected if f["severity"] in ("blocker", "major")]

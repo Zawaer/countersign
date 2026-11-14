@@ -336,7 +336,13 @@ def attach_repro(f: dict, facts: dict) -> None:
         if c is None:
             continue
         status = {"pass": "reproduced", "fail": "not_reproduced"}.get(c["status"], "repro_not_run")
-        f["repro"] = {"check": cid, "status": status, "check_status": c["status"], "summary": c.get("summary", "")}
+        runs = {r.get("label") or r.get("rev"): r.get("outcome") for r in c.get("runs", []) if isinstance(r, dict)}
+        # the defect shows on base the same way it shows on head: real, but not introduced by this change
+        before = status == "reproduced" and runs.get("base") is not None and runs.get("base") == runs.get("head")
+        f["repro"] = {"check": cid, "status": status, "check_status": c["status"], "summary": c.get("summary", ""),
+                      "present_before": before, "runs": runs,
+                      "label": {"reproduced": "reproduced" + ("; also present before this change" if before else ""),
+                                "not_reproduced": "not reproduced", "repro_not_run": f"repro {c['status']}"}[status]}
         if status == "reproduced":
             break
 
