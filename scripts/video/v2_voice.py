@@ -52,6 +52,8 @@ def tagged(lid, text):
     t = TAGS.get(lid)
     if not t:
         return text
+    if stock_mode() and lid in STOCK_TEXT:
+        return "[confident] " + text
     if t.startswith("[chuckles] That's me. "):
         assert text.startswith("That's me. "), lid
         return t.format(text[len("That's me. "):])
@@ -93,8 +95,20 @@ def _env():
     return out
 
 
+# Fallback narration with stock ElevenLabs voices (V2_VOICES=stock), all on Toivo's key (board rule: anything that
+# isn't Rene's own voice goes on Toivo's key). Toivo's lines -> Eric, Rene's lines -> Sarah.
+STOCK = {"toivo": "cjVigY5qzO86Huf0OWal", "rene": "EXAVITQu4vr4xnSDxMaL"}
+STOCK_TEXT = {"b10": "Toivo signed a request for changes on GitHub. The required check fails, and the merge is blocked."}
+
+
+def stock_mode():
+    return os.environ.get("V2_VOICES") == "stock"
+
+
 def _speaker(name):
     e = _env()
+    if stock_mode():
+        return {"key": e["TOIVO_ELEVENLABS_KEY"], "voice": STOCK[name], "models": ["eleven_v3"]}
     if name == "rene":
         return {"key": e["RENE_ELEVENLABS_KEY"], "voice": e["RENE_VOICE_ID"], "models": [e.get("RENE_MODEL_ID") or "eleven_v3"]}
     return {"key": e["TOIVO_ELEVENLABS_KEY"], "voice": e["TOIVO_VOICE_ID"], "models": ["eleven_v3", "eleven_multilingual_v2"]}
@@ -130,12 +144,35 @@ def _align(mp3, text):
             "character_end_times_seconds": [c["end"] for c in chars], "source": "forced-alignment"}
 
 
+def from_file(lid, text):
+    """Toivo's own takes from the ElevenLabs website (V2_VOICE_DIR=<dir with b01.mp3 ... b14.mp3>): word timings by
+    forced alignment on Toivo's key, cached next to the clip; loudness matched like generated clips."""
+    src = pathlib.Path(os.environ["V2_VOICE_DIR"]) / f"{lid}.mp3"
+    adir = WORK / "audio" / "takes"
+    adir.mkdir(parents=True, exist_ok=True)
+    h = hashlib.sha256(src.read_bytes() + text.encode()).hexdigest()[:16]
+    mp3, meta = adir / f"{lid}-{h}.mp3", adir / f"{lid}-{h}.json"
+    if not meta.exists():
+        mp3.write_bytes(src.read_bytes())
+        meta.write_text(json.dumps({"speaker": "take", "model": "website", "text": text, "alignment": _align(mp3, text)}))
+        print(f"  aligned {src.name}")
+    wav = mp3.with_suffix(".wav")
+    if not wav.exists():
+        gain = TARGET_LUFS - lufs(mp3)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(mp3), "-af", f"volume={gain:.2f}dB,alimiter=limit=0.95",
+                        "-ac", "1", "-ar", str(SR), str(wav)], check=True)
+    with wave.open(str(wav)) as w:
+        dur = w.getnframes() / w.getframerate()
+    al = json.loads(meta.read_text())["alignment"]
+    return wav, dur, al["characters"], al["character_start_times_seconds"], al["character_end_times_seconds"], "website"
+
+
 def tts(speaker, text, stats):
     adir = WORK / "audio"
     adir.mkdir(parents=True, exist_ok=True)
     sp = _speaker(speaker)
     for model in sp["models"]:
-        req = {"text": text, "model_id": model, "voice_settings": SETTINGS}
+        req = {"text": text, "model_id": model, "voice_settings": {"stability": 0.5, "similarity_boost": 0.75} if stock_mode() else SETTINGS}
         h = hashlib.sha256(json.dumps([speaker, sp["voice"], req], sort_keys=True).encode()).hexdigest()[:16]
         mp3, meta = adir / f"{speaker}-{h}.mp3", adir / f"{speaker}-{h}.json"
         if mp3.exists() and meta.exists():
@@ -212,13 +249,18 @@ def build(stats=None):
     stats = stats if stats is not None else {}
     res = []
     for lid, sid, speaker, text in LINES:
-        wav, dur, chars, st, en, model = tts(speaker, tagged(lid, text) if speaker == "toivo" else text, stats)
+        if stock_mode():
+            text = STOCK_TEXT.get(lid, text)
+        if os.environ.get("V2_VOICE_DIR"):
+            wav, dur, chars, st, en, model = from_file(lid, text)
+        else:
+            wav, dur, chars, st, en, model = tts(speaker, tagged(lid, text) if speaker == "toivo" else text, stats)
         ws = drop_tags(words(chars, st, en))
         assert [w for w, _, _ in ws] == text.split(), (lid, [w for w, _, _ in ws][:5])
         res.append({"id": lid, "shot": sid, "speaker": speaker, "model": model, "text": text, "wav": str(wav),
                     "clip": round(dur, 3), "speech": round(min(speech_end(wav, dur), ws[-1][2] + 0.1), 3),
                     "words": [[w, round(a, 3), round(b, 3)] for w, a, b in ws]})
-        if lid in CAPTIONS:
+        if lid in CAPTIONS and not (stock_mode() and lid in STOCK_TEXT):
             assert " ".join(CAPTIONS[lid]).split() == text.split(), lid
             res[-1]["chunks"] = [len(c.split()) for c in CAPTIONS[lid]]
     return res
