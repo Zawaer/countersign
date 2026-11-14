@@ -17,13 +17,13 @@ named in the signed mandate assigned:
 ```
 1. agent opens PR            branch ju26-issue-<n>, label agent-written; the branch names the change and its requirement set
 2. facts                     CI recomputes the diff (merge base, head, files, +/-) and checks it matches the evidence
-3. reviewers                 Claude, Codex, Nemotron (same prompt, no shared context); Gemini adjudicates disputes only (wired, not run: no key)
+3. reviewers                 Claude, Codex, Nemotron (same prompt, no shared context); Gemini adjudicates disputes only (recorded: 2234, 2283)
 4. verify + decide           every citation re-checked against the PR's git objects; tier = strictest driver
 5. pack comment              one sticky comment: tier, owner, mandate, "evidence matches this PR", pack sha256, the pack
    status + routing          countersign/tier: success (silent/notify) | pending (ask) | failure (block); owner assigned
 6. owner countersigns        on their machine: `countersign.github sign-pr` -> signed `/countersign accept|reject|request-changes <note>`
 7. ledger                    CI verifies login, signature, pack hash, chain -> appends to branch countersign-ledger, flips the status
-8. merge                     branch protection on main requires countersign/tier = success, set by GitHub Actions only
+8. merge                     branch protection on main requires countersign/tier = success, from the Countersign Gate App only
 ```
 
 Every new push to the PR re-runs steps 2 to 5. A countersignature covers one pack hash, and the pack is only valid

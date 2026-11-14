@@ -16,7 +16,7 @@ All URLs are relative to the site root: GitHub Pages once public, or locally `py
 | 0:47–0:53 | Scroll to top; hover the pill **ASK → Toivo**. | ASK → Toivo | So the AI can't clear it. It asks the named owner, Toivo. |
 | 0:53–1:08 | Switch tab to `tour.html#6` ("Try to forge the record"). Hover **LINE 7 signoff by Toivo**. Click **1. Tamper** → red "LEDGER INVALID … does not match its hash". Click **2. Recompute the hash** → "signature does not verify". | Edit one line: invalid | Toivo requests changes and signs into a hash-chained ledger. Edit one line: invalid. Recompute the hash: still invalid. Only his key signs. |
 | 1:08–1:24 | Back to the `index.html` tab. Bottom bar: click **sneak a bug in**, then **removed guard 2234·2**. Pins: **◐ Got past every check**, **✗ Claude flagged it**; pill **ASK → Toivo · checks missed it; Claude flagged it**. | Every test missed it | Now sneak a bug in: delete one line. Every test passes. A reviewer still points at that line, so it goes to Toivo. |
-| 1:24–1:42 | Switch tab to `overview.html`: the three numbers. Hold on the middle one (0/11). At 1:36 add the caption for the red team. | 0 of 11 escapes cleared · then: Red team: 35 of 35 stopped | Replayed on 109 real merged pull requests, the AI would have cleared 24, and none of the 11 that later needed a revert or fix. We attacked our own pipeline 35 ways; it stops all 35. |
+| 1:24–1:42 | Switch tab to `overview.html`: the three numbers. Hold on the first one (<!--n:history_cleared-->24<!--/n-->/<!--n:history_prs-->109<!--/n--> cleared, <!--n:history_escapes_cleared-->0<!--/n--> of <!--n:history_escapes-->11<!--/n--> escapes), then the red-team tile. | <!--n:history_escapes_cleared-->0<!--/n--> of <!--n:history_escapes-->11<!--/n--> escapes cleared · then: Red team: <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n--> stopped | Replayed on <!--n:history_prs-->109<!--/n--> real merged pull requests, the AI would have cleared <!--n:history_cleared-->24<!--/n-->, and none of the <!--n:history_escapes-->11<!--/n--> that later needed a revert or fix. We attacked our own pipeline <!--n:redteam_total-->35<!--/n--> ways; it stops all <!--n:redteam_stopped-->35<!--/n-->. |
 | 1:42–1:55 | Switch tab to `pitch.html#1`: title slide with the punchline and the repo URL. Hold to the end. | (none: the slide says it) | Countersign. AI clears what it can prove, refuses what it can't, and a named human countersigns the rest. |
 
 ## Voice-over (read straight through, 192 words)
@@ -37,7 +37,7 @@ All URLs are relative to the site root: GitHub Pages once public, or locally `py
 >
 > Now sneak a bug in: delete one line. Every test passes. A reviewer still points at that line, so it goes to Toivo.
 >
-> Replayed on 109 real merged pull requests, the AI would have cleared 24, and none of the 11 that later needed a revert or fix. We attacked our own pipeline 35 ways; it stops all 35.
+> Replayed on <!--n:history_prs-->109<!--/n--> real merged pull requests, the AI would have cleared <!--n:history_cleared-->24<!--/n-->, and none of the <!--n:history_escapes-->11<!--/n--> that later needed a revert or fix. We attacked our own pipeline <!--n:redteam_total-->35<!--/n--> ways; it stops all <!--n:redteam_stopped-->35<!--/n-->.
 >
 > Countersign. AI clears what it can prove, refuses what it can't, and a named human countersigns the rest.
 
@@ -45,18 +45,18 @@ All URLs are relative to the site root: GitHub Pages once public, or locally `py
 
 | Number | Where it is said | Source |
 |---|---|---|
-| 175 of 175 tests pass | 0:00 | `evidence/2234/facts.json`, check `tests.full_suite` ("175 tests, 175 passed"); also pitch slide 4 |
+| <!--n:t2234_suite_passed-->175<!--/n--> of <!--n:t2234_suite_total-->175<!--/n--> tests pass | 0:00 | `evidence/2234/facts.json`, check `tests.full_suite` ("175 tests, 175 passed"); also pitch slide 4 |
 | AI reviewer: every requirement met (4 of 4) | 0:00 | `reviews/2234/codex.json`, `requirement_verdicts` (pitch slide 4, "AI review ✓ 4/4 met") |
 | Fixes a different crash (commit not in the branch) | 0:15 | `packs/2234/pack.json`, finding `claude:C1` (upstream `1a74a620` not in base) |
 | Key(null) still crashes, reproduced | 0:27 | `packs/2234/pack.json`, finding `claude:C2` and check `repro.claude.C2` (fails on head and base, passes on control) |
-| 4 of 8 new tests pass without the fix | 0:38 | `evidence/2234/facts.json`, check `tests.fail_without_fix` ("4/8 failed … 4 new tests pass without the fix") |
+| <!--n:t2234_pass_without_fix-->4<!--/n--> of <!--n:t2234_new_tests-->8<!--/n--> new tests pass without the fix | 0:38 | `evidence/2234/facts.json`, check `tests.fail_without_fix` ("4/8 failed … 4 new tests pass without the fix") |
 | ASK → Toivo | 0:47 | `packs/2234/pack.json` (`tier`, `owner`) |
 | Toivo's request-changes sign-off | 0:53 | `ledger/ledger.jsonl` line 7 (signoff, change 2234, decision request-changes) |
 | Tamper → invalid; rehash → signature fails | 0:53 | live check in `tour.html` step 6 against `ledger/ledger.jsonl` and `keys/toivo.pub` |
 | Seeded bug every test missed, reviewer on the line | 1:08 | `measurement/results.md`, row `2234-mut2` (tests missed it: yes; tier ask; claude N1, nemotron M1 on the planted line ±3) |
-| 109 PRs, 24 cleared, 0 of 11 escapes | 1:24 | `measurement/history/results.md` (mandate v6); README "In numbers" |
-| Red team: 35 attacks, all 35 stopped | 1:24 | README "Red team"; `docs/security/REDTEAM.md`; `tests/redteam/test_redteam_attacks.py` (`KNOWN_MISSES` empty; `scripts/sync_numbers.py` key `redteam_stopped`) |
-| On screen only: 14 of 18 seeded changes failed a check; 4 of 4 agent changes sent to a human | 1:24 | `measurement/results.json` via `overview.html` |
+| <!--n:history_prs-->109<!--/n--> PRs, <!--n:history_cleared-->24<!--/n--> cleared, <!--n:history_escapes_cleared-->0<!--/n--> of <!--n:history_escapes-->11<!--/n--> escapes | 1:24 | `measurement/history/results.md` (mandate v<!--n:history_mandate-->6<!--/n-->); README "In numbers" |
+| Red team: <!--n:redteam_total-->35<!--/n--> attacks, <!--n:redteam_stopped-->35<!--/n--> stopped | 1:24 | README "Red team"; `docs/security/REDTEAM.md`; `tests/redteam/test_redteam_attacks.py` (`KNOWN_MISSES` empty; `scripts/sync_numbers.py` key `redteam_stopped`) |
+| On screen only: <!--n:seeded_caught_by_checks-->14<!--/n--> of <!--n:seeded_total-->18<!--/n--> seeded changes failed a check | 1:24 | `measurement/results.json` via `overview.html` |
 
 ## Recording checklist
 

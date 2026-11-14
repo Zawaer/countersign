@@ -1,10 +1,10 @@
 # Red team: getting a bad agent-written change past Countersign
 
-**We attacked our own pipeline 35 ways. The first run stopped 7; we fixed 27 of the 28 that got through the same morning and the last one (TT1) by noon, so it now stops all 35.**
+**We attacked our own pipeline <!--n:redteam_total-->35<!--/n--> ways. The first run stopped 7; we fixed 27 of the 28 that got through the same morning and the last one (TT1, test theater) by noon, so it now stops <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n--> (<!--n:redteam_open-->0<!--/n--> open).**
 
 ## After the fixes (Sat 07:45, mandate v5)
 
-Fixed by: areas for build files, CI and security tests, ledger verification before routing, canary and spot-check rules (eb9fd72); injection scanner v2 and stage-1 kinds (994f693); evidence must be about the change, refutations only annotate, held_before from the clause's own tests, dependency/tool/SDK and generated-file rules (6705355, a6d772d). No tier or clause status changed on any of the 24 reviewed changes. Regenerated with `python tests/redteam/attacks.py`; the strict xfails in `tests/redteam/test_redteam_attacks.py` then listed G4, TT1, S6, and now list only TT1.
+Fixed by: areas for build files, CI and security tests, ledger verification before routing, canary and spot-check rules (eb9fd72); injection scanner v2 and stage-1 kinds (994f693); evidence must be about the change, refutations only annotate, held_before from the clause's own tests, dependency/tool/SDK and generated-file rules (6705355, a6d772d). No tier or clause status changed on any of the 24 reviewed changes. Regenerated with `python tests/redteam/attacks.py`; the strict xfails in `tests/redteam/test_redteam_attacks.py` then listed G4, TT1, S6; after the fixes below the list is empty.
 
 Then (mandate v6, DECISIONS D17): **G4** closed by risk that grows smoothly with size (`files_changed`/`lines_changed`
 log-scaled with a cap, about a point a file while small), so 49 one-line test files score 43.1 and route `ask`, close to

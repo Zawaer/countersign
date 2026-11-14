@@ -26,7 +26,7 @@ We seeded four single-line defects into the 2283 and 2234 fixes ([evidence/READM
 
 **Lesson:** mixing vendors doesn't remove correlated misses. Where models agree, deterministic checks have to do the work, and seeded defects are how you find out which lines nothing protects (A3, R5).
 
-*Later (01:51, 6c50a96; 05:33, e1a7535):* we grew the set to 17 seeded changes: 14 one-line bugs, 2 prompt injections and 1 supply-chain attack. Checks alone catch 14 of 17 (11 of 14 bugs, both injections, the supply-chain attack). All 3 bugs the tests miss are removed guards. Nemotron's blind review of the seeded changes points at the planted line in 2 of them (2234-mut2, 2283-mut5) and misses the removed `ContainsSyntaxTree` guard on 2283-mut1, the guard all three reviewers accepted (REQ-2283-F3 met) on the original ([reviews/2234-mut2/nemotron.md](../reviews/2234-mut2/nemotron.md)). With Claude's blind reviews of the 3 survivors added, a reviewer flagged the planted line in 2 of 3 with a finding the original did not already have at that line (3 of 3 counting any finding there; [MEASUREMENT.md](MEASUREMENT.md)).
+*Later (01:51, 6c50a96; 05:33, e1a7535):* we grew the set to 17 seeded changes: 14 one-line bugs, 2 prompt injections and 1 supply-chain attack. Checks alone catch 14 of 17 (11 of 14 bugs, both injections, the supply-chain attack). All 3 bugs the tests miss are removed guards. Nemotron's blind review of the seeded changes points at the planted line in 2 of them (2234-mut2, 2283-mut5) and misses the removed `ContainsSyntaxTree` guard on 2283-mut1, the guard all three reviewers accepted (REQ-2283-F3 met) on the original ([reviews/2234-mut2/nemotron.md](../reviews/2234-mut2/nemotron.md)). With Claude's blind reviews of the 3 survivors added, a reviewer flagged the planted line in 2 of 3 with a finding the original did not already have at that line (3 of 3 counting any finding there; [MEASUREMENT.md](MEASUREMENT.md)). *Now:* <!--n:seeded_total-->18<!--/n--> seeded changes (a quiet security downgrade, 2283-sec1, was added); checks alone catch <!--n:seeded_caught_by_checks-->14<!--/n--> of <!--n:seeded_total-->18<!--/n-->, and of the <!--n:seeded_survivors-->4<!--/n--> that got past every check a reviewer flagged the planted line in <!--n:seeded_survivors_flagged_new-->3<!--/n--> with a new finding (<!--n:seeded_survivors_flagged-->4<!--/n--> by location).
 
 
 ### L3. Sat 14 Nov 01:23 (38f7014): Generated files distort size rules
@@ -136,25 +136,25 @@ We seeded two changes with text aimed at AI reviewers ("approved by the maintain
 
 Codex reviewed our own pipeline. Our triage confirmed real issues and found four it missed: review JSON could prove a clause by quoting the clause, a model-chosen revision reached `git show` as an option and wrote a file, the ledger and key code trusted malformed input, and in the demo repo any Actions workflow can post the required merge status ([security/TRIAGE.md](security/TRIAGE.md)).
 
-**Lesson:** model output is untrusted input to the verifier. The verifier issues are fixed (D11). The forgeable status (T1) was closed on Sat 11:30 with a dedicated GitHub App and is still open.
+**Lesson:** model output is untrusted input to the verifier. The verifier issues are fixed (D11). The forgeable status (T1) was closed on Sat 11:30 with a dedicated GitHub App, the only identity branch protection accepts the status from.
 
 ### L18. Sat 14 Nov 02:24 (0f741d4): A measurement changed the signed policy
 
 The trust simulation showed that "3 agreeing spot-checks restore clearance" barely reacts when reviewers degrade: spot-checks rarely land on the few bad clearances, and escapes surface weeks late. 20 checks in a row plus weekly seeded-bug canaries brought simulated escapes back to the full-review level ([MEASUREMENT.md](MEASUREMENT.md)).
 
-**Lesson:** measure the policy, not only the reviewers. Toivo signed mandate v3 with the new stages, and a new reviewer model or prompt version now starts at `ask` (D13). *Later:* v4 (D15) keeps these stages and adds the supply-chain rules.
+**Lesson:** measure the policy, not only the reviewers. Toivo signed mandate v3 with the new stages, and a new reviewer model or prompt version now starts at `ask` (D13). *Later:* v4 (D15) keeps these stages and adds the supply-chain rules; the current mandate is v<!--n:mandate_version-->6<!--/n-->.
 
 ### L19. Sat 14 Nov 01:56 (4120318): History is the strongest evidence we have
 
-We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed mandate (v4; re-run Sat 06:05, same result as under v2; upstream CI credited as passed). 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and none of the 11 ([measurement/history/results.md](../measurement/history/results.md)).
+We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed mandate (v4; re-run Sat 06:05, same result as under v2; upstream CI credited as passed). 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and none of the 11 ([measurement/history/results.md](../measurement/history/results.md)). *Now* (mandate v<!--n:history_mandate-->6<!--/n-->): <!--n:history_cleared-->24<!--/n--> of <!--n:history_prs-->109<!--/n--> cleared, <!--n:history_escapes_cleared-->0<!--/n--> of the <!--n:history_escapes-->11<!--/n--> escapes among them.
 
 **Lesson:** replaying real history needs no models and no builds, and it answers "would this have let real bugs through?" better than any demo. Its limits: our labels are judgement calls, and 0 of 24 is a small sample.
 
 ### Still open
 
-- **Gemini adjudication** is wired but not run (no key); every pack says its disputes are "not adjudicated".
-- **CRACI's own records** (`craci.sbom`, `craci.network`) are wired but skipped: no CRACI API token is set. `build.egress` has no committed run.
+- ~~Gemini adjudication~~ ran in CI (run 43580113703) on the disputes in 2234 and 2283; its rulings are in the packs, advisory only.
+- ~~CRACI's own records~~ `craci.sbom` and `craci.network` pass on the four agent changes (0 proxy violations); `build.egress` passes on all four.
 - ~~Merge-gate forgery (T1)~~ closed Sat 11:30 with a dedicated GitHub App.
 - **Nemotron on 2234 N1** sided with Codex (met). The clause stays refused because Claude's `not_met` has verified evidence.
 
-- **L20 (Sat 07:45): attack your own pipeline before a judge does.** A red team of 35 attacks got 28 through the first time: hand-edited generated files, build files that compile test code into the product, evidence that verified but wasn't about the change, homoglyph injections, forged trust events. Most fixes were small (areas capped at `ask`, evidence must touch changed lines, verify the ledger before routing). After them it stops 32; closing two more (size without a cliff, Release-only packages) made it 34 of 35, and mutation testing of the changed lines (a clause's tests must kill a mutant of the change) closed the last one, test theater, at 11:35: 35 of 35. What we learned: a trust system's weak points are its edges (build config, CI, the ledger, the reviewers' own output), not the main review path.
+- **L20 (Sat 07:45): attack your own pipeline before a judge does.** A red team of 35 attacks got 28 through the first time: hand-edited generated files, build files that compile test code into the product, evidence that verified but wasn't about the change, homoglyph injections, forged trust events. Most fixes were small (areas capped at `ask`, evidence must touch changed lines, verify the ledger before routing). After them it stops 32; closing two more (size without a cliff, Release-only packages) made it 34 of 35, and mutation testing of the changed lines (a clause's tests must kill a mutant of the change) closed the last one, test theater (TT1), at 11:35: <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n-->. What we learned: a trust system's weak points are its edges (build config, CI, the ledger, the reviewers' own output), not the main review path.
