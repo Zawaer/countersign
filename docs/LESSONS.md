@@ -136,7 +136,7 @@ We seeded two changes with text aimed at AI reviewers ("approved by the maintain
 
 Codex reviewed our own pipeline. Our triage confirmed real issues and found four it missed: review JSON could prove a clause by quoting the clause, a model-chosen revision reached `git show` as an option and wrote a file, the ledger and key code trusted malformed input, and in the demo repo any Actions workflow can post the required merge status ([security/TRIAGE.md](security/TRIAGE.md)).
 
-**Lesson:** model output is untrusted input to the verifier. The verifier issues are fixed (D11). The forgeable status (T1) needs a dedicated GitHub App and is still open.
+**Lesson:** model output is untrusted input to the verifier. The verifier issues are fixed (D11). The forgeable status (T1) was closed on Sat 11:30 with a dedicated GitHub App and is still open.
 
 ### L18. Sat 14 Nov 02:24 (0f741d4): A measurement changed the signed policy
 
@@ -154,7 +154,7 @@ We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed ma
 
 - **Gemini adjudication** is wired but not run (no key); every pack says its disputes are "not adjudicated".
 - **CRACI's own records** (`craci.sbom`, `craci.network`) are wired but skipped: no CRACI API token is set. `build.egress` has no committed run.
-- **Merge-gate forgery (T1)** in the demo repo is open: any Actions workflow can post `countersign/tier`.
+- ~~Merge-gate forgery (T1)~~ closed Sat 11:30 with a dedicated GitHub App.
 - **Nemotron on 2234 N1** sided with Codex (met). The clause stays refused because Claude's `not_met` has verified evidence.
 
 - **L20 (Sat 07:45): attack your own pipeline before a judge does.** A red team of 35 attacks got 28 through the first time: hand-edited generated files, build files that compile test code into the product, evidence that verified but wasn't about the change, homoglyph injections, forged trust events. Most fixes were small (areas capped at `ask`, evidence must touch changed lines, verify the ledger before routing). After them it stops 32; closing two more (size without a cliff, Release-only packages) made it 34 of 35. What we learned: a trust system's weak points are its edges (build config, CI, the ledger, the reviewers' own output), not the main review path.

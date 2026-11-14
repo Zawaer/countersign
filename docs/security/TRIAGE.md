@@ -14,7 +14,7 @@ Verdicts: **confirmed** (real, fixed or fix described), **not a real issue as st
 | C2 | Code evidence may cite any path at any revision | Medium | Confirmed, and worse than stated (see T2) | **Fixed** (D11, verify.py: rev in {head, base}, path inside the diff) |
 | C3 | Loose review-schema validation (duplicates, types) | Low | Confirmed (Low) | **Fixed** (D11: duplicate verdicts count as none, malformed items rejected) |
 | C4 | Prompt injection from diff content | Low | Confirmed (Low; partly addressed since) | Fix described for the llm.py owner |
-| T1 | Any workflow in the demo repo can forge `countersign/tier` | (missed) | **Confirmed, High** | **Needs a decision** (GitHub App) |
+| T1 | Any workflow in the demo repo can forge `countersign/tier` | (missed) | **Confirmed, High** | **Fixed** Sat 11:30: "Countersign Gate" GitHub App (id 5756435) posts the status; protection requires it from that App only |
 | T2 | `requirement`/`check` evidence verifies trivially and satisfies `min_verified_evidence` | (missed) | **Confirmed, High for live reviews** | **Fixed** (D11: only substantive evidence counts; requirement items never count alone) |
 | T3 | Model-supplied `rev` is passed to `git show` as an option | (missed) | Confirmed, Medium | **Fixed** (D11, verify.py and pack.py: `--end-of-options`; llm.py `_code_excerpt` too) |
 | T4 | Ledger/key code trusted the shape of ledger lines and signer names | (missed) | Confirmed, Low | Fixed in ledger.py, keys.py |
@@ -95,7 +95,11 @@ them are data. In the repair turn, send only the problem list and the parsed JSO
 **API keys:** checked and found sound. The key is only in the Authorization header. Saved contexts and responses
 don't contain it.
 
-## T1 (missed by Codex): any workflow in the demo repo can forge `countersign/tier`. High; needs a decision
+## T1 (missed by Codex): any workflow in the demo repo can forge `countersign/tier`. High; **fixed Sat 11:30**
+
+**Fix applied:** a dedicated GitHub App "Countersign Gate (Zawaer)" (id 5756435, permissions: commit statuses, issues, pull requests; installed on the demo repo only). Its private key is the `COUNTERSIGN_APP_KEY` secret of the `countersign-gate` environment, whose deployment branches are limited to `main`, so only workflows running from `main` (the `pull_request_target` and `issue_comment` jobs) can mint its token. The workflows' `GITHUB_TOKEN` no longer has `statuses: write`. Branch protection requires `countersign/tier` with `app_id: 5756435` (verified through the API; enforce_admins on). After the switch, PRs #1-#4's tier statuses were posted by `countersign-gate-zawaer[bot]` and all four stayed BLOCKED. A status a workflow posts on an agent branch is ignored by branch protection. (Demo PR #6 made the workflow change.)
+
+Original analysis:
 
 **Verdict: confirmed by configuration; not exploited.** Branch protection on the demo's `main` requires
 `countersign/tier` from `app_id 15368`, which is GitHub Actions itself. Every workflow run in the repo posts as that

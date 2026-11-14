@@ -46,7 +46,7 @@ More refusals for fewer escapes. Unanimity: each added reviewer only adds cautio
 - It can't judge **intent**, and is only as good as the **requirement text**.
 - **Areas without checks** (UI, performance, other targets) fall back to humans.
 - Reviewers **share blind spots** (all three said the clause resting on 2283's untested guard was met).
-- Demo gaps: any Actions workflow can post the merge status (needs a GitHub App); trust over time is simulated; Gemini wired but not run (no key).
+- Demo gaps: trust over time is simulated; Gemini wired but not run (no key). (The forgeable merge status found in our own triage is closed by a dedicated GitHub App.)
 
 ## The judges' three questions
 

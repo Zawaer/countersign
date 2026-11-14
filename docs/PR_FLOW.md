@@ -63,11 +63,11 @@ The check then also confirms that the key on file is one GitHub lists for that l
 
 ### Merge gate
 
-`main` is protected: the required status is `countersign/tier`, pinned to the GitHub Actions app, so a person with
-a personal token cannot post a fake green status. **Known hole (security triage T1, open):** GitHub Actions as a whole
-is trusted, so a workflow file added on an agent's own branch could post `countersign/tier=success` itself. The fix
-is a dedicated Countersign GitHub App whose key lives in an environment secret limited to `main`, with branch
-protection requiring the status from that App only; it needs the repo owner to create the App. The lesson for the
+`main` is protected: the required status is `countersign/tier`, required **only from the "Countersign Gate (Zawaer)" GitHub App** (app id 5756435). The workflows mint an App
+token from a private key kept in the `countersign-gate` environment, whose deployment-branch policy admits only
+`main`; the workflows' own `GITHUB_TOKEN` has no `statuses` permission. A workflow file added on an agent's branch can
+still post a status called `countersign/tier`, but branch protection ignores it, because it doesn't come from the App.
+This closed security triage T1 (Sat 11:30; before, GitHub Actions as a whole was trusted). The lesson for the
 concept: the gate must come from an identity the agent cannot use. The ledger branch `countersign-ledger` refuses force pushes and deletion, so it can
 only grow; `countersign verify-ledger` re-checks the whole chain and every signature from any clone. Protection is
 enforced for admins too, so not even the repo owner can merge an `ask` PR without the countersignature (pushing a

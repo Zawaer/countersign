@@ -74,7 +74,7 @@ Details and definitions: [docs/MEASUREMENT.md](docs/MEASUREMENT.md).
 - It is only as good as the **requirement text**.
 - **Breadth equals the checks.** We have checks for a C# library on net8.0/Linux. Frontend, performance and other targets fall back to humans and are listed as not checked.
 - **Reviewers share blind spots.** On the original 2283, all three reviewers said REQ-2283-F3 was met, though no test exercises the guard it depends on.
-- **The merge gate can be forged in the demo.** Any GitHub Actions workflow in the demo repo can post the required status. The fix is a dedicated GitHub App ([docs/security/TRIAGE.md](docs/security/TRIAGE.md), T1).
+- **The merge gate is owned by a dedicated App.** Our triage found that any GitHub Actions workflow could post the required status (T1). Closed Sat 11:30: the status is posted by the "Countersign Gate" GitHub App, whose key only `main`'s workflows can read, and branch protection accepts it from that App only ([docs/security/TRIAGE.md](docs/security/TRIAGE.md)).
 - Gemini is wired but not run (no key), so disputes in the packs say "not adjudicated". CRACI's own SBOM and network trace are wired but skipped: no CRACI API token is set. Key rotation and revocation are out of scope.
 
 ## Run it

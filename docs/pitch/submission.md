@@ -29,7 +29,7 @@ Paste everything between the two rules into the platform. Character count of tha
 
 **Measured.** On 109 real merged MessagePack PRs (mandate v6, upstream CI credited as passed), the AI would have cleared 24 and none of the 11 later reverted or fixed. Checks alone catch 14 of 17 seeded changes (11 of 14 one-line bugs, both prompt injections, a supply-chain attack). A simulation showed the old trust rule let escapes rise when reviewers degrade; 20 checks plus canaries fixed it, and we changed the signed mandate (v3; now v6). We attacked our own pipeline 35 ways; after the fixes it stops 34, and the one still open is listed with its fix.
 
-**Limits.** It can't judge intent and is only as good as the requirement text. Areas without checks fall back to humans. Reviewers share blind spots. Trust over time and review minutes are simulated and labelled. In the demo repo any Actions workflow can post the merge status (open, T1); a dedicated GitHub App would close that.
+**Limits.** It can't judge intent and is only as good as the requirement text. Areas without checks fall back to humans. Reviewers share blind spots. Trust over time and review minutes are simulated and labelled.
 
 **Codex.** A reviewer on all seven changes. Given passing tests, its second pass said every clause was met and found nothing; unanimity means that can't clear a change. Codex also reviewed our own pipeline for security; we confirmed 8 issues (4 it missed) and fixed or mitigated all but the merge-gate hole.
 

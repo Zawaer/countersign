@@ -67,6 +67,6 @@ One message per slide. Visuals are captures of real artifacts unless marked "dia
 
 - **Message:** We know where this stops working, and the pack says so every time.
 - **Visual:** two columns.
-  - Limits: can't judge intent; only as good as the requirement; areas without checks fall back to humans; reviewers share blind spots; trust over time is simulated; in the demo any Actions workflow can post the merge status (needs a GitHub App).
+  - Limits: can't judge intent; only as good as the requirement; areas without checks fall back to humans; reviewers share blind spots; trust over time is simulated; the merge status is owned by a dedicated GitHub App (closed T1).
   - Judges' questions: *Not trust our output?* citations stop verifying, reviewers always agree, canaries missed, any escape. *Who owns it?* the owner of the most sensitive area, named in the signed mandate. *Scale?* humans see only what can't be proven; open-weight reviewers for confidential code.
 - **Speaker note:** Close on the punchline: it clears what it can prove, refuses what it can't, and a named human countersigns the rest.
