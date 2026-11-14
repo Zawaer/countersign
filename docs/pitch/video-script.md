@@ -104,3 +104,28 @@ uv run --with playwright python scripts/video/make_video.py --silent   # silent 
   - 0:53: as scripted; the tamper edits the newest ledger line (line 14), so the banner names line 14.
   - 1:08: **Try to sneak a bug in** → **Delete a guard** → "Caught by a reviewer (tests missed it)."
   - 1:24: `overview.html` now leads with 11/11 later-reverted PRs sent to a human, then the 35/35 tile.
+
+## Version 2 (scripts/video/make_video_v2.py)
+
+v2 replaces the plain full-screen browser with what looks like a screen recording on a Mac: the real site in a Chrome-style window on a desktop (tabs, URL bar, shadow), a macOS arrow cursor that moves like a hand, real hovers, clicks and inertial scrolling, URLs typed into the address bar between pages, an editor's slow push-ins and zooms onto the line being discussed, whip-pans with horizontal motion blur between sections, a light blue highlighter on key phrases, and captions the whole time. Colours and type are Countersign's own: the site renders with Inter and JetBrains Mono, standing in for SF Pro and SF Mono, and the chrome uses the Primer palette from `site/style.css`. Length is 1:50 (1920x1080, H.264 + AAC).
+
+```bash
+python3 site/build.py
+uv run --with playwright --with pillow --with numpy python scripts/video/make_video_v2.py                 # everything
+uv run --with playwright --with pillow --with numpy python scripts/video/make_video_v2.py --skip-capture  # re-compose only
+uv run --with playwright --with pillow --with numpy python scripts/video/make_video_v2.py --capture s06   # re-capture one shot
+```
+
+- **Story, 12 shots:**
+  - Hook (index, 0:00): green checks, then "It fixes the wrong bug."
+  - The mandate (pitch slide 3) and three reviewers (tour step 3).
+  - The 2234 case: the untouched line (index → Show me where), tests that pass without the fix (tour 2), the reproduced crash (evidence pack, C2), ASK → Toivo (tour 5).
+  - The human: PR #2 blocked by Toivo's signed request-changes (prs.html); the docs fix the AI cleared, merged in 40 s (pitch slide 5, with a typed note of PR #11's times from the GitHub API); the ledger tamper check (tour 6).
+  - The numbers exactly as on overview.html: 11/11, 14/18, 35/35.
+  - The close (pitch slide 1).
+- **Voice-over:** 14 lines, 232 words, in `v2_voice.py`. Same ElevenLabs voice, settings and cache as v1. Captions are the voice text, chunked and timed to the words.
+- **Modules:**
+  - `v2_timeline.py`: the storyboard and timing.
+  - `v2_capture.py` + `v2_scenes_*.py`: Playwright drives the site per shot; the DevTools screencast is captured at 2560x1440, and the cursor, clicks, camera keyframes and highlight boxes are logged.
+  - `v2_compositor.py`: desktop, window, cursor, camera, transitions, captions; Pillow + numpy, 8 processes, about 80 s for the whole video.
+- **Output:** `/data/work/video/countersign-demo-v2.mp4` and `/data/work/video/v2-contact-sheet.png`; the work files are in `/data/work/video/v2/`. Nothing rendered is committed.
