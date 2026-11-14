@@ -66,6 +66,7 @@ Details and definitions: [docs/MEASUREMENT.md](docs/MEASUREMENT.md).
 - **Review time (simulated).** A reading model in the mandate, not a stopwatch: about 440 minutes to read all seven diffs, 185 with the packs. On small changes the pack takes longer than the diff.
 - **Trust over time (simulated).** When reviewers get worse, the old rule (3 agreeing spot-checks restore clearance) let escapes rise. 20 checks plus weekly canaries brought them back to the full-review level. That result changed the signed mandate (v3; the current v4 keeps these trust stages and adds supply-chain rules).
 - **Scaling.** Machine cost per change is bounded: 38k to 68k Nemotron tokens and about 2 CI minutes per review, from 2 files to 237. Reading time is not cut on small changes; human time is saved only on proven and large changes. Measured and simulated numbers are kept apart: [docs/SCALING.md](docs/SCALING.md).
+- **Red team.** We attacked our own pipeline 35 ways (planted instructions, fake evidence, build-file and CI smuggling, forged trust events, dependency tricks). The first run stopped 7; after the fixes it stops 32. The 3 still open are listed with fixes: [docs/security/REDTEAM.md](docs/security/REDTEAM.md).
 
 ## Limits
 
