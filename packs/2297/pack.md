@@ -16,7 +16,7 @@ Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, Formatter
 
 | Status | Clause | Why |
 |---|---|---|
-| **NOT MET** | [REQ-2297-F1](#chain-REQ-2297-F1) | Claude says not met (Codex and Nemotron: met) |
+| **NOT MET** | [F1](#chain-REQ-2297-F1) | Claude says not met (Codex and Nemotron: met) |
 
 **What the AI found**
 
@@ -27,14 +27,14 @@ Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, Formatter
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-6"></a>runtime execution of generated formatters/resolvers (execution tests). *Why:* tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change. *Who:* area owner / maintainer, after moving to an SDK with Roslyn >= 4.12 (raised by Nemotron)
-- Whether [REQ-2297-F1](#chain-REQ-2297-F1) is met: see the trace. *Who:* Toivo
+- <a id="refusal-6"></a>**runtime execution of generated formatters/resolvers (execution tests)** *Who:* area owner / maintainer, after moving to an SDK with Roslyn >= 4.12 (raised by Nemotron) <details><summary>why</summary>tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change.</details>
+- Whether [F1](#chain-REQ-2297-F1) is met: see the trace. *Who:* Toivo
 
 <details id="refused-peripheral"><summary>5 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix (Claude) · <a id="refusal-2"></a>Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings (Claude) · <a id="refusal-3"></a>The TransformUtilities brace change ('{' to '{\r\n' when constraints exist): intended fix or incidental (Claude) · <a id="refusal-4"></a>Coverage of generated code not exercised by the supplied generator test fixture (Codex) · <a id="refusal-5"></a>netstandard2.0 and .NET Framework compilation of generated output (Nemotron)</details>
 
 **Not checked, and why**
 
-- `tests.execution`: SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.
+- `tests.execution`: SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0 <details><summary>more</summary>so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn &gt;= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.</details>
 - `tests.MessagePack.Tests`: runtime library src/MessagePack not modified by the change; suite not run
 - `build.net472/netstandard`: only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
 - `benchmarks`: no runtime serialization hot path touched (generator/analyzer only)
@@ -49,11 +49,15 @@ Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, Formatter
 
 <details><summary>4 more risks that do not set the tier</summary>5 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks · 3 disputed items not adjudicated · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
-**Toivo signs** (required; allowed: reject, request-changes)
+**Toivo signs** (required; reject, request-changes)
 
-> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+```
+countersign sign 2297 --as Toivo --decision … --note "…"
+```
 
-Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+<details><summary>And rate the 4 verified findings (full command)</summary>
+
+One `--finding` flag each: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
 
 - `claude:C1` (major): Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise
 - `claude:C2` (info): 237-file change is dominated by regenerated test resources
@@ -67,6 +71,16 @@ countersign sign 2297 --as Toivo --decision <reject|request-changes> --note "...
   --finding nemotron:N1=<accepted|rejected|unsure> \
   --finding claude:v1.C2=<accepted|rejected|unsure>
 ```
+
+</details>
+
+<details><summary>What your signature says</summary>
+
+> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+
+It covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.
+
+</details>
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build.egress pass; CRACI trace pass
 

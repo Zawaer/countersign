@@ -6,7 +6,7 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 **Why ask**
 
-1. The AI declined to decide 1 question, e.g. Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack) ([evidence](#refused))
+1. The AI declined to decide 1 question ([evidence](#refused)) <details><summary>more</summary>e.g. Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)</details>
 
 <sub>All 5 tier drivers are under Full detail.</sub>
 
@@ -14,9 +14,9 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-up-1934-F1](#chain-REQ-up-1934-F1) | All 3 reviewers say met (13 verified citations); build, tests.targeted pass |
-| **PROVEN** | [REQ-up-1934-F2](#chain-REQ-up-1934-F2) | All 3 reviewers say met (14 verified citations); build, tests.targeted pass |
-| **PROVEN** | [REQ-up-1934-N1](#chain-REQ-up-1934-N1) | All 3 reviewers say met (8 verified citations); build, tests.full_suite pass |
+| **PROVEN** | [F1](#chain-REQ-up-1934-F1) | All 3 reviewers say met (13 verified citations); build, tests.targeted pass |
+| **PROVEN** | [F2](#chain-REQ-up-1934-F2) | All 3 reviewers say met (14 verified citations); build, tests.targeted pass |
+| **PROVEN** | [N1](#chain-REQ-up-1934-N1) | All 3 reviewers say met (8 verified citations); build, tests.full_suite pass |
 
 **What the AI found**
 
@@ -26,17 +26,17 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-3"></a>Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack). *Why:* Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run). *Who:* CI or area owner (raised by Nemotron)
+- <a id="refusal-3"></a>**Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)** *Who:* CI or area owner (raised by Nemotron) <details><summary>why</summary>Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).</details>
 
 <details id="refused-peripheral"><summary>2 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (Claude) · <a id="refusal-2"></a>facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (Claude)</details>
 
 **Not checked, and why**
 
 - `tests.MessagePack.Tests`: runtime library src/MessagePack not modified by the change; suite not run
-- `tests.execution`: ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)
+- `tests.execution`: ExecutionTests/MapModeExecutionTests not run for this control <details><summary>more</summary>(generator output is covered by the snapshot tests in the full suite)</details>
 - `build.net472/netstandard`: only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
 - `benchmarks`: no runtime serialization hot path touched
-- `tests.fail_without_fix`: skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)
+- `tests.fail_without_fix`: skipped: not run: test-only change <details><summary>more</summary>no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)</details>
 - Standing pipeline gaps: `other-targets`, `runtime-perf`, `semantic-intent`, `provenance`
 
 **Residual risk you accept by signing**
@@ -45,11 +45,15 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 <details><summary>3 more risks that do not set the tier</summary>2 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
-**Toivo signs** (required; allowed: accept, reject, request-changes)
+**Toivo signs** (required; accept, reject, request-changes)
 
-> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+```
+countersign sign up-1934 --as Toivo --decision … --note "…"
+```
 
-Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+<details><summary>And rate the 3 verified findings (full command)</summary>
+
+One `--finding` flag each: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
 
 - `claude:C1` (info): Two generic-constraint tests pin C# 9 although their input uses C# 8 features
 - `claude:C2` (info): CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused
@@ -61,6 +65,16 @@ countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> -
   --finding claude:C2=<accepted|rejected|unsure> \
   --finding nemotron:F1=<accepted|rejected|unsure>
 ```
+
+</details>
+
+<details><summary>What your signature says</summary>
+
+> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+
+It covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.
+
+</details>
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
 

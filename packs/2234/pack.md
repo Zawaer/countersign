@@ -7,8 +7,8 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 **Why ask**
 
 1. Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a different crash ([evidence](#f-claude-C1))
-2. 2 of 4 requirement clauses not proven. REQ-2234-N1: Claude says not met (Codex and Nemotron: met); the adjudicator disputes it (+1 more) ([evidence](#chain-REQ-2234-N1))
-3. The AI declined to decide 3 questions, e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages ([evidence](#refused))
+2. 2 of 4 requirement clauses not proven. ([evidence](#chain-REQ-2234-N1)) <details><summary>more</summary>REQ-2234-N1: Claude says not met (Codex and Nemotron: met); the adjudicator disputes it (+1 more)</details>
+3. The AI declined to decide 3 questions ([evidence](#refused)) <details><summary>more</summary>e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages</details>
 
 <sub>All 19 tier drivers are under Full detail.</sub>
 
@@ -16,10 +16,35 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 | Status | Clause | Why |
 |---|---|---|
-| **HELD BEFORE** | [REQ-2234-F1](#chain-REQ-2234-F1) | Met, but already true before this change: all 3 of the clause's tests that were run without the fix pass there too: AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported, MemberWithoutKeyIsReported |
-| **HELD BEFORE** | [REQ-2234-F2](#chain-REQ-2234-F2) | Met, but already true before this change: all 1 of the clause's tests that were run without the fix pass there too: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed |
-| **NOT MET** | [REQ-2234-N1](#chain-REQ-2234-N1) | Claude says not met (Codex and Nemotron: met); the adjudicator disputes it |
-| **REFUSED** | [REQ-2234-N2](#chain-REQ-2234-N2) | Codex said met without verified evidence |
+| **HELD BEFORE** | [F1](#chain-REQ-2234-F1) | Met, but already true before this change <details><summary>more</summary>all 3 of the clause's tests that were run without the fix pass there too: AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported, MemberWithoutKeyIsReported</details> |
+| **HELD BEFORE** | [F2](#chain-REQ-2234-F2) | Met, but already true before this change <details><summary>more</summary>all 1 of the clause's tests that were run without the fix pass there too: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed</details> |
+| **NOT MET** | [N1](#chain-REQ-2234-N1) | Claude says not met (Codex and Nemotron: met); the adjudicator disputes it |
+| **REFUSED** | [N2](#chain-REQ-2234-N2) | Codex said met without verified evidence |
+
+<details><summary>Gemini on N1: backs 2 of 3 claims for Claude's 'not met', 2 of 4 for 'met' (advisory)</summary>
+
+Duplicate-key analyzer tests pass on head, while repro.claude.C2 fails on both head and base and TypeCollector.cs:985 retains an unguarded PropertyDeclarationSyntax cast.
+
+**Backed by the cited evidence**
+
+- **Claude**: Duplicate-string-key analyzer crash is fixed and the 175-test source-generator suite passes (Verified test SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure passes in tests.targeted and tests.full_suite passes (175/175))
+- **Claude**: An unguarded cast to PropertyDeclarationSyntax remains at TypeCollector.cs:985 when both int and string keys are null (Verified code quote at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 shows ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation())
+- **Codex**: Duplicate-string-key contracts no longer crash the analyzer and the existing source-generator suite passes (Verified test SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure passes in tests.targeted and tests.full_suite passes (175/175))
+- **Nemotron**: Duplicate-int-key analyzer crash is fixed on head and the pipeline repro repro.claude.C2 still fails on head and base while passing on control (Verified test SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure passes in tests.targeted and fails in tests.fail_without_fix, and facts.json repro.claude.C2 confirms failed on head, failed on base, passed on control)
+
+**Not backed**
+
+- **Claude**: Scratch-worktree probe triggers AD0001 InvalidCastException at head and generator probe shows no CS8785 for duplicate keys (Neither scratch-worktree probe nor a generator-side duplicate-key test is in facts.json)
+- **Codex**: Invalid contracts generally satisfy REQ-2234-N1 without analyzer or generator crashes (Cited evidence only covers DuplicateStringKeysAreReportedWithoutAnalyzerFailure and tests.full_suite; it does not cover null-key positional records (repro.claude.C2 fails on head) or a generator-side invalid-contract test)
+- **Nemotron**: Named test ReproClaude2234C2Tests.PositionalRecordWithNullKeyDoesNotCrashAnalyzerForSuppressedType fails with AD0001 InvalidCastException and passes on origin/ju26-issue-2283 due to a null-safe lookup (The cited test name is engine_verified: false (not in facts.json), and the specific exception type and control-branch diff are not in the verified evidence)
+
+**What would settle it**
+
+- Area-owner ruling on whether REQ-2234-N1 requires fixing the pre-existing TypeCollector.cs:985 cast for positional records with [property: Key(null)] in this change
+- A test in facts.json covering [MessagePackObject(SuppressSourceGeneration = true)] on a positional record with [property: Key(null)] asserting no AD0001 analyzer crash
+- A source-generator test in facts.json exercising invalid contracts (e.g. duplicate keys) in a SuppressSourceGeneration = true type and asserting no generator crash (CS8785)
+
+</details>
 
 **What the AI found**
 
@@ -30,10 +55,10 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-1"></a>Whether this change resolves issue #2234 for users of the released 3.1.x packages. *Why:* The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own). *Who:* analyzer area owner / maintainers choosing the target branch (raised by Claude)
-- <a id="refusal-5"></a>Runtime library behavior (src/MessagePack) and net472/netstandard builds. *Why:* Not run; the runtime library was not modified and only net8.0 was built. *Who:* Area owner (raised by Nemotron)
-- <a id="refusal-6"></a>Security review of analyzer deserializing untrusted input. *Why:* No security-specific evidence was provided and no security analysis was performed. *Who:* Security reviewer (raised by Nemotron)
-- Whether [REQ-2234-N1](#chain-REQ-2234-N1), [REQ-2234-N2](#chain-REQ-2234-N2) are met: see the trace. *Who:* Toivo
+- <a id="refusal-1"></a>**Whether this change resolves issue #2234 for users of the released 3.1.x packages** *Who:* analyzer area owner / maintainers choosing the target branch (raised by Claude) <details><summary>why</summary>The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).</details>
+- <a id="refusal-5"></a>**Runtime library behavior (src/MessagePack) and net472/netstandard builds** *Who:* Area owner (raised by Nemotron) <details><summary>why</summary>Not run; the runtime library was not modified and only net8.0 was built.</details>
+- <a id="refusal-6"></a>**Security review of analyzer deserializing untrusted input** *Who:* Security reviewer (raised by Nemotron) <details><summary>why</summary>No security-specific evidence was provided and no security analysis was performed.</details>
+- Whether [N1](#chain-REQ-2234-N1), [N2](#chain-REQ-2234-N2) are met: see the trace. *Who:* Toivo
 
 <details id="refused-peripheral"><summary>3 peripheral refusals (out of scope for this change)</summary><a id="refusal-2"></a>Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Claude) · <a id="refusal-3"></a>Parity with analyzer behavior in version 3.1.0 (Nemotron) · <a id="refusal-4"></a>Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (Nemotron)</details>
 
@@ -52,11 +77,15 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 <details><summary>4 more risks that do not set the tier</summary>REQ-2234-F1, REQ-2234-F2 already held before this change: met, but not achieved by it. · 3 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
-**Toivo signs** (required; allowed: accept, reject, request-changes)
+**Toivo signs** (required; accept, reject, request-changes)
 
-> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+```
+countersign sign 2234 --as Toivo --decision … --note "…"
+```
 
-Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+<details><summary>And rate the 9 verified findings (full command)</summary>
+
+One `--finding` flag each: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
 
 - `claude:C1` (major): The issue's 3.1.1 regression is not on this base; the change fixes a different crash
 - `claude:C2` (minor): Positional-record Key(null) still crashes the analyzer for suppressed (and other) types
@@ -80,6 +109,16 @@ countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --no
   --finding nemotron:N4=<accepted|rejected|unsure> \
   --finding nemotron:N5=<accepted|rejected|unsure>
 ```
+
+</details>
+
+<details><summary>What your signature says</summary>
+
+> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+
+It covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.
+
+</details>
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build.egress pass; CRACI trace pass
 

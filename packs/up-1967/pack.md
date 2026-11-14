@@ -14,8 +14,8 @@ Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki. Judged against 2 r
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-up-1967-F1](#chain-REQ-up-1967-F1) | All 3 reviewers say met (6 verified citations); docs.anchors pass |
-| **PROVEN** | [REQ-up-1967-N1](#chain-REQ-up-1967-N1) | All 3 reviewers say met (5 verified citations); docs.anchors pass |
+| **PROVEN** | [F1](#chain-REQ-up-1967-F1) | All 3 reviewers say met (6 verified citations); docs.anchors pass |
+| **PROVEN** | [N1](#chain-REQ-up-1967-N1) | All 3 reviewers say met (5 verified citations); docs.anchors pass |
 
 **What the AI found**
 
@@ -24,18 +24,18 @@ Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki. Judged against 2 r
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-1"></a>How GitHub actually renders and scrolls to the #aot anchor. *Why:* docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit <a name> I read *Who:* docs owner (raised by Claude)
-- <a id="refusal-2"></a>Whether rendered Markdown HTML actually exposes the `#aot` anchor. *Why:* docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py. *Who:* docs owner / area owner (raised by Nemotron)
+- <a id="refusal-1"></a>**How GitHub actually renders and scrolls to the #aot anchor** *Who:* docs owner (raised by Claude) <details><summary>why</summary>docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit &lt;a name&gt; I read</details>
+- <a id="refusal-2"></a>**Whether rendered Markdown HTML actually exposes the `#aot` anchor** *Who:* docs owner / area owner (raised by Nemotron) <details><summary>why</summary>docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py.</details>
 
 **Not checked, and why**
 
-- `docs.rendering`: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py
+- `docs.rendering`: Markdown was not rendered <details><summary>more</summary>anchors were resolved with GitHub slug rules re-implemented in upfacts.py</details>
 - `docs.external_links`: links to other files or URLs were not followed (offline)
-- `build`: skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run
-- `tests.targeted`: skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run
-- `tests.fail_without_fix`: skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run
-- `tests.full_suite`: skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run
-- `analyzers`: skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run
+- `build`: skipped: not run: docs-only change <details><summary>more</summary>no compiled or test file changed (only README.md), so nothing was built or run</details>
+- `tests.targeted`: skipped: not run: docs-only change <details><summary>more</summary>no compiled or test file changed (only README.md), so nothing was built or run</details>
+- `tests.fail_without_fix`: skipped: not run: docs-only change <details><summary>more</summary>no compiled or test file changed (only README.md), so nothing was built or run</details>
+- `tests.full_suite`: skipped: not run: docs-only change <details><summary>more</summary>no compiled or test file changed (only README.md), so nothing was built or run</details>
+- `analyzers`: skipped: not run: docs-only change <details><summary>more</summary>no compiled or test file changed (only README.md), so nothing was built or run</details>
 - Standing pipeline gaps: `other-targets`, `runtime-perf`, `semantic-intent`, `provenance`
 
 **Residual risk you accept by signing**
@@ -44,11 +44,15 @@ Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki. Judged against 2 r
 
 <details><summary>2 more risks that do not set the tier</summary>Not run: docs.rendering, docs.external_links, build, tests.targeted, tests.fail_without_fix, tests.full_suite, analyzers · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
-**Rene signs** (not required: AI-cleared, spot-checks apply; allowed: accept, reject, request-changes)
+**Rene signs** (not required: AI-cleared, spot-checks apply; accept, reject, request-changes)
 
-> I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+```
+countersign sign up-1967 --as Rene --decision … --note "…"
+```
 
-Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+<details><summary>And rate the 2 verified findings (full command)</summary>
+
+One `--finding` flag each: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
 
 - `claude:C1` (info): Other broken TOC anchors remain, including the next line (#rpc)
 - `nemotron:N1` (info): Pre-existing unresolved anchors remain on untouched lines
@@ -58,6 +62,16 @@ countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --
   --finding claude:C1=<accepted|rejected|unsure> \
   --finding nemotron:N1=<accepted|rejected|unsure>
 ```
+
+</details>
+
+<details><summary>What your signature says</summary>
+
+> I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+
+It covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.
+
+</details>
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
 

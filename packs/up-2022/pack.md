@@ -14,10 +14,10 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-up-2022-F1](#chain-REQ-up-2022-F1) | All 3 reviewers say met (8 verified citations); build, tests.targeted pass |
-| **PROVEN** | [REQ-up-2022-F2](#chain-REQ-up-2022-F2) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
-| **PROVEN** | [REQ-up-2022-N1](#chain-REQ-up-2022-N1) | All 3 reviewers say met (6 verified citations); build, tests.fail_without_fix pass |
-| **PROVEN** | [REQ-up-2022-N2](#chain-REQ-up-2022-N2) | All 3 reviewers say met (3 verified citations); build, tests.full_suite pass |
+| **PROVEN** | [F1](#chain-REQ-up-2022-F1) | All 3 reviewers say met (8 verified citations); build, tests.targeted pass |
+| **PROVEN** | [F2](#chain-REQ-up-2022-F2) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
+| **PROVEN** | [N1](#chain-REQ-up-2022-N1) | All 3 reviewers say met (6 verified citations); build, tests.fail_without_fix pass |
+| **PROVEN** | [N2](#chain-REQ-up-2022-N2) | All 3 reviewers say met (3 verified citations); build, tests.full_suite pass |
 
 **What the AI found**
 
@@ -26,14 +26,14 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
-- <a id="refusal-3"></a>Runtime deserialization security and execution behavior. *Why:* The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here. *Who:* area owner / MessagePack maintainer (raised by Nemotron)
+- <a id="refusal-3"></a>**Runtime deserialization security and execution behavior** *Who:* area owner / MessagePack maintainer (raised by Nemotron) <details><summary>why</summary>The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.</details>
 
 <details id="refused-peripheral"><summary>3 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after (Claude) · <a id="refusal-2"></a>Whether the release notes / analyzer docs should mention the change (Claude) · <a id="refusal-4"></a>Behavior on non-net8.0 target frameworks (Nemotron)</details>
 
 **Not checked, and why**
 
 - `tests.MessagePack.Tests`: runtime library src/MessagePack not modified by the change; suite not run
-- `tests.execution`: ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)
+- `tests.execution`: ExecutionTests/MapModeExecutionTests not run for this control <details><summary>more</summary>(generator output is covered by the snapshot tests in the full suite)</details>
 - `build.net472/netstandard`: only the net8.0 slice of src/MessagePack was built (Linux container, Debug)
 - `benchmarks`: no runtime serialization hot path touched
 - Standing pipeline gaps: `other-targets`, `runtime-perf`, `semantic-intent`, `provenance`
@@ -44,11 +44,15 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 <details><summary>3 more risks that do not set the tier</summary>3 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
-**Toivo signs** (required; allowed: accept, reject, request-changes)
+**Toivo signs** (required; accept, reject, request-changes)
 
-> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+```
+countersign sign up-2022 --as Toivo --decision … --note "…"
+```
 
-Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+<details><summary>And rate the 2 verified findings (full command)</summary>
+
+One `--finding` flag each: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
 
 - `claude:C2` (info): New test covers the analyzer path only
 - `nemotron:I1` (info): TryCreate documentation does not state that abstract types are excluded
@@ -58,6 +62,16 @@ countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> -
   --finding claude:C2=<accepted|rejected|unsure> \
   --finding nemotron:I1=<accepted|rejected|unsure>
 ```
+
+</details>
+
+<details><summary>What your signature says</summary>
+
+> I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
+
+It covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.
+
+</details>
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
 
