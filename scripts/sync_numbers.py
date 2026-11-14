@@ -57,7 +57,108 @@ def values() -> dict[str, str]:
         "ledger_entries": len(ledger),
         "share_routed_real_pct": round(100 * v("share_routed_to_humans")),
     }
+    out.update(_more(r, v, ci))
     return {k: str(x) for k, x in out.items()}
+
+
+def _check(change: str, cid: str) -> dict:
+    facts = _json(f"evidence/{change}/facts.json")
+    return next((c for c in facts["checks"] if c["id"] == cid), {})
+
+
+def _k(n: float) -> int:
+    return round(n / 1000)
+
+
+def _more(r: dict, v, ci: dict) -> dict:
+    """Headline numbers that recur across the docs, beyond the replay/seeded/red-team core."""
+    out: dict = {}
+    # the history replay: share routed, rule-of-three upper bound on the escape rate among the cleared
+    cleared = ci["confusion"]["clean_cleared"] + ci["confusion"]["escape_cleared"]
+    out["history_routed_pct"] = round(100 * ci["routed_to_humans"] / ci["n"])
+    out["history_cleared_upper_pct"] = int(300 / cleared) if cleared else "?"
+    # seeded set: the one-line bugs (-mutK), what checks alone caught, and what got past every check
+    checks = v("caught_by_checks_alone")
+    det = checks["detail"]
+    bugs = [c for c in det if re.search(r"-mut\d+$", c)]
+    out["seeded_bugs"] = len(bugs)
+    out["seeded_bugs_caught_by_checks"] = sum(det[c] != "no check failed" for c in bugs)
+    out["seeded_injections"] = sum(c.endswith("-inject") for c in det)
+    survivors = [c for c in det if det[c] == "no check failed"]
+    out["seeded_survivors"] = len(survivors)
+    plf = v("planted_line_flagged")
+    out["seeded_survivors_flagged"] = plf["panel_on_test_survivors"]["flagged"]
+    out["seeded_survivors_flagged_new"] = plf["panel_on_test_survivors"]["flagged_new_at_line"]
+    nem = plf["per_reviewer"]["nemotron"]
+    out["nemotron_survivors_flagged"] = len(nem["flagged_test_survivors"])
+    out["nemotron_survivors_reviewed"] = len(nem["reviewed_test_survivors"])
+    # the seven real changes
+    real = [c for c in _json("measurement/results.json")["changes"] if not c.get("mutant")]
+    agent = [c for c in real if not c["change"].startswith("up-")]
+    human = ("ask", "block")
+    out["real_changes"] = len(real)
+    out["real_routed"] = sum(c["tier"] in human for c in real)
+    out["agent_changes"] = len(agent)
+    out["agent_routed"] = sum(c["tier"] in human for c in agent)
+    # reading-model minutes (simulated), per change and in total
+    for ch, t in v("time_per_change").items():
+        key = ch.replace("-", "")
+        out[f"pack_min_{key}"] = round(t["with_pack_min"])
+        out[f"read_min_{key}"] = round(t["full_read_min"])
+    out["review_min_full"] = round(v("human_minutes_full_read"))
+    out["review_min_pack"] = round(v("human_minutes_with_pack"))
+    # reviewers: verified findings, Codex's misses, the owner's ratings, routing overrides
+    fpr = v("findings_per_reviewer")
+    for rv in ("claude", "nemotron", "codex"):
+        out[f"{rv}_verified"] = fpr[rv]["verified"]
+    out["codex_missed_majors"] = v("reviewer_cross_check")["codex"]["missed_others_verified_major"]
+    far = v("findings_accepted_rate")
+    for rv in ("claude", "nemotron"):
+        out[f"{rv}_accepted"], out[f"{rv}_rated"] = far[rv]["accepted"], far[rv]["rated"]
+    ov = v("tier_overrides")
+    out["owner_overrode"], out["owner_overrode_of"] = ov["overrode"], ov["of"]
+    met = tot = 0
+    for ch in [c["change"] for c in agent]:
+        vs = [x["verdict"] for x in _json(f"reviews/{ch}/codex.json").get("requirement_verdicts", [])]
+        met, tot = met + vs.count("met"), tot + len(vs)
+    out["codex_v2_met"], out["codex_v2_clauses"] = met, tot
+    # 2234: the new tests, fail-without-fix and mutation testing (evidence/2234/facts.json)
+    fwf = _check("2234", "tests.fail_without_fix")
+    out["t2234_new_tests"] = fwf["new_total"]
+    out["t2234_fail_without_fix"] = fwf["new_failed"]
+    out["t2234_pass_without_fix"] = fwf["new_total"] - fwf["new_failed"]
+    ex = _check("2234", "tests.execution_fail_without_fix")
+    out["t2234_runtime_new"], out["t2234_runtime_fail_without_fix"] = ex["new_total"], ex["new_failed"]
+    fs = _check("2234", "tests.full_suite")
+    out["t2234_suite_passed"], out["t2234_suite_total"] = fs["passed"], fs["total"]
+    mut = _check("2234", "tests.mutation")["mutants"]
+    out["t2234_mutants"] = len(mut)
+    out["t2234_mutants_killed"] = sum(m["outcome"] == "killed" for m in mut)
+    out["t2234_mutants_survived"] = sum(m["outcome"] == "survived" for m in mut)
+    # model tokens (measurement/costs.yaml): Gemini's adjudication, Nemotron per review call, all reviewers per change
+    # every run row is a one-line JSON flow mapping, so no YAML parser is needed (the CI check stays dependency-free)
+    runs = [json.loads(m) for m in re.findall(r"^\s*-\s*(\{.*\})\s*$", (ROOT / "measurement/costs.yaml").read_text(), re.M)]
+    gem = [x for x in runs if x["provider"] == "google"]
+    out["gemini_adjudicated"] = len({x["change"] for x in gem})
+    out["gemini_tokens"] = f'{sum(x["tokens_in"] + x["tokens_out"] for x in gem):,}'
+    out["gemini_usd"] = f'{sum(x["usd"] for x in gem):.2f}'
+    files = {}
+    for x in runs:
+        ch = x.get("change")
+        if x["provider"] == "nvidia" and ch and "repair" not in x["purpose"]:
+            fp = ROOT / f"evidence/{ch}/facts.json"
+            nf = json.loads(fp.read_text())["diff"].get("files", 0) if fp.exists() else 0
+            files.setdefault(ch, []).append((x["tokens_in"] + x["tokens_out"], nf))
+    multi = [t for calls in files.values() for t, nf in calls if nf >= 2]  # "from 2 files to 237"
+    out["nemotron_call_min_k"], out["nemotron_call_max_k"] = _k(min(multi)), _k(max(multi))
+    seeded = [t for ch, calls in files.items() if re.search(r"-(mut\d+|inject|sec\d+|deps)$", ch) for t, _ in calls]
+    out["nemotron_seeded_min_k"], out["nemotron_seeded_max_k"] = _k(min(seeded)), _k(max(seeded))
+    tpc = v("model_tokens_per_change")
+    ag = [tpc[c["change"]] for c in agent if c["change"] in tpc]
+    up = [tpc[c["change"]] for c in real if c["change"].startswith("up-") and c["change"] in tpc]
+    out["tokens_agent_min_k"], out["tokens_agent_max_k"] = _k(min(ag)), _k(max(ag))
+    out["tokens_control_min_k"], out["tokens_control_max_k"] = _k(min(up)), _k(max(up))
+    return out
 
 
 def sync(check: bool) -> int:
