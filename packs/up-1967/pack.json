@@ -1,0 +1,1449 @@
+{
+  "schema": "countersign.pack/v1",
+  "change": "up-1967",
+  "branch": "upstream PR #1967",
+  "base": "b9b65ddf",
+  "head": "8683d1cd",
+  "commit_message": "Fix AOT README anchor\n - fix anchor ref name to `aot`",
+  "author": "Ali Makki",
+  "agent_written": false,
+  "diff": {
+    "files": 1,
+    "insertions": 1,
+    "deletions": 1
+  },
+  "simulated": false,
+  "mutation": null,
+  "engine": {
+    "name": "countersign",
+    "version": "0.1.0"
+  },
+  "mandate": {
+    "path": "mandate/messagepack.mandate.yaml",
+    "id": "messagepack-csharp",
+    "version": "3",
+    "owner": "Toivo",
+    "sha256": "b1e5e40743632a3c992c9028246411a26a4ad4f8b7ff6d00efd7fd625d4fa83b",
+    "signature": {
+      "valid": true,
+      "signed_by": "Toivo",
+      "signed_at": "2026-11-14T00:23:03+00:00",
+      "reason": "signature valid"
+    }
+  },
+  "inputs": {
+    "facts": {
+      "path": "evidence/up-1967/facts.json",
+      "sha256": "359261dbc56f5dadd08332f22a0ed2faeb90c5311dc9405417aaf91c49a82f60"
+    },
+    "requirements": {
+      "path": "requirements/up-1967.yaml",
+      "sha256": "6a2b011dbf25ed4f76ce19d73b336963114fa48bd3227df1c0a2f877eb90b75e"
+    },
+    "reviews": {
+      "claude": {
+        "path": "reviews/up-1967/claude.json",
+        "sha256": "96721d0b10cb4215f4fd7ca12cc7dbb2443f7ed58a29bd83d1d48ea4342a1e0f"
+      },
+      "codex": {
+        "path": "reviews/up-1967/codex.json",
+        "sha256": "5ad3f01cdaa80d5c93cc0b19dc64f56123bc8a1445b4cd3c1381661caa484e7c"
+      },
+      "nemotron": {
+        "path": "reviews/up-1967/nemotron.json",
+        "sha256": "930088967bcdb7db2ba3a4634d6644386ef5b0b489263c31244287dd1b1b6370"
+      }
+    }
+  },
+  "requirement_set": {
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1967",
+    "official": false
+  },
+  "tier": "notify",
+  "ai_recommendation": "notify",
+  "why": [
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "How GitHub actually renders and scrolls to the #aot anchor (docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit <a name> I read) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "notify",
+      "why": "Whether rendered Markdown HTML actually exposes the `#aot` anchor (docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    }
+  ],
+  "drivers": [
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "How GitHub actually renders and scrolls to the #aot anchor (docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit <a name> I read) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "notify",
+      "why": "Whether rendered Markdown HTML actually exposes the `#aot` anchor (docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "trust cap",
+      "id": "docs",
+      "tier": "silent",
+      "why": "docs: AI may clear at most to silent (mandate clearance right)"
+    },
+    {
+      "source": "risk score",
+      "id": "risk",
+      "tier": "silent",
+      "why": "score 1.1 (notify>=15, ask>=40, block>=130); largest: files_changed 1 + lines_changed 0.1"
+    }
+  ],
+  "owner": "Rene",
+  "primary_area": "docs",
+  "notify": [],
+  "areas": [
+    {
+      "name": "docs",
+      "owner": "Rene",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "README.md"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-up-1967-F1",
+      "type": "docs",
+      "text": "The README table-of-contents entry \"AOT Code Generation (support for Unity/Xamarin)\" must link to an anchor that exists in README.md (the AOT Code Generation section).",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "The TOC entry at README.md:60 now links #aot, and README.md:1602 declares <a name=\"aot\"> on the AOT Code Generation heading; docs.anchors resolves it at head and listed the old anchor as unresolved at base.",
+          "verified": 4,
+          "verified_any": 5,
+          "cited": 5,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-up-1967-F1",
+              "quote": "must link to an anchor that exists in README.md",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-1967-F1 text contains the quote",
+              "ref": "ev-f1f2283cf3"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 60,
+              "rev": "head",
+              "quote": "- [AOT Code Generation (support for Unity/Xamarin)](#aot)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:60 at head 8683d1cd",
+              "ref": "ev-991c299df9"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 1602,
+              "rev": "head",
+              "quote": "## <a name=\"aot\"></a>AOT Code Generation",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:1602 at head 8683d1cd",
+              "ref": "ev-35e50492e6"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 60,
+              "rev": "base",
+              "quote": "(#aot-code-generation-support-for-unityxamarin)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:60 at base b9b65ddf",
+              "ref": "ev-1d4d8a33ab"
+            },
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+              "ref": "ev-889510bd31"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The TOC link targets #aot, which matches the AOT section’s explicit anchor, and the touched-line anchor check passes.",
+          "verified": 3,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 60,
+              "rev": "head",
+              "quote": "[AOT Code Generation (support for Unity/Xamarin)](#aot)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:60 at head 8683d1cd",
+              "ref": "ev-ed2280e738"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 1602,
+              "rev": "head",
+              "quote": "<a name=\"aot\"></a>",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:1602 at head 8683d1cd",
+              "ref": "ev-da49f192e2"
+            },
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+              "ref": "ev-889510bd31"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The TOC entry at README.md line 60 (head) links to `#aot`, docs.anchors reports that link resolves at head, and the old anchor `aot-code-generation-support-for-unityxamarin` was unresolved at base but absent from head's unresolved list.",
+          "verified": 1,
+          "verified_any": 1,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 60,
+              "rev": "head",
+              "quote": "- [AOT Code Generation (support for Unity/Xamarin)](`#aot`)",
+              "verified": false,
+              "substantive": false,
+              "note": "quote not on README.md:60 ±3 at head; not found anywhere in the file",
+              "ref": "ev-1872d00c40"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 60,
+              "rev": "base",
+              "quote": "- [AOT Code Generation (support for Unity/Xamarin)](`#aot-code-generation-support-for-unityxamarin`)",
+              "verified": false,
+              "substantive": false,
+              "note": "quote not on README.md:60 ±3 at base; not found anywhere in the file",
+              "ref": "ev-8af227795f"
+            },
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+              "ref": "ev-889510bd31"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-up-1967-N1",
+      "type": "docs",
+      "text": "Only documentation changes; no other README content is altered.",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "facts.json records one file (README.md, kind doc) with 1 insertion and 1 deletion, the changed line being only the link target; public_api confirms no src change.",
+          "verified": 2,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-up-1967-N1",
+              "quote": "Only documentation changes",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-1967-N1 text contains the quote",
+              "ref": "ev-bfe3bfe29b"
+            },
+            {
+              "kind": "check",
+              "id": "public_api",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+              "ref": "ev-1494dc6548"
+            },
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 60,
+              "rev": "head",
+              "quote": "(#aot)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:60 at head 8683d1cd",
+              "ref": "ev-6768b6d0b2"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The provided diff changes one README table-of-contents link, and the public API check confirms no API files changed.",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "README.md",
+              "line": 60,
+              "rev": "head",
+              "quote": "[AOT Code Generation (support for Unity/Xamarin)](#aot)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches README.md:60 at head 8683d1cd",
+              "ref": "ev-ed2280e738"
+            },
+            {
+              "kind": "check",
+              "id": "public_api",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+              "ref": "ev-1494dc6548"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The diff touches only README.md with +1/-1 (doc kind only), and public_api reports no changes under src/ or to PublicAPI files.",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "docs.anchors",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+              "ref": "ev-889510bd31"
+            },
+            {
+              "kind": "check",
+              "id": "public_api",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+              "ref": "ev-1494dc6548"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    }
+  ],
+  "reviewer_panel": {
+    "confidential": false,
+    "why": "repo and touched areas are not confidential",
+    "reviewers": [
+      "claude",
+      "codex",
+      "nemotron"
+    ],
+    "adjudicator": "gemini",
+    "excluded": [],
+    "ignored_files": [],
+    "rule": "proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass"
+  },
+  "disputes": [],
+  "adjudication": null,
+  "checked_by": {
+    "tools": [
+      {
+        "id": "build",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.targeted",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.full_suite",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "public_api",
+        "tool": "git diff --name-only (no file under src/ changed)",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "analyzers",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "docs.anchors",
+        "tool": "evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+        "duration_s": null,
+        "log": null
+      }
+    ],
+    "reviewers": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T12:00:00+02:00",
+        "inputs": [
+          "diff b9b65ddf..8683d1cd",
+          "facts.json",
+          "requirements/up-1967.yaml",
+          "README.md at head and base (headings and anchors, as the brief allows)"
+        ],
+        "findings": 1,
+        "verified": 1,
+        "rejected": 0,
+        "refusals": 1
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T02:06:41+02:00",
+        "inputs": [
+          "/tmp/up-briefs/1967.md",
+          "repo /data/src/mp",
+          "base b9b65ddfb898bbcbb2d14d435efed6ae0592907b",
+          "head 8683d1cde17f4c67bc60fb75935b090923d80601"
+        ],
+        "findings": 0,
+        "verified": 0,
+        "rejected": 0,
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T02:09:25+02:00",
+        "inputs": [
+          "requirements: requirements/up-1967.yaml",
+          "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1967",
+          "facts: evidence/up-1967/facts.json",
+          "diff b9b65ddf..8683d1cd (1 non-generated files)",
+          "file contents: 0 blocks",
+          "context: 6577 chars (budget 180000)"
+        ],
+        "findings": 1,
+        "verified": 1,
+        "rejected": 0,
+        "refusals": 1
+      }
+    ],
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)"
+  },
+  "findings": [
+    {
+      "id": "C1",
+      "title": "Other broken TOC anchors remain, including the next line (#rpc)",
+      "severity": "info",
+      "category": "docs",
+      "claim": "docs.anchors still reports #rpc, #author-info and #migration-notes-from-v1x unresolved at head; #rpc is the TOC line right after the fixed one. Outside this change's scope, noted for a follow-up.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "README.md",
+          "line": 61,
+          "rev": "head",
+          "quote": "- [RPC](#rpc)",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches README.md:61 at head 8683d1cd",
+          "ref": "ev-2af7f84aae"
+        },
+        {
+          "kind": "check",
+          "id": "docs.anchors",
+          "status": "pass",
+          "verified": true,
+          "substantive": true,
+          "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+          "ref": "ev-889510bd31"
+        }
+      ],
+      "verified_count": 2,
+      "substantive_count": 2,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "N1",
+      "title": "Pre-existing unresolved anchors remain on untouched lines",
+      "severity": "info",
+      "category": "docs",
+      "claim": "README.md still has three unresolved anchors (#author-info, #migration-notes-from-v1x, #rpc) on lines this change did not touch; they were unresolved at base too and are out of scope for this anchor fix.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "docs.anchors",
+          "status": "pass",
+          "verified": true,
+          "substantive": true,
+          "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+          "ref": "ev-889510bd31"
+        }
+      ],
+      "verified_count": 1,
+      "substantive_count": 1,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "silent",
+      "confirmed_by": []
+    }
+  ],
+  "refused": {
+    "clauses": [],
+    "reviewer_refusals": [
+      {
+        "topic": "How GitHub actually renders and scrolls to the #aot anchor",
+        "reason": "docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit <a name> I read",
+        "who_should_decide": "docs owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      },
+      {
+        "topic": "Whether rendered Markdown HTML actually exposes the `#aot` anchor",
+        "reason": "docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py.",
+        "who_should_decide": "docs owner / area owner",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      }
+    ]
+  },
+  "rejected_claims": [],
+  "not_checked": [
+    {
+      "id": "docs.rendering",
+      "reason": "Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "docs.external_links",
+      "reason": "links to other files or URLs were not followed (offline)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "build",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "tests.targeted",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "tests.full_suite",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "analyzers",
+      "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "other-targets",
+      "reason": "Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "runtime-perf",
+      "reason": "No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "semantic-intent",
+      "reason": "Correctness beyond what tests and cited evidence show is not established by the AI",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "provenance",
+      "reason": "Licensing and provenance of agent-written code are not checked",
+      "source": "mandate known gap"
+    }
+  ],
+  "residual_risk": [
+    "Reviewer refusal (claude): How GitHub actually renders and scrolls to the #aot anchor (out of scope: notify)",
+    "Reviewer refusal (nemotron): Whether rendered Markdown HTML actually exposes the `#aot` anchor (out of scope: notify)",
+    "docs.rendering not run (Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py)",
+    "docs.external_links not run (links to other files or URLs were not followed (offline))",
+    "build not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "tests.targeted not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "tests.fail_without_fix not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "tests.full_suite not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "analyzers not run (skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run)",
+    "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
+  ],
+  "risk": {
+    "score": 1.1,
+    "tier": "silent",
+    "thresholds": {
+      "notify": 15,
+      "ask": 40,
+      "block": 130
+    },
+    "factors": [
+      {
+        "factor": "area_sensitivity",
+        "points": 0,
+        "reason": "most sensitive area touched: docs (low)"
+      },
+      {
+        "factor": "files_changed",
+        "points": 1,
+        "reason": "1 files x 1 (cap 20)"
+      },
+      {
+        "factor": "lines_changed",
+        "points": 0.1,
+        "reason": "2 non-generated lines x 4/100 (cap 20)"
+      },
+      {
+        "factor": "generated_files",
+        "points": 0.0,
+        "reason": "0 generated files x 0.1 (cap 10)"
+      },
+      {
+        "factor": "public_api_change",
+        "points": 0,
+        "reason": "public_api check: no change"
+      },
+      {
+        "factor": "source_without_tests",
+        "points": 0,
+        "reason": "no source changed"
+      },
+      {
+        "factor": "security_sensitive_paths",
+        "points": 0,
+        "reason": "none touched"
+      },
+      {
+        "factor": "fail_without_fix_not_shown",
+        "points": 0,
+        "reason": "tests.fail_without_fix: skipped (no source changed: nothing to revert)"
+      },
+      {
+        "factor": "reviewer_disagreement",
+        "points": 0,
+        "reason": "0 clause(s) x 8"
+      },
+      {
+        "factor": "failed_checks",
+        "points": 0,
+        "reason": "0 failed check(s) x 25"
+      }
+    ]
+  },
+  "rules_fired": [],
+  "reviewers_untrusted": null,
+  "carried_forward": [],
+  "refuted_findings": [],
+  "reproduced": {},
+  "signoff": {
+    "required": false,
+    "owner": "Rene",
+    "allowed_decisions": [
+      "accept",
+      "reject",
+      "request-changes"
+    ],
+    "command": "countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note \"...\"",
+    "statement": "I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  },
+  "story": {
+    "headline": "Change for #1967: Fix AOT README anchor - fix anchor ref name to `aot`",
+    "what": "Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki.",
+    "why": "Judged against 2 requirement clauses from #1967 (placeholder requirement set, not Tieto's official one).",
+    "touches": [
+      {
+        "area": "docs",
+        "owner": "Rene",
+        "sensitivity": "low",
+        "files": 1
+      }
+    ],
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1967"
+  },
+  "card": {
+    "tier": "notify",
+    "owner": "Rene",
+    "fyi": [],
+    "risk_score": 1.1,
+    "reasons": [
+      {
+        "text": "The AI declined to decide 2 questions, e.g. How GitHub actually renders and scrolls to the #aot anchor",
+        "link": "#refused"
+      }
+    ],
+    "more_drivers": 4,
+    "trace": [
+      {
+        "id": "REQ-up-1967-F1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (8 verified citations); docs.anchors pass",
+        "anchor": "chain-REQ-up-1967-F1"
+      },
+      {
+        "id": "REQ-up-1967-N1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (6 verified citations); docs.anchors pass",
+        "anchor": "chain-REQ-up-1967-N1"
+      }
+    ],
+    "found": [
+      {
+        "key": "claude:C1",
+        "anchor": "f-claude-C1",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Other broken TOC anchors remain, including the next line (#rpc)",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-2af7f84aae",
+            "label": "README.md:61 @head"
+          },
+          {
+            "ref": "ev-889510bd31",
+            "label": "check docs.anchors pass"
+          }
+        ],
+        "shared_with": [
+          "nemotron"
+        ]
+      },
+      {
+        "key": "nemotron:N1",
+        "anchor": "f-nemotron-N1",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "title": "Pre-existing unresolved anchors remain on untouched lines",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-889510bd31",
+            "label": "check docs.anchors pass"
+          }
+        ],
+        "shared_with": [
+          "claude"
+        ]
+      }
+    ],
+    "found_total": 2,
+    "rejected_total": 0,
+    "refused": [
+      {
+        "topic": "How GitHub actually renders and scrolls to the #aot anchor",
+        "why": "docs.rendering was not run; resolution relies on re-implemented slug rules plus the explicit <a name> I read",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "docs owner"
+        ],
+        "anchor": "refusal-1"
+      },
+      {
+        "topic": "Whether rendered Markdown HTML actually exposes the `#aot` anchor",
+        "why": "docs.rendering was not run: Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "docs owner / area owner"
+        ],
+        "anchor": "refusal-2"
+      }
+    ],
+    "refused_clauses": [],
+    "not_checked": [
+      {
+        "id": "docs.rendering",
+        "reason": "Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py"
+      },
+      {
+        "id": "docs.external_links",
+        "reason": "links to other files or URLs were not followed (offline)"
+      },
+      {
+        "id": "build",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "tests.targeted",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "tests.full_suite",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      },
+      {
+        "id": "analyzers",
+        "reason": "skipped: not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+      }
+    ],
+    "known_gaps": [
+      "other-targets",
+      "runtime-perf",
+      "semantic-intent",
+      "provenance"
+    ],
+    "residual": [
+      {
+        "text": "2 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused"
+      },
+      {
+        "text": "Not run: docs.rendering, docs.external_links, build, tests.targeted, tests.fail_without_fix, tests.full_suite, analyzers",
+        "link": "#not-checked"
+      },
+      {
+        "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
+        "link": "#not-checked"
+      }
+    ],
+    "sign": {
+      "owner": "Rene",
+      "required": false,
+      "decisions": [
+        "accept",
+        "reject",
+        "request-changes"
+      ],
+      "statement": "I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+      "command": "countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note \"...\""
+    },
+    "reviewers": 3
+  },
+  "trust": [
+    {
+      "id": "REQ-up-1967-F1",
+      "text": "The README table-of-contents entry \"AOT Code Generation (support for Unity/Xamarin)\" must link to an anchor that exists in README.md (the AOT Code Generation section).",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (8 verified citations); docs.anchors pass",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass",
+          "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+          "logs": []
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "The TOC entry at README.md:60 now links #aot, and README.md:1602 declares <a name=\"aot\"> on the AOT Code Generation heading; docs.anchors resolves it at head and listed the old anchor as unresolved at base.",
+          "verified": 4,
+          "cited": 5,
+          "refs": [
+            "ev-f1f2283cf3",
+            "ev-991c299df9",
+            "ev-35e50492e6",
+            "ev-1d4d8a33ab",
+            "ev-889510bd31"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The TOC link targets #aot, which matches the AOT section’s explicit anchor, and the touched-line anchor check passes.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-ed2280e738",
+            "ev-da49f192e2",
+            "ev-889510bd31"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The TOC entry at README.md line 60 (head) links to `#aot`, docs.anchors reports that link resolves at head, and the old anchor `aot-code-generation-support-for-unityxamarin` was unresolved at base but absent from head's unresolved list.",
+          "verified": 1,
+          "cited": 3,
+          "refs": [
+            "ev-889510bd31"
+          ],
+          "unverified_refs": [
+            "ev-1872d00c40",
+            "ev-8af227795f"
+          ]
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-up-1967-N1",
+      "text": "Only documentation changes; no other README content is altered.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (6 verified citations); docs.anchors pass",
+      "checks": [
+        {
+          "id": "docs.anchors",
+          "status": "pass",
+          "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+          "logs": []
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "facts.json records one file (README.md, kind doc) with 1 insertion and 1 deletion, the changed line being only the link target; public_api confirms no src change.",
+          "verified": 2,
+          "cited": 3,
+          "refs": [
+            "ev-bfe3bfe29b",
+            "ev-1494dc6548",
+            "ev-6768b6d0b2"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The provided diff changes one README table-of-contents link, and the public API check confirms no API files changed.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-ed2280e738",
+            "ev-1494dc6548"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The diff touches only README.md with +1/-1 (doc kind only), and public_api reports no changes under src/ or to PublicAPI files.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-889510bd31",
+            "ev-1494dc6548"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    }
+  ],
+  "panel": {
+    "rows": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-1967-F1": "met",
+          "REQ-up-1967-N1": "met"
+        },
+        "citations_verified": 10,
+        "citations_rejected": 0,
+        "findings_verified": 1,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 1
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-1967-F1": "met",
+          "REQ-up-1967-N1": "met"
+        },
+        "citations_verified": 5,
+        "citations_rejected": 0,
+        "findings_verified": 0,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-1967-F1": "met",
+          "REQ-up-1967-N1": "met"
+        },
+        "citations_verified": 4,
+        "citations_rejected": 2,
+        "findings_verified": 1,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 1
+      }
+    ],
+    "callouts": [],
+    "adjudicator": "gemini"
+  },
+  "evidence_index": {
+    "ev-f1f2283cf3": {
+      "kind": "requirement",
+      "quote": "must link to an anchor that exists in README.md",
+      "req": "REQ-up-1967-F1",
+      "ref": "ev-f1f2283cf3",
+      "label": "REQ-up-1967-F1 text",
+      "verified": true,
+      "note": "REQ-up-1967-F1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-up-1967-F1"
+      ],
+      "clause_text": "The README table-of-contents entry \"AOT Code Generation (support for Unity/Xamarin)\" must link to an anchor that exists in README.md (the AOT Code Generation section)."
+    },
+    "ev-991c299df9": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 60,
+      "rev": "head",
+      "quote": "- [AOT Code Generation (support for Unity/Xamarin)](#aot)",
+      "ref": "ev-991c299df9",
+      "label": "README.md:60 @head",
+      "verified": true,
+      "note": "quote matches README.md:60 at head 8683d1cd",
+      "cited_by": [
+        "claude on REQ-up-1967-F1"
+      ],
+      "excerpt": {
+        "sha": "8683d1cd",
+        "start": 57,
+        "highlight": 60,
+        "lines": [
+          "- [IgnoreFormatter](#ignoreformatter)",
+          "- [Reserved Extension Types](#reserved-extension-types)",
+          "- [Unity support](#unity-support)",
+          "- [AOT Code Generation (support for Unity/Xamarin)](#aot)",
+          "- [RPC](#rpc)",
+          "    - [MagicOnion](#magiconion)",
+          "    - [StreamJsonRpc](#streamjsonrpc)"
+        ]
+      }
+    },
+    "ev-35e50492e6": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 1602,
+      "rev": "head",
+      "quote": "## <a name=\"aot\"></a>AOT Code Generation",
+      "ref": "ev-35e50492e6",
+      "label": "README.md:1602 @head",
+      "verified": true,
+      "note": "quote matches README.md:1602 at head 8683d1cd",
+      "cited_by": [
+        "claude on REQ-up-1967-F1"
+      ],
+      "excerpt": {
+        "sha": "8683d1cd",
+        "start": 1599,
+        "highlight": 1602,
+        "lines": [
+          "MessagePackSerializer.DefaultOptions = options;",
+          "```",
+          "",
+          "## <a name=\"aot\"></a>AOT Code Generation",
+          "",
+          "A source generator is provided in the `MessagePackAnalyzer` package, which is automatically installed when you install `MessagePack` via NuGet.",
+          "This will source generate the formatters required for all your `[MessagePackObject]`-annotated data types during compilation for the fastest possible startup and runtime."
+        ]
+      }
+    },
+    "ev-1d4d8a33ab": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 60,
+      "rev": "base",
+      "quote": "(#aot-code-generation-support-for-unityxamarin)",
+      "ref": "ev-1d4d8a33ab",
+      "label": "README.md:60 @base",
+      "verified": true,
+      "note": "quote matches README.md:60 at base b9b65ddf",
+      "cited_by": [
+        "claude on REQ-up-1967-F1"
+      ],
+      "excerpt": {
+        "sha": "b9b65ddf",
+        "start": 57,
+        "highlight": 60,
+        "lines": [
+          "- [IgnoreFormatter](#ignoreformatter)",
+          "- [Reserved Extension Types](#reserved-extension-types)",
+          "- [Unity support](#unity-support)",
+          "- [AOT Code Generation (support for Unity/Xamarin)](#aot-code-generation-support-for-unityxamarin)",
+          "- [RPC](#rpc)",
+          "    - [MagicOnion](#magiconion)",
+          "    - [StreamJsonRpc](#streamjsonrpc)"
+        ]
+      }
+    },
+    "ev-889510bd31": {
+      "kind": "check",
+      "id": "docs.anchors",
+      "status": "pass",
+      "ref": "ev-889510bd31",
+      "label": "check docs.anchors pass",
+      "verified": true,
+      "note": "facts.json: docs.anchors pass: 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+      "cited_by": [
+        "claude on REQ-up-1967-F1",
+        "codex on REQ-up-1967-F1",
+        "nemotron on REQ-up-1967-F1",
+        "nemotron on REQ-up-1967-N1",
+        "claude:C1",
+        "nemotron:N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+        "tool": "evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-ed2280e738": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 60,
+      "rev": "head",
+      "quote": "[AOT Code Generation (support for Unity/Xamarin)](#aot)",
+      "ref": "ev-ed2280e738",
+      "label": "README.md:60 @head",
+      "verified": true,
+      "note": "quote matches README.md:60 at head 8683d1cd",
+      "cited_by": [
+        "codex on REQ-up-1967-F1",
+        "codex on REQ-up-1967-N1"
+      ],
+      "excerpt": {
+        "sha": "8683d1cd",
+        "start": 57,
+        "highlight": 60,
+        "lines": [
+          "- [IgnoreFormatter](#ignoreformatter)",
+          "- [Reserved Extension Types](#reserved-extension-types)",
+          "- [Unity support](#unity-support)",
+          "- [AOT Code Generation (support for Unity/Xamarin)](#aot)",
+          "- [RPC](#rpc)",
+          "    - [MagicOnion](#magiconion)",
+          "    - [StreamJsonRpc](#streamjsonrpc)"
+        ]
+      }
+    },
+    "ev-da49f192e2": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 1602,
+      "rev": "head",
+      "quote": "<a name=\"aot\"></a>",
+      "ref": "ev-da49f192e2",
+      "label": "README.md:1602 @head",
+      "verified": true,
+      "note": "quote matches README.md:1602 at head 8683d1cd",
+      "cited_by": [
+        "codex on REQ-up-1967-F1"
+      ],
+      "excerpt": {
+        "sha": "8683d1cd",
+        "start": 1599,
+        "highlight": 1602,
+        "lines": [
+          "MessagePackSerializer.DefaultOptions = options;",
+          "```",
+          "",
+          "## <a name=\"aot\"></a>AOT Code Generation",
+          "",
+          "A source generator is provided in the `MessagePackAnalyzer` package, which is automatically installed when you install `MessagePack` via NuGet.",
+          "This will source generate the formatters required for all your `[MessagePackObject]`-annotated data types during compilation for the fastest possible startup and runtime."
+        ]
+      }
+    },
+    "ev-1872d00c40": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 60,
+      "rev": "head",
+      "quote": "- [AOT Code Generation (support for Unity/Xamarin)](`#aot`)",
+      "ref": "ev-1872d00c40",
+      "label": "README.md:60 @head",
+      "verified": false,
+      "note": "quote not on README.md:60 ±3 at head; not found anywhere in the file",
+      "cited_by": [
+        "nemotron on REQ-up-1967-F1"
+      ],
+      "excerpt": {
+        "sha": "8683d1cd",
+        "start": 57,
+        "highlight": null,
+        "lines": [
+          "- [IgnoreFormatter](#ignoreformatter)",
+          "- [Reserved Extension Types](#reserved-extension-types)",
+          "- [Unity support](#unity-support)",
+          "- [AOT Code Generation (support for Unity/Xamarin)](#aot)",
+          "- [RPC](#rpc)",
+          "    - [MagicOnion](#magiconion)",
+          "    - [StreamJsonRpc](#streamjsonrpc)"
+        ]
+      }
+    },
+    "ev-8af227795f": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 60,
+      "rev": "base",
+      "quote": "- [AOT Code Generation (support for Unity/Xamarin)](`#aot-code-generation-support-for-unityxamarin`)",
+      "ref": "ev-8af227795f",
+      "label": "README.md:60 @base",
+      "verified": false,
+      "note": "quote not on README.md:60 ±3 at base; not found anywhere in the file",
+      "cited_by": [
+        "nemotron on REQ-up-1967-F1"
+      ],
+      "excerpt": {
+        "sha": "b9b65ddf",
+        "start": 57,
+        "highlight": null,
+        "lines": [
+          "- [IgnoreFormatter](#ignoreformatter)",
+          "- [Reserved Extension Types](#reserved-extension-types)",
+          "- [Unity support](#unity-support)",
+          "- [AOT Code Generation (support for Unity/Xamarin)](#aot-code-generation-support-for-unityxamarin)",
+          "- [RPC](#rpc)",
+          "    - [MagicOnion](#magiconion)",
+          "    - [StreamJsonRpc](#streamjsonrpc)"
+        ]
+      }
+    },
+    "ev-bfe3bfe29b": {
+      "kind": "requirement",
+      "quote": "Only documentation changes",
+      "req": "REQ-up-1967-N1",
+      "ref": "ev-bfe3bfe29b",
+      "label": "REQ-up-1967-N1 text",
+      "verified": true,
+      "note": "REQ-up-1967-N1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-up-1967-N1"
+      ],
+      "clause_text": "Only documentation changes; no other README content is altered."
+    },
+    "ev-1494dc6548": {
+      "kind": "check",
+      "id": "public_api",
+      "status": "pass",
+      "ref": "ev-1494dc6548",
+      "label": "check public_api pass",
+      "verified": true,
+      "note": "facts.json: public_api pass: no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+      "cited_by": [
+        "claude on REQ-up-1967-N1",
+        "codex on REQ-up-1967-N1",
+        "nemotron on REQ-up-1967-N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+        "tool": "git diff --name-only (no file under src/ changed)",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-6768b6d0b2": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 60,
+      "rev": "head",
+      "quote": "(#aot)",
+      "ref": "ev-6768b6d0b2",
+      "label": "README.md:60 @head",
+      "verified": true,
+      "note": "quote matches README.md:60 at head 8683d1cd",
+      "cited_by": [
+        "claude on REQ-up-1967-N1"
+      ],
+      "excerpt": {
+        "sha": "8683d1cd",
+        "start": 57,
+        "highlight": 60,
+        "lines": [
+          "- [IgnoreFormatter](#ignoreformatter)",
+          "- [Reserved Extension Types](#reserved-extension-types)",
+          "- [Unity support](#unity-support)",
+          "- [AOT Code Generation (support for Unity/Xamarin)](#aot)",
+          "- [RPC](#rpc)",
+          "    - [MagicOnion](#magiconion)",
+          "    - [StreamJsonRpc](#streamjsonrpc)"
+        ]
+      }
+    },
+    "ev-2af7f84aae": {
+      "kind": "code",
+      "file": "README.md",
+      "line": 61,
+      "rev": "head",
+      "quote": "- [RPC](#rpc)",
+      "ref": "ev-2af7f84aae",
+      "label": "README.md:61 @head",
+      "verified": true,
+      "note": "quote matches README.md:61 at head 8683d1cd",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "8683d1cd",
+        "start": 58,
+        "highlight": 61,
+        "lines": [
+          "- [Reserved Extension Types](#reserved-extension-types)",
+          "- [Unity support](#unity-support)",
+          "- [AOT Code Generation (support for Unity/Xamarin)](#aot)",
+          "- [RPC](#rpc)",
+          "    - [MagicOnion](#magiconion)",
+          "    - [StreamJsonRpc](#streamjsonrpc)",
+          "- [How to build](#how-to-build)"
+        ]
+      }
+    }
+  }
+}

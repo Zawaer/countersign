@@ -21,20 +21,20 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "2",
+    "version": "3",
     "owner": "Toivo",
-    "sha256": "39cc2060685638e17d2ec6f88dac3ae55ad06a1c2c04534e37d57bc27aefbf81",
+    "sha256": "b1e5e40743632a3c992c9028246411a26a4ad4f8b7ff6d00efd7fd625d4fa83b",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-13T23:42:58+00:00",
+      "signed_at": "2026-11-14T00:23:03+00:00",
       "reason": "signature valid"
     }
   },
   "inputs": {
     "facts": {
       "path": "evidence/2283/facts.json",
-      "sha256": "cc9efe0c1ef727237593db91938d2ac3f1b568659a06ab28fa87c04351cce99c"
+      "sha256": "e64176372fdabe8915831aafd023990ea8f1987d205acf34c0f20ac1eeb7823d"
     },
     "requirements": {
       "path": "requirements/2283.yaml",
@@ -66,7 +66,7 @@
       "source": "verified finding",
       "id": "claude:C1",
       "tier": "ask",
-      "why": "major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic"
+      "why": "major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic (reproduced by the pipeline (repro.claude.C1))"
     },
     {
       "source": "refused clause",
@@ -74,39 +74,10 @@
       "tier": "ask",
       "codes": [
         "not_met",
-        "reviewers_disagree"
+        "reviewers_disagree",
+        "thin_evidence"
       ],
-      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "claude",
-      "tier": "ask",
-      "why": "Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "claude",
-      "tier": "ask",
-      "why": "Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "codex",
-      "tier": "ask",
-      "why": "Execution-test behavior under a compiler that loads the generator (The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change.)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "nemotron",
-      "tier": "ask",
-      "why": "End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead.)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "nemotron",
-      "tier": "ask",
-      "why": "Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)"
+      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)"
     },
     {
       "source": "risk score",
@@ -120,7 +91,7 @@
       "source": "verified finding",
       "id": "claude:C1",
       "tier": "ask",
-      "why": "major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic"
+      "why": "major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic (reproduced by the pipeline (repro.claude.C1))"
     },
     {
       "source": "refused clause",
@@ -128,39 +99,10 @@
       "tier": "ask",
       "codes": [
         "not_met",
-        "reviewers_disagree"
+        "reviewers_disagree",
+        "thin_evidence"
       ],
-      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "claude",
-      "tier": "ask",
-      "why": "Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "claude",
-      "tier": "ask",
-      "why": "Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "codex",
-      "tier": "ask",
-      "why": "Execution-test behavior under a compiler that loads the generator (The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change.)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "nemotron",
-      "tier": "ask",
-      "why": "End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead.)"
-    },
-    {
-      "source": "reviewer refusal",
-      "id": "nemotron",
-      "tier": "ask",
-      "why": "Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)"
+      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)"
     },
     {
       "source": "risk score",
@@ -173,6 +115,36 @@
       "id": "claude:C2",
       "tier": "notify",
       "why": "minor: BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "codex",
+      "tier": "notify",
+      "why": "Execution-test behavior under a compiler that loads the generator (The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "notify",
+      "why": "End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "notify",
+      "why": "Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
     },
     {
       "source": "trust cap",
@@ -253,7 +225,8 @@
         "claude": {
           "verdict": "met",
           "basis": "Root cause confirmed: Roslyn imports private fields of metadata structs, so the compiler-generated backing field of Item<T> looks like an unkeyed member and the base field path indexed DeclaringSyntaxReferences[0] unconditionally (outside the ?.Invoke), crashing the generator as well as the analyzer; head uses FirstOrDefault there, the three new tests (which also run the generator and assert the resolver hint name and no warnings) pass at head and all 3 fail on base source; my own probe of the exact issue repro (record struct Item<T> in a metadata reference) gave CS8785 + no files on base and App.R.g.cs with no generator diagnostics on head. Runtime round-trip of the generated resolver was not executed (tests.execution not run for this change), so only 'produces a resolver' is established, not that it serializes Item<int> correctly.",
-          "verified": 8,
+          "verified": 6,
+          "verified_any": 8,
           "cited": 8,
           "evidence": [
             {
@@ -263,6 +236,7 @@
               "rev": "base",
               "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation()",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at base 32258fdb",
               "ref": "ev-600c5196b9"
             },
@@ -273,6 +247,7 @@
               "rev": "head",
               "quote": "MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
               "ref": "ev-e2b1723b1a"
             },
@@ -283,6 +258,7 @@
               "rev": "head",
               "quote": "this.GetObjectInfo(type, callerSymbol);",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38",
               "ref": "ev-8dd72e446f"
             },
@@ -293,6 +269,7 @@
               "rev": "head",
               "quote": "Assert.Contains(expectedResolverHintName, hintNames);",
               "verified": true,
+              "substantive": true,
               "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:658 at head 9df83c38",
               "ref": "ev-e27f824d96"
             },
@@ -301,6 +278,7 @@
               "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-751fd9609c"
             },
@@ -310,6 +288,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-bf91cd8726"
             },
@@ -317,6 +296,7 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-d78b746a74"
             },
@@ -325,6 +305,7 @@
               "req": "REQ-2283-F1",
               "quote": "must not crash the source generator (no CS8785) and must produce a generated resolver",
               "verified": true,
+              "substantive": false,
               "note": "REQ-2283-F1 text contains the quote",
               "ref": "ev-19107a84ed"
             }
@@ -333,7 +314,8 @@
         "codex": {
           "verdict": "met",
           "basis": "The new metadata-reference tests pass with the change and fail when the source is reverted; the added collector logic handles missing source declarations and drops diagnostics outside the analyzed compilation.",
-          "verified": 3,
+          "verified": 2,
+          "verified_any": 3,
           "cited": 3,
           "evidence": [
             {
@@ -341,6 +323,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-f073740910"
             },
@@ -348,6 +331,7 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-d78b746a74"
             },
@@ -358,6 +342,7 @@
               "rev": "head",
               "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
               "ref": "ev-6afda546ae"
             }
@@ -367,6 +352,7 @@
           "verdict": "met",
           "basis": "Three new metadata-reference tests pass on head with zero analyzer/generator diagnostics and the expected resolver hint name is generated, while on base the same input threw IndexOutOfRangeException in the shared TypeCollector path (surfaced as AD0001), and the head generator run explicitly asserts no diagnostics at Warning or above.",
           "verified": 5,
+          "verified_any": 5,
           "cited": 5,
           "evidence": [
             {
@@ -374,6 +360,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-f073740910"
             },
@@ -382,6 +369,7 @@
               "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-751fd9609c"
             },
@@ -390,6 +378,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-72235a3098"
             },
@@ -400,6 +389,7 @@
               "rev": "head",
               "quote": "Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
               "ref": "ev-463700b774"
             },
@@ -408,6 +398,7 @@
               "id": "tests.fail_without_fix",
               "status": "pass",
               "verified": true,
+              "substantive": true,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-62faeb2508"
             }
@@ -435,7 +426,8 @@
         "claude": {
           "verdict": "met",
           "basis": "The new tests run MsgPack00xMessagePackAnalyzer through VerifyCS expecting zero diagnostics; on base all three fail with AD0001 IndexOutOfRangeException at TypeCollector.GetObjectInfo (facts fail_without_fix errors), at head they pass. The other hard index the issue names (BothStringAndIntKeyAreNull cast) is also replaced by a null-safe helper.",
-          "verified": 5,
+          "verified": 4,
+          "verified_any": 5,
           "cited": 5,
           "evidence": [
             {
@@ -444,6 +436,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-cb2de557cf"
             },
@@ -452,6 +445,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-f073740910"
             },
@@ -462,6 +456,7 @@
               "rev": "head",
               "quote": "GetPropertyIdentifierLocation(item)",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38",
               "ref": "ev-46dc7a6309"
             },
@@ -472,6 +467,7 @@
               "rev": "base",
               "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at base 32258fdb",
               "ref": "ev-73cd23393f"
             },
@@ -479,6 +475,7 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-d78b746a74"
             }
@@ -487,7 +484,8 @@
         "codex": {
           "verdict": "met",
           "basis": "The failing-without-fix evidence records AD0001 for the new metadata-reference cases on base source, while all three cases pass with the fix.",
-          "verified": 3,
+          "verified": 2,
+          "verified_any": 3,
           "cited": 3,
           "evidence": [
             {
@@ -495,6 +493,7 @@
               "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-751fd9609c"
             },
@@ -502,6 +501,7 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-d78b746a74"
             },
@@ -512,6 +512,7 @@
               "rev": "head",
               "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
               "ref": "ev-ce1eecc974"
             }
@@ -521,6 +522,7 @@
           "verdict": "met",
           "basis": "On base the same three tests failed with AD0001 (analyzer threw IndexOutOfRangeException); on head they pass with zero diagnostics because member-location access is now null-safe and diagnostics are filtered before reporting.",
           "verified": 4,
+          "verified_any": 4,
           "cited": 4,
           "evidence": [
             {
@@ -529,6 +531,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-cb2de557cf"
             },
@@ -537,6 +540,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-f073740910"
             },
@@ -547,6 +551,7 @@
               "rev": "head",
               "quote": "this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
               "ref": "ev-ce1eecc974"
             },
@@ -555,6 +560,7 @@
               "id": "tests.fail_without_fix",
               "status": "pass",
               "verified": true,
+              "substantive": true,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-62faeb2508"
             }
@@ -583,6 +589,7 @@
           "verdict": "met",
           "basis": "Every analyzer diagnostic now passes through ReportIfLocatedInCompilation, which only forwards diagnostics whose location is in a syntax tree of the current compilation. I checked that this filter is what makes ClosedGenericStruct_FromMetadataReference_UnkeyedMember pass: with only the filter reverted (FirstOrDefault kept) that test fails with two location-less MsgPack004 diagnostics for MyGenericStruct.Unkeyed (my own run, not in facts.json). So the clause is enforced. It is over-enforced, though: see finding C1.",
           "verified": 4,
+          "verified_any": 4,
           "cited": 4,
           "evidence": [
             {
@@ -592,6 +599,7 @@
               "rev": "head",
               "quote": "diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic)",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38",
               "ref": "ev-7876fdb7f1"
             },
@@ -602,6 +610,7 @@
               "rev": "head",
               "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
               "ref": "ev-6afda546ae"
             },
@@ -610,6 +619,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-72235a3098"
             },
@@ -619,6 +629,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-9b34c726e9"
             }
@@ -627,7 +638,8 @@
         "codex": {
           "verdict": "met",
           "basis": "The change filters analyzer diagnostics to source locations belonging to this compilation and uses nullable syntax-reference lookups for members that may come from metadata.",
-          "verified": 3,
+          "verified": 2,
+          "verified_any": 3,
           "cited": 3,
           "evidence": [
             {
@@ -637,6 +649,7 @@
               "rev": "head",
               "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
               "ref": "ev-6afda546ae"
             },
@@ -647,6 +660,7 @@
               "rev": "head",
               "quote": "private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
               "ref": "ev-a7d205a394"
             },
@@ -654,6 +668,7 @@
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-d78b746a74"
             }
@@ -663,6 +678,7 @@
           "verdict": "met",
           "basis": "ReportIfLocatedInCompilation only forwards a diagnostic when its location is in source and its syntax tree is contained in the compilation being analyzed; GetPropertyIdentifierLocation returns null for metadata-declared properties, producing Location.None diagnostics that are dropped, so no member diagnostic from a referenced assembly is reported at an outside location.",
           "verified": 4,
+          "verified_any": 4,
           "cited": 4,
           "evidence": [
             {
@@ -672,6 +688,7 @@
               "rev": "head",
               "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
               "ref": "ev-6afda546ae"
             },
@@ -682,6 +699,7 @@
               "rev": "head",
               "quote": "private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
               "ref": "ev-a7d205a394"
             },
@@ -690,6 +708,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-72235a3098"
             },
@@ -699,6 +718,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-9b34c726e9"
             }
@@ -726,7 +746,8 @@
         "claude": {
           "verdict": "not_met",
           "basis": "The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
-          "verified": 4,
+          "verified": 2,
+          "verified_any": 4,
           "cited": 5,
           "evidence": [
             {
@@ -736,6 +757,7 @@
               "rev": "head",
               "quote": "Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
               "ref": "ev-d1a7e0fbac"
             },
@@ -746,6 +768,7 @@
               "rev": "head",
               "quote": "diagnostic.Location.IsInSource",
               "verified": true,
+              "substantive": true,
               "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
               "ref": "ev-94826533c2"
             },
@@ -753,6 +776,7 @@
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
               "ref": "ev-df050a6665"
             },
@@ -761,6 +785,7 @@
               "req": "REQ-2283-N1",
               "quote": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged",
               "verified": true,
+              "substantive": false,
               "note": "REQ-2283-N1 text contains the quote",
               "ref": "ev-6d378cb38b"
             },
@@ -769,6 +794,7 @@
               "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
               "quote": "| `class Item<T>` | ok |",
               "verified": false,
+              "substantive": false,
               "note": "issue text cannot be verified offline (not counted as evidence)",
               "ref": "ev-23c90ec85d"
             }
@@ -777,13 +803,15 @@
         "codex": {
           "verdict": "met",
           "basis": "The source-generator test suite passes in full after the change.",
-          "verified": 1,
+          "verified": 0,
+          "verified_any": 1,
           "cited": 1,
           "evidence": [
             {
               "kind": "check",
               "id": "tests.full_suite",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
               "ref": "ev-df050a6665"
             }
@@ -793,6 +821,7 @@
           "verdict": "met",
           "basis": "Full suite on head: 170 passed, 0 failed, with no failures that also fail on base and no new failures, so existing analyzer diagnostics for in-compilation types are unchanged.",
           "verified": 1,
+          "verified_any": 1,
           "cited": 1,
           "evidence": [
             {
@@ -800,6 +829,7 @@
               "id": "tests.full_suite",
               "status": "pass",
               "verified": true,
+              "substantive": true,
               "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
               "ref": "ev-d448f979e6"
             }
@@ -810,11 +840,19 @@
       "reasons": [
         {
           "code": "not_met",
-          "detail": "claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it."
+          "detail": "claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
+          "reviewer": "claude",
+          "verdict": "not_met"
         },
         {
           "code": "reviewers_disagree",
           "detail": "claude says not_met, codex says met, nemotron says met"
+        },
+        {
+          "code": "thin_evidence",
+          "detail": "codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)",
+          "reviewer": "codex",
+          "verdict": "met"
         }
       ]
     },
@@ -836,13 +874,15 @@
         "claude": {
           "verdict": "met",
           "basis": "tests.fail_without_fix: 3/3 new tests fail on base source with AD0001 IndexOutOfRangeException in GetObjectInfo (the issue's exact exception) and pass at head; one of them (UnkeyedMember) also pins the location filter, as I checked by reverting just that line. Not covered by any failing-without-fix test: the BothStringAndIntKeyAreNull change at line 985 (no test reaches it with a metadata or positional-record property).",
-          "verified": 4,
+          "verified": 3,
+          "verified_any": 4,
           "cited": 4,
           "evidence": [
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-d78b746a74"
             },
@@ -852,6 +892,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-9b34c726e9"
             },
@@ -861,6 +902,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-bf91cd8726"
             },
@@ -870,6 +912,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-cb2de557cf"
             }
@@ -878,13 +921,15 @@
         "codex": {
           "verdict": "met",
           "basis": "All three added metadata-reference tests pass with the fix and fail with the source reverted.",
-          "verified": 2,
+          "verified": 1,
+          "verified_any": 2,
           "cited": 2,
           "evidence": [
             {
               "kind": "check",
               "id": "tests.fail_without_fix",
               "verified": true,
+              "substantive": false,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-d78b746a74"
             },
@@ -893,6 +938,7 @@
               "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
               "outcome": "passed",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.targeted: passed (new test)",
               "ref": "ev-72235a3098"
             }
@@ -902,6 +948,7 @@
           "verdict": "met",
           "basis": "The three new tests fail on base source with the fix reverted (3/3 failed, AD0001 IndexOutOfRangeException) and pass on head, so the fix is covered by tests that fail without it.",
           "verified": 4,
+          "verified_any": 4,
           "cited": 4,
           "evidence": [
             {
@@ -909,6 +956,7 @@
               "id": "tests.fail_without_fix",
               "status": "pass",
               "verified": true,
+              "substantive": true,
               "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change",
               "ref": "ev-62faeb2508"
             },
@@ -918,6 +966,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-bf91cd8726"
             },
@@ -927,6 +976,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-cb2de557cf"
             },
@@ -936,6 +986,7 @@
               "outcome": "failed",
               "check": "tests.fail_without_fix",
               "verified": true,
+              "substantive": true,
               "note": "facts.json tests.fail_without_fix: failed (new test)",
               "ref": "ev-9b34c726e9"
             }
@@ -1035,6 +1086,33 @@
         "summary": "no new warnings",
         "duration_s": null,
         "log": null
+      },
+      {
+        "id": "repro.claude.C1",
+        "tool": "dotnet test (reviewer repro test copied into tests/MessagePack.SourceGenerator.Tests/CountersignRepro)",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "reproduced by the pipeline: failed on head (claim: failed), passed on base (claim: passed)",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "injection_scan",
+        "tool": "countersign.injection (deterministic pattern scan)",
+        "tool_version": "injection-v1",
+        "status": "pass",
+        "summary": "no text addressed to automated reviewers in the added lines, commit message or PR text",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "deps.delta",
+        "tool": "dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base)",
+        "duration_s": null,
+        "log": null
       }
     ],
     "reviewers": [
@@ -1092,7 +1170,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)"
   },
   "findings": [
     {
@@ -1109,6 +1187,7 @@
           "rev": "head",
           "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
           "verified": true,
+          "substantive": true,
           "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
           "ref": "ev-6afda546ae"
         },
@@ -1119,6 +1198,7 @@
           "rev": "head",
           "quote": "callerSymbol.Locations[0]",
           "verified": true,
+          "substantive": true,
           "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
           "ref": "ev-03c1f89f96"
         },
@@ -1129,6 +1209,7 @@
           "rev": "head",
           "quote": "which analyzers are not permitted to do",
           "verified": true,
+          "substantive": true,
           "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1442 at head 9df83c38",
           "ref": "ev-5a604cf84d"
         },
@@ -1136,16 +1217,31 @@
           "kind": "check",
           "id": "tests.full_suite",
           "verified": true,
+          "substantive": false,
           "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
           "ref": "ev-df050a6665"
         }
       ],
       "suggested_fix": "Instead of dropping, relocate: when a diagnostic's location is not in this compilation, re-report it at the nearest in-compilation location (the member of the type being analyzed that led to the metadata type, i.e. the outermost callerSymbol), or keep dropping only diagnostics about the metadata type's own members (MsgPack004/005) and let MsgPack003 for in-compilation types through. Add a test with a metadata generic class and an unattributed app type argument.",
       "verified_count": 4,
+      "substantive_count": 3,
       "status": "verified",
       "reviewer": "claude",
+      "repro": {
+        "check": "repro.claude.C1",
+        "status": "reproduced",
+        "check_status": "pass",
+        "summary": "reproduced by the pipeline: failed on head (claim: failed), passed on base (claim: passed)",
+        "present_before": false,
+        "runs": {
+          "head": "failed",
+          "base": "passed"
+        },
+        "label": "reproduced"
+      },
       "tier": "ask",
-      "confirmed_by": []
+      "confirmed_by": [],
+      "tier_reason": "reproduced by the pipeline (repro.claude.C1)"
     },
     {
       "id": "C2",
@@ -1161,6 +1257,7 @@
           "rev": "head",
           "quote": "(property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation()",
           "verified": true,
+          "substantive": true,
           "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38",
           "ref": "ev-532df5c2da"
         },
@@ -1171,12 +1268,14 @@
           "rev": "head",
           "quote": "BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item)",
           "verified": true,
+          "substantive": true,
           "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38",
           "ref": "ev-ddf4848149"
         }
       ],
       "suggested_fix": "Fall back to ParameterSyntax.Identifier (as the MemberNeedsKey path at line 926 already does) and add a test for a positional record with Key(null).",
       "verified_count": 2,
+      "substantive_count": 2,
       "status": "verified",
       "reviewer": "claude",
       "tier": "notify",
@@ -1196,6 +1295,7 @@
           "rev": "head",
           "quote": "item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()",
           "verified": true,
+          "substantive": true,
           "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38",
           "ref": "ev-cf1d452cfa"
         },
@@ -1204,11 +1304,13 @@
           "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
           "quote": "So it needs all three of: **generic**, **value type**, **from a referenced assembly**.",
           "verified": false,
+          "substantive": false,
           "note": "issue text cannot be verified offline (not counted as evidence)",
           "ref": "ev-c6793f8043"
         }
       ],
       "verified_count": 1,
+      "substantive_count": 1,
       "status": "verified",
       "reviewer": "claude",
       "tier": "silent",
@@ -1235,7 +1337,8 @@
           "claude": {
             "verdict": "not_met",
             "basis": "The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
-            "verified": 4,
+            "verified": 2,
+            "verified_any": 4,
             "cited": 5,
             "evidence": [
               {
@@ -1245,6 +1348,7 @@
                 "rev": "head",
                 "quote": "Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];",
                 "verified": true,
+                "substantive": true,
                 "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38",
                 "ref": "ev-d1a7e0fbac"
               },
@@ -1255,6 +1359,7 @@
                 "rev": "head",
                 "quote": "diagnostic.Location.IsInSource",
                 "verified": true,
+                "substantive": true,
                 "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38",
                 "ref": "ev-94826533c2"
               },
@@ -1262,6 +1367,7 @@
                 "kind": "check",
                 "id": "tests.full_suite",
                 "verified": true,
+                "substantive": false,
                 "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
                 "ref": "ev-df050a6665"
               },
@@ -1270,6 +1376,7 @@
                 "req": "REQ-2283-N1",
                 "quote": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged",
                 "verified": true,
+                "substantive": false,
                 "note": "REQ-2283-N1 text contains the quote",
                 "ref": "ev-6d378cb38b"
               },
@@ -1278,6 +1385,7 @@
                 "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
                 "quote": "| `class Item<T>` | ok |",
                 "verified": false,
+                "substantive": false,
                 "note": "issue text cannot be verified offline (not counted as evidence)",
                 "ref": "ev-23c90ec85d"
               }
@@ -1286,13 +1394,15 @@
           "codex": {
             "verdict": "met",
             "basis": "The source-generator test suite passes in full after the change.",
-            "verified": 1,
+            "verified": 0,
+            "verified_any": 1,
             "cited": 1,
             "evidence": [
               {
                 "kind": "check",
                 "id": "tests.full_suite",
                 "verified": true,
+                "substantive": false,
                 "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
                 "ref": "ev-df050a6665"
               }
@@ -1302,6 +1412,7 @@
             "verdict": "met",
             "basis": "Full suite on head: 170 passed, 0 failed, with no failures that also fail on base and no new failures, so existing analyzer diagnostics for in-compilation types are unchanged.",
             "verified": 1,
+            "verified_any": 1,
             "cited": 1,
             "evidence": [
               {
@@ -1309,6 +1420,7 @@
                 "id": "tests.full_suite",
                 "status": "pass",
                 "verified": true,
+                "substantive": true,
                 "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)",
                 "ref": "ev-d448f979e6"
               }
@@ -1319,11 +1431,19 @@
         "reasons": [
           {
             "code": "not_met",
-            "detail": "claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it."
+            "detail": "claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
+            "reviewer": "claude",
+            "verdict": "not_met"
           },
           {
             "code": "reviewers_disagree",
             "detail": "claude says not_met, codex says met, nemotron says met"
+          },
+          {
+            "code": "thin_evidence",
+            "detail": "codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)",
+            "reviewer": "codex",
+            "verdict": "met"
           }
         ]
       }
@@ -1334,35 +1454,45 @@
         "reason": "tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.",
         "who_should_decide": "source-generator area owner (run the execution tests under SDK 9 or a two-project repro)",
         "reviewer": "claude",
-        "model": "claude-opus-5-5"
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
       },
       {
         "topic": "Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour",
         "reason": "It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).",
         "who_should_decide": "MessagePack-CSharp maintainers / analyzer area owner",
         "reviewer": "claude",
-        "model": "claude-opus-5-5"
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
       },
       {
         "topic": "Execution-test behavior under a compiler that loads the generator",
         "reason": "The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change.",
         "who_should_decide": "area owner",
         "reviewer": "codex",
-        "model": "GPT-6"
+        "model": "GPT-6",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
       },
       {
         "topic": "End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests)",
         "reason": "Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead.",
         "who_should_decide": "area owner or maintainer, with an SDK that ships Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx)",
         "reviewer": "nemotron",
-        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
       },
       {
         "topic": "Whether the placeholder requirement set matches the upstream issue #2283 intent",
         "reason": "The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.",
         "who_should_decide": "area owner or maintainer",
         "reviewer": "nemotron",
-        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
       }
     ]
   },
@@ -1410,13 +1540,13 @@
     }
   ],
   "residual_risk": [
-    "REQ-2283-N1 not proven: not_met; reviewers_disagree",
-    "Reviewer refusal (claude): Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended)",
-    "Reviewer refusal (claude): Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour",
-    "Reviewer refusal (codex): Execution-test behavior under a compiler that loads the generator",
-    "Reviewer refusal (nemotron): End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests)",
-    "Reviewer refusal (nemotron): Whether the placeholder requirement set matches the upstream issue #2283 intent",
-    "Open major finding claude:C1: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
+    "REQ-2283-N1 not proven: not_met; reviewers_disagree; thin_evidence",
+    "Reviewer refusal (claude): Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (out of scope: notify)",
+    "Reviewer refusal (claude): Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (out of scope: notify)",
+    "Reviewer refusal (codex): Execution-test behavior under a compiler that loads the generator (out of scope: notify)",
+    "Reviewer refusal (nemotron): End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (out of scope: notify)",
+    "Reviewer refusal (nemotron): Whether the placeholder requirement set matches the upstream issue #2283 intent (out of scope: notify)",
+    "Open major finding claude:C1: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic (reproduced)",
     "tests.execution not run (SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.)",
     "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
     "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
@@ -1486,6 +1616,12 @@
     ]
   },
   "rules_fired": [],
+  "reviewers_untrusted": null,
+  "carried_forward": [],
+  "refuted_findings": [],
+  "reproduced": {
+    "claude:C1": "reproduced"
+  },
   "signoff": {
     "required": true,
     "owner": "Toivo",
@@ -1536,12 +1672,12 @@
         "link": "#f-claude-C1"
       },
       {
-        "text": "1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met)",
+        "text": "1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence",
         "link": "#chain-REQ-2283-N1"
       },
       {
-        "text": "The AI declined to decide 5 questions, e.g. Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended)",
-        "link": "#refused"
+        "text": "Risk score 41.1 reaches the ask band (>= 40), mostly most sensitive area touched: generator-analyzer-core (high) (20) and 228 non-generated lines x 4/100 (cap 20) (9.1)",
+        "link": "#risk"
       }
     ],
     "more_drivers": 12,
@@ -1550,35 +1686,35 @@
         "id": "REQ-2283-F1",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (16 verified citations); build, tests.targeted pass",
+        "why": "All 3 reviewers say met (13 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-2283-F1"
       },
       {
         "id": "REQ-2283-F2",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (12 verified citations); build, tests.targeted pass",
+        "why": "All 3 reviewers say met (10 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-2283-F2"
       },
       {
         "id": "REQ-2283-F3",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (11 verified citations); build, tests.targeted pass",
+        "why": "All 3 reviewers say met (10 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-2283-F3"
       },
       {
         "id": "REQ-2283-N1",
         "status": "refused",
         "label": "not met",
-        "why": "Claude says not met (Codex and Nemotron: met)",
+        "why": "Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence",
         "anchor": "chain-REQ-2283-N1"
       },
       {
         "id": "REQ-2283-N2",
         "status": "proven",
         "label": "proven",
-        "why": "All 3 reviewers say met (10 verified citations); build, tests.fail_without_fix pass",
+        "why": "All 3 reviewers say met (8 verified citations); build, tests.fail_without_fix pass",
         "anchor": "chain-REQ-2283-N2"
       }
     ],
@@ -1768,7 +1904,7 @@
       "text": "Building a project whose [MessagePackObject] type has a member of a closed generic value type defined in a referenced assembly must not crash the source generator (no CS8785) and must produce a generated resolver.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (16 verified citations); build, tests.targeted pass",
+      "why": "All 3 reviewers say met (13 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -1792,7 +1928,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "Root cause confirmed: Roslyn imports private fields of metadata structs, so the compiler-generated backing field of Item<T> looks like an unkeyed member and the base field path indexed DeclaringSyntaxReferences[0] unconditionally (outside the ?.Invoke), crashing the generator as well as the analyzer; head uses FirstOrDefault there, the three new tests (which also run the generator and assert the resolver hint name and no warnings) pass at head and all 3 fail on base source; my own probe of the exact issue repro (record struct Item<T> in a metadata reference) gave CS8785 + no files on base and App.R.g.cs with no generator diagnostics on head. Runtime round-trip of the generated resolver was not executed (tests.execution not run for this change), so only 'produces a resolver' is established, not that it serializes Item<int> correctly.",
-          "verified": 8,
+          "verified": 6,
           "cited": 8,
           "refs": [
             "ev-600c5196b9",
@@ -1810,7 +1946,7 @@
           "reviewer": "codex",
           "verdict": "met",
           "basis": "The new metadata-reference tests pass with the change and fail when the source is reverted; the added collector logic handles missing source declarations and drops diagnostics outside the analyzed compilation.",
-          "verified": 3,
+          "verified": 2,
           "cited": 3,
           "refs": [
             "ev-f073740910",
@@ -1869,7 +2005,7 @@
       "text": "The MsgPack00x analyzer must not throw (no AD0001) for the same input.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (12 verified citations); build, tests.targeted pass",
+      "why": "All 3 reviewers say met (10 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -1893,7 +2029,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "The new tests run MsgPack00xMessagePackAnalyzer through VerifyCS expecting zero diagnostics; on base all three fail with AD0001 IndexOutOfRangeException at TypeCollector.GetObjectInfo (facts fail_without_fix errors), at head they pass. The other hard index the issue names (BothStringAndIntKeyAreNull cast) is also replaced by a null-safe helper.",
-          "verified": 5,
+          "verified": 4,
           "cited": 5,
           "refs": [
             "ev-cb2de557cf",
@@ -1908,7 +2044,7 @@
           "reviewer": "codex",
           "verdict": "met",
           "basis": "The failing-without-fix evidence records AD0001 for the new metadata-reference cases on base source, while all three cases pass with the fix.",
-          "verified": 3,
+          "verified": 2,
           "cited": 3,
           "refs": [
             "ev-751fd9609c",
@@ -1961,7 +2097,7 @@
       "text": "Diagnostics about members of a type declared in a referenced assembly must not be reported at locations outside the compilation being analyzed.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (11 verified citations); build, tests.targeted pass",
+      "why": "All 3 reviewers say met (10 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -1999,7 +2135,7 @@
           "reviewer": "codex",
           "verdict": "met",
           "basis": "The change filters analyzer diagnostics to source locations belonging to this compilation and uses nullable syntax-reference lookups for members that may come from metadata.",
-          "verified": 3,
+          "verified": 2,
           "cited": 3,
           "refs": [
             "ev-6afda546ae",
@@ -2047,7 +2183,7 @@
       "text": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite).",
       "status": "refused",
       "label": "not met",
-      "why": "Claude says not met (Codex and Nemotron: met)",
+      "why": "Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence",
       "checks": [
         {
           "id": "build",
@@ -2071,7 +2207,7 @@
           "reviewer": "claude",
           "verdict": "not_met",
           "basis": "The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
-          "verified": 4,
+          "verified": 2,
           "cited": 5,
           "refs": [
             "ev-d1a7e0fbac",
@@ -2087,7 +2223,7 @@
           "reviewer": "codex",
           "verdict": "met",
           "basis": "The source-generator test suite passes in full after the change.",
-          "verified": 1,
+          "verified": 0,
           "cited": 1,
           "refs": [
             "ev-df050a6665"
@@ -2119,16 +2255,25 @@
       "reasons": [
         {
           "code": "not_met",
-          "detail": "claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it."
+          "detail": "claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.",
+          "reviewer": "claude",
+          "verdict": "not_met"
         },
         {
           "code": "reviewers_disagree",
           "detail": "claude says not_met, codex says met, nemotron says met"
+        },
+        {
+          "code": "thin_evidence",
+          "detail": "codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)",
+          "reviewer": "codex",
+          "verdict": "met"
         }
       ],
       "adjudication": null,
       "settle": [
-        "A fix, or evidence that refutes Claude's objection"
+        "A fix, or evidence that refutes Claude's objection",
+        "Codex citing evidence the engine can verify"
       ]
     },
     {
@@ -2136,7 +2281,7 @@
       "text": "The fix is covered by automated tests that fail without it.",
       "status": "proven",
       "label": "proven",
-      "why": "All 3 reviewers say met (10 verified citations); build, tests.fail_without_fix pass",
+      "why": "All 3 reviewers say met (8 verified citations); build, tests.fail_without_fix pass",
       "checks": [
         {
           "id": "build",
@@ -2160,7 +2305,7 @@
           "reviewer": "claude",
           "verdict": "met",
           "basis": "tests.fail_without_fix: 3/3 new tests fail on base source with AD0001 IndexOutOfRangeException in GetObjectInfo (the issue's exact exception) and pass at head; one of them (UnkeyedMember) also pins the location filter, as I checked by reverting just that line. Not covered by any failing-without-fix test: the BothStringAndIntKeyAreNull change at line 985 (no test reaches it with a metadata or positional-record property).",
-          "verified": 4,
+          "verified": 3,
           "cited": 4,
           "refs": [
             "ev-d78b746a74",
@@ -2174,7 +2319,7 @@
           "reviewer": "codex",
           "verdict": "met",
           "basis": "All three added metadata-reference tests pass with the fix and fail with the source reverted.",
-          "verified": 2,
+          "verified": 1,
           "cited": 2,
           "refs": [
             "ev-d78b746a74",

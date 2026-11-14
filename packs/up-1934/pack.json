@@ -1,0 +1,2452 @@
+{
+  "schema": "countersign.pack/v1",
+  "change": "up-1934",
+  "branch": "upstream PR #1934",
+  "base": "7ef21d4b",
+  "head": "2f9324f9",
+  "commit_message": "Change default Language version of generated code to C# 7.3",
+  "author": "Alan Liu",
+  "agent_written": false,
+  "diff": {
+    "files": 6,
+    "insertions": 26,
+    "deletions": 22
+  },
+  "simulated": false,
+  "mutation": null,
+  "engine": {
+    "name": "countersign",
+    "version": "0.1.0"
+  },
+  "mandate": {
+    "path": "mandate/messagepack.mandate.yaml",
+    "id": "messagepack-csharp",
+    "version": "3",
+    "owner": "Toivo",
+    "sha256": "b1e5e40743632a3c992c9028246411a26a4ad4f8b7ff6d00efd7fd625d4fa83b",
+    "signature": {
+      "valid": true,
+      "signed_by": "Toivo",
+      "signed_at": "2026-11-14T00:23:03+00:00",
+      "reason": "signature valid"
+    }
+  },
+  "inputs": {
+    "facts": {
+      "path": "evidence/up-1934/facts.json",
+      "sha256": "d0b5983e9a388c3df8d662c9d9cb5cad16698dd53e630f5b452215a36ce9e908"
+    },
+    "requirements": {
+      "path": "requirements/up-1934.yaml",
+      "sha256": "94ed5e90282661d8fde2e3f964c79e4efa8d04183d0b74205cb786722e75013b"
+    },
+    "reviews": {
+      "claude": {
+        "path": "reviews/up-1934/claude.json",
+        "sha256": "5f1bdc23312158ce6247ac69799529ce64d16a9ae2ae664c14010c4cd812de02"
+      },
+      "codex": {
+        "path": "reviews/up-1934/codex.json",
+        "sha256": "5ebf50fd4d66792360b43fc71c8af33537b98a4f143e531adf72440f216ea7ce"
+      },
+      "nemotron": {
+        "path": "reviews/up-1934/nemotron.json",
+        "sha256": "fbd7b16b924cc8823ce6f8b7fbde03653da1c0505ae800dbe250642c108dbe46"
+      }
+    }
+  },
+  "requirement_set": {
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/1925",
+    "official": false
+  },
+  "tier": "ask",
+  "ai_recommendation": "ask",
+  "why": [
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack) (Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).)"
+    }
+  ],
+  "drivers": [
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack) (Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (Taken from the requirement text; not checkable from the evidence) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (Likely renamed theory cases, but the logs were not given) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "trust cap",
+      "id": "tests",
+      "tier": "silent",
+      "why": "tests: AI may clear at most to silent (mandate clearance right)"
+    },
+    {
+      "source": "risk score",
+      "id": "risk",
+      "tier": "silent",
+      "why": "score 7.9 (notify>=15, ask>=40, block>=130); largest: files_changed 6 + lines_changed 1.9"
+    }
+  ],
+  "owner": "Toivo",
+  "primary_area": "tests",
+  "notify": [],
+  "areas": [
+    {
+      "name": "tests",
+      "owner": "Toivo",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+        "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+        "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+        "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs",
+        "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-up-1934-F1",
+      "type": "functional",
+      "text": "By default, the source generator tests must compile the test input and the generated code at C# 7.3, the language version a netstandard2.0 project uses by default (issue #1925), so generated code that needs a newer language version fails the tests.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "Both the Test.LanguageVersion property and the RunDefaultAsync parameter default to CSharp7_3, the value is applied to the parse options, and the regression check shows generated code failing with CS8370 at 7.3 on the pre-fix generator.",
+          "verified": 6,
+          "verified_any": 7,
+          "cited": 7,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-up-1934-F1",
+              "quote": "compile the test input and the generated code at C# 7.3",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-1934-F1 text contains the quote",
+              "ref": "ev-71702142d9"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 46,
+              "rev": "head",
+              "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:46 at head 2f9324f9",
+              "ref": "ev-18f1c5974b"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 48,
+              "rev": "head",
+              "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:48 at head 2f9324f9",
+              "ref": "ev-cf1b2f86d3"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 102,
+              "rev": "head",
+              "quote": "LanguageVersion = languageVersion,",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:102 at head 2f9324f9",
+              "ref": "ev-40da86a21d"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 184,
+              "rev": "head",
+              "quote": "WithLanguageVersion(this.LanguageVersion)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9",
+              "ref": "ev-4c69e9ef68"
+            },
+            {
+              "kind": "check",
+              "id": "tests.detects_original_regression",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.detects_original_regression pass: with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way)",
+              "ref": "ev-6b957d903e"
+            },
+            {
+              "kind": "test",
+              "name": "GenerationTests.AdditionalAllowTypes",
+              "outcome": "failed",
+              "check": "tests.detects_original_regression",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.detects_original_regression: failed",
+              "ref": "ev-ab60b0801e"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The verifier defaults to C# 7.3 and assigns the selected version to the test compilation; the regression-detection check confirms the updated settings expose the prior generator regression.",
+          "verified": 3,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 48,
+              "rev": "head",
+              "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:48 at head 2f9324f9",
+              "ref": "ev-cf1b2f86d3"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 102,
+              "rev": "head",
+              "quote": "LanguageVersion = languageVersion,",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:102 at head 2f9324f9",
+              "ref": "ev-40da86a21d"
+            },
+            {
+              "kind": "check",
+              "id": "tests.detects_original_regression",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.detects_original_regression pass: with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way)",
+              "ref": "ev-6b957d903e"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "Both verifier base classes default LanguageVersion to CSharp7_3, RunDefaultAsync defaults to CSharp7_3 and applies it to TestState (code), the full suite passes at head (check), and the pre-#1926 generator fails under the new default with CS8370 errors showing generated code that needs a newer version now fails the tests (check/test).",
+          "verified": 7,
+          "verified_any": 7,
+          "cited": 7,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 46,
+              "rev": "head",
+              "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:46 at head 2f9324f9",
+              "ref": "ev-18f1c5974b"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs",
+              "line": 22,
+              "rev": "head",
+              "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs:22 at head 2f9324f9",
+              "ref": "ev-b661201914"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 48,
+              "rev": "head",
+              "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:48 at head 2f9324f9",
+              "ref": "ev-cf1b2f86d3"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 102,
+              "rev": "head",
+              "quote": "LanguageVersion = languageVersion,",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:102 at head 2f9324f9",
+              "ref": "ev-40da86a21d"
+            },
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "check",
+              "id": "tests.detects_original_regression",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.detects_original_regression pass: with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way)",
+              "ref": "ev-6b957d903e"
+            },
+            {
+              "kind": "test",
+              "name": "GenerationTests.ArrayTypedProperty",
+              "outcome": "failed",
+              "check": "tests.detects_original_regression",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.detects_original_regression: failed",
+              "ref": "ev-cfc8867214"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-up-1934-F2",
+      "type": "functional",
+      "text": "Tests whose input source needs a newer language feature (records, record structs) must set that language version explicitly, and only those.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "Every explicit opt-in I read has input needing more than C# 7.3 (records -> 9, record struct -> 10, #nullable/notnull -> 8/9) while the class/struct rows were lowered to 7.3, and the full suite passing at the 7.3 default shows no test that needs newer syntax was left on the default.",
+          "verified": 6,
+          "verified_any": 7,
+          "cited": 7,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-up-1934-F2",
+              "quote": "must set that language version explicitly, and only those",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-1934-F2 text contains the quote",
+              "ref": "ev-ed9838ff31"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+              "line": 30,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp9",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:30 at head 2f9324f9",
+              "ref": "ev-1f6d571ea2"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+              "line": 234,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp9",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:234 at head 2f9324f9",
+              "ref": "ev-dc7a9f9b49"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+              "line": 409,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp8",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:409 at head 2f9324f9",
+              "ref": "ev-df98ec7f6f"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+              "line": 10,
+              "rev": "head",
+              "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:10 at head 2f9324f9",
+              "ref": "ev-35e3008e34"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+              "line": 11,
+              "rev": "head",
+              "quote": "[InlineData(\"record\", LanguageVersion.CSharp9)]",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9",
+              "ref": "ev-daff207533"
+            },
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "Tests using records and record structs specify C# 9 or C# 10 explicitly, while the ordinary class and struct cases use C# 7.3.",
+          "verified": 3,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+              "line": 30,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp9",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:30 at head 2f9324f9",
+              "ref": "ev-1f6d571ea2"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+              "line": 11,
+              "rev": "head",
+              "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9 (found at line 10, 1 off)",
+              "ref": "ev-e222ed4080"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+              "line": 13,
+              "rev": "head",
+              "quote": "[InlineData(\"record struct\", LanguageVersion.CSharp10)]",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9",
+              "ref": "ev-8622efff68"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "Every test whose source uses records, record structs, or nullable features passes an explicit languageVersion (CSharp9/CSharp10/CSharp8), while every other test relies on the new CSharp7_3 default, so explicit versions are set only where needed (code).",
+          "verified": 11,
+          "verified_any": 11,
+          "cited": 11,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+              "line": 30,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp9",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:30 at head 2f9324f9",
+              "ref": "ev-1f6d571ea2"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+              "line": 60,
+              "rev": "head",
+              "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9",
+              "ref": "ev-723e7e3ba3"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+              "line": 234,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp9",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:234 at head 2f9324f9",
+              "ref": "ev-dc7a9f9b49"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+              "line": 75,
+              "rev": "head",
+              "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9",
+              "ref": "ev-5d1894b000"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+              "line": 356,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp9",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:356 at head 2f9324f9",
+              "ref": "ev-6e1d8dd72a"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+              "line": 409,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp8",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:409 at head 2f9324f9",
+              "ref": "ev-df98ec7f6f"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+              "line": 436,
+              "rev": "head",
+              "quote": "languageVersion: LanguageVersion.CSharp9",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:436 at head 2f9324f9",
+              "ref": "ev-8f8ceb66a2"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+              "line": 10,
+              "rev": "head",
+              "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:10 at head 2f9324f9",
+              "ref": "ev-35e3008e34"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+              "line": 11,
+              "rev": "head",
+              "quote": "[InlineData(\"record\", LanguageVersion.CSharp9)]",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9",
+              "ref": "ev-daff207533"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+              "line": 13,
+              "rev": "head",
+              "quote": "[InlineData(\"record struct\", LanguageVersion.CSharp10)]",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9",
+              "ref": "ev-8622efff68"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 46,
+              "rev": "head",
+              "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:46 at head 2f9324f9",
+              "ref": "ev-18f1c5974b"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-up-1934-N1",
+      "type": "non-functional",
+      "text": "The change touches only test code, and no existing source generator test regresses.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "facts.json classifies all 6 changed files as test, public_api shows no src change, and tests.full_suite passes 123/123 with 123/123 on base.",
+          "verified": 2,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-up-1934-N1",
+              "quote": "The change touches only test code",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-1934-N1 text contains the quote",
+              "ref": "ev-1dba18fed5"
+            },
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "check",
+              "id": "public_api",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: public_api pass: no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+              "ref": "ev-1494dc6548"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The change is confined to test files, and the full source generator test suite passes.",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+              "line": 48,
+              "rev": "head",
+              "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:48 at head 2f9324f9",
+              "ref": "ev-cf1b2f86d3"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "All six changed files are test files with no src/ changes (facts diff), the full suite passes 123/123 with zero failures not present on base and targeted tests pass identically on base (checks), and there are no public API changes or new analyzer warnings (checks).",
+          "verified": 4,
+          "verified_any": 4,
+          "cited": 4,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "check",
+              "id": "tests.targeted",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.targeted pass: 59 passed, 0 failed, 0 skipped (0 new tests in run)",
+              "ref": "ev-5ac6625579"
+            },
+            {
+              "kind": "check",
+              "id": "public_api",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: public_api pass: no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+              "ref": "ev-1494dc6548"
+            },
+            {
+              "kind": "check",
+              "id": "analyzers",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: analyzers pass: no new warnings",
+              "ref": "ev-6effd1ac04"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    }
+  ],
+  "reviewer_panel": {
+    "confidential": false,
+    "why": "repo and touched areas are not confidential",
+    "reviewers": [
+      "claude",
+      "codex",
+      "nemotron"
+    ],
+    "adjudicator": "gemini",
+    "excluded": [],
+    "ignored_files": [],
+    "rule": "proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass"
+  },
+  "disputes": [],
+  "adjudication": null,
+  "checked_by": {
+    "tools": [
+      {
+        "id": "build",
+        "tool": "dotnet build",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "0 errors, 1 unique warnings",
+        "duration_s": 11.0,
+        "log": "evidence/up-1934/logs/build.log"
+      },
+      {
+        "id": "tests.targeted",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "59 passed, 0 failed, 0 skipped (0 new tests in run)",
+        "duration_s": 7.0,
+        "log": "evidence/up-1934/logs/tests_targeted.1.log"
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "tool": null,
+        "tool_version": null,
+        "status": "skipped",
+        "summary": "not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.full_suite",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "duration_s": 7.0,
+        "log": "evidence/up-1934/logs/tests_full_suite.log"
+      },
+      {
+        "id": "public_api",
+        "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "analyzers",
+        "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no new warnings",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "tests.detects_original_regression",
+        "tool": "dotnet test (full SourceGenerator.Tests) on source before the #1926 fix, old vs new test files",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way)",
+        "duration_s": null,
+        "log": [
+          "evidence/up-1934/logs/detects_original_regression.newtests.log",
+          "evidence/up-1934/logs/detects_original_regression.oldtests.log"
+        ]
+      }
+    ],
+    "reviewers": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T12:00:00+02:00",
+        "inputs": [
+          "diff 7ef21d4b..2f9324f9",
+          "facts.json",
+          "requirements/up-1934.yaml",
+          "head files read beyond the context: Verifiers/CSharpCodeFixVerifier`2+Test.cs and the VerifyCS aliases of all SourceGenerator test classes"
+        ],
+        "findings": 2,
+        "verified": 2,
+        "rejected": 0,
+        "refusals": 2
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T02:06:41+02:00",
+        "inputs": [
+          "/tmp/up-briefs/1934.md",
+          "repo /data/src/mp",
+          "base 7ef21d4b6ea661cd346b5beeabfc3545106d83b6",
+          "head 2f9324f9987410677a310a633232411eb978a699"
+        ],
+        "findings": 0,
+        "verified": 0,
+        "rejected": 0,
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T02:07:57+02:00",
+        "inputs": [
+          "requirements: requirements/up-1934.yaml",
+          "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/1925",
+          "facts: evidence/up-1934/facts.json",
+          "diff 7ef21d4b..2f9324f9 (6 non-generated files)",
+          "file contents: 6 blocks",
+          "context: 124123 chars (budget 180000)"
+        ],
+        "findings": 1,
+        "verified": 1,
+        "rejected": 0,
+        "refusals": 1
+      }
+    ],
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)"
+  },
+  "findings": [
+    {
+      "id": "C1",
+      "title": "Two generic-constraint tests pin C# 9 although their input uses C# 8 features",
+      "severity": "info",
+      "category": "tests",
+      "claim": "Generics_Constraints_NullableReferenceType and Generics_Constraints_ReferenceType_Nullable use #nullable enable / nullable constraints (C# 8) but are pinned to C# 9, so C# 9-only syntax emitted by the generator for these constraint shapes would not be caught. I did not run them at C# 8, so whether 8 suffices is unverified.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 356,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp9",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:356 at head 2f9324f9",
+          "ref": "ev-6e1d8dd72a"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 436,
+          "rev": "head",
+          "quote": "languageVersion: LanguageVersion.CSharp9",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:436 at head 2f9324f9",
+          "ref": "ev-8f8ceb66a2"
+        }
+      ],
+      "suggested_fix": "Try LanguageVersion.CSharp8 for these two tests and keep the lowest version that compiles the input.",
+      "verified_count": 2,
+      "substantive_count": 2,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "C2",
+      "title": "CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused",
+      "severity": "info",
+      "category": "scope",
+      "claim": "No test class aliases CSharpSourceGeneratorCodeFixVerifier (I checked every VerifyCS alias at head), so this one-line change has no effect today; harmless and consistent, but it is not exercised by the suite.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs",
+          "line": 22,
+          "rev": "head",
+          "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs:22 at head 2f9324f9",
+          "ref": "ev-b661201914"
+        }
+      ],
+      "verified_count": 1,
+      "substantive_count": 1,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "F1",
+      "title": "Test name does not match its source",
+      "severity": "info",
+      "category": "tests",
+      "claim": "CustomStringKeyFormatterTests.RecordWithWithInitOnlyProps is named for init-only properties (a C# 9 feature) but its source uses { get; set; } auto-properties and calls RunDefaultAsync without a language version, so it runs at the default C# 7.3 and does not exercise init-only properties.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 34,
+          "rev": "head",
+          "quote": "public async Task RecordWithWithInitOnlyProps()",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:34 at head 2f9324f9",
+          "ref": "ev-94fa3653d3"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 53,
+          "rev": "head",
+          "quote": "public string PhoneNumber { get; set; }",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:53 at head 2f9324f9",
+          "ref": "ev-665e3e1cfc"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+          "line": 60,
+          "rev": "head",
+          "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9",
+          "ref": "ev-723e7e3ba3"
+        }
+      ],
+      "suggested_fix": "Rename the test, or change the properties to `init` accessors and pass languageVersion: LanguageVersion.CSharp9 so the test actually covers the feature its name promises.",
+      "verified_count": 3,
+      "substantive_count": 3,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "silent",
+      "confirmed_by": []
+    }
+  ],
+  "refused": {
+    "clauses": [],
+    "reviewer_refusals": [
+      {
+        "topic": "That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs)",
+        "reason": "Taken from the requirement text; not checkable from the evidence",
+        "who_should_decide": "area owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      },
+      {
+        "topic": "facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed)",
+        "reason": "Likely renamed theory cases, but the logs were not given",
+        "who_should_decide": "countersign evidence maintainer",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      },
+      {
+        "topic": "Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",
+        "reason": "Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).",
+        "who_should_decide": "CI or area owner",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "routes": "ask",
+        "route_reason": "topic names mandated check build"
+      }
+    ]
+  },
+  "rejected_claims": [],
+  "not_checked": [
+    {
+      "id": "tests.MessagePack.Tests",
+      "reason": "runtime library src/MessagePack not modified by the change; suite not run",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "tests.execution",
+      "reason": "ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "build.net472/netstandard",
+      "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "benchmarks",
+      "reason": "no runtime serialization hot path touched",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "reason": "skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)",
+      "source": "check did not pass or fail"
+    },
+    {
+      "id": "other-targets",
+      "reason": "Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "runtime-perf",
+      "reason": "No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "semantic-intent",
+      "reason": "Correctness beyond what tests and cited evidence show is not established by the AI",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "provenance",
+      "reason": "Licensing and provenance of agent-written code are not checked",
+      "source": "mandate known gap"
+    }
+  ],
+  "residual_risk": [
+    "Reviewer refusal (claude): That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs) (out of scope: notify)",
+    "Reviewer refusal (claude): facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed) (out of scope: notify)",
+    "Reviewer refusal (nemotron): Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",
+    "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
+    "tests.execution not run (ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite))",
+    "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
+    "benchmarks not run (no runtime serialization hot path touched)",
+    "tests.fail_without_fix not run (skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch))",
+    "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
+  ],
+  "risk": {
+    "score": 7.9,
+    "tier": "silent",
+    "thresholds": {
+      "notify": 15,
+      "ask": 40,
+      "block": 130
+    },
+    "factors": [
+      {
+        "factor": "area_sensitivity",
+        "points": 0,
+        "reason": "most sensitive area touched: tests (low)"
+      },
+      {
+        "factor": "files_changed",
+        "points": 6,
+        "reason": "6 files x 1 (cap 20)"
+      },
+      {
+        "factor": "lines_changed",
+        "points": 1.9,
+        "reason": "48 non-generated lines x 4/100 (cap 20)"
+      },
+      {
+        "factor": "generated_files",
+        "points": 0.0,
+        "reason": "0 generated files x 0.1 (cap 10)"
+      },
+      {
+        "factor": "public_api_change",
+        "points": 0,
+        "reason": "public_api check: no change"
+      },
+      {
+        "factor": "source_without_tests",
+        "points": 0,
+        "reason": "no source changed"
+      },
+      {
+        "factor": "security_sensitive_paths",
+        "points": 0,
+        "reason": "none touched"
+      },
+      {
+        "factor": "fail_without_fix_not_shown",
+        "points": 0,
+        "reason": "tests.fail_without_fix: skipped (no source changed: nothing to revert)"
+      },
+      {
+        "factor": "reviewer_disagreement",
+        "points": 0,
+        "reason": "0 clause(s) x 8"
+      },
+      {
+        "factor": "failed_checks",
+        "points": 0,
+        "reason": "0 failed check(s) x 25"
+      }
+    ]
+  },
+  "rules_fired": [],
+  "reviewers_untrusted": null,
+  "carried_forward": [],
+  "refuted_findings": [],
+  "reproduced": {},
+  "signoff": {
+    "required": true,
+    "owner": "Toivo",
+    "allowed_decisions": [
+      "accept",
+      "reject",
+      "request-changes"
+    ],
+    "command": "countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  },
+  "story": {
+    "headline": "Change for #1925: Change default Language version of generated code to C# 7.3",
+    "what": "Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu.",
+    "why": "Judged against 3 requirement clauses from #1925 (placeholder requirement set, not Tieto's official one).",
+    "touches": [
+      {
+        "area": "tests",
+        "owner": "Toivo",
+        "sensitivity": "low",
+        "files": 6
+      }
+    ],
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/1925"
+  },
+  "card": {
+    "tier": "ask",
+    "owner": "Toivo",
+    "fyi": [],
+    "risk_score": 7.9,
+    "reasons": [
+      {
+        "text": "The AI declined to decide 3 questions, e.g. That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs)",
+        "link": "#refused"
+      }
+    ],
+    "more_drivers": 5,
+    "trace": [
+      {
+        "id": "REQ-up-1934-F1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (16 verified citations); build, tests.targeted pass",
+        "anchor": "chain-REQ-up-1934-F1"
+      },
+      {
+        "id": "REQ-up-1934-F2",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (20 verified citations); build, tests.targeted pass",
+        "anchor": "chain-REQ-up-1934-F2"
+      },
+      {
+        "id": "REQ-up-1934-N1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (8 verified citations); build, tests.full_suite pass",
+        "anchor": "chain-REQ-up-1934-N1"
+      }
+    ],
+    "found": [
+      {
+        "key": "claude:C1",
+        "anchor": "f-claude-C1",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Two generic-constraint tests pin C# 9 although their input uses C# 8 features",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-6e1d8dd72a",
+            "label": "GenericsFormatterTests.cs:356 @head"
+          },
+          {
+            "ref": "ev-8f8ceb66a2",
+            "label": "GenericsFormatterTests.cs:436 @head"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "claude:C2",
+        "anchor": "f-claude-C2",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-b661201914",
+            "label": "CSharpSourceGeneratorCodeFixVerifier`2.cs:22 @head"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "nemotron:F1",
+        "anchor": "f-nemotron-F1",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "title": "Test name does not match its source",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-94fa3653d3",
+            "label": "CustomStringKeyFormatterTests.cs:34 @head"
+          },
+          {
+            "ref": "ev-665e3e1cfc",
+            "label": "CustomStringKeyFormatterTests.cs:53 @head"
+          }
+        ],
+        "shared_with": []
+      }
+    ],
+    "found_total": 3,
+    "rejected_total": 0,
+    "refused": [
+      {
+        "topic": "That C# 7.3 is the default language version of every netstandard2.0 consumer (e.g. Unity, older SDKs)",
+        "why": "Taken from the requirement text; not checkable from the evidence",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "area owner"
+        ],
+        "anchor": "refusal-1"
+      },
+      {
+        "topic": "facts.json count mismatch in tests.detects_original_regression (summary says 61 newly failing and 63/123 failed with new tests; 61 tests are listed)",
+        "why": "Likely renamed theory cases, but the logs were not given",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "countersign evidence maintainer"
+        ],
+        "anchor": "refusal-2"
+      },
+      {
+        "topic": "Build and test behavior on non-Linux environments or other target frameworks (net472, netstandard2.0 slices of src/MessagePack)",
+        "why": "Only the net8.0 Debug configuration on Linux was built and tested; this test-only change modifies no src/ code, so those were not run (facts.json not_run).",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "CI or area owner"
+        ],
+        "anchor": "refusal-3"
+      }
+    ],
+    "refused_clauses": [],
+    "not_checked": [
+      {
+        "id": "tests.MessagePack.Tests",
+        "reason": "runtime library src/MessagePack not modified by the change; suite not run"
+      },
+      {
+        "id": "tests.execution",
+        "reason": "ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)"
+      },
+      {
+        "id": "build.net472/netstandard",
+        "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)"
+      },
+      {
+        "id": "benchmarks",
+        "reason": "no runtime serialization hot path touched"
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "reason": "skipped: not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)"
+      }
+    ],
+    "known_gaps": [
+      "other-targets",
+      "runtime-perf",
+      "semantic-intent",
+      "provenance"
+    ],
+    "residual": [
+      {
+        "text": "3 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused"
+      },
+      {
+        "text": "Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix",
+        "link": "#not-checked"
+      },
+      {
+        "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
+        "link": "#not-checked"
+      }
+    ],
+    "sign": {
+      "owner": "Toivo",
+      "required": true,
+      "decisions": [
+        "accept",
+        "reject",
+        "request-changes"
+      ],
+      "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+      "command": "countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+    },
+    "reviewers": 3
+  },
+  "trust": [
+    {
+      "id": "REQ-up-1934-F1",
+      "text": "By default, the source generator tests must compile the test input and the generated code at C# 7.3, the language version a netstandard2.0 project uses by default (issue #1925), so generated code that needs a newer language version fails the tests.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (16 verified citations); build, tests.targeted pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/up-1934/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "59 passed, 0 failed, 0 skipped (0 new tests in run)",
+          "logs": [
+            "evidence/up-1934/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "Both the Test.LanguageVersion property and the RunDefaultAsync parameter default to CSharp7_3, the value is applied to the parse options, and the regression check shows generated code failing with CS8370 at 7.3 on the pre-fix generator.",
+          "verified": 6,
+          "cited": 7,
+          "refs": [
+            "ev-71702142d9",
+            "ev-18f1c5974b",
+            "ev-cf1b2f86d3",
+            "ev-40da86a21d",
+            "ev-4c69e9ef68",
+            "ev-6b957d903e",
+            "ev-ab60b0801e"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The verifier defaults to C# 7.3 and assigns the selected version to the test compilation; the regression-detection check confirms the updated settings expose the prior generator regression.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-cf1b2f86d3",
+            "ev-40da86a21d",
+            "ev-6b957d903e"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "Both verifier base classes default LanguageVersion to CSharp7_3, RunDefaultAsync defaults to CSharp7_3 and applies it to TestState (code), the full suite passes at head (check), and the pre-#1926 generator fails under the new default with CS8370 errors showing generated code that needs a newer version now fails the tests (check/test).",
+          "verified": 7,
+          "cited": 7,
+          "refs": [
+            "ev-18f1c5974b",
+            "ev-b661201914",
+            "ev-cf1b2f86d3",
+            "ev-40da86a21d",
+            "ev-d448f979e6",
+            "ev-6b957d903e",
+            "ev-cfc8867214"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-up-1934-F2",
+      "text": "Tests whose input source needs a newer language feature (records, record structs) must set that language version explicitly, and only those.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (20 verified citations); build, tests.targeted pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/up-1934/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "59 passed, 0 failed, 0 skipped (0 new tests in run)",
+          "logs": [
+            "evidence/up-1934/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "Every explicit opt-in I read has input needing more than C# 7.3 (records -> 9, record struct -> 10, #nullable/notnull -> 8/9) while the class/struct rows were lowered to 7.3, and the full suite passing at the 7.3 default shows no test that needs newer syntax was left on the default.",
+          "verified": 6,
+          "cited": 7,
+          "refs": [
+            "ev-ed9838ff31",
+            "ev-1f6d571ea2",
+            "ev-dc7a9f9b49",
+            "ev-df98ec7f6f",
+            "ev-35e3008e34",
+            "ev-daff207533",
+            "ev-d448f979e6"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "Tests using records and record structs specify C# 9 or C# 10 explicitly, while the ordinary class and struct cases use C# 7.3.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-1f6d571ea2",
+            "ev-e222ed4080",
+            "ev-8622efff68"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "Every test whose source uses records, record structs, or nullable features passes an explicit languageVersion (CSharp9/CSharp10/CSharp8), while every other test relies on the new CSharp7_3 default, so explicit versions are set only where needed (code).",
+          "verified": 11,
+          "cited": 11,
+          "refs": [
+            "ev-1f6d571ea2",
+            "ev-723e7e3ba3",
+            "ev-dc7a9f9b49",
+            "ev-5d1894b000",
+            "ev-6e1d8dd72a",
+            "ev-df98ec7f6f",
+            "ev-8f8ceb66a2",
+            "ev-35e3008e34",
+            "ev-daff207533",
+            "ev-8622efff68",
+            "ev-18f1c5974b"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-up-1934-N1",
+      "text": "The change touches only test code, and no existing source generator test regresses.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (8 verified citations); build, tests.full_suite pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/up-1934/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.full_suite",
+          "status": "pass",
+          "summary": "tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+          "logs": [
+            "evidence/up-1934/logs/tests_full_suite.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "facts.json classifies all 6 changed files as test, public_api shows no src change, and tests.full_suite passes 123/123 with 123/123 on base.",
+          "verified": 2,
+          "cited": 3,
+          "refs": [
+            "ev-1dba18fed5",
+            "ev-d448f979e6",
+            "ev-1494dc6548"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The change is confined to test files, and the full source generator test suite passes.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-d448f979e6",
+            "ev-cf1b2f86d3"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "All six changed files are test files with no src/ changes (facts diff), the full suite passes 123/123 with zero failures not present on base and targeted tests pass identically on base (checks), and there are no public API changes or new analyzer warnings (checks).",
+          "verified": 4,
+          "cited": 4,
+          "refs": [
+            "ev-d448f979e6",
+            "ev-5ac6625579",
+            "ev-1494dc6548",
+            "ev-6effd1ac04"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    }
+  ],
+  "panel": {
+    "rows": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-1934-F1": "met",
+          "REQ-up-1934-F2": "met",
+          "REQ-up-1934-N1": "met"
+        },
+        "citations_verified": 20,
+        "citations_rejected": 0,
+        "findings_verified": 2,
+        "findings_rejected": 0,
+        "only_this_reviewer": [
+          {
+            "id": "C1",
+            "severity": "info",
+            "title": "Two generic-constraint tests pin C# 9 although their input uses C# 8 features",
+            "status": "verified"
+          },
+          {
+            "id": "C2",
+            "severity": "info",
+            "title": "CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused",
+            "status": "verified"
+          }
+        ],
+        "refusals": 2
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-1934-F1": "met",
+          "REQ-up-1934-F2": "met",
+          "REQ-up-1934-N1": "met"
+        },
+        "citations_verified": 8,
+        "citations_rejected": 0,
+        "findings_verified": 0,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-1934-F1": "met",
+          "REQ-up-1934-F2": "met",
+          "REQ-up-1934-N1": "met"
+        },
+        "citations_verified": 25,
+        "citations_rejected": 0,
+        "findings_verified": 1,
+        "findings_rejected": 0,
+        "only_this_reviewer": [
+          {
+            "id": "F1",
+            "severity": "info",
+            "title": "Test name does not match its source",
+            "status": "verified"
+          }
+        ],
+        "refusals": 1
+      }
+    ],
+    "callouts": [],
+    "adjudicator": "gemini"
+  },
+  "evidence_index": {
+    "ev-71702142d9": {
+      "kind": "requirement",
+      "quote": "compile the test input and the generated code at C# 7.3",
+      "req": "REQ-up-1934-F1",
+      "ref": "ev-71702142d9",
+      "label": "REQ-up-1934-F1 text",
+      "verified": true,
+      "note": "REQ-up-1934-F1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-up-1934-F1"
+      ],
+      "clause_text": "By default, the source generator tests must compile the test input and the generated code at C# 7.3, the language version a netstandard2.0 project uses by default (issue #1925), so generated code that needs a newer language version fails the tests."
+    },
+    "ev-18f1c5974b": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+      "line": 46,
+      "rev": "head",
+      "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+      "ref": "ev-18f1c5974b",
+      "label": "CSharpSourceGeneratorVerifier`1+Test.cs:46 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:46 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F1",
+        "nemotron on REQ-up-1934-F1",
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 43,
+        "highlight": 46,
+        "lines": [
+          "#endif",
+          "        }",
+          "",
+          "        public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+          "",
+          "        public static Task RunDefaultAsync(ITestOutputHelper logger, string testSource, AnalyzerOptions? options = null, LanguageVersion languageVersion = LanguageVersion.CSharp7_3, [CallerFilePath] string? testFile = null, [CallerMemberName] string testMethod = null!)",
+          "        {"
+        ]
+      }
+    },
+    "ev-cf1b2f86d3": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+      "line": 48,
+      "rev": "head",
+      "quote": "LanguageVersion languageVersion = LanguageVersion.CSharp7_3",
+      "ref": "ev-cf1b2f86d3",
+      "label": "CSharpSourceGeneratorVerifier`1+Test.cs:48 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:48 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F1",
+        "codex on REQ-up-1934-F1",
+        "nemotron on REQ-up-1934-F1",
+        "codex on REQ-up-1934-N1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 45,
+        "highlight": 48,
+        "lines": [
+          "",
+          "        public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+          "",
+          "        public static Task RunDefaultAsync(ITestOutputHelper logger, string testSource, AnalyzerOptions? options = null, LanguageVersion languageVersion = LanguageVersion.CSharp7_3, [CallerFilePath] string? testFile = null, [CallerMemberName] string testMethod = null!)",
+          "        {",
+          "            options ??= new();",
+          ""
+        ]
+      }
+    },
+    "ev-40da86a21d": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+      "line": 102,
+      "rev": "head",
+      "quote": "LanguageVersion = languageVersion,",
+      "ref": "ev-40da86a21d",
+      "label": "CSharpSourceGeneratorVerifier`1+Test.cs:102 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:102 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F1",
+        "codex on REQ-up-1934-F1",
+        "nemotron on REQ-up-1934-F1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 99,
+        "highlight": 102,
+        "lines": [
+          "                {",
+          "                    Sources = { testSource, resolverPartialClassSource },",
+          "                },",
+          "                LanguageVersion = languageVersion,",
+          "            };",
+          "",
+          "            return test.RunDefaultAsync(logger);"
+        ]
+      }
+    },
+    "ev-4c69e9ef68": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+      "line": 184,
+      "rev": "head",
+      "quote": "WithLanguageVersion(this.LanguageVersion)",
+      "ref": "ev-4c69e9ef68",
+      "label": "CSharpSourceGeneratorVerifier`1+Test.cs:184 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs:184 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 181,
+        "highlight": 184,
+        "lines": [
+          "",
+          "        protected override ParseOptions CreateParseOptions()",
+          "        {",
+          "            return ((CSharpParseOptions)base.CreateParseOptions()).WithLanguageVersion(this.LanguageVersion);",
+          "        }",
+          "",
+          "        protected override async Task<(Compilation, ImmutableArray<Diagnostic>)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)"
+        ]
+      }
+    },
+    "ev-6b957d903e": {
+      "kind": "check",
+      "id": "tests.detects_original_regression",
+      "status": "pass",
+      "ref": "ev-6b957d903e",
+      "label": "check tests.detects_original_regression pass",
+      "verified": true,
+      "note": "facts.json: tests.detects_original_regression pass: with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way)",
+      "cited_by": [
+        "claude on REQ-up-1934-F1",
+        "codex on REQ-up-1934-F1",
+        "nemotron on REQ-up-1934-F1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way)",
+        "tool": "dotnet test (full SourceGenerator.Tests) on source before the #1926 fix, old vs new test files",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/up-1934/logs/detects_original_regression.newtests.log",
+          "evidence/up-1934/logs/detects_original_regression.oldtests.log"
+        ]
+      }
+    },
+    "ev-ab60b0801e": {
+      "kind": "test",
+      "name": "GenerationTests.AdditionalAllowTypes",
+      "outcome": "failed",
+      "check": "tests.detects_original_regression",
+      "ref": "ev-ab60b0801e",
+      "label": "test AdditionalAllowTypes failed",
+      "verified": true,
+      "note": "facts.json tests.detects_original_regression: failed",
+      "cited_by": [
+        "claude on REQ-up-1934-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/up-1934/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.detects_original_regression",
+          "outcome": "failed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/up-1934/logs/detects_original_regression.newtests.log",
+            "evidence/up-1934/logs/detects_original_regression.oldtests.log"
+          ]
+        }
+      ],
+      "without_fix": null
+    },
+    "ev-b661201914": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs",
+      "line": 22,
+      "rev": "head",
+      "quote": "public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+      "ref": "ev-b661201914",
+      "label": "CSharpSourceGeneratorCodeFixVerifier`2.cs:22 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs:22 at head 2f9324f9",
+      "cited_by": [
+        "nemotron on REQ-up-1934-F1",
+        "claude:C2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 19,
+        "highlight": 22,
+        "lines": [
+          "            this.CompilerDiagnostics = CompilerDiagnostics.Warnings;",
+          "        }",
+          "",
+          "        public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;",
+          "",
+          "        public ReferencesSet MessagePackReferences { get; set; } = ReferencesSet.MessagePack;",
+          ""
+        ]
+      }
+    },
+    "ev-d448f979e6": {
+      "kind": "check",
+      "id": "tests.full_suite",
+      "status": "pass",
+      "ref": "ev-d448f979e6",
+      "label": "check tests.full_suite pass",
+      "verified": true,
+      "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "cited_by": [
+        "nemotron on REQ-up-1934-F1",
+        "claude on REQ-up-1934-F2",
+        "claude on REQ-up-1934-N1",
+        "codex on REQ-up-1934-N1",
+        "nemotron on REQ-up-1934-N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/up-1934/logs/tests_full_suite.log"
+        ]
+      }
+    },
+    "ev-cfc8867214": {
+      "kind": "test",
+      "name": "GenerationTests.ArrayTypedProperty",
+      "outcome": "failed",
+      "check": "tests.detects_original_regression",
+      "ref": "ev-cfc8867214",
+      "label": "test ArrayTypedProperty failed",
+      "verified": true,
+      "note": "facts.json tests.detects_original_regression: failed",
+      "cited_by": [
+        "nemotron on REQ-up-1934-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/up-1934/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.detects_original_regression",
+          "outcome": "failed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/up-1934/logs/detects_original_regression.newtests.log",
+            "evidence/up-1934/logs/detects_original_regression.oldtests.log"
+          ]
+        }
+      ],
+      "without_fix": null
+    },
+    "ev-ed9838ff31": {
+      "kind": "requirement",
+      "quote": "must set that language version explicitly, and only those",
+      "req": "REQ-up-1934-F2",
+      "ref": "ev-ed9838ff31",
+      "label": "REQ-up-1934-F2 text",
+      "verified": true,
+      "note": "REQ-up-1934-F2 text contains the quote",
+      "cited_by": [
+        "claude on REQ-up-1934-F2"
+      ],
+      "clause_text": "Tests whose input source needs a newer language feature (records, record structs) must set that language version explicitly, and only those."
+    },
+    "ev-1f6d571ea2": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+      "line": 30,
+      "rev": "head",
+      "quote": "languageVersion: LanguageVersion.CSharp9",
+      "ref": "ev-1f6d571ea2",
+      "label": "CustomStringKeyFormatterTests.cs:30 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:30 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F2",
+        "codex on REQ-up-1934-F2",
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 27,
+        "highlight": 30,
+        "lines": [
+          "    public record MyMessagePackObject([property: Key(\"p\")] string PhoneNumber, [property: Key(\"c\")] int Count);",
+          "}",
+          "\"\"\";",
+          "        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource, languageVersion: LanguageVersion.CSharp9);",
+          "    }",
+          "",
+          "    [Fact]"
+        ]
+      }
+    },
+    "ev-dc7a9f9b49": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+      "line": 234,
+      "rev": "head",
+      "quote": "languageVersion: LanguageVersion.CSharp9",
+      "ref": "ev-dc7a9f9b49",
+      "label": "GenerationTests.cs:234 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:234 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F2",
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 231,
+        "highlight": 234,
+        "lines": [
+          "    }",
+          "}",
+          "\"\"\";",
+          "        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource, options: new() { Generator = new() { Formatters = new() { UsesMapMode = usesMapMode } } }, languageVersion: LanguageVersion.CSharp9, testMethod: $\"{nameof(CustomFormatterViaAttributeOnProperty)}({usesMapMode})\");",
+          "    }",
+          "",
+          "    [Theory, PairwiseData]"
+        ]
+      }
+    },
+    "ev-df98ec7f6f": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "line": 409,
+      "rev": "head",
+      "quote": "languageVersion: LanguageVersion.CSharp8",
+      "ref": "ev-df98ec7f6f",
+      "label": "GenericsFormatterTests.cs:409 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:409 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F2",
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 406,
+        "highlight": 409,
+        "lines": [
+          "    }",
+          "}",
+          "\"\"\";",
+          "        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource, languageVersion: LanguageVersion.CSharp8);",
+          "    }",
+          "",
+          "    [Fact]"
+        ]
+      }
+    },
+    "ev-35e3008e34": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+      "line": 10,
+      "rev": "head",
+      "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+      "ref": "ev-35e3008e34",
+      "label": "PrivateMemberAccessTests.cs:10 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:10 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F2",
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 7,
+        "highlight": 10,
+        "lines": [
+          "public class PrivateMemberAccessTests(ITestOutputHelper logger)",
+          "{",
+          "    [Theory]",
+          "    [InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record\", LanguageVersion.CSharp9)]",
+          "    [InlineData(\"struct\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record struct\", LanguageVersion.CSharp10)]"
+        ]
+      }
+    },
+    "ev-daff207533": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+      "line": 11,
+      "rev": "head",
+      "quote": "[InlineData(\"record\", LanguageVersion.CSharp9)]",
+      "ref": "ev-daff207533",
+      "label": "PrivateMemberAccessTests.cs:11 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9",
+      "cited_by": [
+        "claude on REQ-up-1934-F2",
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 8,
+        "highlight": 11,
+        "lines": [
+          "{",
+          "    [Theory]",
+          "    [InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record\", LanguageVersion.CSharp9)]",
+          "    [InlineData(\"struct\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record struct\", LanguageVersion.CSharp10)]",
+          "    public async Task FormatterForClassWithPrivateMembers(string type, LanguageVersion version)"
+        ]
+      }
+    },
+    "ev-e222ed4080": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+      "line": 11,
+      "rev": "head",
+      "quote": "[InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+      "ref": "ev-e222ed4080",
+      "label": "PrivateMemberAccessTests.cs:11 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:11 at head 2f9324f9 (found at line 10, 1 off)",
+      "cited_by": [
+        "codex on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 7,
+        "highlight": 10,
+        "lines": [
+          "public class PrivateMemberAccessTests(ITestOutputHelper logger)",
+          "{",
+          "    [Theory]",
+          "    [InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record\", LanguageVersion.CSharp9)]",
+          "    [InlineData(\"struct\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record struct\", LanguageVersion.CSharp10)]"
+        ]
+      }
+    },
+    "ev-8622efff68": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+      "line": 13,
+      "rev": "head",
+      "quote": "[InlineData(\"record struct\", LanguageVersion.CSharp10)]",
+      "ref": "ev-8622efff68",
+      "label": "PrivateMemberAccessTests.cs:13 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs:13 at head 2f9324f9",
+      "cited_by": [
+        "codex on REQ-up-1934-F2",
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 10,
+        "highlight": 13,
+        "lines": [
+          "    [InlineData(\"class\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record\", LanguageVersion.CSharp9)]",
+          "    [InlineData(\"struct\", LanguageVersion.CSharp7_3)]",
+          "    [InlineData(\"record struct\", LanguageVersion.CSharp10)]",
+          "    public async Task FormatterForClassWithPrivateMembers(string type, LanguageVersion version)",
+          "    {",
+          "        string testSource = $$\"\"\""
+        ]
+      }
+    },
+    "ev-723e7e3ba3": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+      "line": 60,
+      "rev": "head",
+      "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
+      "ref": "ev-723e7e3ba3",
+      "label": "CustomStringKeyFormatterTests.cs:60 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:60 at head 2f9324f9",
+      "cited_by": [
+        "nemotron on REQ-up-1934-F2",
+        "nemotron:F1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 57,
+        "highlight": 60,
+        "lines": [
+          "    };",
+          "}",
+          "\"\"\";",
+          "        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
+          "    }",
+          "}"
+        ]
+      }
+    },
+    "ev-5d1894b000": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+      "line": 75,
+      "rev": "head",
+      "quote": "await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
+      "ref": "ev-5d1894b000",
+      "label": "GenerationTests.cs:75 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs:75 at head 2f9324f9",
+      "cited_by": [
+        "nemotron on REQ-up-1934-F2"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 72,
+        "highlight": 75,
+        "lines": [
+          "}",
+          "\"\"\";",
+          "",
+          "        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);",
+          "    }",
+          "",
+          "    [Fact]"
+        ]
+      }
+    },
+    "ev-6e1d8dd72a": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "line": 356,
+      "rev": "head",
+      "quote": "languageVersion: LanguageVersion.CSharp9",
+      "ref": "ev-6e1d8dd72a",
+      "label": "GenericsFormatterTests.cs:356 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:356 at head 2f9324f9",
+      "cited_by": [
+        "nemotron on REQ-up-1934-F2",
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 353,
+        "highlight": 356,
+        "lines": [
+          "    public interface IMyInterface {}",
+          "}",
+          "\"\"\";",
+          "        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource, languageVersion: LanguageVersion.CSharp9);",
+          "    }",
+          "",
+          "    [Fact]"
+        ]
+      }
+    },
+    "ev-8f8ceb66a2": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "line": 436,
+      "rev": "head",
+      "quote": "languageVersion: LanguageVersion.CSharp9",
+      "ref": "ev-8f8ceb66a2",
+      "label": "GenericsFormatterTests.cs:436 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:436 at head 2f9324f9",
+      "cited_by": [
+        "nemotron on REQ-up-1934-F2",
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 433,
+        "highlight": 436,
+        "lines": [
+          "    }",
+          "}",
+          "\"\"\";",
+          "        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource, languageVersion: LanguageVersion.CSharp9);",
+          "    }",
+          "",
+          "    [Fact]"
+        ]
+      }
+    },
+    "ev-1dba18fed5": {
+      "kind": "requirement",
+      "quote": "The change touches only test code",
+      "req": "REQ-up-1934-N1",
+      "ref": "ev-1dba18fed5",
+      "label": "REQ-up-1934-N1 text",
+      "verified": true,
+      "note": "REQ-up-1934-N1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-up-1934-N1"
+      ],
+      "clause_text": "The change touches only test code, and no existing source generator test regresses."
+    },
+    "ev-1494dc6548": {
+      "kind": "check",
+      "id": "public_api",
+      "status": "pass",
+      "ref": "ev-1494dc6548",
+      "label": "check public_api pass",
+      "verified": true,
+      "note": "facts.json: public_api pass: no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+      "cited_by": [
+        "claude on REQ-up-1934-N1",
+        "nemotron on REQ-up-1934-N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+        "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-5ac6625579": {
+      "kind": "check",
+      "id": "tests.targeted",
+      "status": "pass",
+      "ref": "ev-5ac6625579",
+      "label": "check tests.targeted pass",
+      "verified": true,
+      "note": "facts.json: tests.targeted pass: 59 passed, 0 failed, 0 skipped (0 new tests in run)",
+      "cited_by": [
+        "nemotron on REQ-up-1934-N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "59 passed, 0 failed, 0 skipped (0 new tests in run)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/up-1934/logs/tests_targeted.1.log"
+        ]
+      }
+    },
+    "ev-6effd1ac04": {
+      "kind": "check",
+      "id": "analyzers",
+      "status": "pass",
+      "ref": "ev-6effd1ac04",
+      "label": "check analyzers pass",
+      "verified": true,
+      "note": "facts.json: analyzers pass: no new warnings",
+      "cited_by": [
+        "nemotron on REQ-up-1934-N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "no new warnings",
+        "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-94fa3653d3": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+      "line": 34,
+      "rev": "head",
+      "quote": "public async Task RecordWithWithInitOnlyProps()",
+      "ref": "ev-94fa3653d3",
+      "label": "CustomStringKeyFormatterTests.cs:34 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:34 at head 2f9324f9",
+      "cited_by": [
+        "nemotron:F1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 31,
+        "highlight": 34,
+        "lines": [
+          "    }",
+          "",
+          "    [Fact]",
+          "    public async Task RecordWithWithInitOnlyProps()",
+          "    {",
+          "        string testSource = \"\"\"",
+          "using System;"
+        ]
+      }
+    },
+    "ev-665e3e1cfc": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+      "line": 53,
+      "rev": "head",
+      "quote": "public string PhoneNumber { get; set; }",
+      "ref": "ev-665e3e1cfc",
+      "label": "CustomStringKeyFormatterTests.cs:53 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs:53 at head 2f9324f9",
+      "cited_by": [
+        "nemotron:F1"
+      ],
+      "excerpt": {
+        "sha": "2f9324f9",
+        "start": 50,
+        "highlight": 53,
+        "lines": [
+          "        }",
+          "",
+          "        [Key(\"p\")]",
+          "        public string PhoneNumber { get; set; }",
+          "",
+          "        [Key(\"c\")]",
+          "        public int Count { get; set; }"
+        ]
+      }
+    }
+  }
+}

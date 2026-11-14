@@ -7,23 +7,23 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 **Why ask**
 
 1. Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a different crash ([evidence](#f-claude-C1))
-2. 1 of 4 requirement clauses not proven. Claude says not met (Codex and Nemotron: met) ([evidence](#chain-REQ-2234-N1))
+2. 2 of 4 requirement clauses not proven. REQ-2234-N1: Claude says not met (Codex and Nemotron: met) (+1 more) ([evidence](#chain-REQ-2234-N1))
 3. The AI declined to decide 6 questions, e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages ([evidence](#refused))
 
-<sub>All 15 tier drivers are under Full detail.</sub>
+<sub>All 18 tier drivers are under Full detail.</sub>
 
 **Requirement trace**
 
 | Status | Clause | Why |
 |---|---|---|
-| **PROVEN** | [REQ-2234-F1](#chain-REQ-2234-F1) | All 3 reviewers say met (26 verified citations); build, tests.targeted pass |
-| **PROVEN** | [REQ-2234-F2](#chain-REQ-2234-F2) | All 3 reviewers say met (12 verified citations); build, tests.targeted pass |
+| **HELD BEFORE** | [REQ-2234-F1](#chain-REQ-2234-F1) | Met, but already true before this change: all 3 of the clause's tests that were run without the fix pass there too: AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported, MemberWithoutKeyIsReported |
+| **HELD BEFORE** | [REQ-2234-F2](#chain-REQ-2234-F2) | Met, but already true before this change: all 1 of the clause's tests that were run without the fix pass there too: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed |
 | **NOT MET** | [REQ-2234-N1](#chain-REQ-2234-N1) | Claude says not met (Codex and Nemotron: met) |
-| **PROVEN** | [REQ-2234-N2](#chain-REQ-2234-N2) | All 3 reviewers say met (16 verified citations); build, tests.fail_without_fix pass |
+| **REFUSED** | [REQ-2234-N2](#chain-REQ-2234-N2) | Codex said met without verified evidence |
 
 **What the AI found**
 
-- **major** [The issue's 3.1.1 regression is not on this base; the change fixes a different crash](#f-claude-C1) (Claude C1) [`TypeCollector.cs:723 @8373710f`](#ev-1f3bd1cf2e) [`TypeCollector.cs:1369 @base`](#ev-f51a2a7c26)
+- **major** [The issue's 3.1.1 regression is not on this base; the change fixes a different crash](#f-claude-C1) (Claude C1) [`TypeCollector.cs:1369 @base`](#ev-f51a2a7c26) [`test MemberWithoutKeyIsReported passed`](#ev-7f46834b36)
 - **minor** [Positional-record Key(null) still crashes the analyzer for suppressed (and other) types](#f-claude-C2) (Claude C2) [`TypeCollector.cs:985 @head`](#ev-ea86c4a3d1)
 - **minor** [Duplicate-key diagnostic reports only one diagnostic although two members share the key](#f-nemotron-N1) (Nemotron N1, also Claude) [`TypeCollector.cs:1014 @head`](#ev-16adc56b18) [`TypeCollector.cs:1016 @head`](#ev-9b063a4faf)
 - +6 more under Evidence.
@@ -36,7 +36,7 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 - <a id="refusal-4"></a>Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types. *Why:* The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed. *Who:* Area owner (raised by Nemotron)
 - <a id="refusal-5"></a>Runtime library behavior (src/MessagePack) and net472/netstandard builds. *Why:* Not run; the runtime library was not modified and only net8.0 was built. *Who:* Area owner (raised by Nemotron)
 - <a id="refusal-6"></a>Security review of analyzer deserializing untrusted input. *Why:* No security-specific evidence was provided and no security analysis was performed. *Who:* Security reviewer (raised by Nemotron)
-- Whether [REQ-2234-N1](#chain-REQ-2234-N1) is met: see the trace. *Who:* Toivo
+- Whether [REQ-2234-N1](#chain-REQ-2234-N1), [REQ-2234-N2](#chain-REQ-2234-N2) are met: see the trace. *Who:* Toivo
 
 **Not checked, and why**
 
@@ -48,7 +48,8 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 **Residual risk you accept by signing**
 
 - Open major finding: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
-- Not proven by the AI: REQ-2234-N1. Signing means you judge them yourself.
+- Not proven by the AI: REQ-2234-N1, REQ-2234-N2. Signing means you judge them yourself.
+- REQ-2234-F1, REQ-2234-F2 already held before this change: met, but not achieved by it.
 - 6 questions the AI declined to decide (listed above) are yours.
 - Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks
 - 2 disputed items not adjudicated
@@ -65,19 +66,19 @@ countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --no
 <details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
 
 <a id="chain-REQ-2234-F1"></a>
-#### REQ-2234-F1: **PROVEN**
+#### REQ-2234-F1: **HELD BEFORE**
 
 > The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.
 
 - **Checks passed:** `build` pass, `tests.targeted` pass
 - **Fails without the fix:** [`DuplicateIntKeysAreReportedWithoutAnalyzerFailure`](#ev-283a17c90c), [`MixedKeyKindsAreReportedWithoutAnalyzerFailure`](#ev-25ded34e20), [`DuplicateStringKeysAreReportedWithoutAnalyzerFailure`](#ev-bb565b0d63)
 - **Passes without the fix too:** [`MemberWithoutKeyIsReported`](#ev-7f46834b36), [`MemberTypeMustBeMessagePackObjectIsReported`](#ev-ab5dfeec65), [`AllowPrivateRequiredIsReported`](#ev-0cdf78bf54)
-- **Claude** says met (9/9 citations verified): [`test MemberWithoutKeyIsReported passed`](#ev-7f46834b36) [`test MemberTypeMustBeMessagePackObjectIsReported passed`](#ev-ab5dfeec65) [`test AllowPrivateRequiredIsReported passed`](#ev-0cdf78bf54) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed`](#ev-283a17c90c) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa) [`TypeCollector.cs:1008 @head`](#ev-a0957ebdbe) [`check tests.fail_without_fix`](#ev-d78b746a74)
-- **Codex** says met (4/4 citations verified): [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`check tests.fail_without_fix`](#ev-d78b746a74) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa)
-- **Nemotron** says met (13/13 citations verified): [`REQ-2234-F1 text`](#ev-dffe050cec) [`TypeCollector.cs:1008 @head`](#ev-eeb0b47f0a) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa) [`TypeCollector.cs:1039 @head`](#ev-1d23e816db) [`test MemberWithoutKeyIsReported passed`](#ev-02bb823660) [`test AllowPrivateRequiredIsReported passed`](#ev-d0aaf0ddcf) [`test MemberTypeMustBeMessagePackObjectIsReported passed`](#ev-0fc5c1ea52) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test DuplicateStringKeysAreReportedWithoutAnalyzerFailure passed`](#ev-bb565b0d63) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`check tests.fail_without_fix pass`](#ev-62faeb2508) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed`](#ev-283a17c90c) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure failed`](#ev-99a149a316)
+- **Claude** says met (8/9 citations verified): [`test MemberWithoutKeyIsReported passed`](#ev-7f46834b36) [`test MemberTypeMustBeMessagePackObjectIsReported passed`](#ev-ab5dfeec65) [`test AllowPrivateRequiredIsReported passed`](#ev-0cdf78bf54) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed`](#ev-283a17c90c) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa) [`TypeCollector.cs:1008 @head`](#ev-a0957ebdbe) [`check tests.fail_without_fix`](#ev-d78b746a74)
+- **Codex** says met (3/4 citations verified): [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`check tests.fail_without_fix`](#ev-d78b746a74) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa)
+- **Nemotron** says met (12/13 citations verified): [`REQ-2234-F1 text`](#ev-dffe050cec) [`TypeCollector.cs:1008 @head`](#ev-eeb0b47f0a) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa) [`TypeCollector.cs:1039 @head`](#ev-1d23e816db) [`test MemberWithoutKeyIsReported passed`](#ev-02bb823660) [`test AllowPrivateRequiredIsReported passed`](#ev-d0aaf0ddcf) [`test MemberTypeMustBeMessagePackObjectIsReported passed`](#ev-0fc5c1ea52) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test DuplicateStringKeysAreReportedWithoutAnalyzerFailure passed`](#ev-bb565b0d63) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`check tests.fail_without_fix pass`](#ev-62faeb2508) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed`](#ev-283a17c90c) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure failed`](#ev-99a149a316)
 
 <a id="chain-REQ-2234-F2"></a>
-#### REQ-2234-F2: **PROVEN**
+#### REQ-2234-F2: **HELD BEFORE**
 
 > Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.
 
@@ -85,31 +86,30 @@ countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --no
 - **Fails without the fix:** no cited test does
 - **Passes without the fix too:** [`SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed`](#ev-165dc4a6ea)
 - **Claude** says met (5/5 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1407 @head`](#ev-337b4ac064) [`TypeCollector.cs:989 @head`](#ev-e5721f8767)
-- **Codex** says met (2/2 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`check tests.fail_without_fix`](#ev-d78b746a74)
-- **Nemotron** says met (5/5 citations verified): [`REQ-2234-F2 text`](#ev-d3c4dd6a49) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1386 @head`](#ev-76656896d1) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea)
+- **Codex** says met (1/2 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`check tests.fail_without_fix`](#ev-d78b746a74)
+- **Nemotron** says met (4/5 citations verified): [`REQ-2234-F2 text`](#ev-d3c4dd6a49) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1386 @head`](#ev-76656896d1) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea)
 
 <a id="chain-REQ-2234-N1"></a>
 #### REQ-2234-N1: **NOT MET**
 
 > The analyzer and generator must not crash on invalid contracts (e.g. duplicate keys) in such types.
 
-- **Claude: not met** (4/4 verified). The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.
-- **Codex: met** (2/2 verified). The full source-generator suite passes, and duplicate-key tests demonstrate that invalid contracts no longer trigger analyzer failure.
-- **Nemotron: met** (5/5 verified). The full suite passes with 0 failures on head, and the previously crashing duplicate-key and mixed-key tests now pass instead of throwing analyzer exceptions.
+- **Claude: not met** (2/4 verified). The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.
+- **Codex: met** (1/2 verified). The full source-generator suite passes, and duplicate-key tests demonstrate that invalid contracts no longer trigger analyzer failure.
+- **Nemotron: met** (4/5 verified). The full suite passes with 0 failures on head, and the previously crashing duplicate-key and mixed-key tests now pass instead of throwing analyzer exceptions.
 - **Checks:** `build` pass, `tests.full_suite` pass
 - **What would settle it:** A fix, or evidence that refutes Claude's objection
 
 <a id="chain-REQ-2234-N2"></a>
-#### REQ-2234-N2: **PROVEN**
+#### REQ-2234-N2: **REFUSED**
 
 > The fix is covered by automated tests that fail without it; no regressions in the existing test suite.
 
-- **Checks passed:** `build` pass, `tests.fail_without_fix` pass
-- **Fails without the fix:** [`MixedKeyKindsAreReportedWithoutAnalyzerFailure`](#ev-99a149a316), [`DuplicateStringKeysAreReportedWithoutAnalyzerFailure`](#ev-987c65a3c2), [`DuplicateIntKeysAreReportedWithoutAnalyzerFailure`](#ev-283a17c90c), [`DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes`](#ev-141f235580)
-- **Passes without the fix too:** [`SuppressedTypeRoundTripsThroughDynamicResolver`](#ev-f7ce6ac392)
-- **Claude** says met (7/7 citations verified): [`check tests.fail_without_fix`](#ev-d78b746a74) [`check tests.full_suite`](#ev-df050a6665) [`check tests.execution_full_suite`](#ev-fbc74f77d6) [`check tests.execution_fail_without_fix`](#ev-05862d94ce) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure failed`](#ev-99a149a316) [`test DuplicateStringKeysAreReportedWithoutAnalyzerFailure failed`](#ev-987c65a3c2) [`test SuppressedTypeRoundTripsThroughDynamicResolver passed`](#ev-f7ce6ac392)
-- **Codex** says met (2/2 citations verified): [`check tests.fail_without_fix`](#ev-d78b746a74) [`check tests.full_suite`](#ev-df050a6665)
-- **Nemotron** says met (7/7 citations verified): [`REQ-2234-N2 text`](#ev-86204fae15) [`check tests.fail_without_fix pass`](#ev-62faeb2508) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed`](#ev-283a17c90c) [`test DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes failed`](#ev-141f235580) [`test DuplicateStringKeysAreReportedWithoutAnalyzerFailure failed`](#ev-987c65a3c2) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure failed`](#ev-99a149a316) [`check tests.full_suite pass`](#ev-d448f979e6)
+- **Claude: met** (3/7 verified). tests.fail_without_fix passes on the 4 analyzer tests that cover what the change does (duplicate int/string keys, mixed kinds, duplicate keys on a non-suppressed type): they fail on base with AD0001 and pass at head. The other 4 new analyzer tests and all 4 new execution test results pass on base too (tests.execution_fail_without_fix = fail), so they are regression guards, not proof of the fix. No regressions: tests.full_suite and tests.execution_full_suite pass.
+- **Codex: met** (0/2 verified). Four of the eight new analyzer tests fail on base source and all eight pass with the change; the full suite passes.
+- **Nemotron: met** (6/7 verified). 4 of 8 new analyzer tests fail on base source (analyzer exceptions AD0001), while all pass on head; the full suite shows no regressions. The two runtime execution tests do not demonstrate the change, but the analyzer tests alone satisfy the coverage requirement.
+- **Checks:** `build` pass, `tests.fail_without_fix` pass
+- **What would settle it:** Codex citing evidence the engine can verify
 
 </details>
 
@@ -121,12 +121,12 @@ countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --no
 
 | Clause | Claude | Codex | Nemotron | Result |
 |---|---|---|---|---|
-| REQ-2234-F1 | met | met | met | **proven** |
-| REQ-2234-F2 | met | met | met | **proven** |
+| REQ-2234-F1 | met | met | met | **held before** |
+| REQ-2234-F2 | met | met | met | **held before** |
 | REQ-2234-N1 | not met | met | met | **not met** |
-| REQ-2234-N2 | met | met | met | **proven** |
+| REQ-2234-N2 | met | met | met | **refused** |
 
-- **Claude** (claude-opus-5-5, Anthropic): citations 33 verified / 1 rejected; findings 4 verified / 0 rejected; 2 refusals. Only Claude raised: [C1](#f-claude-C1) major The issue's 3.1.1 regression is not on this base; the change fixes a different crash, [C2](#f-claude-C2) minor Positional-record Key(null) still crashes the analyzer for suppressed (and other) types
+- **Claude** (claude-opus-5-5, Anthropic): citations 32 verified / 2 rejected; findings 4 verified / 0 rejected; 2 refusals. Only Claude raised: [C1](#f-claude-C1) major The issue's 3.1.1 regression is not on this base; the change fixes a different crash, [C2](#f-claude-C2) minor Positional-record Key(null) still crashes the analyzer for suppressed (and other) types
 - **Codex** (GPT-6, OpenAI): citations 10 verified / 0 rejected; findings 0 verified / 0 rejected; 0 refusals.
 - **Nemotron** (nvidia/nemotron-3.5-super-vl-120b-a12b, NVIDIA): citations 41 verified / 1 rejected; findings 5 verified / 0 rejected; 4 refusals. Only Nemotron raised: [N2](#f-nemotron-N2) minor New test file triggers StyleCop SA1649 warning, [N3](#f-nemotron-N3) info Runtime execution tests do not demonstrate the fix, [N4](#f-nemotron-N4) info README documents behavior accurately, [N5](#f-nemotron-N5) info Execution tests required SDK 9 override
 
@@ -141,7 +141,7 @@ countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --no
 
 Issue #2234 says the analyzer stopped working for SuppressSourceGeneration = true in 3.1.1. The cause in history is commit 1a74a620 ('stop collect field when object marked SuppressSourceGeneration', in v3.1.1 and still in v3.1.12): it moved the 'if (suppressSourceGeneration is true) return null;' to right after the attribute is read, before any member is analyzed. Base 32258fdb is on the develop line and does not contain v3.1.0/v3.1.1 or that commit. Its early return is at line 1369, after member collection, which is why MsgPack004/003/015 tests already pass on base. So the agent fixed the duplicate/mixed-key crashes (which hit non-suppressed types too, see DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes failing on base) and wrote tests and README text as if that were #2234. Merged into the 3.1.x/master line, this change would not restore the analyzer for suppressed types; the early return would still need to move.
 
-Evidence: [`TypeCollector.cs:723 @8373710f`](#ev-1f3bd1cf2e) [`TypeCollector.cs:1369 @base`](#ev-f51a2a7c26) [`test MemberWithoutKeyIsReported passed`](#ev-7f46834b36) [`test DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes failed`](#ev-141f235580) [`issue 2234`](#ev-50efcd84fe) (not verified)
+Evidence: [`TypeCollector.cs:723 @8373710f`](#ev-1f3bd1cf2e) (not verified) [`TypeCollector.cs:1369 @base`](#ev-f51a2a7c26) [`test MemberWithoutKeyIsReported passed`](#ev-7f46834b36) [`test DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes failed`](#ev-141f235580) [`issue 2234`](#ev-50efcd84fe) (not verified)
 
 Tier effect: ask
 
@@ -154,7 +154,7 @@ The BothStringAndIntKeyAreNull path hard-casts the property's syntax to Property
 
 Evidence: [`TypeCollector.cs:985 @head`](#ev-ea86c4a3d1)
 
-Tier effect: notify
+Tier effect: notify (reproduced by the pipeline (repro.claude.C2))
 
 Suggested fix: Use (syntax as PropertyDeclarationSyntax)?.Identifier ?? (syntax as ParameterSyntax)?.Identifier, as the MemberNeedsKey path already does, and add a test.
 
@@ -458,7 +458,7 @@ Suggested fix: Area owner should decide whether to pin the generator to Roslyn 4
 - Without the fix it **failed**: it tests the change
 
 <a id="ev-1f3bd1cf2e"></a>
-**TypeCollector.cs:723 @8373710f** (verified; cited by claude:C1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:723 at 8373710fb0ae4bb453737f773b930401d8500c31 8373710f
+**TypeCollector.cs:723 @8373710f** (NOT verified; cited by claude:C1): evidence must cite head or base, not '8373710fb0ae4bb453737f773b930401d8500c31'
 
 `if (suppressSourceGeneration is true)`
 
@@ -550,23 +550,26 @@ Suggested fix: Area owner should decide whether to pin the generator to Roslyn 4
 
 Branch `ju26-issue-2234` (32258fdb..9007cee1), 4 files, +262 -4. Author Stelian Vultur (agent-written: True). Commit: Implementation for #2234 The analyzer does not work if SuppressSourceGeneration = true
 
-Mandate `messagepack-csharp` v2 sha256 `39cc2060685638e1`, signature: valid, Toivo
+Mandate `messagepack-csharp` v3 sha256 `b1e5e40743632a3c`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
 
 - ask: verified finding `claude:C1`: major: The issue's 3.1.1 regression is not on this base; the change fixes a different crash
 - ask: refused clause `REQ-2234-N1`: not_met: claude: The duplicate-key and mixed-kind crashes are fixed, and the full suite passes (175/175). But not every invalid contract in such a type is crash-free. The hard cast at line 985 is untouched, and my probe (scratch worktree, SDK 8, not in facts.json) of '[MessagePackObject(SuppressSourceGeneration = true)] public record Cmd([property: Key(null)] string Scope)' still gives AD0001 InvalidCastException (ParameterSyntax to PropertyDeclarationSyntax) at this head. The generator side of the duplicate-key fix has no test in facts.json (the new analyzer tests use CSharpCodeFixVerifier, analyzer only), though my probe showed no CS8785 for duplicate keys at head.; reviewers_disagree: claude says not_met, codex says met, nemotron says met
-- ask: reviewer refusal `claude`: Whether this change resolves issue #2234 for users of the released 3.1.x packages (The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).)
-- ask: reviewer refusal `claude`: Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.)
-- ask: reviewer refusal `nemotron`: Parity with analyzer behavior in version 3.1.0 (No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.)
-- ask: reviewer refusal `nemotron`: Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.)
+- ask: refused clause `REQ-2234-N2`: thin_evidence: codex says met with 0 verified evidence items about the change (of 2 cited; requirement quotes and unclaimed outcomes don't count)
 - ask: reviewer refusal `nemotron`: Runtime library behavior (src/MessagePack) and net472/netstandard builds (Not run; the runtime library was not modified and only net8.0 was built.)
 - ask: reviewer refusal `nemotron`: Security review of analyzer deserializing untrusted input (No security-specific evidence was provided and no security analysis was performed.)
 - ask: risk score `risk`: score 67.6 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.6
-- notify: verified finding `claude:C2`: minor: Positional-record Key(null) still crashes the analyzer for suppressed (and other) types
+- notify: verified finding `claude:C2`: minor: Positional-record Key(null) still crashes the analyzer for suppressed (and other) types (reproduced by the pipeline (repro.claude.C2))
 - notify: verified finding `nemotron:N1`: minor: Duplicate-key diagnostic reports only one diagnostic although two members share the key
 - notify: verified finding `nemotron:N2`: minor: New test file triggers StyleCop SA1649 warning
+- notify: reviewer refusal `claude`: Whether this change resolves issue #2234 for users of the released 3.1.x packages (The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
+- notify: reviewer refusal `claude`: Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (Not every listed diagnostic (e.g. MsgPack012 inaccessible types) is covered by a test in facts.json, and I did not verify each one.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
+- notify: reviewer refusal `nemotron`: Parity with analyzer behavior in version 3.1.0 (No evidence about version 3.1.0 behavior was provided; cannot determine whether contract diagnostics match that release.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
+- notify: reviewer refusal `nemotron`: Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (The fail_without_fix run only covers four analyzer tests; no base-source evidence exists for SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
+- notify: held before `REQ-2234-F1`: met, but not achieved by this change: all 3 of the clause's tests that were run without the fix pass there too: AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported, MemberWithoutKeyIsReported
+- notify: held before `REQ-2234-F2`: met, but not achieved by this change: all 1 of the clause's tests that were run without the fix pass there too: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed
 - notify: trust cap `generator-analyzer-core`: generator-analyzer-core: AI may clear at most to notify (mandate clearance right)
 - silent: trust cap `docs`: docs: AI may clear at most to silent (mandate clearance right)
 - silent: trust cap `tests`: tests: AI may clear at most to silent (mandate clearance right)
@@ -594,17 +597,20 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | tests.targeted.execution | pass | dotnet build + dotnet test (ExecutionTests, MapModeExecutionTests) 9.0.321 | SuppressedSourceGenerationTests: 4 passed, 0 failed (4 new test results; runtime: generator runs inside csc, no CS9057) |
 | tests.execution_fail_without_fix | fail | dotnet test (source reverted, tests kept) - ExecutionTests 9.0.321 | new runtime tests pass on base source: 0/4 failed -> these runtime tests do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix) |
 | tests.execution_full_suite | pass | dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base 9.0.321 | tests/MessagePack.SourceGenerator.ExecutionTests: 16/16 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 22/22 passed (base 20/20), 0 failures not on base |
+| repro.claude.C2 | pass | dotnet test (reviewer repro test copied into tests/MessagePack.SourceGenerator.Tests/CountersignRepro) 8.0.402 | reproduced by the pipeline: failed on head (claim: failed), failed on base (claim: failed), passed on control (claim: passed) |
+| injection_scan | pass | countersign.injection (deterministic pattern scan) injection-v1 | no text addressed to automated reviewers in the added lines, commit message or PR text |
+| deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)
 
 #### Requirement trace (engine codes)
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-2234-F1 | proven | claude: met (9/9), codex: met (4/4), nemotron: met (13/13) | build: pass, tests.targeted: pass | - |
-| REQ-2234-F2 | proven | claude: met (5/5), codex: met (2/2), nemotron: met (5/5) | build: pass, tests.targeted: pass | - |
-| REQ-2234-N1 | refused | claude: not_met (4/4), codex: met (2/2), nemotron: met (5/5) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree |
-| REQ-2234-N2 | proven | claude: met (7/7), codex: met (2/2), nemotron: met (7/7) | build: pass, tests.fail_without_fix: pass | - |
+| REQ-2234-F1 | held_before | claude: met (8/9), codex: met (3/4), nemotron: met (12/13) | build: pass, tests.targeted: pass | held_before |
+| REQ-2234-F2 | held_before | claude: met (5/5), codex: met (1/2), nemotron: met (4/5) | build: pass, tests.targeted: pass | held_before |
+| REQ-2234-N1 | refused | claude: not_met (2/4), codex: met (1/2), nemotron: met (4/5) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree |
+| REQ-2234-N2 | refused | claude: met (3/7), codex: met (0/2), nemotron: met (6/7) | build: pass, tests.fail_without_fix: pass | thin_evidence |
 
 #### What the AI refused to decide (every reviewer refusal)
 
@@ -638,10 +644,13 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc2060
 #### Residual risk (every item)
 
 - REQ-2234-N1 not proven: not_met; reviewers_disagree
-- Reviewer refusal (claude): Whether this change resolves issue #2234 for users of the released 3.1.x packages
-- Reviewer refusal (claude): Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate
-- Reviewer refusal (nemotron): Parity with analyzer behavior in version 3.1.0
-- Reviewer refusal (nemotron): Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types
+- REQ-2234-N2 not proven: thin_evidence
+- REQ-2234-F1 held before this change (met, but not achieved by it)
+- REQ-2234-F2 held before this change (met, but not achieved by it)
+- Reviewer refusal (claude): Whether this change resolves issue #2234 for users of the released 3.1.x packages (out of scope: notify)
+- Reviewer refusal (claude): Whether the README section's list of diagnostics still reported for suppressed types is complete and accurate (out of scope: notify)
+- Reviewer refusal (nemotron): Parity with analyzer behavior in version 3.1.0 (out of scope: notify)
+- Reviewer refusal (nemotron): Whether generation-only diagnostics (MsgPack011, MsgPack016, MsgPack017) are truly unreported on base for suppressed types (out of scope: notify)
 - Reviewer refusal (nemotron): Runtime library behavior (src/MessagePack) and net472/netstandard builds
 - Reviewer refusal (nemotron): Security review of analyzer deserializing untrusted input
 - Open major finding claude:C1: The issue's 3.1.1 regression is not on this base; the change fixes a different crash

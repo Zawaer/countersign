@@ -24,25 +24,28 @@ Every number below says whether it is **real** (measured on code and history) or
 
 | Metric | Value | Source |
 |---|---|---|
-| Seeded defects caught by deterministic checks alone | **11 of 14**; survived: 2234-mut2, 2283-mut1, 2283-mut5 | `evidence/*-mut*/facts.json` (`caught_by_any_deterministic_check`) |
-| Seeded defects routed to a human before any AI review | 12 of 14 (8 attributable to the defect); would be AI-cleared: 2283-mut1, 2283-mut5 | `measurement/results.json` `mutants` |
+| Seeded defects caught by deterministic checks alone | **13 of 16**; survived: 2234-mut2, 2283-mut1, 2283-mut5 | `evidence/*-mut*/facts.json` (`caught_by_any_deterministic_check`) |
+| Seeded defects routed to a human before any AI review | 14 of 16 (12 attributable to the defect); would be AI-cleared: 2283-mut1, 2283-mut5 | `measurement/results.json` `mutants` |
 | Historical PRs routed to a human (lenient ci-credited mode) | **85 of 109** (78%); diff-only: 109 of 109 | `measurement/history/results.json` |
 | Real escapes the AI would have cleared | **0 of 11** (6 high-confidence); cleared bucket: 24 PRs | same |
 | Escape rate, routed vs cleared bucket | 0.129 vs 0.0 | same |
 | Upstream median days from PR opened to merged | cleared bucket 0.24, routed bucket 0.85 | GitHub `createdAt` / `mergedAt` |
-| Findings per reviewer (verified / rejected as unsupported) | claude: 13 / 0; codex: 0 / 0; nemotron: 10 / 0 | `measurement/results.json` |
-| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | nemotron: 1, 0, 4; claude: 4, 0, 1; codex: 0, 0, 5 | same |
-| Real changes routed to a human | 100% of 4 | same |
-| Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2234: 275,180, 2283: 233,512, 2297: 239,227 | `measurement/costs.yaml` |
+| Findings per reviewer (verified / rejected as unsupported) | claude: 16 / 2; codex: 0 / 0; nemotron: 13 / 0 | `measurement/results.json` |
+| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | claude: 5, 0, 1; nemotron: 1, 0, 5; codex: 0, 0, 6 | same |
+| Real changes routed to a human | 86% of 7 | same |
+| Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2234: 275,180, 2283: 233,512, 2297: 239,227, up-1934: 141,147, up-1967: 98,593, up-2022: 127,795 | `measurement/costs.yaml` |
 
 ### Simulated review time (reading model in the mandate, `simulated: true`)
 
 | Change | Full read (min) | With the pack (min) | Saved (min) |
 |---|---:|---:|---:|
-| 2129 | 114.3 | 37 | 77.3 |
-| 2234 | 26.2 | 44 | -17.8 |
+| 2129 | 114.3 | 35 | 79.3 |
+| 2234 | 26.2 | 47 | -20.8 |
 | 2283 | 23.0 | 29 | -6.0 |
-| 2297 | 260.8 | 30 | 230.8 |
+| 2297 | 260.8 | 32 | 228.8 |
+| up-1934 | 10.0 | 20 | -10.0 |
+| up-1967 | 1.2 | 1 | 0.2 |
+| up-2022 | 4.4 | 21 | -16.6 |
 
 Routing, on the 109 historical PRs: the 24 the AI would clear (notify) need no human read at all, about 552 of 8256 full-read minutes (7%; same reading model, every line counted as source). Routed changes still get a full read when the owner wants one.
 
@@ -51,10 +54,10 @@ Routing, on the 109 historical PRs: the 24 the AI would clear (notify) need no h
 | Scenario | min/week (wk 9-drift) | escapes/week (wk 9-drift) | min/week after drift | escapes/week after drift |
 |---|---:|---:|---:|---:|
 | full-human-review | 710.0 | 0.16 | 710.0 | 0.17 |
-| countersign | 510.31 | 0.14 | 517.07 | 0.26 |
-| no-spot-checks | 487.66 | 0.15 | 495.61 | 0.27 |
+| countersign | 548.89 | 0.13 | 573.77 | 0.23 |
+| no-spot-checks | 528.97 | 0.13 | 560.04 | 0.24 |
 | no-withdrawal | 480.4 | 0.15 | 479.98 | 0.28 |
-| countersign+canaries | 537.52 | 0.13 | 671.96 | 0.18 |
+| countersign+canaries | 569.8 | 0.12 | 687.29 | 0.18 |
 <!-- numbers:end -->
 
 ## What the numbers say (and don't)

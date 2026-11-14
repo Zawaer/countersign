@@ -1,0 +1,2245 @@
+{
+  "schema": "countersign.pack/v1",
+  "change": "up-2022",
+  "branch": "upstream PR #2022",
+  "base": "f5e104ee",
+  "head": "5f4b762a",
+  "commit_message": "Ignore abstract implementations of `IMessagePackFormatter<T>`\n\nFixes #2017",
+  "author": "Andrew Arnott",
+  "agent_written": false,
+  "diff": {
+    "files": 2,
+    "insertions": 29,
+    "deletions": 0
+  },
+  "simulated": false,
+  "mutation": null,
+  "engine": {
+    "name": "countersign",
+    "version": "0.1.0"
+  },
+  "mandate": {
+    "path": "mandate/messagepack.mandate.yaml",
+    "id": "messagepack-csharp",
+    "version": "3",
+    "owner": "Toivo",
+    "sha256": "b1e5e40743632a3c992c9028246411a26a4ad4f8b7ff6d00efd7fd625d4fa83b",
+    "signature": {
+      "valid": true,
+      "signed_by": "Toivo",
+      "signed_at": "2026-11-14T00:23:03+00:00",
+      "reason": "signature valid"
+    }
+  },
+  "inputs": {
+    "facts": {
+      "path": "evidence/up-2022/facts.json",
+      "sha256": "725659017292081962299f63286c092621085c903a5b06af3abce45edef39662"
+    },
+    "requirements": {
+      "path": "requirements/up-2022.yaml",
+      "sha256": "261e726dd8b9c0a083c3346fed1af8f555130709b01f4a86755ee25fa7a18147"
+    },
+    "reviews": {
+      "claude": {
+        "path": "reviews/up-2022/claude.json",
+        "sha256": "1e5c370606a06f05fc966c1674f17e96d4e2ab345461f177ce70b4d226731b16"
+      },
+      "codex": {
+        "path": "reviews/up-2022/codex.json",
+        "sha256": "936f59000b235e2dbf8dc21946200a465c59f9e56e5b7409f03aa83a908f4266"
+      },
+      "nemotron": {
+        "path": "reviews/up-2022/nemotron.json",
+        "sha256": "aec5825e69d15cede3fe173324778b0550ee0113c71fb757a23c5549c15fa36b"
+      }
+    }
+  },
+  "requirement_set": {
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2017",
+    "official": false
+  },
+  "tier": "ask",
+  "ai_recommendation": "ask",
+  "why": [
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Runtime deserialization security and execution behavior (The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.)"
+    }
+  ],
+  "drivers": [
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Runtime deserialization security and execution behavior (The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after (Not exercised by any test in facts.json; would need a run I was not given) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "claude",
+      "tier": "notify",
+      "why": "Whether the release notes / analyzer docs should mention the change (Docs for MsgPack009/MsgPack013 were not in the context) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "notify",
+      "why": "Behavior on non-net8.0 target frameworks (Build and tests ran only on net8.0 Debug in a Linux container; net472/netstandard builds were not run (listed in not_run).) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]"
+    },
+    {
+      "source": "trust cap",
+      "id": "generator-analyzer-core",
+      "tier": "notify",
+      "why": "generator-analyzer-core: AI may clear at most to notify (mandate clearance right)"
+    },
+    {
+      "source": "risk score",
+      "id": "risk",
+      "tier": "notify",
+      "why": "score 23.2 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + files_changed 2 + lines_changed 1.2"
+    },
+    {
+      "source": "trust cap",
+      "id": "tests",
+      "tier": "silent",
+      "why": "tests: AI may clear at most to silent (mandate clearance right)"
+    }
+  ],
+  "owner": "Toivo",
+  "primary_area": "generator-analyzer-core",
+  "notify": [],
+  "areas": [
+    {
+      "name": "generator-analyzer-core",
+      "owner": "Toivo",
+      "sensitivity": "high",
+      "max_ai_tier": "notify",
+      "cap": "notify",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs"
+      ]
+    },
+    {
+      "name": "tests",
+      "owner": "Toivo",
+      "sensitivity": "low",
+      "max_ai_tier": "silent",
+      "cap": "silent",
+      "cap_reason": "mandate clearance right",
+      "files": [
+        "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-up-2022-F1",
+      "type": "functional",
+      "text": "The analyzer must not report MsgPack013 (formatter has no accessible instance for the source generated resolver) for an abstract class that implements IMessagePackFormatter<T>.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "TryCreate now returns false for abstract types before any descriptor (and so any InaccessibleFormatterInstance/MsgPack013 descriptor) is built, and the new test with two abstract formatters expects zero diagnostics and passes on head.",
+          "verified": 3,
+          "verified_any": 4,
+          "cited": 4,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-up-2022-F1",
+              "quote": "must not report MsgPack013",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-2022-F1 text contains the quote",
+              "ref": "ev-b1898df7f0"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 221,
+              "rev": "head",
+              "quote": "if (type.IsAbstract)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:221 at head 5f4b762a",
+              "ref": "ev-cd3ad6e495"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 247,
+              "rev": "head",
+              "quote": "instanceProvidingMember is null ? MsgPack00xMessagePackAnalyzer.InaccessibleFormatterInstance :",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a",
+              "ref": "ev-bb2c0d462b"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "passed",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-ec490502a9"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "Formatter discovery returns false for abstract types, and the new abstract-formatter analyzer test passes.",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 221,
+              "rev": "head",
+              "quote": "if (type.IsAbstract)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:221 at head 5f4b762a",
+              "ref": "ev-cd3ad6e495"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "passed",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-ec490502a9"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "TryCreate returns false for abstract types at head (AnalyzerOptions.cs lines 221-225), and the new abstract-formatter test passes with zero diagnostics on head.",
+          "verified": 4,
+          "verified_any": 5,
+          "cited": 5,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 221,
+              "rev": "head",
+              "quote": "if (type.IsAbstract)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:221 at head 5f4b762a",
+              "ref": "ev-cd3ad6e495"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 223,
+              "rev": "head",
+              "quote": "formatter = null;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:223 at head 5f4b762a",
+              "ref": "ev-4462e470a3"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 224,
+              "rev": "head",
+              "quote": "return false;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:224 at head 5f4b762a",
+              "ref": "ev-0104897806"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "passed",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-ec490502a9"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-up-2022-F1",
+              "quote": "must not report MsgPack013",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-2022-F1 text contains the quote",
+              "ref": "ev-b1898df7f0"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-up-2022-F2",
+      "type": "functional",
+      "text": "Abstract implementations of IMessagePackFormatter<T> must not be counted as formatters, so they cannot cause MsgPack009 (more than one formatter for the same type).",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "Abstract types never become FormatterDescriptors, so they never reach the collision map in KnownFormatters; the new test reported MsgPack009 on base source and nothing on head.",
+          "verified": 3,
+          "verified_any": 4,
+          "cited": 4,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-up-2022-F2",
+              "quote": "must not be counted as formatters",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-2022-F2 text contains the quote",
+              "ref": "ev-d6ac4eeb2e"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 224,
+              "rev": "head",
+              "quote": "return false;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:224 at head 5f4b762a",
+              "ref": "ev-0104897806"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9046fbade9"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "passed",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-ec490502a9"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The same early filter prevents abstract types from becoming formatter descriptors, and the test exercises two such formatters for object.",
+          "verified": 3,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 223,
+              "rev": "head",
+              "quote": "formatter = null;",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:223 at head 5f4b762a",
+              "ref": "ev-4462e470a3"
+            },
+            {
+              "kind": "code",
+              "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+              "line": 913,
+              "rev": "head",
+              "quote": "public async Task AbstractFormatterDoesNotAttractAttention()",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs:913 at head 5f4b762a",
+              "ref": "ev-197e014bda"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9046fbade9"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "Abstract types are rejected in TryCreate before any formatter-descriptor collision counting, so they cannot trigger MsgPack009; on base source the same test failed with MsgPack009 diagnostics.",
+          "verified": 4,
+          "verified_any": 5,
+          "cited": 5,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 221,
+              "rev": "head",
+              "quote": "if (type.IsAbstract)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:221 at head 5f4b762a",
+              "ref": "ev-cd3ad6e495"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9046fbade9"
+            },
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 1/1 failed -> tests do cover the change",
+              "ref": "ev-62faeb2508"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "passed",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-ec490502a9"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-up-2022-F2",
+              "quote": "must not be counted as formatters",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-2022-F2 text contains the quote",
+              "ref": "ev-d6ac4eeb2e"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-up-2022-N1",
+      "type": "non-functional",
+      "text": "The fix is covered by automated tests that fail without it.",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "tests.fail_without_fix passed: with AnalyzerOptions.cs reverted the one new test fails (1/1) and only it fails in the full suite (1 of 150).",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 1/1 failed -> tests do cover the change",
+              "ref": "ev-62faeb2508"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9046fbade9"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The new test fails when the source change is reverted, and the corresponding check passed.",
+          "verified": 2,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 1/1 failed -> tests do cover the change",
+              "ref": "ev-62faeb2508"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9046fbade9"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The fail_without_fix check passed: the new test failed on base source with source reverted, proving the tests cover the change.",
+          "verified": 2,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 1/1 failed -> tests do cover the change",
+              "ref": "ev-62faeb2508"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-9046fbade9"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-up-2022-N1",
+              "quote": "fail without it",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-2022-N1 text contains the quote",
+              "ref": "ev-15d0adb4f3"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    },
+    {
+      "id": "REQ-up-2022-N2",
+      "type": "non-functional",
+      "text": "Non-abstract formatters are still discovered and diagnosed as before (no regressions in the existing test suite).",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass"
+        },
+        {
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ],
+      "verdicts": {
+        "claude": {
+          "verdict": "met",
+          "basis": "tests.full_suite passed 150/150 on head (149/149 on base, the difference being the new test), and the guard only adds a branch for IsAbstract, leaving the non-abstract path unchanged.",
+          "verified": 3,
+          "verified_any": 3,
+          "cited": 3,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "test",
+              "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
+              "outcome": "passed",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json tests.targeted: passed",
+              "ref": "ev-5eb9a35a14"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+              "line": 228,
+              "rev": "head",
+              "quote": "AnalyzerUtilities.SearchTypeForFormatterImplementations(type)",
+              "verified": true,
+              "substantive": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a",
+              "ref": "ev-d27a42c472"
+            }
+          ]
+        },
+        "codex": {
+          "verdict": "met",
+          "basis": "The full source generator test suite passed with no regressions reported against base.",
+          "verified": 1,
+          "verified_any": 1,
+          "cited": 1,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            }
+          ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The full suite passed with 150/150 and no failures not present on base (base passed 149/149), so non-abstract formatter behavior is unchanged.",
+          "verified": 1,
+          "verified_any": 2,
+          "cited": 2,
+          "evidence": [
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "substantive": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "requirement",
+              "req": "REQ-up-2022-N2",
+              "quote": "no regressions in the existing test suite",
+              "verified": true,
+              "substantive": false,
+              "note": "REQ-up-2022-N2 text contains the quote",
+              "ref": "ev-d3fe657f03"
+            }
+          ]
+        }
+      },
+      "status": "proven",
+      "reasons": []
+    }
+  ],
+  "reviewer_panel": {
+    "confidential": false,
+    "why": "repo and touched areas are not confidential",
+    "reviewers": [
+      "claude",
+      "codex",
+      "nemotron"
+    ],
+    "adjudicator": "gemini",
+    "excluded": [],
+    "ignored_files": [],
+    "rule": "proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass"
+  },
+  "disputes": [],
+  "adjudication": null,
+  "checked_by": {
+    "tools": [
+      {
+        "id": "build",
+        "tool": "dotnet build",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "0 errors, 1 unique warnings",
+        "duration_s": 5.0,
+        "log": "evidence/up-2022/logs/build.log"
+      },
+      {
+        "id": "tests.targeted",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "26 passed, 0 failed, 0 skipped (1 new tests in run)",
+        "duration_s": 3.0,
+        "log": "evidence/up-2022/logs/tests_targeted.1.log"
+      },
+      {
+        "id": "tests.fail_without_fix",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "new tests fail on base source: 1/1 failed -> tests do cover the change",
+        "duration_s": 4.0,
+        "log": "evidence/up-2022/logs/tests_fail_without_fix.1.log"
+      },
+      {
+        "id": "tests.full_suite",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "duration_s": 7.0,
+        "log": "evidence/up-2022/logs/tests_full_suite.log"
+      },
+      {
+        "id": "public_api",
+        "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+        "duration_s": null,
+        "log": null
+      },
+      {
+        "id": "analyzers",
+        "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+        "tool_version": null,
+        "status": "pass",
+        "summary": "no new warnings",
+        "duration_s": null,
+        "log": null
+      }
+    ],
+    "reviewers": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T12:00:00+02:00",
+        "inputs": [
+          "diff f5e104ee..5f4b762a",
+          "facts.json",
+          "requirements/up-2022.yaml",
+          "head files read beyond the context: TypeCollector.cs (GetSpecialFormatter), Utils/AnalyzerUtilities.cs (ParseKnownFormatterAttribute), GeneratorUtilities.cs, Analyzers/MsgPack00xMessagePackAnalyzer.cs (SearchForFormatters)"
+        ],
+        "findings": 2,
+        "verified": 1,
+        "rejected": 1,
+        "refusals": 2
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T02:06:41+02:00",
+        "inputs": [
+          "/tmp/up-briefs/2022.md",
+          "repo /data/src/mp",
+          "base f5e104eec56d53df064126de8dd5bd4e533e7ea8",
+          "head 5f4b762a00b7f21940c2b737498205481b725156"
+        ],
+        "findings": 0,
+        "verified": 0,
+        "rejected": 0,
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T02:06:29+02:00",
+        "inputs": [
+          "requirements: requirements/up-2022.yaml",
+          "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2017",
+          "facts: evidence/up-2022/facts.json",
+          "diff f5e104ee..5f4b762a (2 non-generated files)",
+          "file contents: 3 blocks",
+          "context: 78902 chars (budget 180000)"
+        ],
+        "findings": 1,
+        "verified": 1,
+        "rejected": 0,
+        "refusals": 2
+      }
+    ],
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)"
+  },
+  "findings": [
+    {
+      "id": "C2",
+      "title": "New test covers the analyzer path only",
+      "severity": "info",
+      "category": "tests",
+      "claim": "The test runs VerifyAnalyzerAsync with no expected diagnostics; the generator's own scan (GeneratorUtilities) shares the same TryCreate, so it is covered by construction, but no generator snapshot test pins that abstract formatters stay out of the generated resolver.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+          "line": 932,
+          "rev": "head",
+          "quote": "await VerifyCS.VerifyAnalyzerAsync(test);",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs:932 at head 5f4b762a",
+          "ref": "ev-04a0a5893b"
+        }
+      ],
+      "verified_count": 1,
+      "substantive_count": 1,
+      "status": "verified",
+      "reviewer": "claude",
+      "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "I1",
+      "title": "TryCreate documentation does not state that abstract types are excluded",
+      "severity": "info",
+      "category": "maintainability",
+      "claim": "The XML documentation for FormatterDescriptor.TryCreate (head line 218) describes the return value but does not mention that abstract types return false and are not treated as formatters, even though the new guard at head lines 221-225 does exactly that; the intent may be unclear to future maintainers.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 218,
+          "rev": "head",
+          "quote": "&lt;returns&gt;&lt;see langword=&quot;true&quot;/&gt; if &lt;paramref name=&quot;type&quot;/&gt; represents a formatter.&lt;/returns&gt;",
+          "verified": false,
+          "substantive": false,
+          "note": "quote not on src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:218 ±3 at head; not found anywhere in the file",
+          "ref": "ev-302a6a0f66"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 221,
+          "rev": "head",
+          "quote": "if (type.IsAbstract)",
+          "verified": true,
+          "substantive": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:221 at head 5f4b762a",
+          "ref": "ev-cd3ad6e495"
+        }
+      ],
+      "suggested_fix": "Add a sentence to the &lt;returns&gt; documentation noting that abstract types return false and are not treated as formatters.",
+      "verified_count": 1,
+      "substantive_count": 1,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "silent",
+      "confirmed_by": []
+    }
+  ],
+  "refused": {
+    "clauses": [],
+    "reviewer_refusals": [
+      {
+        "topic": "Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after",
+        "reason": "Not exercised by any test in facts.json; would need a run I was not given",
+        "who_should_decide": "source generator area owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      },
+      {
+        "topic": "Whether the release notes / analyzer docs should mention the change",
+        "reason": "Docs for MsgPack009/MsgPack013 were not in the context",
+        "who_should_decide": "area owner",
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      },
+      {
+        "topic": "Runtime deserialization security and execution behavior",
+        "reason": "The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.",
+        "who_should_decide": "area owner / MessagePack maintainer",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "routes": "ask",
+        "route_reason": "topic touches 'security' (mandate refusal_ask_terms)"
+      },
+      {
+        "topic": "Behavior on non-net8.0 target frameworks",
+        "reason": "Build and tests ran only on net8.0 Debug in a Linux container; net472/netstandard builds were not run (listed in not_run).",
+        "who_should_decide": "area owner / maintainer",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "routes": "notify",
+        "route_reason": "out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term"
+      }
+    ]
+  },
+  "rejected_claims": [
+    {
+      "id": "C1",
+      "title": "Abstract type named in [MessagePackFormatter]/[MessagePackKnownFormatter] is now silently ignored",
+      "severity": "minor",
+      "category": "correctness",
+      "claim": "TryCreate is not only used for discovery: it also resolves the type in a member's [MessagePackFormatter(typeof(X))] (TypeCollector.GetSpecialFormatter) and in [MessagePackKnownFormatter(typeof(X))]. For an abstract X these now return 'not a formatter', and the else branch that should report it is commented out, so a user who points an attribute at an abstract formatter gets no diagnostic (on base the KnownFormatter path would have produced MsgPack013 for the missing instance) and the generator falls back to treating the member as if it had no custom formatter. Nothing in the diff tests these paths; I did not run them, so the exact downstream diagnostics/codegen are unverified.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 720,
+          "rev": "head",
+          "quote": "if (FormatterDescriptor.TryCreate(name, out FormatterDescriptor? descriptor))",
+          "verified": false,
+          "substantive": false,
+          "note": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not in the change's diff",
+          "ref": "ev-8af6858086"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 725,
+          "rev": "head",
+          "quote": "// this.reportDiagnostic();",
+          "verified": false,
+          "substantive": false,
+          "note": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not in the change's diff",
+          "ref": "ev-699ea72a89"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Utils/AnalyzerUtilities.cs",
+          "line": 95,
+          "rev": "head",
+          "quote": "FormatterDescriptor.TryCreate(formatterType, out FormatterDescriptor? formatter)",
+          "verified": false,
+          "substantive": false,
+          "note": "src/MessagePack.SourceGenerator/Utils/AnalyzerUtilities.cs is not in the change's diff",
+          "ref": "ev-c9c11752cc"
+        }
+      ],
+      "suggested_fix": "Apply the abstract filter only in the discovery paths (compilation scan / SearchForFormatters), or report a diagnostic when an attribute names an abstract formatter type; add a test for [MessagePackFormatter(typeof(AbstractFormatter))].",
+      "verified_count": 0,
+      "substantive_count": 0,
+      "status": "rejected",
+      "reviewer": "claude",
+      "rejection_reason": "no cited evidence about the change could be verified: src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not in the change's diff; src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not in the change's diff; src/MessagePack.SourceGenerator/Utils/AnalyzerUtilities.cs is not in the change's diff",
+      "tier": "silent",
+      "confirmed_by": []
+    }
+  ],
+  "not_checked": [
+    {
+      "id": "tests.MessagePack.Tests",
+      "reason": "runtime library src/MessagePack not modified by the change; suite not run",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "tests.execution",
+      "reason": "ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "build.net472/netstandard",
+      "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "benchmarks",
+      "reason": "no runtime serialization hot path touched",
+      "source": "facts.json not_run"
+    },
+    {
+      "id": "other-targets",
+      "reason": "Tests run on net8.0 only; .NET Framework, Unity and NativeAOT targets are not exercised",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "runtime-perf",
+      "reason": "No benchmarks unless a perf-sensitive path is touched; allocation and throughput regressions can slip through",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "semantic-intent",
+      "reason": "Correctness beyond what tests and cited evidence show is not established by the AI",
+      "source": "mandate known gap"
+    },
+    {
+      "id": "provenance",
+      "reason": "Licensing and provenance of agent-written code are not checked",
+      "source": "mandate known gap"
+    }
+  ],
+  "residual_risk": [
+    "Reviewer refusal (claude): Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after (out of scope: notify)",
+    "Reviewer refusal (claude): Whether the release notes / analyzer docs should mention the change (out of scope: notify)",
+    "Reviewer refusal (nemotron): Runtime deserialization security and execution behavior",
+    "Reviewer refusal (nemotron): Behavior on non-net8.0 target frameworks (out of scope: notify)",
+    "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
+    "tests.execution not run (ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite))",
+    "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
+    "benchmarks not run (no runtime serialization hot path touched)",
+    "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
+  ],
+  "risk": {
+    "score": 23.2,
+    "tier": "notify",
+    "thresholds": {
+      "notify": 15,
+      "ask": 40,
+      "block": 130
+    },
+    "factors": [
+      {
+        "factor": "area_sensitivity",
+        "points": 20,
+        "reason": "most sensitive area touched: generator-analyzer-core (high)"
+      },
+      {
+        "factor": "files_changed",
+        "points": 2,
+        "reason": "2 files x 1 (cap 20)"
+      },
+      {
+        "factor": "lines_changed",
+        "points": 1.2,
+        "reason": "29 non-generated lines x 4/100 (cap 20)"
+      },
+      {
+        "factor": "generated_files",
+        "points": 0.0,
+        "reason": "0 generated files x 0.1 (cap 10)"
+      },
+      {
+        "factor": "public_api_change",
+        "points": 0,
+        "reason": "public_api check: no change"
+      },
+      {
+        "factor": "source_without_tests",
+        "points": 0,
+        "reason": "tests changed alongside source"
+      },
+      {
+        "factor": "security_sensitive_paths",
+        "points": 0,
+        "reason": "none touched"
+      },
+      {
+        "factor": "fail_without_fix_not_shown",
+        "points": 0,
+        "reason": "tests.fail_without_fix: pass"
+      },
+      {
+        "factor": "reviewer_disagreement",
+        "points": 0,
+        "reason": "0 clause(s) x 8"
+      },
+      {
+        "factor": "failed_checks",
+        "points": 0,
+        "reason": "0 failed check(s) x 25"
+      }
+    ]
+  },
+  "rules_fired": [],
+  "reviewers_untrusted": null,
+  "carried_forward": [],
+  "refuted_findings": [],
+  "reproduced": {},
+  "signoff": {
+    "required": true,
+    "owner": "Toivo",
+    "allowed_decisions": [
+      "accept",
+      "reject",
+      "request-changes"
+    ],
+    "command": "countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
+  },
+  "story": {
+    "headline": "Change for #2017: Ignore abstract implementations of `IMessagePackFormatter<T>` Fixes #2017",
+    "what": "Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR #2022 by Andrew Arnott.",
+    "why": "Judged against 4 requirement clauses from #2017 (placeholder requirement set, not Tieto's official one).",
+    "touches": [
+      {
+        "area": "generator-analyzer-core",
+        "owner": "Toivo",
+        "sensitivity": "high",
+        "files": 1
+      },
+      {
+        "area": "tests",
+        "owner": "Toivo",
+        "sensitivity": "low",
+        "files": 1
+      }
+    ],
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2017"
+  },
+  "card": {
+    "tier": "ask",
+    "owner": "Toivo",
+    "fyi": [],
+    "risk_score": 23.2,
+    "reasons": [
+      {
+        "text": "The AI declined to decide 4 questions, e.g. Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after",
+        "link": "#refused"
+      }
+    ],
+    "more_drivers": 7,
+    "trace": [
+      {
+        "id": "REQ-up-2022-F1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (9 verified citations); build, tests.targeted pass",
+        "anchor": "chain-REQ-up-2022-F1"
+      },
+      {
+        "id": "REQ-up-2022-F2",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (10 verified citations); build, tests.targeted pass",
+        "anchor": "chain-REQ-up-2022-F2"
+      },
+      {
+        "id": "REQ-up-2022-N1",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (6 verified citations); build, tests.fail_without_fix pass",
+        "anchor": "chain-REQ-up-2022-N1"
+      },
+      {
+        "id": "REQ-up-2022-N2",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (5 verified citations); build, tests.full_suite pass",
+        "anchor": "chain-REQ-up-2022-N2"
+      }
+    ],
+    "found": [
+      {
+        "key": "claude:C2",
+        "anchor": "f-claude-C2",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "New test covers the analyzer path only",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-04a0a5893b",
+            "label": "MsgPack00xAnalyzerTests.cs:932 @head"
+          }
+        ],
+        "shared_with": []
+      },
+      {
+        "key": "nemotron:I1",
+        "anchor": "f-nemotron-I1",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "title": "TryCreate documentation does not state that abstract types are excluded",
+        "tier": "silent",
+        "chips": [
+          {
+            "ref": "ev-cd3ad6e495",
+            "label": "AnalyzerOptions.cs:221 @head"
+          }
+        ],
+        "shared_with": []
+      }
+    ],
+    "found_total": 2,
+    "rejected_total": 1,
+    "refused": [
+      {
+        "topic": "Exact behaviour (diagnostics and generated code) when an attribute names an abstract formatter type, before and after",
+        "why": "Not exercised by any test in facts.json; would need a run I was not given",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "source generator area owner"
+        ],
+        "anchor": "refusal-1"
+      },
+      {
+        "topic": "Whether the release notes / analyzer docs should mention the change",
+        "why": "Docs for MsgPack009/MsgPack013 were not in the context",
+        "raised_by": [
+          "claude"
+        ],
+        "who_should_decide": [
+          "area owner"
+        ],
+        "anchor": "refusal-2"
+      },
+      {
+        "topic": "Runtime deserialization security and execution behavior",
+        "why": "The change only touches the source-generator analyzer and its tests; the runtime deserialization code in src/MessagePack is unmodified and tests.MessagePack.Tests was not run (listed in not_run), so no security claim about deserializing untrusted input is made here.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / MessagePack maintainer"
+        ],
+        "anchor": "refusal-3"
+      },
+      {
+        "topic": "Behavior on non-net8.0 target frameworks",
+        "why": "Build and tests ran only on net8.0 Debug in a Linux container; net472/netstandard builds were not run (listed in not_run).",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / maintainer"
+        ],
+        "anchor": "refusal-4"
+      }
+    ],
+    "refused_clauses": [],
+    "not_checked": [
+      {
+        "id": "tests.MessagePack.Tests",
+        "reason": "runtime library src/MessagePack not modified by the change; suite not run"
+      },
+      {
+        "id": "tests.execution",
+        "reason": "ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)"
+      },
+      {
+        "id": "build.net472/netstandard",
+        "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)"
+      },
+      {
+        "id": "benchmarks",
+        "reason": "no runtime serialization hot path touched"
+      }
+    ],
+    "known_gaps": [
+      "other-targets",
+      "runtime-perf",
+      "semantic-intent",
+      "provenance"
+    ],
+    "residual": [
+      {
+        "text": "4 questions the AI declined to decide (listed above) are yours.",
+        "link": "#refused"
+      },
+      {
+        "text": "Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks",
+        "link": "#not-checked"
+      },
+      {
+        "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
+        "link": "#not-checked"
+      }
+    ],
+    "sign": {
+      "owner": "Toivo",
+      "required": true,
+      "decisions": [
+        "accept",
+        "reject",
+        "request-changes"
+      ],
+      "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+      "command": "countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+    },
+    "reviewers": 3
+  },
+  "trust": [
+    {
+      "id": "REQ-up-2022-F1",
+      "text": "The analyzer must not report MsgPack013 (formatter has no accessible instance for the source generated resolver) for an abstract class that implements IMessagePackFormatter<T>.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (9 verified citations); build, tests.targeted pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/up-2022/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "26 passed, 0 failed, 0 skipped (1 new tests in run)",
+          "logs": [
+            "evidence/up-2022/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "TryCreate now returns false for abstract types before any descriptor (and so any InaccessibleFormatterInstance/MsgPack013 descriptor) is built, and the new test with two abstract formatters expects zero diagnostics and passes on head.",
+          "verified": 3,
+          "cited": 4,
+          "refs": [
+            "ev-b1898df7f0",
+            "ev-cd3ad6e495",
+            "ev-bb2c0d462b",
+            "ev-ec490502a9"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "Formatter discovery returns false for abstract types, and the new abstract-formatter analyzer test passes.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-cd3ad6e495",
+            "ev-ec490502a9"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "TryCreate returns false for abstract types at head (AnalyzerOptions.cs lines 221-225), and the new abstract-formatter test passes with zero diagnostics on head.",
+          "verified": 4,
+          "cited": 5,
+          "refs": [
+            "ev-cd3ad6e495",
+            "ev-4462e470a3",
+            "ev-0104897806",
+            "ev-ec490502a9",
+            "ev-b1898df7f0"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [
+        {
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "ref": "ev-ec490502a9",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-up-2022-F2",
+      "text": "Abstract implementations of IMessagePackFormatter<T> must not be counted as formatters, so they cannot cause MsgPack009 (more than one formatter for the same type).",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (10 verified citations); build, tests.targeted pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/up-2022/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.targeted",
+          "status": "pass",
+          "summary": "26 passed, 0 failed, 0 skipped (1 new tests in run)",
+          "logs": [
+            "evidence/up-2022/logs/tests_targeted.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "Abstract types never become FormatterDescriptors, so they never reach the collision map in KnownFormatters; the new test reported MsgPack009 on base source and nothing on head.",
+          "verified": 3,
+          "cited": 4,
+          "refs": [
+            "ev-d6ac4eeb2e",
+            "ev-0104897806",
+            "ev-9046fbade9",
+            "ev-ec490502a9"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The same early filter prevents abstract types from becoming formatter descriptors, and the test exercises two such formatters for object.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-4462e470a3",
+            "ev-197e014bda",
+            "ev-9046fbade9"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "Abstract types are rejected in TryCreate before any formatter-descriptor collision counting, so they cannot trigger MsgPack009; on base source the same test failed with MsgPack009 diagnostics.",
+          "verified": 4,
+          "cited": 5,
+          "refs": [
+            "ev-cd3ad6e495",
+            "ev-9046fbade9",
+            "ev-62faeb2508",
+            "ev-ec490502a9",
+            "ev-d6ac4eeb2e"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [
+        {
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "ref": "ev-9046fbade9",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-up-2022-N1",
+      "text": "The fix is covered by automated tests that fail without it.",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (6 verified citations); build, tests.fail_without_fix pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/up-2022/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "summary": "new tests fail on base source: 1/1 failed -> tests do cover the change",
+          "logs": [
+            "evidence/up-2022/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "tests.fail_without_fix passed: with AnalyzerOptions.cs reverted the one new test fails (1/1) and only it fails in the full suite (1 of 150).",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-62faeb2508",
+            "ev-9046fbade9"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The new test fails when the source change is reverted, and the corresponding check passed.",
+          "verified": 2,
+          "cited": 2,
+          "refs": [
+            "ev-62faeb2508",
+            "ev-9046fbade9"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The fail_without_fix check passed: the new test failed on base source with source reverted, proving the tests cover the change.",
+          "verified": 2,
+          "cited": 3,
+          "refs": [
+            "ev-62faeb2508",
+            "ev-9046fbade9",
+            "ev-15d0adb4f3"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [
+        {
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "ref": "ev-9046fbade9",
+          "without_fix": "failed"
+        }
+      ],
+      "tests_pass_without_fix": [],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    },
+    {
+      "id": "REQ-up-2022-N2",
+      "text": "Non-abstract formatters are still discovered and diagnosed as before (no regressions in the existing test suite).",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (5 verified citations); build, tests.full_suite pass",
+      "checks": [
+        {
+          "id": "build",
+          "status": "pass",
+          "summary": "0 errors, 1 unique warnings",
+          "logs": [
+            "evidence/up-2022/logs/build.log"
+          ]
+        },
+        {
+          "id": "tests.full_suite",
+          "status": "pass",
+          "summary": "tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+          "logs": [
+            "evidence/up-2022/logs/tests_full_suite.log"
+          ]
+        }
+      ],
+      "reviewers": [
+        {
+          "reviewer": "claude",
+          "verdict": "met",
+          "basis": "tests.full_suite passed 150/150 on head (149/149 on base, the difference being the new test), and the guard only adds a branch for IsAbstract, leaving the non-abstract path unchanged.",
+          "verified": 3,
+          "cited": 3,
+          "refs": [
+            "ev-d448f979e6",
+            "ev-5eb9a35a14",
+            "ev-d27a42c472"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "codex",
+          "verdict": "met",
+          "basis": "The full source generator test suite passed with no regressions reported against base.",
+          "verified": 1,
+          "cited": 1,
+          "refs": [
+            "ev-d448f979e6"
+          ],
+          "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The full suite passed with 150/150 and no failures not present on base (base passed 149/149), so non-abstract formatter behavior is unchanged.",
+          "verified": 1,
+          "cited": 2,
+          "refs": [
+            "ev-d448f979e6",
+            "ev-d3fe657f03"
+          ],
+          "unverified_refs": []
+        }
+      ],
+      "agree": [
+        "claude",
+        "codex",
+        "nemotron"
+      ],
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [],
+      "tests_pass_without_fix": [
+        {
+          "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
+          "ref": "ev-5eb9a35a14",
+          "without_fix": "passed"
+        }
+      ],
+      "reasons": [],
+      "adjudication": null,
+      "settle": []
+    }
+  ],
+  "panel": {
+    "rows": [
+      {
+        "reviewer": "claude",
+        "model": "claude-opus-5-5",
+        "vendor": "Anthropic",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-2022-F1": "met",
+          "REQ-up-2022-F2": "met",
+          "REQ-up-2022-N1": "met",
+          "REQ-up-2022-N2": "met"
+        },
+        "citations_verified": 14,
+        "citations_rejected": 3,
+        "findings_verified": 1,
+        "findings_rejected": 1,
+        "only_this_reviewer": [
+          {
+            "id": "C1",
+            "severity": "minor",
+            "title": "Abstract type named in [MessagePackFormatter]/[MessagePackKnownFormatter] is now silently ignored",
+            "status": "rejected"
+          },
+          {
+            "id": "C2",
+            "severity": "info",
+            "title": "New test covers the analyzer path only",
+            "status": "verified"
+          }
+        ],
+        "refusals": 2
+      },
+      {
+        "reviewer": "codex",
+        "model": "GPT-6",
+        "vendor": "OpenAI",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-2022-F1": "met",
+          "REQ-up-2022-F2": "met",
+          "REQ-up-2022-N1": "met",
+          "REQ-up-2022-N2": "met"
+        },
+        "citations_verified": 8,
+        "citations_rejected": 0,
+        "findings_verified": 0,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 0
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "simulated": false,
+        "verdicts": {
+          "REQ-up-2022-F1": "met",
+          "REQ-up-2022-F2": "met",
+          "REQ-up-2022-N1": "met",
+          "REQ-up-2022-N2": "met"
+        },
+        "citations_verified": 16,
+        "citations_rejected": 1,
+        "findings_verified": 1,
+        "findings_rejected": 0,
+        "only_this_reviewer": [
+          {
+            "id": "I1",
+            "severity": "info",
+            "title": "TryCreate documentation does not state that abstract types are excluded",
+            "status": "verified"
+          }
+        ],
+        "refusals": 2
+      }
+    ],
+    "callouts": [],
+    "adjudicator": "gemini"
+  },
+  "evidence_index": {
+    "ev-b1898df7f0": {
+      "kind": "requirement",
+      "quote": "must not report MsgPack013",
+      "req": "REQ-up-2022-F1",
+      "ref": "ev-b1898df7f0",
+      "label": "REQ-up-2022-F1 text",
+      "verified": true,
+      "note": "REQ-up-2022-F1 text contains the quote",
+      "cited_by": [
+        "claude on REQ-up-2022-F1",
+        "nemotron on REQ-up-2022-F1"
+      ],
+      "clause_text": "The analyzer must not report MsgPack013 (formatter has no accessible instance for the source generated resolver) for an abstract class that implements IMessagePackFormatter<T>."
+    },
+    "ev-cd3ad6e495": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+      "line": 221,
+      "rev": "head",
+      "quote": "if (type.IsAbstract)",
+      "ref": "ev-cd3ad6e495",
+      "label": "AnalyzerOptions.cs:221 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:221 at head 5f4b762a",
+      "cited_by": [
+        "claude on REQ-up-2022-F1",
+        "codex on REQ-up-2022-F1",
+        "nemotron on REQ-up-2022-F1",
+        "nemotron on REQ-up-2022-F2",
+        "nemotron:I1"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 218,
+        "highlight": 221,
+        "lines": [
+          "    /// <returns><see langword=\"true\"/> if <paramref name=\"type\"/> represents a formatter.</returns>",
+          "    public static bool TryCreate(INamedTypeSymbol type, [NotNullWhen(true)] out FormatterDescriptor? formatter)",
+          "    {",
+          "        if (type.IsAbstract)",
+          "        {",
+          "            formatter = null;",
+          "            return false;"
+        ]
+      }
+    },
+    "ev-bb2c0d462b": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+      "line": 247,
+      "rev": "head",
+      "quote": "instanceProvidingMember is null ? MsgPack00xMessagePackAnalyzer.InaccessibleFormatterInstance :",
+      "ref": "ev-bb2c0d462b",
+      "label": "AnalyzerOptions.cs:247 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:247 at head 5f4b762a",
+      "cited_by": [
+        "claude on REQ-up-2022-F1"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 244,
+        "highlight": 247,
+        "lines": [
+          "        {",
+          "            InaccessibleDescriptor =",
+          "                CodeAnalysisUtilities.FindInaccessibleTypes(type).Any() ? MsgPack00xMessagePackAnalyzer.InaccessibleFormatterType :",
+          "                instanceProvidingMember is null ? MsgPack00xMessagePackAnalyzer.InaccessibleFormatterInstance :",
+          "                null,",
+          "            ExcludeFromSourceGeneratedResolver =",
+          "                type.GetAttributes().Any(a => a.AttributeClass?.Name == Constants.ExcludeFormatterFromSourceGeneratedResolverAttributeName && a.AttributeClass?.ContainingNamespace.Name == Constants.AttributeNamespace),"
+        ]
+      }
+    },
+    "ev-ec490502a9": {
+      "kind": "test",
+      "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+      "outcome": "passed",
+      "ref": "ev-ec490502a9",
+      "label": "test AbstractFormatterDoesNotAttractAttention passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed (new test)",
+      "cited_by": [
+        "claude on REQ-up-2022-F1",
+        "codex on REQ-up-2022-F1",
+        "nemotron on REQ-up-2022-F1",
+        "claude on REQ-up-2022-F2",
+        "nemotron on REQ-up-2022-F2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/up-2022/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/up-2022/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-4462e470a3": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+      "line": 223,
+      "rev": "head",
+      "quote": "formatter = null;",
+      "ref": "ev-4462e470a3",
+      "label": "AnalyzerOptions.cs:223 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:223 at head 5f4b762a",
+      "cited_by": [
+        "nemotron on REQ-up-2022-F1",
+        "codex on REQ-up-2022-F2"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 220,
+        "highlight": 223,
+        "lines": [
+          "    {",
+          "        if (type.IsAbstract)",
+          "        {",
+          "            formatter = null;",
+          "            return false;",
+          "        }",
+          ""
+        ]
+      }
+    },
+    "ev-0104897806": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+      "line": 224,
+      "rev": "head",
+      "quote": "return false;",
+      "ref": "ev-0104897806",
+      "label": "AnalyzerOptions.cs:224 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:224 at head 5f4b762a",
+      "cited_by": [
+        "nemotron on REQ-up-2022-F1",
+        "claude on REQ-up-2022-F2"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 221,
+        "highlight": 224,
+        "lines": [
+          "        if (type.IsAbstract)",
+          "        {",
+          "            formatter = null;",
+          "            return false;",
+          "        }",
+          "",
+          "        var formattedTypes ="
+        ]
+      }
+    },
+    "ev-d6ac4eeb2e": {
+      "kind": "requirement",
+      "quote": "must not be counted as formatters",
+      "req": "REQ-up-2022-F2",
+      "ref": "ev-d6ac4eeb2e",
+      "label": "REQ-up-2022-F2 text",
+      "verified": true,
+      "note": "REQ-up-2022-F2 text contains the quote",
+      "cited_by": [
+        "claude on REQ-up-2022-F2",
+        "nemotron on REQ-up-2022-F2"
+      ],
+      "clause_text": "Abstract implementations of IMessagePackFormatter<T> must not be counted as formatters, so they cannot cause MsgPack009 (more than one formatter for the same type)."
+    },
+    "ev-9046fbade9": {
+      "kind": "test",
+      "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-9046fbade9",
+      "label": "test AbstractFormatterDoesNotAttractAttention failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "claude on REQ-up-2022-F2",
+        "codex on REQ-up-2022-F2",
+        "nemotron on REQ-up-2022-F2",
+        "claude on REQ-up-2022-N1",
+        "codex on REQ-up-2022-N1",
+        "nemotron on REQ-up-2022-N1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/up-2022/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/up-2022/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-197e014bda": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+      "line": 913,
+      "rev": "head",
+      "quote": "public async Task AbstractFormatterDoesNotAttractAttention()",
+      "ref": "ev-197e014bda",
+      "label": "MsgPack00xAnalyzerTests.cs:913 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs:913 at head 5f4b762a",
+      "cited_by": [
+        "codex on REQ-up-2022-F2"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 910,
+        "highlight": 913,
+        "lines": [
+          "    }",
+          "",
+          "    [Fact]",
+          "    public async Task AbstractFormatterDoesNotAttractAttention()",
+          "    {",
+          "        string test = /* lang=c#-test */ \"\"\"",
+          "            using MessagePack;"
+        ]
+      }
+    },
+    "ev-62faeb2508": {
+      "kind": "check",
+      "id": "tests.fail_without_fix",
+      "status": "pass",
+      "ref": "ev-62faeb2508",
+      "label": "check tests.fail_without_fix pass",
+      "verified": true,
+      "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 1/1 failed -> tests do cover the change",
+      "cited_by": [
+        "nemotron on REQ-up-2022-F2",
+        "claude on REQ-up-2022-N1",
+        "codex on REQ-up-2022-N1",
+        "nemotron on REQ-up-2022-N1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "new tests fail on base source: 1/1 failed -> tests do cover the change",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/up-2022/logs/tests_fail_without_fix.1.log"
+        ]
+      }
+    },
+    "ev-15d0adb4f3": {
+      "kind": "requirement",
+      "quote": "fail without it",
+      "req": "REQ-up-2022-N1",
+      "ref": "ev-15d0adb4f3",
+      "label": "REQ-up-2022-N1 text",
+      "verified": true,
+      "note": "REQ-up-2022-N1 text contains the quote",
+      "cited_by": [
+        "nemotron on REQ-up-2022-N1"
+      ],
+      "clause_text": "The fix is covered by automated tests that fail without it."
+    },
+    "ev-d448f979e6": {
+      "kind": "check",
+      "id": "tests.full_suite",
+      "status": "pass",
+      "ref": "ev-d448f979e6",
+      "label": "check tests.full_suite pass",
+      "verified": true,
+      "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "cited_by": [
+        "claude on REQ-up-2022-N2",
+        "codex on REQ-up-2022-N2",
+        "nemotron on REQ-up-2022-N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/up-2022/logs/tests_full_suite.log"
+        ]
+      }
+    },
+    "ev-5eb9a35a14": {
+      "kind": "test",
+      "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
+      "outcome": "passed",
+      "ref": "ev-5eb9a35a14",
+      "label": "test MessageFormatterAttribute passed",
+      "verified": true,
+      "note": "facts.json tests.targeted: passed",
+      "cited_by": [
+        "claude on REQ-up-2022-N2"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/up-2022/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "passed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/up-2022/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "passed"
+    },
+    "ev-d27a42c472": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+      "line": 228,
+      "rev": "head",
+      "quote": "AnalyzerUtilities.SearchTypeForFormatterImplementations(type)",
+      "ref": "ev-d27a42c472",
+      "label": "AnalyzerOptions.cs:228 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:228 at head 5f4b762a",
+      "cited_by": [
+        "claude on REQ-up-2022-N2"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 225,
+        "highlight": 228,
+        "lines": [
+          "        }",
+          "",
+          "        var formattedTypes =",
+          "            AnalyzerUtilities.SearchTypeForFormatterImplementations(type)",
+          "            .Select(i => new FormattableType(i, type.ContainingAssembly))",
+          "            .ToImmutableHashSet();",
+          "        if (formattedTypes.IsEmpty)"
+        ]
+      }
+    },
+    "ev-d3fe657f03": {
+      "kind": "requirement",
+      "quote": "no regressions in the existing test suite",
+      "req": "REQ-up-2022-N2",
+      "ref": "ev-d3fe657f03",
+      "label": "REQ-up-2022-N2 text",
+      "verified": true,
+      "note": "REQ-up-2022-N2 text contains the quote",
+      "cited_by": [
+        "nemotron on REQ-up-2022-N2"
+      ],
+      "clause_text": "Non-abstract formatters are still discovered and diagnosed as before (no regressions in the existing test suite)."
+    },
+    "ev-8af6858086": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 720,
+      "rev": "head",
+      "quote": "if (FormatterDescriptor.TryCreate(name, out FormatterDescriptor? descriptor))",
+      "ref": "ev-8af6858086",
+      "label": "TypeCollector.cs:720 @head",
+      "verified": false,
+      "note": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not in the change's diff",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 717,
+        "highlight": 720,
+        "lines": [
+          "            INamedTypeSymbol? name = member.GetAttributes().FirstOrDefault(x => x.AttributeClass.ApproximatelyEqual(this.typeReferences.FormatterAttribute))?.ConstructorArguments[0].Value as INamedTypeSymbol;",
+          "            if (name is not null)",
+          "            {",
+          "                if (FormatterDescriptor.TryCreate(name, out FormatterDescriptor? descriptor))",
+          "                {",
+          "                    return descriptor;",
+          "                }"
+        ]
+      }
+    },
+    "ev-699ea72a89": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 725,
+      "rev": "head",
+      "quote": "// this.reportDiagnostic();",
+      "ref": "ev-699ea72a89",
+      "label": "TypeCollector.cs:725 @head",
+      "verified": false,
+      "note": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not in the change's diff",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 724,
+        "highlight": 727,
+        "lines": [
+          "                else",
+          "                {",
+          "                    // Report that the named type is not a formatter.",
+          "                    // this.reportDiagnostic();",
+          "                }",
+          "            }",
+          ""
+        ]
+      }
+    },
+    "ev-c9c11752cc": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/Utils/AnalyzerUtilities.cs",
+      "line": 95,
+      "rev": "head",
+      "quote": "FormatterDescriptor.TryCreate(formatterType, out FormatterDescriptor? formatter)",
+      "ref": "ev-c9c11752cc",
+      "label": "AnalyzerUtilities.cs:95 @head",
+      "verified": false,
+      "note": "src/MessagePack.SourceGenerator/Utils/AnalyzerUtilities.cs is not in the change's diff",
+      "cited_by": [
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 92,
+        "highlight": 95,
+        "lines": [
+          "            cancellationToken.ThrowIfCancellationRequested();",
+          "            if (ad.AttributeClass?.Name == MessagePackKnownFormatterAttributeName && ad.AttributeClass?.ContainingNamespace.Name == AttributeNamespace)",
+          "            {",
+          "                if (ad.ConstructorArguments[0].Value is INamedTypeSymbol formatterType && FormatterDescriptor.TryCreate(formatterType, out FormatterDescriptor? formatter))",
+          "                {",
+          "                    builder.Add(formatter);",
+          "                }"
+        ]
+      }
+    },
+    "ev-04a0a5893b": {
+      "kind": "code",
+      "file": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+      "line": 932,
+      "rev": "head",
+      "quote": "await VerifyCS.VerifyAnalyzerAsync(test);",
+      "ref": "ev-04a0a5893b",
+      "label": "MsgPack00xAnalyzerTests.cs:932 @head",
+      "verified": true,
+      "note": "quote matches tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs:932 at head 5f4b762a",
+      "cited_by": [
+        "claude:C2"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 929,
+        "highlight": 932,
+        "lines": [
+          "            }",
+          "            \"\"\";",
+          "",
+          "        await VerifyCS.VerifyAnalyzerAsync(test);",
+          "    }",
+          "}"
+        ]
+      }
+    },
+    "ev-302a6a0f66": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+      "line": 218,
+      "rev": "head",
+      "quote": "&lt;returns&gt;&lt;see langword=&quot;true&quot;/&gt; if &lt;paramref name=&quot;type&quot;/&gt; represents a formatter.&lt;/returns&gt;",
+      "ref": "ev-302a6a0f66",
+      "label": "AnalyzerOptions.cs:218 @head",
+      "verified": false,
+      "note": "quote not on src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs:218 ±3 at head; not found anywhere in the file",
+      "cited_by": [
+        "nemotron:I1"
+      ],
+      "excerpt": {
+        "sha": "5f4b762a",
+        "start": 215,
+        "highlight": null,
+        "lines": [
+          "    /// </summary>",
+          "    /// <param name=\"type\">The type symbol for the formatter.</param>",
+          "    /// <param name=\"formatter\">Receives the formatter descriptor, if applicable.</param>",
+          "    /// <returns><see langword=\"true\"/> if <paramref name=\"type\"/> represents a formatter.</returns>",
+          "    public static bool TryCreate(INamedTypeSymbol type, [NotNullWhen(true)] out FormatterDescriptor? formatter)",
+          "    {",
+          "        if (type.IsAbstract)"
+        ]
+      }
+    }
+  }
+}
