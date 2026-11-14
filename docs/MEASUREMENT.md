@@ -17,6 +17,8 @@ Every number below says whether it is **real** (measured on code and history) or
 | **Time to merge** | PR opened to merged | GitHub; the ledger adds the time from pack built to signed |
 | **Cost per change** | Model tokens and known spend per change | `measurement/costs.yaml`, rendered in `docs/COSTS.md` |
 | **Spot-check agreement** | Agreeing / all spot-checks of AI-cleared changes | `spotcheck` events in the ledger |
+| **AI findings accepted by the owner, per reviewer** | Filled in when the owner signs. At sign-off the owner rates each verified finding `accepted` (real), `rejected` (a false positive) or `unsure` (`--finding claude:C1=accepted`); unflagged ones are recorded `unrated`. Accepted rate = accepted / rated (unsure counts as rated, unrated does not); `findings_rated` = rated / listed; `findings_rejected` lists the owner's false positives with the reason. Newest signoff per change. Until an owner signs, "no sign-offs yet", never 0% and never simulated | `signoff` entries in the ledger (`payload.findings`), signed with the decision |
+| **Owner overrode the routing** | Filled in when the owner signs. Decision by tier; overrode = accepted a change the mandate routed to a human (`ask`), or rejected / requested changes on one the AI cleared (`notify`/`silent`) | `signoff` entries (`tier`, `decision`) |
 
 ## The numbers
 
@@ -37,6 +39,8 @@ Every number below says whether it is **real** (measured on code and history) or
 | Upstream median days from PR opened to merged | cleared bucket 0.24, routed bucket 0.85 | GitHub `createdAt` / `mergedAt` |
 | Findings per reviewer (verified / rejected as unsupported) | claude: 26 / 2; codex: 0 / 0; nemotron: 41 / 1 | `measurement/results.json` |
 | Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | claude: 9, 1, 1; nemotron: 20, 1, 8; codex: 0, 0, 6 | same |
+| Owner's verdict on the AI's verified findings: accepted (real) / rated, per reviewer | no sign-offs yet (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |
+| Owner overrode the routing | no sign-offs yet | same |
 | Real changes routed to a human | 86% of 7 | same |
 | Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2129-mut1: 64,570, 2129-mut2: 64,537, 2234: 275,180, 2234-inject: 52,139, 2234-mut1: 53,920, 2234-mut2: 57,510, 2234-mut3: 51,111, 2234-mut4: 51,730, 2234-mut5: 66,760, 2234-mut6: 69,520, 2234-mut7: 52,962, 2283: 233,512, 2283-inject: 55,323, 2283-mut1: 64,464, 2283-mut2: 60,159, 2283-mut3: 64,814, 2283-mut4: 65,247, 2283-mut5: 65,026, 2297: 239,227, up-1934: 141,147, up-1967: 98,593, up-2022: 127,795 | `measurement/costs.yaml` |
 
@@ -92,7 +96,7 @@ The sensitivity grid (`measurement/simulation/sensitivity.json`) shows the condi
 
 ## Running this in production
 
-- **Automatic, from the ledger and packs:** tier and share routed, verified vs rejected findings per reviewer, cross-reviewer confirmation, spot-check agreement, escapes per area (an `escape` event names the signed pack), time from pack to signature, cost per change (`costs.yaml` rows are appended by the runner).
+- **Automatic, from the ledger and packs:** tier and share routed, verified vs rejected findings per reviewer, the owner's accepted / rejected verdicts on them and overrides of the routing (from each signoff), cross-reviewer confirmation, spot-check agreement, escapes per area (an `escape` event names the signed pack), time from pack to signature, cost per change (`costs.yaml` rows are appended by the runner).
 - **Scheduled:** seed 2 to 5 mutants per area per week from recent merged changes and run them through checks and reviewers (canaries). A drop in the panel's catch rate opens probation before the escapes arrive.
 - **Human input:** spot-checks (target 10% of AI-cleared changes, plus every change in an area on probation) and escape attribution: when a revert or fix lands, link it to the change it repairs (`countersign escape <change> --kind revert`). `find_escapes.py` proposes candidates from git history (reverts, references, SZZ blame) to make this cheap.
 - **Reported weekly per area:** routed share, human minutes, escapes (AI-cleared vs human-signed), canary catch rate, spot-check agreement. Clearance is earned when the canary catch rate and spot-check agreement hold, and lost at the first escape.
