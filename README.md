@@ -4,7 +4,7 @@
 
 > **AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.**
 
-**In numbers:** replayed on 109 real merged MessagePack-CSharp PRs (signed mandate v4, upstream CI credited as passed), the AI would have cleared 24 of them, and none of the 11 that later needed a revert or a follow-up fix. On Tieto's four agent-written changes it sent all four to a named owner, each with its reason.
+**In numbers:** replayed on 109 real merged MessagePack-CSharp PRs (signed mandate v6, upstream CI credited as passed), the AI would have cleared 24 of them, and none of the 11 that later needed a revert or a follow-up fix. On Tieto's four agent-written changes it sent all four to a named owner, each with its reason.
 
 **Three words used throughout:**
 - **Mandate:** a signed, versioned file per repo that says, area by area, how far the AI may go alone and who owns each area.
@@ -66,7 +66,7 @@ Details and definitions: [docs/MEASUREMENT.md](docs/MEASUREMENT.md).
 - **Review time (simulated).** A reading model in the mandate, not a stopwatch: about 440 minutes to read all seven diffs, 185 with the packs. On small changes the pack takes longer than the diff.
 - **Trust over time (simulated).** When reviewers get worse, the old rule (3 agreeing spot-checks restore clearance) let escapes rise. 20 checks plus weekly canaries brought them back to the full-review level. That result changed the signed mandate (v3; the current v4 keeps these trust stages and adds supply-chain rules).
 - **Scaling.** Machine cost per change is bounded: 38k to 68k Nemotron tokens and about 2 CI minutes per review, from 2 files to 237. Reading time is not cut on small changes; human time is saved only on proven and large changes. Measured and simulated numbers are kept apart: [docs/SCALING.md](docs/SCALING.md).
-- **Red team.** We attacked our own pipeline 35 ways (planted instructions, fake evidence, build-file and CI smuggling, forged trust events, dependency tricks). The first run stopped 7; after the fixes it stops 32. The 3 still open are listed with fixes: [docs/security/REDTEAM.md](docs/security/REDTEAM.md).
+- **Red team.** We attacked our own pipeline 35 ways (planted instructions, fake evidence, build-file and CI smuggling, forged trust events, dependency tricks). The first run stopped 7; after the fixes it stops 34. The one still open (test theatre via reflection; needs mutation testing) is listed with its fix: [docs/security/REDTEAM.md](docs/security/REDTEAM.md).
 
 ## Limits
 
