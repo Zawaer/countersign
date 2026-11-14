@@ -1,6 +1,6 @@
 # Red team: getting a bad agent-written change past Countersign
 
-**We attacked our own pipeline <!--n:redteam_total-->35<!--/n--> ways. The first run stopped 7; we fixed 27 of the 28 that got through the same morning and the last one (TT1, test theater) by noon, so it now stops <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n--> (<!--n:redteam_open-->0<!--/n--> open).**
+**We attacked our own pipeline <!--n:redteam_total-->35<!--/n--> ways. The first run stopped 7; we fixed 27 of the 28 that got through the same morning and the last one (TT1, test theater) by noon, so it now stops <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n--> (<!--n:redteam_open-->0<!--/n--> open; TT1's fix was verified with a modelled mutation run in the harness, the real check ran on 2283, 2234 and 2129).**
 
 ## After the fixes (Sat 07:45, mandate v5)
 
