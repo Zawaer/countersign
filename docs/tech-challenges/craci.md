@@ -28,4 +28,4 @@ the policy, the connections and the violations. We also found that leaving out `
 preset, and fixed our own policy.
 
 Runs: github.com/Zawaer/countersign/actions/runs/43537739301 (2129), /43537742003 (2283)
-Code: github.com/Zawaer/countersign (`countersign/sbom.py`, `countersign/craci.py`, `docs/CI.md`)
+Code: github.com/Zawaer/countersign (`countersign/sbom.py`, `countersign/craci.py`)
