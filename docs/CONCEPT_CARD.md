@@ -4,50 +4,57 @@
 
 ## Recommendation
 
-Stop asking *"did a human read every line?"* Ask *"did a named human sign for what was proven, what was refused, and the risk left?"* Review becomes delegated authority, not a second pair of eyes:
+Stop asking *"did a human read every line?"* Ask *"did a named human sign for what was proven, what was refused, and the risk left?"*
 
-1. **A mandate per repo and area.** A versioned file, signed by its owner, says what the AI may clear alone (`silent`, `notify`), what goes to a named human (`ask`) and what is refused (`block`, citing the rule). The AI never approves.
-2. **Facts before opinions.** Build, tests, "do the new tests fail without the fix?", public-API and analyzer checks run first; models must cite them.
-3. **Independent reviewers, checked citations.** Reviewers from different vendors, same brief, no shared context. Every claim cites something a machine re-checks (file:line + quote, test outcome, check id, requirement clause); claims that fail count against the reviewer.
-4. **Disagreement means refusal.** A requirement clause is *proven* only if every reviewer says "met" with checked evidence and its checks pass. Anything else is *refused*, with the reason.
-5. **The change explains itself.** The evidence pack opens with the tier and why, then the requirement trace, findings, refusals, what wasn't checked, and the residual risk.
-6. **A named owner countersigns.** The owner signs the pack (Ed25519) into an append-only, hash-chained ledger.
-7. **Trust is earned per area and withdrawn after escapes.** An escape (revert, incident) drops that area's clearance right at once; agreeing spot-checks earn it back.
+0. **A failing check can't be argued away.** If a required check fails, nothing clears the change. Enforced in code.
+1. **A mandate per repo and area.** A signed, versioned file says how far the AI may go alone. The **tier** is where a change goes: `silent` or `notify` (AI clears it), `ask` (a named owner signs), `block` (fix or split first).
+2. **Facts before opinions.** Build, tests, "do the new tests fail without the fix?", public API, analyzers, dependency diff and a scan for text planted for AI reviewers run first.
+3. **Three reviewers, unanimity.** Claude, Codex and Nemotron, no shared context. Every claim cites something the engine re-checks. A clause is *proven* only if all say "met" with verified evidence and its checks pass. Otherwise it is *refused*, with the reason.
+4. **Claims become checks.** A bug a reviewer reproduced becomes a repro test the pipeline runs on old and new code.
+5. **The change explains itself.** The pack: tier and why, requirement trace, findings, refusals, what wasn't checked, residual risk.
+6. **A named owner countersigns** the pack's hash (Ed25519) into a hash-chained ledger.
+7. **Trust is earned per area.** ask -> notify -> silent after 20 agreeing spot-checks. An **escape** (a merged change later reverted or fixed), a disagreeing spot-check or a missed canary drops one stage. A new reviewer model or prompt starts at ask.
 
 ## Principles: the five forces
 
 | Force | Principle | Mechanism |
 |---|---|---|
-| Risk | Depth follows risk; the risk is explainable. | Additive score with a printed reason per point; hard rules (>50 files: split; public API: ask). Tier = strictest driver. |
-| Hallucination | No evidence, no finding. | Every citation re-checked; rejected claims stay visible and count against the reviewer. |
-| Transparency | Every decision names its driver. | Pack lists each driver, refusal reason and check with tool version; same inputs, same pack hash. |
-| Confidence | Never self-reported. | Comes from independent agreement plus passing checks. |
-| Quality | Tests must prove they test something. | Fail-without-fix: revert the source, keep the new tests, run them. Seeded defects measure the checks. |
+| Risk | Depth follows risk; the risk is explainable. | Additive score, one printed reason per point; hard rules (>50 files: split; failed check: block). Tier = strictest driver. |
+| Hallucination | No evidence, no finding. | Every citation re-checked; rejected claims stay visible and count against the reviewer. Planted instructions void all verdicts (R-INJECT). |
+| Transparency | Every decision names its driver. | Pack lists each driver, refusal and check; same inputs, same pack hash. |
+| Confidence | Never self-reported. | Independent agreement plus passing checks; reviewers' bugs re-run by the pipeline. |
+| Quality | Tests must prove they test something. | Fail-without-fix per test; a clause whose tests already passed before is *held before*: met, not achieved by the change. |
 
-## On a real change: ju26-issue-2234 (`REQ-2234-*`)
+## On a real change: ju26-issue-2234
 
-- **Found:** sound code that fixes a *different* bug. The reported 3.1.1 regression comes from an upstream commit that isn't in the branch's base; 4 of the 8 new tests pass without the change; one invalid contract still crashes the analyzer.
-- **Refused:** whether #2234 is fixed for 3.1.x users (nothing was built on that line: the owner's call); the no-crash clause, because one reviewer says met and the other, with a reproduction, says not.
-- **Routed:** `ask` to Toivo, owner of the generator/analyzer area. Nobody had to read 262 lines to learn that the title and the effect don't match.
-- **The other three:** 2283 `ask` (the fix silences a warning users relied on, and a guard it needs is untested); 2129 `block` (new public API, a new analyzer warning, a project missing from the solution); 2297 `block` (237 files: split it; a reviewer also found a wrong `#if` that skips older .NET targets).
+- **Found:** sound code that fixes a *different* crash. The reported regression comes from an upstream commit not in the branch's base. Only 4 of 8 new tests fail without the change, so two clauses are *held before*. One invalid contract (`Key(null)`) still crashes the analyzer; the pipeline reproduced it.
+- **Refused:** the no-crash clause (Claude: not met; Codex and Nemotron: met); whether #2234 is fixed for 3.1.x users (the owner's call).
+- **Routed:** `ask` to Toivo. Nobody read 262 lines to learn that the title and the effect don't match.
+- **The other six real changes:** 2283 `ask` (the fix silences a warning; reproduced by the pipeline); 2129 `block` (failed checks in a critical area); 2297 `block` (237 files: split it); upstream controls up-2022 and up-1934 `ask` (one Nemotron refusal each); up-1967, a one-line docs fix, `notify`: the AI clears it and tells Rene.
+
+## Evidence it works
+
+- **History:** on 109 real merged PRs, the AI would have cleared 24 and none of the 11 escapes.
+- **Seeded:** checks alone catch 13 of 16 (11 of 14 bugs and both injections). Of the 3 bugs tests missed, Nemotron's blind review points at the planted line in 2.
+- **Simulated:** with 20-check restore and weekly canaries, escapes stay at the full-review level when reviewers degrade. This changed the signed mandate (v3).
 
 ## Trade-offs we chose
 
-- **More refusals, fewer escapes.** A new area has no track record, so most changes go to humans. A refusal costs minutes; an escape costs an incident.
-- **Several reviewers cost more than one.** Cross-vendor disagreement is the cheapest honest uncertainty signal we know.
-- **Strict citations lose some true findings.** They are shown as "rejected", not deleted, so the owner can still read them.
-- **Checks cost minutes per change.** They are the part of the evidence that can't hallucinate.
+- **More refusals, fewer escapes.** A refusal costs minutes; an escape costs an incident.
+- **Unanimity costs clearances.** Each added reviewer can only add caution.
+- **Strict citations lose some true findings.** They stay visible as "rejected".
+- **Slow to regain trust.** 20 checks after a drop, by design.
 
 ## Limits
 
-- It can't judge **intent**: whether this is the change the product needs.
-- It is only as good as the **requirement text**. A clause can hold *before* the change (2234), so "met" isn't "achieved by this change".
-- **Areas without checks** (UI, performance, other targets) fall back to humans and are listed as not checked.
-- Reviewer **independence is partial**: models share training data.
-- Trust numbers in this demo come from **simulated** spot-checks and escapes, and say so.
+- It can't judge **intent**, and it is only as good as the **requirement text**.
+- **Areas without checks** (UI, performance, other targets) fall back to humans.
+- Reviewers **share blind spots**: Claude and Codex both read the untested 2283 guard as fine.
+- In the demo, any Actions workflow can post the merge status; a dedicated GitHub App fixes that.
+- Trust over time is **simulated** here, and says so. Gemini adjudication is wired but not yet run.
 
 ## The judges' three questions
 
-- **What would make us distrust our output?** Citations that stop verifying, reviewers that always agree, seeded defects passing as cleared, any escape in an AI-cleared area. Each is measured; an escape lowers clearance automatically.
+- **What would make us distrust our output?** Citations that stop verifying, reviewers that always agree, canaries passing as cleared, any escape in an AI-cleared area. Each is measured, and each drops trust automatically.
 - **Who owns the decision?** The owner of the most sensitive area touched, named in the signed mandate. Only a signature merges.
-- **How does it scale?** Humans see only what can't be proven, and the AI earns `silent`/`notify` per area from its record. Plain files plus CI jobs. For confidential code the mandate admits only self-hostable (open-weight) reviewers.
+- **How does it scale?** Humans see only what can't be proven, and areas earn `notify`/`silent` from their record. Plain files plus CI jobs. Confidential code goes only to self-hostable reviewers (Nemotron).
