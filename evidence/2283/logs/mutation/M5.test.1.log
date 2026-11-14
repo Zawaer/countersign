@@ -1,0 +1,37 @@
+### dotnet test tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-build --filter "FullyQualifiedName~GenericsFormatterTests."
+
+Test run for /data/src/mp-2283-mt/bin/MessagePack.SourceGenerator.Tests/Debug/net8.0/MessagePack.SourceGenerator.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.96]     GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember [FAIL]
+  Failed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember [66 ms]
+  Error Message:
+   System.InvalidOperationException : Mismatch between number of diagnostics returned, expected "0" actual "2"
+
+Diagnostics:
+// error MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::TempProject.MyGenericStruct<T>.Unkeyed
+new DiagnosticResult(MsgPack00xMessagePackAnalyzer.MsgPack004).WithArguments("global::TempProject.MyGenericStruct<T>", "Unkeyed"),
+// error MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::TempProject.MyGenericStruct<int>.Unkeyed
+new DiagnosticResult(MsgPack00xMessagePackAnalyzer.MsgPack004).WithArguments("global::TempProject.MyGenericStruct<int>", "Unkeyed"),
+
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Equal[T](T expected, T actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 79
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticResults(IEnumerable`1 actualResults, ImmutableArray`1 analyzers, DiagnosticResult[] expectedResults, IVerifier verifier) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 546
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticsAsync(EvaluatedProjectState primaryProject, ImmutableArray`1 additionalProjects, DiagnosticResult[] expected, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 449
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 203
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at GenericsFormatterTests.RunWithMetadataReferenceAsync(String defineSource, String usageSource, String expectedResolverHintName, LanguageVersion languageVersion) in /data/src/mp-2283-mt/tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:line 648
+   at GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember() in /data/src/mp-2283-mt/tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:line 625
+--- End of stack trace from previous location ---
+Results File: /data/work/out/2283-mt5/targeted.1.trx
+
+Failed!  - Failed:     1, Passed:    18, Skipped:     0, Total:    19, Duration: 955 ms - MessagePack.SourceGenerator.Tests.dll (net8.0)
+
+Build FAILED.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.98

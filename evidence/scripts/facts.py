@@ -677,6 +677,9 @@ def main():
         checks.extend(repro_checks(n, cd))
         facts['checks'] = checks
         checks.append(injection_check(facts))
+        import mutation  # evidence/scripts/mutation.py: tests.mutation, if its runs exist ($WORK/out/<n>-mt<k>)
+        if mutation.ran(n):
+            checks.append(mutation.judge(n, facts))
         facts['not_run'] = ch.get('not_run', [])
         if 'mutation' in ch:
             put_inherited_fwf(facts)

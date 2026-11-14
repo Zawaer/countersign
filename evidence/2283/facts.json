@@ -595,6 +595,289 @@
       "status": "pass",
       "summary": "built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 19 logs; every NuGet feed the head declares is inside the policy",
       "run_url": "https://github.com/Zawaer/countersign/actions/runs/43559078089"
+    },
+    {
+      "id": "tests.mutation",
+      "tool": "evidence/scripts/mutation.py + dotnet test (one mutant at a time, the targeted filter)",
+      "tool_version": "8.0.402",
+      "status": "fail",
+      "summary": "8 mutants of the changed source lines: 2 killed, 6 survived; 1 of 4 mutated hunks have a killed mutant; surviving hunks: TypeCollector.cs:239, TypeCollector.cs:985, TypeCollector.cs:1429-1434; 1 hunks not mutated",
+      "rule": "killed = at least one new test (new: true in tests.fail_without_fix) fails on the mutant and passed on head; pass = every mutated hunk has a killed mutant",
+      "operators": [
+        "negate_condition",
+        "drop_statement",
+        "drop_guard",
+        "swap_logical",
+        "drop_guard_conjunct",
+        "return_default",
+        "remove_call"
+      ],
+      "max_mutants": 8,
+      "project": "tests/MessagePack.SourceGenerator.Tests",
+      "filter": [
+        "FullyQualifiedName~GenericsFormatterTests."
+      ],
+      "tests_judged": [
+        "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+        "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+        "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember"
+      ],
+      "not_covered": "ExecutionTests/MapModeExecutionTests (SDK 9) are not run against the mutants; files that are not C# are not mutated",
+      "hunks": [
+        {
+          "id": "H1",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "lines": [
+            239,
+            239
+          ],
+          "code_lines": [
+            239
+          ],
+          "mutants": [
+            "M1"
+          ],
+          "status": "survived"
+        },
+        {
+          "id": "H2",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "lines": [
+            985,
+            985
+          ],
+          "code_lines": [
+            985
+          ],
+          "mutants": [
+            "M2"
+          ],
+          "status": "survived"
+        },
+        {
+          "id": "H3",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "lines": [
+            1077,
+            1077
+          ],
+          "code_lines": [
+            1077
+          ],
+          "mutants": [],
+          "status": "not_mutated",
+          "why": "no operator applies to its lines"
+        },
+        {
+          "id": "H4",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "lines": [
+            1429,
+            1434
+          ],
+          "code_lines": [
+            1434
+          ],
+          "mutants": [
+            "M3"
+          ],
+          "status": "survived"
+        },
+        {
+          "id": "H5",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "lines": [
+            1436,
+            1450
+          ],
+          "code_lines": [
+            1444,
+            1446,
+            1448
+          ],
+          "mutants": [
+            "M4",
+            "M5",
+            "M6",
+            "M7",
+            "M8"
+          ],
+          "status": "killed"
+        }
+      ],
+      "surviving_hunks": [
+        "H1",
+        "H2",
+        "H4"
+      ],
+      "mutants": [
+        {
+          "id": "M1",
+          "hunk": "H1",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 239,
+          "operator": "negate_condition",
+          "before": "        this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
+          "after": "        this.reportDiagnostic = reportAnalyzerDiagnostic is not null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);",
+          "log": [
+            "evidence/2283/logs/mutation/M1.build.log",
+            "evidence/2283/logs/mutation/M1.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M1.diff",
+          "killed_by": [],
+          "existing_tests_failed": [],
+          "outcome": "survived",
+          "tests_run": 19
+        },
+        {
+          "id": "M2",
+          "hunk": "H2",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "operator": "remove_call",
+          "before": "                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));",
+          "after": "                        { }",
+          "log": [
+            "evidence/2283/logs/mutation/M2.build.log",
+            "evidence/2283/logs/mutation/M2.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M2.diff",
+          "killed_by": [],
+          "existing_tests_failed": [],
+          "outcome": "survived",
+          "tests_run": 19
+        },
+        {
+          "id": "M3",
+          "hunk": "H4",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1434,
+          "operator": "return_default",
+          "before": "    private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();",
+          "after": "    private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => default;",
+          "log": [
+            "evidence/2283/logs/mutation/M3.build.log",
+            "evidence/2283/logs/mutation/M3.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M3.diff",
+          "killed_by": [],
+          "existing_tests_failed": [],
+          "outcome": "survived",
+          "tests_run": 19
+        },
+        {
+          "id": "M4",
+          "hunk": "H5",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "operator": "negate_condition",
+          "before": "        if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+          "after": "        if (!(diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree)))",
+          "log": [
+            "evidence/2283/logs/mutation/M4.build.log",
+            "evidence/2283/logs/mutation/M4.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M4.diff",
+          "killed_by": [
+            "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember"
+          ],
+          "existing_tests_failed": [],
+          "outcome": "killed",
+          "tests_run": 19
+        },
+        {
+          "id": "M5",
+          "hunk": "H5",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "operator": "drop_guard",
+          "before": "        if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+          "after": "        if (true)",
+          "log": [
+            "evidence/2283/logs/mutation/M5.build.log",
+            "evidence/2283/logs/mutation/M5.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M5.diff",
+          "killed_by": [
+            "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember"
+          ],
+          "existing_tests_failed": [],
+          "outcome": "killed",
+          "tests_run": 19
+        },
+        {
+          "id": "M6",
+          "hunk": "H5",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "operator": "swap_logical",
+          "before": "        if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+          "after": "        if (diagnostic.Location.IsInSource || this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+          "log": [
+            "evidence/2283/logs/mutation/M6.build.log",
+            "evidence/2283/logs/mutation/M6.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M6.diff",
+          "killed_by": [],
+          "existing_tests_failed": [],
+          "outcome": "survived",
+          "tests_run": 19
+        },
+        {
+          "id": "M7",
+          "hunk": "H5",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "operator": "drop_guard_conjunct",
+          "before": "        if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+          "after": "        if (diagnostic.Location.IsInSource)",
+          "log": [
+            "evidence/2283/logs/mutation/M7.build.log",
+            "evidence/2283/logs/mutation/M7.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M7.diff",
+          "killed_by": [],
+          "existing_tests_failed": [],
+          "outcome": "survived",
+          "tests_run": 19
+        },
+        {
+          "id": "M8",
+          "hunk": "H5",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1448,
+          "operator": "remove_call",
+          "before": "            report(diagnostic);",
+          "after": "            { }",
+          "log": [
+            "evidence/2283/logs/mutation/M8.build.log",
+            "evidence/2283/logs/mutation/M8.test.1.log"
+          ],
+          "diff": "evidence/2283/logs/mutation/M8.diff",
+          "killed_by": [],
+          "existing_tests_failed": [],
+          "outcome": "survived",
+          "tests_run": 19
+        }
+      ],
+      "kills_by_test": [
+        {
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "killed": []
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "killed": []
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "killed": [
+            "M4",
+            "M5"
+          ]
+        }
+      ],
+      "log": "evidence/2283/logs/mutation/"
     }
   ],
   "not_run": [
