@@ -26,12 +26,34 @@ print("matched", len(idx), "of", len(script), "script words")
 nl = len(v.LINES)
 first = [min(i for i, (k, _) in enumerate(script) if k == L) for L in range(nl)]
 last = [max(i for i, (k, _) in enumerate(script) if k == L) for L in range(nl)]
-cuts = [0.0] + [times[last[L]][1] + min(0.12, max(0.0, (times[first[L + 1]][0] - times[last[L]][1]) / 2)) for L in range(nl - 1)] + [None]
+# Cut in the quietest 10 ms frame near each line boundary (Whisper's word edges can be off by tens of ms, so a cut
+# placed by word times alone can clip a sound), then fade 15 ms at both sides of every cut.
+import numpy as np
+SR = 16000
+pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", mp3, "-ac", "1", "-ar", str(SR), "-f", "s16le", "-"],
+                     capture_output=True, check=True).stdout
+x = np.frombuffer(pcm, dtype=np.int16).astype(np.float32)
+hop = SR // 100
+rms = np.sqrt(np.convolve(x * x, np.ones(hop) / hop, mode="same"))[::hop]   # one value per 10 ms
+total = len(x) / SR
+def quietest(a, b):
+    i0, i1 = max(0, int(a * 100)), min(len(rms) - 1, int(b * 100))
+    if i1 <= i0:
+        return (a + b) / 2
+    return (i0 + int(np.argmin(rms[i0:i1 + 1]))) / 100
+cuts = [0.0]
+for L in range(nl - 1):
+    e, n = times[last[L]][1], times[first[L + 1]][0]
+    lo, hi = min(e, n) - 0.3, max(e, n) + 0.3
+    cuts.append(quietest(lo, hi))
+cuts.append(None)
+FADE = 0.015
 out.mkdir(parents=True, exist_ok=True)
 for L, (lid, _, _, text) in enumerate(v.LINES):
     a, b = cuts[L], cuts[L + 1]
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", mp3, "-ss", f"{a:.3f}"] + (["-to", f"{b:.3f}"] if b else []) +
-                   ["-c:a", "libmp3lame", "-q:a", "2", str(out / f"{lid}.mp3")], check=True)
+                   ["-af", f"afade=t=in:d={FADE}" + (f",afade=t=out:st={max(0.0, b - a - FADE):.3f}:d={FADE}" if b else ""),
+                    "-c:a", "libmp3lame", "-q:a", "2", str(out / f"{lid}.mp3")], check=True)
     chars, st, en = [], [], []
     for n, i in enumerate(range(first[L], last[L] + 1)):
         w = script[i][1]; t0, t1 = times[i][0] - a, times[i][1] - a
