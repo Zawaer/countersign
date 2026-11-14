@@ -26,9 +26,28 @@ def git(*a):
     return subprocess.run(['git', '-C', REPO, *a], capture_output=True, text=True, check=True).stdout
 
 
-def kind(path):
+# Folders of regenerated snapshots (the source generator's verified outputs): a change there is generated output by design.
+SNAPSHOT_DIRS = ('tests/MessagePack.SourceGenerator.Tests/Resources/',)
+
+
+def generator_input(p):
+    """The input a generated-looking file is produced from: the T4 template next to a .cs, or None (no known input)."""
+    return p[:-3] + '.tt' if p.endswith('.cs') and not p.endswith('.g.cs') else None
+
+
+def counts_as_generated(p, changed):
+    """A generated-looking file is `generated` only if it sits in a regenerated-snapshot folder or its input (the .tt)
+    changed in the same diff. A hand edit to a template's output with the template untouched is a source change:
+    reviewers see it and risk counts it (red team G2). `changed` = paths in the diff (None: unknown, so not trusted)."""
+    if p.startswith(SNAPSHOT_DIRS):
+        return True
+    src = generator_input(p)
+    return bool(src and changed is not None and src in changed)
+
+
+def kind(path, changed=None):
     p = path
-    if p.endswith('.g.cs'):
+    if p.endswith('.g.cs') and counts_as_generated(p, changed):
         return 'generated'
     if p.endswith(('.md', '.txt')) and 'PublicAPI' not in p or p.startswith('doc/'):
         return 'build' if p.endswith('AnalyzerReleases.Unshipped.md') or p.endswith('AnalyzerReleases.Shipped.md') else 'doc'
@@ -36,7 +55,8 @@ def kind(path):
         return 'build'
     if p.startswith('tests/'):
         return 'test'
-    if p.endswith('.cs') and os.path.exists(os.path.join(REPO, p[:-3] + '.tt')) or (p.endswith('.cs') and git_has_tt(p)):
+    if (p.endswith('.cs') and (os.path.exists(os.path.join(REPO, p[:-3] + '.tt')) or git_has_tt(p))
+            and counts_as_generated(p, changed)):
         return 'generated'
     return 'source'
 
@@ -50,17 +70,22 @@ def git_has_tt(p):
 
 
 def diff_facts(head):
-    files = git('diff', '--name-only', BASE, head).split()
-    for f in git('ls-tree', '-r', '--name-only', head).split():
+    """Per-file insertions/deletions and kind. Binary files (numstat `-\t-`) are kind `binary` with 0/0 lines: git shows
+    no lines for them, so nothing downstream (injection scan, reviewers) can read them."""
+    changed = set(git('diff', '--name-only', BASE, head).splitlines())
+    for f in git('ls-tree', '-r', '--name-only', head).splitlines():
         if f.endswith('.tt'):
             _tt_cache[f] = True
     by = []
     ins = dele = 0
     for line in git('diff', '--numstat', BASE, head).splitlines():
-        a, d, p = line.split('\t')
+        a, d, p = line.split('\t', 2)
+        if a == '-' and d == '-':
+            by.append({'path': p, 'ins': 0, 'del': 0, 'kind': 'binary'})
+            continue
         a, d = int(a), int(d)
         ins += a; dele += d
-        by.append({'path': p, 'ins': a, 'del': d, 'kind': kind(p)})
+        by.append({'path': p, 'ins': a, 'del': d, 'kind': kind(p, changed)})
     counts = {}
     for f in by:
         counts[f['kind']] = counts.get(f['kind'], 0) + 1
@@ -423,17 +448,32 @@ def repro_checks(n, change_dir):
 
 # ---- injection_scan (countersign/injection.py): text planted for AI reviewers, in every change ----
 
+def pr_text_of(facts):
+    """The PR title and body, from facts['pr_text'] or facts['pr_title'] / facts['pr_body'] or facts['pr'] {title, body}."""
+    if facts.get('pr_text'):
+        return facts['pr_text']
+    pr = facts.get('pr') if isinstance(facts.get('pr'), dict) else {}
+    parts = [facts.get('pr_title') or pr.get('title') or '', facts.get('pr_body') or pr.get('body') or '']
+    return '\n'.join(x for x in parts if x)
+
+
 def injection_check(facts):
-    """Scan what the change adds: `git diff base head` (added lines, every file type), the seeded edit of a mutant
-    (mutation.file/line/after), the commit message and the PR text (facts['pr_text'], if any)."""
+    """Scan what the change adds: `git diff base head` (added lines, every file type, the paths of added/changed files,
+    binary files reported as unscannable), the seeded edit of a mutant (mutation.file/line/after), the branch name, the
+    commit message and the PR title/body (facts['pr_text'] or pr_title/pr_body, if any)."""
     from countersign import injection
     base, head = facts.get('base_full') or BASE, facts.get('head_full') or facts['head']
     diff = subprocess.run(['git', '-C', REPO, 'diff', '--no-color', '--no-ext-diff', base, head], capture_output=True, check=True).stdout.decode('utf-8', 'replace')
     mut = facts.get('mutation') or {}
     added = [(mut['file'], int(mut['line']), mut['after'])] if mut.get('file') and mut.get('after') else []
-    src = {'diff': f'git diff {base[:8]} {head[:8]} (added lines only)' + (' + the seeded edit (mutation.after)' if added else ''),
-           'commit_message': 'facts.commit_message', 'pr_text': 'facts.pr_text' if facts.get('pr_text') else 'none: the change has no pull request text'}
-    return injection.scan(diff=diff, commit_message=facts.get('commit_message') or '', pr_text=facts.get('pr_text') or '', added=added, sources=src)
+    by_file = (facts.get('diff') or {}).get('by_file') or []
+    pr_text = pr_text_of(facts)
+    src = {'diff': f'git diff {base[:8]} {head[:8]} (added lines and file paths)' + (' + the seeded edit (mutation.after)' if added else ''),
+           'branch': 'facts.branch' if facts.get('branch') else 'none',
+           'commit_message': 'facts.commit_message', 'pr_text': 'facts PR title/body' if pr_text else 'none: the change has no pull request text'}
+    return injection.scan(diff=diff, commit_message=facts.get('commit_message') or '', pr_text=pr_text, added=added, sources=src,
+                          branch=facts.get('branch') or '', paths=[f['path'] for f in by_file],
+                          binary=[f['path'] for f in by_file if f.get('kind') == 'binary'])
 
 
 def update_injection(ids):
