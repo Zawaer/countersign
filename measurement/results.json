@@ -978,6 +978,27 @@
       "simulated": false
     },
     {
+      "change": "demo-docs1",
+      "mutant": false,
+      "benchmark": false,
+      "of": null,
+      "mutation": null,
+      "tier": "notify",
+      "score": 1.2,
+      "owner": "Rene",
+      "routed_to_human": false,
+      "why": [
+        "reviewer refusal claude",
+        "reviewer refusal nemotron"
+      ],
+      "caught_by": null,
+      "proven": 2,
+      "refused": 0,
+      "full_read_min": 1.2,
+      "guided_min": 1,
+      "simulated": false
+    },
+    {
       "change": "up-1934",
       "mutant": false,
       "benchmark": false,
@@ -2505,7 +2526,7 @@
       "how": "seeded defects the AI would have cleared"
     },
     "share_routed_to_humans": {
-      "value": 0.86,
+      "value": 0.75,
       "simulated": false,
       "how": "real changes (not mutants) at ask/block"
     },
@@ -2513,9 +2534,9 @@
       "value": {
         "claude": {
           "model": "claude-opus-5-5",
-          "verified": 26,
+          "verified": 28,
           "rejected": 2,
-          "refusals": 24,
+          "refusals": 25,
           "rejected_share": 0.07
         },
         "codex": {
@@ -2529,7 +2550,7 @@
           "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
           "verified": 63,
           "rejected": 1,
-          "refusals": 47,
+          "refusals": 48,
           "rejected_share": 0.02
         }
       },
@@ -2537,12 +2558,12 @@
       "how": "verified vs rejected (unsupported) findings over all replayed changes"
     },
     "human_minutes_full_read": {
-      "value": 439.9,
+      "value": 441.1,
       "simulated": true,
       "how": "reading-speed model in the mandate: lines/min + minutes per file"
     },
     "human_minutes_with_pack": {
-      "value": 188,
+      "value": 189,
       "simulated": true,
       "how": "pack reading time by tier + per refused item + per verified finding"
     },
@@ -2825,6 +2846,11 @@
     },
     "reviewer_cross_check": {
       "value": {
+        "nemotron": {
+          "major_raised_verified": 28,
+          "confirmed_by_another": 1,
+          "missed_others_verified_major": 8
+        },
         "codex": {
           "major_raised_verified": 0,
           "confirmed_by_another": 0,
@@ -2834,11 +2860,6 @@
           "major_raised_verified": 9,
           "confirmed_by_another": 1,
           "missed_others_verified_major": 1
-        },
-        "nemotron": {
-          "major_raised_verified": 28,
-          "confirmed_by_another": 1,
-          "missed_others_verified_major": 8
         }
       },
       "simulated": false,
@@ -2866,6 +2887,11 @@
           "with_pack_min": 32,
           "saved_min": 228.8
         },
+        "demo-docs1": {
+          "full_read_min": 1.2,
+          "with_pack_min": 1,
+          "saved_min": 0.2
+        },
         "up-1934": {
           "full_read_min": 10.0,
           "with_pack_min": 20,
@@ -2887,30 +2913,30 @@
     },
     "model_tokens_per_change": {
       "value": {
-        "2283": 240524,
-        "2234": 280955,
-        "2129": 295729,
-        "2297": 239227,
-        "up-2022": 127795,
-        "up-1934": 141147,
-        "up-1967": 98593,
+        "2283": 483812,
+        "2234": 367925,
+        "2129": 357985,
+        "2297": 296855,
+        "up-2022": 157294,
+        "up-1934": 190548,
+        "up-1967": 104464,
         "2129-mut1": 64570,
         "2129-mut2": 64537,
         "2234-inject": 52139,
         "2234-mut1": 53920,
-        "2234-mut2": 57510,
+        "2234-mut2": 106767,
         "2234-mut3": 51111,
         "2234-mut4": 51730,
         "2234-mut5": 66760,
         "2234-mut6": 69520,
         "2234-mut7": 52962,
         "2283-inject": 55323,
-        "2283-mut1": 64464,
+        "2283-mut1": 118837,
         "2283-mut2": 60159,
         "2283-mut3": 64814,
         "2283-mut4": 65247,
         "2283-mut5": 65026,
-        "2283-sec1": 64204,
+        "2283-sec1": 126672,
         "var-2283-v1": 116134,
         "var-2283-v2": 60926,
         "var-2283-v3": 59024,
@@ -2918,7 +2944,8 @@
         "var-2234-v1": 31095,
         "var-2234-v2": 69207,
         "var-2234-v3": 71434,
-        "var-2234-v4": 55377
+        "var-2234-v4": 55377,
+        "demo-docs1": 67851
       },
       "simulated": false,
       "how": "measurement/costs.yaml; estimates where the row says so"

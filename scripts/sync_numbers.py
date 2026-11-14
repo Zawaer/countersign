@@ -115,7 +115,7 @@ def _more(r: dict, v, ci: dict) -> dict:
     out["nemotron_survivors_reviewed"] = len(nem["reviewed_test_survivors"])
     # the seven real changes
     real = [c for c in _json("measurement/results.json")["changes"] if not c.get("mutant") and not c.get("benchmark") and not c["change"].startswith("var-")]
-    agent = [c for c in real if not c["change"].startswith("up-")]
+    agent = [c for c in real if not c["change"].startswith(("up-", "demo-"))]  # Tieto's four agent-written changes; demo-* are our own PR-flow demos
     human = ("ask", "block")
     out["real_changes"] = len(real)
     out["real_routed"] = sum(c["tier"] in human for c in real)

@@ -62,8 +62,9 @@ Four were written by an agent (Tieto's branches). Three are small merged upstrea
 | [up-2022](packs/up-2022/pack.md) | 2 files, +29 −0 | `ask` | All clauses proven, but Nemotron refused to judge runtime deserialization security, a topic on the mandate's list of terms that always ask. |
 | [up-1934](packs/up-1934/pack.md) | 6 test files, +26 −22 | `ask` | All clauses proven, but Nemotron refused to judge the build on other target frameworks, and `build` is a mandated check. |
 | [up-1967](packs/up-1967/pack.md) | 1 doc file, +1 −1 | `notify` | A one-line README anchor fix. All three reviewers agree and the anchor check passes, so the AI clears it and tells Rene. |
+| [demo-docs1](packs/demo-docs1/pack.md) | 1 doc file, +1 −1 | `notify` | An agent-written README link fix in the demo repo. Cleared by the AI and **merged through the gate in 40 s** ([PR #11](https://github.com/Zawaer/countersign-messagepack-demo/pull/11)); Rene was told, not asked. |
 
-<!--n:real_routed-->6<!--/n--> of <!--n:real_changes-->7<!--/n--> go to a human. The AI clears only the docs fix.
+<!--n:real_routed-->6<!--/n--> of <!--n:real_changes-->8<!--/n--> go to a human. The AI clears only the two docs fixes.
 
 ## Measurement
 

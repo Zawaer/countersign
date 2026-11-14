@@ -37,12 +37,12 @@ Every number below says whether it is **real** (measured on code and history) or
 | Real escapes the AI would have cleared | **0 of 11** (6 high-confidence); cleared bucket: 24 PRs | same |
 | Escape rate, routed vs cleared bucket | 0.129 vs 0.0 | same |
 | Upstream median days from PR opened to merged | cleared bucket 0.24, routed bucket 0.85 | GitHub `createdAt` / `mergedAt` |
-| Findings per reviewer (verified / rejected as unsupported) | claude: 26 / 2; codex: 0 / 0; nemotron: 63 / 1 | `measurement/results.json` |
-| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | codex: 0, 0, 6; claude: 9, 1, 1; nemotron: 28, 1, 8 | same |
+| Findings per reviewer (verified / rejected as unsupported) | claude: 28 / 2; codex: 0 / 0; nemotron: 63 / 1 | `measurement/results.json` |
+| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | nemotron: 28, 1, 8; codex: 0, 0, 6; claude: 9, 1, 1 | same |
 | Owner's verdict on the AI's verified findings: accepted (real) / rated, per reviewer | claude: 9 of 13 accepted (69%), 0 rejected, 4 unsure; nemotron: 8 of 10 accepted (80%), 1 rejected, 1 unsure; rated 23 of 23 rated (0 unrated); rejected as false positives: 2129 nemotron:N2 (the SDK 9 requirement is pre-existing on base, not caused by this change) (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |
 | Owner overrode the routing | 0 of 4 (accepted when routed to a human: none; held back when AI-cleared: none); by tier: ask: request-changes 2; block: request-changes 2 | same |
-| Real changes routed to a human | 86% of 7 | same |
-| Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2129-mut1: 64,570, 2129-mut2: 64,537, 2234: 280,955, 2234-inject: 52,139, 2234-mut1: 53,920, 2234-mut2: 57,510, 2234-mut3: 51,111, 2234-mut4: 51,730, 2234-mut5: 66,760, 2234-mut6: 69,520, 2234-mut7: 52,962, 2283: 240,524, 2283-inject: 55,323, 2283-mut1: 64,464, 2283-mut2: 60,159, 2283-mut3: 64,814, 2283-mut4: 65,247, 2283-mut5: 65,026, 2283-sec1: 64,204, 2297: 239,227, up-1934: 141,147, up-1967: 98,593, up-2022: 127,795, var-2234-v1: 31,095, var-2234-v2: 69,207, var-2234-v3: 71,434, var-2234-v4: 55,377, var-2283-v1: 116,134, var-2283-v2: 60,926, var-2283-v3: 59,024, var-2283-v4: 74,619 | `measurement/costs.yaml` |
+| Real changes routed to a human | 75% of 8 | same |
+| Model tokens per change (estimates, see docs/COSTS.md) | 2129: 357,985, 2129-mut1: 64,570, 2129-mut2: 64,537, 2234: 367,925, 2234-inject: 52,139, 2234-mut1: 53,920, 2234-mut2: 106,767, 2234-mut3: 51,111, 2234-mut4: 51,730, 2234-mut5: 66,760, 2234-mut6: 69,520, 2234-mut7: 52,962, 2283: 483,812, 2283-inject: 55,323, 2283-mut1: 118,837, 2283-mut2: 60,159, 2283-mut3: 64,814, 2283-mut4: 65,247, 2283-mut5: 65,026, 2283-sec1: 126,672, 2297: 296,855, demo-docs1: 67,851, up-1934: 190,548, up-1967: 104,464, up-2022: 157,294, var-2234-v1: 31,095, var-2234-v2: 69,207, var-2234-v3: 71,434, var-2234-v4: 55,377, var-2283-v1: 116,134, var-2283-v2: 60,926, var-2283-v3: 59,024, var-2283-v4: 74,619 | `measurement/costs.yaml` |
 
 ### Simulated review time (reading model in the mandate, `simulated: true`)
 
@@ -52,6 +52,7 @@ Every number below says whether it is **real** (measured on code and history) or
 | 2234 | 26.2 | 47 | -20.8 |
 | 2283 | 23.0 | 32 | -9.0 |
 | 2297 | 260.8 | 32 | 228.8 |
+| demo-docs1 | 1.2 | 1 | 0.2 |
 | up-1934 | 10.0 | 20 | -10.0 |
 | up-1967 | 1.2 | 1 | 0.2 |
 | up-2022 | 4.4 | 21 | -16.6 |

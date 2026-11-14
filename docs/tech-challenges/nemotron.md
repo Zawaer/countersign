@@ -3,7 +3,7 @@
 **Model.** Nemotron 3.5 Super VL (`nvidia/nemotron-3.5-super-vl-120b-a12b`, 120B total, 12B active), via NVIDIA's
 OpenAI-compatible API from CI.
 
-**What it does.** In Countersign it is the third reviewer beside Claude and Codex, live on all <!--n:real_changes-->7<!--/n--> real changes. A clause
+**What it does.** In Countersign it is the third reviewer beside Claude and Codex, live on all <!--n:real_changes-->8<!--/n--> real changes. A clause
 is proven only if all three say met with verified evidence. It also reviews blind: <!--n:seeded_reviewed-->17<!--/n--> seeded changes and <!--n:bench_variants-->8<!--/n--> fix
 variants of the same issues.
 
@@ -23,7 +23,7 @@ variants of the same issues.
   still names them.
 - **Room to finish.** 16k output tokens cut a review off (reasoning counts), so `max_tokens` is 32k.
 - **Context budget and a "what you were not given" list.** Files shrink to windows around the hunks; the model is
-  told what it did not get, so it refuses instead of guessing (<!--n:nemotron_refusals-->47<!--/n--> refusals, each shown to the owner).
+  told what it did not get, so it refuses instead of guessing (<!--n:nemotron_refusals-->48<!--/n--> refusals, each shown to the owner).
 - **Unanimity.** On 2283 it said met beside Codex while Claude's reproduced objection stood; the clause stayed
   refused. Its "all good" never clears alone.
 
