@@ -1,4 +1,16 @@
-## Countersign: change up-1967 is **NOTIFY**, owner **Rene**
+## Countersign: **NOTIFY**, owner **Rene**
+
+**#1967 Fix AOT README anchor - fix anchor ref name to `aot`**
+
+**Why:** The AI declined to decide 2 questions
+
+- ✓ All 2 checks pass
+- ? Reviewers left 2 questions open
+- ✓ No signature needed: Rene is told
+
+<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+
+#### Sign-off card: change up-1967 is NOTIFY, owner Rene
 
 **Change for #1967: Fix AOT README anchor - fix anchor ref name to `aot`**
 
@@ -389,5 +401,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | **total** | **1.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/up-1967/facts.json`, requirements `requirements/up-1967.yaml`, reviews `reviews/up-1967/claude.json`, `reviews/up-1967/codex.json`, `reviews/up-1967/nemotron.json`
+
+</details>
 
 </details>

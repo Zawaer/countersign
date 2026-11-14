@@ -459,81 +459,33 @@ def new_flags(D: Data, surv: list) -> int:
 
 
 def build_index(D: Data, n: dict) -> str:
-    rows = D.change_rows()
-    seeded = seeded_rows(D)
-    surv = [s for s in seeded if not s["failed"]]
-    flagged = [s for s in surv if s["rname"]]
-    fresh = new_flags(D, surv)
+    """overview.html: three huge numbers, each with a caption of at most 8 words, each linking to its source."""
     nums = []
-    if n.get("h_cleared") is not None:
-        nums.append((f'{n["h_cleared"]}<small>/{n["h_n"]}</small>', "real past PRs the AI would clear"
-                     f'<i>{n["h_esc_cleared"]} of the {n["h_esc"]} later reverted or fixed are among them</i>', "#history"))
+    if n.get("h_esc") is not None:
+        sent = n["h_esc"] - n["h_esc_cleared"]
+        nums.append((f'{sent}<small>/{n["h_esc"]}</small>', "later-reverted real PRs sent to a human",
+                     f"{BLOB}measurement/history/results.md", f'{sent} of {n["h_esc"]}'))
     if n.get("mut_checks") is not None:
-        nums.append((f'{n["mut_checks"]}<small>/{n["mut_total"]}</small>', "planted bugs and attacks failed a check"
-                     + (f'<i>{len(surv)} got past; a reviewer pointed at the planted line in {len(flagged)}</i>' if surv else ""), "#seeded"))
+        nums.append((f'{n["mut_checks"]}<small>/{n["mut_total"]}</small>', "planted bugs caught by tests and checks",
+                     f"{BLOB}measurement/results.md", f'{n["mut_checks"]} of {n["mut_total"]}'))
     if n.get("rt_total"):
-        nums.append((f'{n["rt_stopped"]}<small>/{n["rt_total"]}</small>', "attacks on our own pipeline stopped"
-                     "<i>after the fixes; the first run stopped 7</i>", f'{BLOB}docs/security/REDTEAM.md'))
-    nums_html = "".join(f'<a class="num" href="{h}"><b>{a}</b><span>{b}</span></a>' for a, b, h in nums)
-
-    sd_rows, sd_ids = [], []
-    for s in seeded:
-        rv = (f'<span><span class="st {"bad" if s["rpin"]["status"] == "bad" else "warn"}">◐ {e(s["rname"])}</span>'
-              f' <a class="src" href="{e(s["rpin"]["link"])}">{e(s["rpin"]["src"].split(" → ")[1])}</a></span>' if s["rname"] else '<span class="muted">–</span>')
-        href = f'index.html#{e(s["id"])}' if "-mut" in s["id"] else f'{BLOB}evidence/{e(s["id"])}/facts.json'
-        sd_rows.append([f'<a href="{href}"><code>{e(s["id"])}</code></a>', e(s["kind"]),
-                        "<span>" + (", ".join(code(c) for c in s["failed"]) or '<span class="st warn">✗ none failed</span>') + "</span>",
-                        rv, tier(s["final_tier"], s["final_owner"])])
-        sd_ids.append(s["id"])
-    one = [s for s in seeded if "-mut" in s["id"]]
-    other = sorted({s["kind"] for s in seeded if "-mut" not in s["id"]})
-    what = f'{len(one)} one-line bugs' + (f' and {len(seeded) - len(one)} other attacks ({", ".join(other)})' if other else "")
-    surv_line = (f'{len(surv)} got past every check; a blind reviewer flagged the planted line in {fresh} of them with a finding '
-                 f'the unmutated original did not already have at that line ({len(flagged)} counting any finding there).' if surv else "")
-
-    hist = build_history_section(D, n)
-    ch_rows = [[f'<a href="packs/{r["change"]}/pack.html"><code>{r["change"]}</code></a>', tier(r["tier"], r["owner"]),
-                e(r["reasons"][0] if r["reasons"] else "")] for r in rows]
+        nums.append((f'{n["rt_stopped"]}<small>/{n["rt_total"]}</small>', "attacks on its own pipeline stopped",
+                     f"{BLOB}docs/security/REDTEAM.md", f'{n["rt_stopped"]} of {n["rt_total"]}'))
+    big = "".join(f'<a class="big" href="{h}" aria-label="{e(lab)} {e(cap)}"><b aria-hidden="true">{a}</b><span>{e(cap)}</span></a>' for a, cap, h, lab in nums)
     body = f"""
-<section class="wrap hero small fold-hero">
-<h1>Measured where we can, simulated where marked</h1>
-<div class="nums">{nums_html}</div>
-<p class="muted small">Read from {src('measurement/results.json')} at build time. Tap a number for its rows.</p>
-<p class="small"><a href="#seeded">Details ↓</a></p>
-</section>
-<section class="wrap" id="seeded" aria-labelledby="sseed"><h2 id="sseed">Planted bugs</h2>
-<p class="prose">{what}, planted in the agents' own branches. {surv_line} <a href="index.html#2234-mut2">Try one →</a></p>
-{table(['Bug', 'Kind', 'Failed check', 'Reviewer at the line', 'Tier'], sd_rows, cls='stack', row_ids=sd_ids)}
-<p class="foot-note">Tier after the AI reviews. {src('measurement/results.json')} (<code>changes</code>, <code>mutants</code>) · {src('measurement/mutants/mutants.json', 'catalogue')} · reviews/&lt;bug&gt;/*.json; a finding counts when it cites a line within {__import__('scene').NEAR} of the planted one.</p>
-</section>
-{hist}
-<section class="wrap" id="changes" aria-labelledby="sall"><h2 id="sall">The four agent-written changes</h2>
-<p class="prose">A repo with no track record starts strict, so none is cleared.</p>
-{table(['Change', 'Tier', 'Deciding reason'], ch_rows, cls='stack')}
-{tier_legend()}
-<p class="foot-note">{src('measurement/results.json')} · {src('packs/2234/pack.json', 'packs/*/pack.json')}</p></section>
-<section class="wrap" aria-labelledby="slim"><h2 id="slim">Where it stops</h2>
-<ul class="prose list">
-<li>It can't judge intent: whether this is the change the product needs.</li>
-<li>It is only as good as the requirement text. Ours are placeholders from the upstream issues (<code>official: false</code>).</li>
-<li>Checks ran on net8.0 / Linux only; other targets are listed as not checked in every pack.</li>
-<li>Reviewers share training data, so their independence is partial.</li>
-<li>Spot-checks, escapes and review minutes in the trust demo are simulated, and labelled so.</li>
-</ul></section>
+<section class="wrap bignums" aria-labelledby="h-nums"><h1 id="h-nums" class="sr">The numbers</h1>{big}</section>
 """
-    return page("overview.html", "Countersign: the numbers", body, desc=hero_text(n))
+    return page("overview.html", "Countersign: the numbers", body, desc=hero_text(n), cls="numbers")
 
 
 # ---------------------------------------------------------------- attack.html (moved into the main screen)
 
 def build_attack(D: Data, n: dict) -> str:
-    first = next((m["id"] for m in D.mutants if not any(c["status"] == "fail" for c in m["checks"])), D.mutants[0]["id"] if D.mutants else "")
-    return f"""<!doctype html>
+    return """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sneak a bug past Countersign</title>
-<meta http-equiv="refresh" content="0; url=index.html#{e(first)}">
-<script>location.replace("index.html#"+(location.hash.slice(1)||{json.dumps(first)}))</script>
-</head><body><p><a href="index.html#{e(first)}">Sneak a bug in: it moved to the main screen.</a></p></body></html>
+<meta http-equiv="refresh" content="0; url=index.html#sneak">
+</head><body><p><a href="index.html#sneak">Sneak a bug in: it moved to the main screen.</a></p></body></html>
 """
 
 
@@ -564,9 +516,11 @@ def more(summary: str, inner: str) -> str:
 
 
 def build_tour(D: Data, n: dict) -> str:
+    """Six steps, each one sentence and one visual, all read from change 2234's records. Step 6 is the ledger attack."""
+    import scene  # site/scene.py: the same cited hunk as the first screen's "Show me where"
+    from countersign.pack_render import _marks, _signoff, _why  # the pack's own first-screen card
     p = D.packs.get("2234") or {}
     f = D.facts.get("2234") or {}
-    reqs = p.get("requirements", [])
     d = f.get("diff", {})
     steps = []
 
@@ -575,101 +529,57 @@ def build_tour(D: Data, n: dict) -> str:
     mx = max((x["ins"] + x["del"] for x in bf), default=1) or 1
     dstat = "".join(f'<li><code title="{e(x["path"])}">{e(x["path"].rsplit("/", 1)[-1])}</code><span class="muted">{e(x["kind"])}</span>'
                     f'<span class="nbar"><i style="width:{max(2, round(100 * (x["ins"] + x["del"]) / mx))}%"></i></span><span class="mono">+{x["ins"]} −{x["del"]}</span></li>' for x in bf)
-    req_rows = [[code(r["id"]), e(r.get("text", ""))] for r in reqs]
-    steps.append(("The change", "The change",
-                  f'An agent wrote {d.get("files", "?")} files, +{d.get("insertions", "?")} −{d.get("deletions", "?")}, for issue #2234. A careful read takes about {round((D.metric("time_per_change") or {}).get("2234", {}).get("full_read_min", 0)) or "?"} minutes (simulated), and still would not show whether it fixes the bug the issue reports.',
-                  f'<ul class="dstat">{dstat}</ul>',
-                  more(f"What it has to do: {len(reqs)} clauses", table(['Clause', 'Text'], req_rows)
-                       + f'<p class="foot-note">Placeholders from the upstream issue (<code>official: false</code>). {src("requirements/2234.yaml")}</p>'),
-                  src('evidence/2234/facts.json')))
+    steps.append(("The change", f'An AI agent wrote this {d.get("files", "?")}-file fix for issue #2234.',
+                  f'<ul class="dstat">{dstat}</ul>', src('evidence/2234/facts.json')))
 
-    # 2 the facts: do the new tests fail without the fix?
-    fwf = next((c for c in f.get("checks", []) if c["id"] == "tests.fail_without_fix"), {})
-    ft = fwf.get("tests", [])
+    # 2 do the new tests fail without the fix?
+    ft = next((c for c in f.get("checks", []) if c["id"] == "tests.fail_without_fix"), {}).get("tests", [])
     still = sum(t["outcome"] == "passed" for t in ft)
-    tiles = "".join(f'<li class="{"weak" if t["outcome"] == "passed" else "ok"}"><b>{"◐" if t["outcome"] == "passed" else "✓"}</b>'
-                    f'<code>{e(short_test(t["name"]))}</code><span>{"passes without the fix" if t["outcome"] == "passed" else "fails without the fix"}</span></li>' for t in sorted(ft, key=lambda t: t["outcome"] != "passed"))
-    ch = [[code(c["id"]), status(c["status"]), e(c.get("summary", ""))] for c in f.get("checks", [])]
-    npass = sum(c["status"] == "pass" for c in f.get("checks", []))
-    steps.append(("The facts", "Do the tests test it?",
-                  f"Revert the fix, rerun the new tests: {still} of {len(ft)} still pass, so they prove nothing.",
-                  f'<ul class="tiles">{tiles}</ul>',
-                  more(f"All {len(f.get('checks', []))} checks ({npass} pass)", table(['Check', 'Status', 'Result'], ch)),
-                  src('evidence/2234/facts.json')))
+    tiles = "".join(f'<li class="{"weak" if t["outcome"] == "passed" else "ok"}"><b aria-hidden="true">{"◐" if t["outcome"] == "passed" else "✓"}</b>'
+                    f'<code>{e(short_test(t["name"]))}</code><span>{"passes without the fix" if t["outcome"] == "passed" else "fails without the fix"}</span></li>'
+                    for t in sorted(ft, key=lambda t: t["outcome"] != "passed"))
+    steps.append(("The tests", f"Undo the fix and {still} of its {len(ft)} new tests still pass, so they prove nothing.",
+                  f'<ul class="tiles">{tiles}</ul>', src('evidence/2234/facts.json')))
 
     # 3 the reviewers
-    panel = (p.get("panel") or {}).get("rows", [])
-    rid = [r["id"] for r in reqs]
-    prow = [[f'<b>{e(r["reviewer"].capitalize())}</b> <span class="muted">{e(r.get("vendor", ""))}</span>'] + [status(r["verdicts"].get(x)) for x in rid] for r in panel]
-    v1, v2 = n.get("codex_v1"), n.get("codex_v2")
-    codex_line = (f"Given passing tests, Codex went from met on {v1['met']} of {v1['of']} clauses to <b>{v2['met']} of {v2['of']}</b>, "
-                  f"with {v2['findings']} findings. Evidence made it agreeable. " if v1 and v2 else "")
-    steps.append(("Reviewers", "Three vendors, one rule",
-                  "A clause is proven only if every reviewer says met, with citations the engine re-reads.",
-                  table(['Reviewer'] + [code(x.replace('REQ-2234-', '')) for x in rid], prow, cls=''),
-                  more("Why one reviewer can never clear", f'<p class="prose">{codex_line}{src("docs/FAILURE_MODES.md", "failure mode R1")}</p>'),
-                  src('packs/2234/pack.json')))
+    rows = (p.get("panel") or {}).get("rows", [])
+    def vline(r):
+        v = list(r["verdicts"].values())
+        no = len(v) - v.count("met")
+        return (f'<li class="{"bad" if no else "ok"}"><b aria-hidden="true">{"✗" if no else "✓"}</b><span class="who">{e(r["reviewer"].capitalize())}</span>'
+                f'<span>{f"{no} of {len(v)} not met" if no else f"all {len(v)} met"}</span><span class="muted">{e(r.get("vendor", ""))}</span></li>')
+    steps.append(("The reviewers", "Three AI reviewers from three vendors; a requirement counts only if all say met.",
+                  f'<ul class="vlist">{"".join(vline(r) for r in rows)}</ul>', src('packs/2234/pack.json')))
 
-    # 4 found
-    find = next((x for x in p.get("findings", []) if x.get("id") == "C1" and x.get("reviewer") == "claude"), {})
-    def cite(ev):
-        where = (f'<code>{e(ev["file"].split("/")[-1])}:{ev["line"]} @{e(ev["rev"][:8])}</code> <code>{e(ev["quote"])}</code>' if ev["kind"] == "code"
-                 else f'test <code>{e(short_test(ev.get("name", "")))}</code> {e(ev.get("outcome", ""))} without the fix' if ev["kind"] == "test"
-                 else f'{e(ev["kind"])} text')
-        note = re.sub(r"\b([0-9a-f]{8})[0-9a-f]{32}\b", r"\1", ev.get("note", "").split(" (")[0])
-        why = "" if ev.get("verified") else f'<span class="muted"> · {e(note)}</span>'
-        return f'<li>{status("pass", "verified") if ev.get("verified") else status("fail", "rejected")} {where}{why}</li>'
-    evs = sorted(find.get("evidence", []), key=lambda x: not x.get("verified"))
-    cites = "".join(cite(x) for x in evs)
-    refused = (p.get("card") or {}).get("refused", [])
-    ref_rows = [[e(x["topic"]), e("; ".join(x.get("who_should_decide", [])))] for x in refused]
-    steps.append(("Findings", "What it found",
-                  f"Claude: {find.get('title', '')}.",
-                  f'<ul class="ev cites">{cites}</ul>',
-                  more("The full claim", f'<blockquote class="prose">{e(find.get("claim", ""))}</blockquote>')
-                  + more(f"{len(refused)} questions the AI declined to decide", table(['Question', 'Who should decide'], ref_rows)),
-                  src('packs/2234/pack.json')))
+    # 4 the finding, on its line
+    code = scene.Code()
+    sd = scene.story_data()
+    h = scene.where_hunk(code, sd)
+    vis = ""
+    if h:
+        pin = '<div class="pin" role="note"><b aria-hidden="true">✗</b> Untouched by the fix</div>' if h["touched"] else ""
+        vis = f'<div class="hunk"><div class="file">{e(h["file"].rsplit("/", 1)[-1])}</div>{scene.code_rows(h["rows"], h["pin"], pin)}</div>'
+    steps.append(("The finding", f"{sd['finder']} showed it fixes a different bug than the issue reports, citing the exact line.",
+                  vis, src('packs/2234/pack.json')))
 
-    # 5 sign-off card
-    card = p.get("card") or {}
-    reasons = "".join(f'<li>{e(r["text"])}</li>' for r in card.get("reasons", []))
-    trace = "".join(f'<li>{status("pass", "proven") if t["status"] == "proven" else status("fail", t["label"])} <code>{e(t["id"])}</code> <span class="muted">{e(t["why"])}</span></li>'
-                    for t in card.get("trace", []))
-    steps.append(("Sign-off card", "What the owner sees",
-                  "One screen: where it goes, who decides, and why.",
-                  f'<div class="signcard"><div class="card-h"><span>Change <code>2234</code></span>{tier(card.get("tier"), card.get("owner"))}</div><ol>{reasons}</ol>'
-                  f'<a class="btn" href="packs/2234/pack.html">Open the pack</a></div>',
-                  more("Requirement trace", f'<ul class="rows">{trace}</ul>'),
-                  src('packs/2234/pack.json')))
+    # 5 the owner decides
+    so = _signoff(p) if p else None
+    marks = "".join(f'<li class="m-{c}"><b aria-hidden="true">{g}</b>{e(w)}</li>' for c, g, w in _marks(p, so)) if p else ""
+    owner = p.get("owner") or "The owner"
+    steps.append(("The owner", f"{owner} gets one screen and signs the decision under their name.",
+                  f'<a class="mini-card" href="packs/2234/pack.html"><span class="pill {e(p.get("tier", ""))}"><b>{e(str(p.get("tier", "")).upper())}</b> → {e(owner)}</span>'
+                  f'<span class="why"><b>Why:</b> {e(_why(p)) if p else ""}</span><ul class="marks">{marks}</ul><span class="open">Open the evidence pack →</span></a>',
+                  src('packs/2234/pack.json') + ' · ' + src('ledger/ledger.jsonl')))
 
-    # 6 countersign + ledger: the attack
-    so = p.get("signoff") or {}
-    steps.append(("Forge it", "Try to forge the record",
-                  "Every sign-off is signed and hash-chained. Edit the record, then re-check.",
+    # 6 the ledger: the attack
+    steps.append(("Forge it", "Every sign-off is signed and chained: edit one and the check fails.",
                   '<p class="ctas"><button class="btn primary" type="button" id="tamper">1. Tamper</button><button class="btn" type="button" id="rehash">2. Recompute the hash</button><button class="btn" type="button" id="reset">Reset</button></p>'
                   '<div id="lstatus" class="banner" aria-live="polite"></div><div id="ledger" class="ledger"></div>',
-                  more("What the owner signs", f'<blockquote>{e(so.get("statement", ""))}</blockquote><pre class="cmd">$ {e(so.get("command", ""))}</pre>'
-                       '<p class="prose">Each line\'s hash is SHA-256 over its content, points to the previous hash, and is signed with the signer\'s Ed25519 key from <code>keys/</code>. Offline: <code>countersign verify-ledger</code>.</p>'),
-                  src('ledger/ledger.jsonl') + ' · ' + src('countersign/ledger.py') + ' · <a href="prs.html">How it looks on a GitHub PR</a>'))
-
-    # 7 trust per area
-    arow = [[code(a["name"]), e(a.get("owner", "")), tier(a.get("max_ai_tier"))] for a in D.areas]
-    escapes = [x for x in D.ledger if x.get("type") == "escape"]
-    steps.append(("Trust per area", "Trust is per area",
-                  "Each area has an owner and a limit on what the AI may clear alone.",
-                  table(['Area', 'Owner', 'Most the AI may clear'], arow, cls=''),
-                  more("After an escape", f'<p class="prose">When a revert or incident is traced to an AI-cleared change, the mandate {trust_rule(D)} Escapes in the ledger so far: <b>{len(escapes)}</b>.</p>{tier_legend()}'),
-                  src('mandate/messagepack.mandate.yaml')))
-
-    # 8 recap
-    steps.append(("Recap", "What you just saw",
-                  "The owner learned it fixes the wrong bug, and decides under their name. Not faster on a change this small.",
-                  '<p class="ctas"><a class="btn primary" href="index.html#2234-mut2">Sneak a bug in</a><a class="btn" href="overview.html">The numbers</a><a class="btn" href="packs/2234/pack.html">Pack 2234</a></p>',
-                  "", ""))
+                  src('ledger/ledger.jsonl') + ' · ' + src('countersign/ledger.py')))
 
     secs = "".join(f'<section class="tstep" id="s{i + 1}" data-n="{i + 1}" aria-labelledby="t{i + 1}"{"" if i == 0 else " hidden"}>'
-                   f'<h1 id="t{i + 1}">{h}</h1><p class="lead">{s}</p><div class="tvis">{v}</div>{m}'
-                   f'{f"<p class=foot-note>{sr}</p>" if sr else ""}</section>' for i, (t, h, s, v, m, sr) in enumerate(steps))
+                   f'<p class="kick">{i + 1}. {e(t)}</p><h1 id="t{i + 1}">{s}</h1><div class="tvis">{v}</div>'
+                   f'{f"<p class=foot-note>{sr}</p>" if sr else ""}</section>' for i, (t, s, v, sr) in enumerate(steps))
     dots = "".join(f'<a href="#{i + 1}" class="dot" data-n="{i + 1}" title="{e(t)}">{i + 1}<span>{e(t)}</span></a>' for i, (t, *_r) in enumerate(steps))
     body = f"""
 <div class="wrap tour">
@@ -678,7 +588,7 @@ def build_tour(D: Data, n: dict) -> str:
 <div class="tnav"><button class="btn" id="prev" type="button">← Back</button><span id="pos" class="muted"></span><button class="btn primary" id="next" type="button">Next →</button></div>
 </div>"""
     js = ("var LEDGER=" + json.dumps(D.ledger) + ";var PUB=" + json.dumps(D.pubkeys) + ";" + TOUR_JS + LEDGER_JS)
-    return page("tour.html", "Guided tour: where the trust comes from (change 2234)", body, js=js, cls="has-tour")
+    return page("tour.html", "How it works: change 2234 in six steps", body, js=js, cls="has-tour")
 
 
 TOUR_JS = r"""
@@ -906,8 +816,6 @@ CSS = r"""
 --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;color-scheme:light}
 :root[data-theme=dark]{--bg:#0d1117;--bg2:#151b23;--fg:#f0f6fc;--muted:#9198a1;--border:#3d444d;--accent:#4493f8;--accent-bg:#121d2f;
 --ok:#3fb950;--ok-bg:#12261e;--warn:#d29922;--warn-bg:#272115;--bad:#f85149;--bad-bg:#25171c;color-scheme:dark}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1117;--bg2:#151b23;--fg:#f0f6fc;--muted:#9198a1;--border:#3d444d;--accent:#4493f8;--accent-bg:#121d2f;
---ok:#3fb950;--ok-bg:#12261e;--warn:#d29922;--warn-bg:#272115;--bad:#f85149;--bad-bg:#25171c;color-scheme:dark}}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--sans);font-variant-numeric:tabular-nums}
 a{color:var(--accent);text-underline-offset:2px}a:hover{text-decoration-thickness:2px}
@@ -1111,6 +1019,29 @@ th,td{padding:6px 8px}}
 .pr-side{border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;font-size:14px}
 .pr-side .ghs{margin-bottom:0}.pr-side .ghs-row{grid-template-columns:20px minmax(0,1fr)}.pr-side .req{grid-column:2;justify-self:start}.pr-side h2{margin-top:0}.t1{line-height:1.6;background:var(--bg2);border-radius:6px;padding:8px 12px;font-size:13px}
 @media (max-width:860px){.pr-grid{grid-template-columns:1fr}.pr-t{font-size:20px}.ghs-row{grid-template-columns:20px minmax(0,1fr)}.req{grid-column:2;justify-self:start}}
+/* v3: one idea per screen */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.bignums{min-height:calc(100vh - 220px);display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-content:center}
+.big{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:32px 16px;color:var(--fg);text-decoration:none;border-radius:12px}
+.big:hover{background:var(--bg2)}.big b{font:700 clamp(64px,9vw,112px)/1 var(--sans);letter-spacing:-.03em}.big b small{font-size:.45em;color:var(--muted);font-weight:600}
+.big span{font:400 20px/1.35 var(--sans);color:var(--muted);max-width:18ch}
+.tstep .kick{font:600 14px/1.5 var(--sans);color:var(--muted);margin:0 0 4px}.tstep h1{font-size:clamp(24px,3.6vw,34px);max-width:30ch;margin-bottom:24px}
+.vlist{list-style:none;padding:0;margin:0;display:grid;gap:8px;max-width:560px}
+.vlist li{display:grid;grid-template-columns:24px 110px 1fr auto;gap:12px;align-items:baseline;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:18px}
+.vlist li.ok b{color:var(--ok)}.vlist li.bad{border-color:var(--bad);background:var(--bad-bg)}.vlist li.bad b{color:var(--bad)}.vlist .who{font-weight:600}.vlist .muted{font-size:13px}
+.hunk{max-width:760px;border:1px solid var(--border);border-radius:10px;padding:8px 0;font:14px/22px var(--mono)}
+.hunk .file{font-weight:600;font-size:13px;color:var(--muted);padding:2px 14px 6px}
+.hunk .r{display:grid;grid-template-columns:56px 1fr}.hunk .n{color:var(--muted);text-align:right;padding-right:14px}.hunk .c{white-space:pre-wrap;overflow-wrap:anywhere}
+.hunk .r.pinned{background:var(--bad-bg);box-shadow:inset 4px 0 var(--bad);font-weight:600}.hunk .r.gap .c{color:var(--muted);font-family:var(--sans)}
+.hunk i{font-style:normal}.hunk i.tk{color:#8250df}.hunk i.tc{color:var(--muted);font-style:italic}
+.hunk .pin{margin:4px 14px 8px 56px;color:var(--bad);font:700 16px/1.3 var(--sans)}
+.mini-card{display:grid;gap:12px;justify-items:start;max-width:520px;padding:20px 24px;border:1px solid var(--border);border-radius:12px;color:var(--fg);text-decoration:none}
+.mini-card:hover{border-color:var(--accent)}.mini-card .why{font-size:18px}.mini-card .open{color:var(--accent)}
+.pill{border:2px solid currentColor;border-radius:999px;padding:4px 16px;font-size:18px}.pill.ask{color:var(--warn);background:var(--warn-bg)}.pill.block{color:var(--bad);background:var(--bad-bg)}
+.pill.notify,.pill.silent{color:var(--ok);background:var(--ok-bg)}.pill b{font-family:var(--mono)}
+.marks{list-style:none;padding:0;margin:0;display:grid;gap:6px;font-size:17px}.marks li{display:flex;gap:10px}.marks .m-ok b{color:var(--ok)}.marks .m-bad b{color:var(--bad)}.marks .m-warn b{color:var(--warn)}
+@media (max-width:720px){.bignums{grid-template-columns:1fr;gap:8px;min-height:0;padding-top:16px}.big{padding:20px 8px}.big span{font-size:18px}
+.vlist li{grid-template-columns:20px 90px 1fr;font-size:16px}.vlist .muted{display:none}.hunk{font-size:12.5px;line-height:20px}.hunk .r{grid-template-columns:40px 1fr}.hunk .pin{margin-left:40px}}
 """
 
 
@@ -1329,7 +1260,8 @@ def copy_packs():
         s = ROOT / "packs" / c / "pack.html"
         if s.exists():
             (dst / c).mkdir(parents=True, exist_ok=True)
-            shutil.copy2(s, dst / c / "pack.html")
+            htm = s.read_text(encoding="utf-8").replace('<p class="brand">Countersign', '<p class="brand"><a href="../../index.html">← Countersign</a>', 1)
+            (dst / c / "pack.html").write_text(htm, encoding="utf-8")
 
 
 def main() -> None:

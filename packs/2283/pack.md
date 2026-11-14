@@ -1,4 +1,16 @@
-## Countersign: change 2283 is **ASK**, owner **Toivo**
+## Countersign: **ASK**, owner **Toivo**
+
+**#2283 implementation for #2283**
+
+**Why:** Location filter silently drops MsgPack003
+
+- ! Builds, tests pass; 1 other check fail
+- ✕ Reviewers found a major issue
+- ✕ Signed by Toivo: request changes
+
+<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+
+#### Sign-off card: change 2283 is ASK, owner Toivo
 
 **Agent-written change for #2283: implementation for #2283**
 
@@ -349,5 +361,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | **total** | **66.0** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2283/facts.json`, requirements `requirements/2283.yaml`, reviews `reviews/2283/claude.json`, `reviews/2283/codex.json`, `reviews/2283/nemotron.json`
+
+</details>
 
 </details>

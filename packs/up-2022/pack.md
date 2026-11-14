@@ -1,4 +1,16 @@
-## Countersign: change up-2022 is **ASK**, owner **Toivo**
+## Countersign: **ASK**, owner **Toivo**
+
+**#2017 Ignore abstract implementations of `IMessagePackFormatter<T>` Fixes #2017**
+
+**Why:** The AI declined to decide 1 question
+
+- ✓ All 6 checks pass
+- ? Reviewers left 1 question open
+- … Awaiting Toivo
+
+<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+
+#### Sign-off card: change up-2022 is ASK, owner Toivo
 
 **Change for #2017: Ignore abstract implementations of `IMessagePackFormatter<T>` Fixes #2017**
 
@@ -491,5 +503,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | **total** | **23.4** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/up-2022/facts.json`, requirements `requirements/up-2022.yaml`, reviews `reviews/up-2022/claude.json`, `reviews/up-2022/codex.json`, `reviews/up-2022/nemotron.json`
+
+</details>
 
 </details>

@@ -1,4 +1,16 @@
-## Countersign: change 2234 is **ASK**, owner **Toivo**
+## Countersign: **ASK**, owner **Toivo**
+
+**#2234 The analyzer does not work if SuppressSourceGeneration = true**
+
+**Why:** The change fixes a different crash
+
+- ! Builds, tests pass; 2 other checks fail
+- ✕ Reviewers found a major issue
+- ✕ Signed by Toivo: request changes
+
+<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+
+#### Sign-off card: change 2234 is ASK, owner Toivo
 
 **Agent-written change for #2234: The analyzer does not work if SuppressSourceGeneration = true**
 
@@ -342,5 +354,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | **total** | **92.4** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2234/facts.json`, requirements `requirements/2234.yaml`, reviews `reviews/2234/claude.json`, `reviews/2234/codex.json`, `reviews/2234/nemotron.json`
+
+</details>
 
 </details>

@@ -1,4 +1,16 @@
-## Countersign: change 2129 is **BLOCK**, owner **Toivo**
+## Countersign: **BLOCK**, owner **Toivo**
+
+**#2129 Agentic implementation of #2129 Feature Request: Allow generation of Formatter for a type in a referenced assembly**
+
+**Why:** Risk score 175.2 reaches the block band
+
+- ! Builds, tests pass; 4 other checks fail
+- ✕ Reviewers found 2 major issues
+- ✕ Signed by Toivo: request changes
+
+<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+
+#### Sign-off card: change 2129 is BLOCK, owner Toivo
 
 **Agent-written change for #2129: Agentic implementation of #2129 Feature Request: Allow generation of Formatter for a type in a referenced assembly**
 
@@ -593,5 +605,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | **total** | **175.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2129/facts.json`, requirements `requirements/2129.yaml`, reviews `reviews/2129/claude.json`, `reviews/2129/codex.json`, `reviews/2129/nemotron.json`
+
+</details>
 
 </details>

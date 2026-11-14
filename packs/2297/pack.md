@@ -1,4 +1,16 @@
-## Countersign: change 2297 is **BLOCK**, owner **Toivo**
+## Countersign: **BLOCK**, owner **Toivo**
+
+**#2297 Add ExcludeFromCodeCoverage attribute to generated code**
+
+**Why:** More than 50 files changed
+
+- ✓ All 11 checks pass
+- ✕ Reviewers found 2 major issues
+- ✕ Signed by Toivo: request changes
+
+<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+
+#### Sign-off card: change 2297 is BLOCK, owner Toivo
 
 **Agent-written change for #2297: Add ExcludeFromCodeCoverage attribute to generated code**
 
@@ -548,5 +560,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | **total** | **83.0** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2297/facts.json`, requirements `requirements/2297.yaml`, reviews `reviews/2297/claude.json`, `reviews/2297/codex.json`, `reviews/2297/nemotron.json`
+
+</details>
 
 </details>

@@ -57,10 +57,8 @@ def shoot(page, base, path, name, action=None):
     save(page.screenshot(), name)
 
 
-def open_pin(page):
-    page.get_by_role("button", name="Fixes a different crash").first.click()
-    page.locator("#c2").scroll_into_view_if_needed()
-    page.evaluate("window.scrollBy(0, -260)")
+def after_fade(page):
+    page.wait_for_timeout(4500)  # the first screen reveals "It fixes the wrong bug." with a CSS fade
 
 
 def tamper(page):
@@ -85,7 +83,7 @@ def main():
                                   color_scheme="light")
         ctx.add_init_script("try{localStorage.setItem('cs-theme','light')}catch(_){}")
         page = ctx.new_page()
-        shoot(page, base, "index.html", "scene.png", open_pin)
+        shoot(page, base, "index.html", "scene.png", after_fade)
         shoot(page, base, "prs.html", "pr.png")
         shoot(page, base, "tour.html#6", "ledger-tamper.png", tamper)
         shoot(page, base, "overview.html", "overview.png")

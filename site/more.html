@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Countersign: more</title>
+<meta name="description" content="Countersign: an AI agent wrote a fix that builds, passes its tests and an AI review, and fixes the wrong bug. Countersign shows where, and its owner decides.">
+<script>try{var t=localStorage.getItem("cs-theme");if(t)document.documentElement.dataset.theme=t}catch(_){}</script>
+<style>:root{--bg:#fff;--bg2:#f6f8fa;--fg:#1f2328;--muted:#59636e;--border:#d1d9e0;--accent:#0969da;
+--ok:#1a7f37;--ok-bg:#dafbe1;--warn:#9a6700;--warn-bg:#fff8c5;--bad:#d1242f;--bad-bg:#ffebe9;
+--add:#e6ffec;--del:#ffebe9;--k:#8250df;--s:#0a3069;--cm:#6e7781;--num:#0550ae;
+--sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+--mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;color-scheme:light}
+:root[data-theme=dark]{--bg:#0d1117;--bg2:#151b23;--fg:#e6edf3;--muted:#9198a1;--border:#3d444d;--accent:#4493f8;
+--ok:#3fb950;--ok-bg:#12261e;--warn:#d29922;--warn-bg:#272115;--bad:#f85149;--bad-bg:#25171c;
+--add:#12261e;--del:#25171c;--k:#d2a8ff;--s:#a5d6ff;--cm:#8b949e;--num:#79c0ff;color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--sans);min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;font-size:15px}
+.mark{font-weight:600;color:var(--fg);text-decoration:none}
+.top nav{display:flex;gap:16px;align-items:center}.top nav a{color:var(--muted)}
+.top button{background:none;border:0;color:var(--muted);font:inherit;font-size:17px;padding:2px 6px;cursor:pointer}
+main{flex:1;display:flex;flex-direction:column}
+.view{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px 20px 48px;gap:20px}
+.view:target{display:flex}.view:target~.home{display:none}.home{display:flex}
+.back{align-self:center;font-size:16px}
+h1,h2{margin:0;font-weight:700;letter-spacing:-.01em}
+.home h1{display:flex;flex-direction:column;gap:8px;align-items:center}
+.home .lead{font-size:clamp(30px,6.4vw,56px);line-height:1.1}
+.issue{font:400 clamp(14px,2.2vw,17px)/1.4 var(--sans);color:var(--muted);text-decoration:none;max-width:90vw}
+h1,h2,.say,.wrong,.decide{text-wrap:balance}
+.caught{margin:-8px 0 0;font-size:clamp(16px,2.6vw,20px);color:var(--fg)}
+.issue:hover{text-decoration:underline}
+.ticks{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px 28px;font-size:clamp(19px,3.4vw,28px);font-weight:600}
+.ticks li{display:flex;align-items:center;gap:10px;color:var(--fg);opacity:0;animation:in .4s ease-out forwards;animation-delay:calc(.35s + var(--i) * .35s)}
+.g{display:inline-grid;place-items:center;width:1.25em;height:1.25em;border-radius:50%;border:2px solid currentColor;font-size:.85em;font-weight:800;flex:none}
+.ticks .g{color:var(--ok);background:var(--ok-bg)}
+.wrong{margin:12px 0 0;font-size:clamp(32px,7vw,64px);line-height:1.15;font-weight:800;color:var(--bad)}.wrong .g,.result .g{display:inline-grid;vertical-align:.1em;margin-right:.3em}
+.wrong .g{background:var(--bad-bg)}
+.decide{margin:0;font-size:clamp(22px,4vw,34px);font-weight:600}
+.acts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:4px 0 0}
+.btn{display:inline-block;padding:14px 26px;border-radius:10px;border:2px solid var(--fg);color:var(--fg);text-decoration:none;font-size:18px;font-weight:600;background:var(--bg)}
+.btn.primary{background:var(--fg);color:var(--bg)}
+.btn:hover{border-color:var(--accent)}
+.reveal{opacity:0;animation:in .5s ease-out forwards}
+.r1{animation-delay:2s}.r2{animation-delay:3s}.r3{animation-delay:3.4s}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.seen .ticks li,.seen .reveal{animation-duration:0s;animation-delay:0s}
+@media (prefers-reduced-motion:reduce){.ticks li,.reveal{animation:none;opacity:1}}
+.say{font-size:clamp(22px,4vw,32px);font-weight:600;line-height:1.25;max-width:26ch;margin:0}
+.code{width:100%;max-width:760px;text-align:left;border:1px solid var(--border);border-radius:10px;padding:8px 0;font:14px/22px var(--mono);background:var(--bg)}
+.file{font:600 13px/1.4 var(--mono);color:var(--muted);padding:2px 14px 6px}
+.r{display:grid;grid-template-columns:56px 1fr;min-height:22px}
+.r .n{color:var(--muted);text-align:right;padding-right:14px;user-select:none;position:relative}
+.r .n::after{content:attr(data-m);position:absolute;right:3px}
+.r .c{white-space:pre-wrap;overflow-wrap:anywhere;padding-right:14px}
+.r.add{background:var(--add)}.r.del{background:var(--del)}.r.del .c{color:var(--muted)}
+.r.pinned{background:var(--bad-bg);box-shadow:inset 4px 0 var(--bad);font-weight:600}
+.r.planted{box-shadow:inset 4px 0 var(--fg)}
+.r.gap .c{color:var(--fg);font-family:var(--sans);font-size:15px;font-weight:600}
+.pin{display:flex;align-items:center;gap:8px;margin:4px 14px 8px 56px;color:var(--bad);font:700 16px/1.3 var(--sans)}
+.pin .g{background:var(--bad-bg)}
+i.tk{font-style:normal;color:var(--k)}i.ts{font-style:normal;color:var(--s)}i.tc{color:var(--cm)}i.tn{font-style:normal;color:var(--num)}
+mark.zw{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 2px}
+.nw{white-space:nowrap}.by{margin:0;color:var(--muted);font-size:15px;max-width:60ch}
+.picks{list-style:none;margin:0;padding:0;display:grid;gap:14px;width:100%;max-width:440px}
+.pick{display:block;padding:22px;border:2px solid var(--border);border-radius:12px;font-size:22px;font-weight:600;color:var(--fg);text-decoration:none}
+.pick:hover{border-color:var(--accent)}
+#h-sneak{font-size:clamp(26px,5vw,40px)}
+.you{margin:0;color:var(--muted);font-size:17px}
+.result{font-size:clamp(26px,5.4vw,46px);line-height:1.2;max-width:22ch}
+.result.ok{color:var(--ok)}.result.ok .g{background:var(--ok-bg)}
+.result.warn{color:var(--warn)}.result.warn .g{background:var(--warn-bg)}
+.result.bad{color:var(--bad)}.result.bad .g{background:var(--bad-bg)}
+.plain-list{display:flex;justify-content:flex-start;align-items:flex-start;text-align:left;max-width:560px;margin:0 auto;width:100%}
+.plain-list h1{font-size:32px}
+.links{list-style:none;margin:0;padding:0;display:grid;gap:4px;width:100%}
+.links li{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);font-size:20px}
+.links span{color:var(--muted);font-size:16px}
+@media (max-width:600px){.r{grid-template-columns:48px 1fr}.r .n{padding-right:12px;font-size:12px}.code{font-size:12.5px;line-height:20px}
+.pin{margin-left:48px}.btn{padding:12px 18px;font-size:17px}.view{gap:16px;padding:8px 16px 32px}.ticks{gap:10px 20px}
+.acts{flex-direction:column;align-items:stretch;width:100%;max-width:340px}}</style>
+</head><body class="plain">
+<header class="top"><a class="mark" href="index.html">Countersign</a>
+<nav aria-label="Site"><a href="more.html">More</a><button type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav></header>
+<main id="main"><section class="view plain-list" aria-labelledby="h-more"><a class="back" href="index.html">← Back</a>
+<h1 id="h-more">More</h1><ul class="links">
+<li><a href="packs/2234/pack.html">Evidence pack</a><span>what the owner signs</span></li>
+<li><a href="tour.html">How it works</a><span>six steps</span></li>
+<li><a href="overview.html">Numbers</a><span>three results</span></li>
+<li><a href="prs.html">PR flow</a><span>on GitHub</span></li>
+<li><a href="pitch.html">Pitch</a><span>the deck</span></li>
+</ul></section></main>
+<script>addEventListener('hashchange',function(){document.body.classList.add('seen')});function csTheme(){var d=document.documentElement,c=d.dataset.theme||'light',n=c==='dark'?'light':'dark';d.dataset.theme=n;try{localStorage.setItem('cs-theme',n)}catch(_){}}</script>
+</body></html>

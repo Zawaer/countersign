@@ -1,4 +1,16 @@
-## Countersign: change up-1934 is **ASK**, owner **Toivo**
+## Countersign: **ASK**, owner **Toivo**
+
+**#1925 Change default Language version of generated code to C# 7.3**
+
+**Why:** The AI declined to decide 1 question
+
+- ✓ All 6 checks pass
+- ? Reviewers left 1 question open
+- … Awaiting Toivo
+
+<details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
+
+#### Sign-off card: change up-1934 is ASK, owner Toivo
 
 **Change for #1925: Change default Language version of generated code to C# 7.3**
 
@@ -577,5 +589,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | **total** | **8.2** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/up-1934/facts.json`, requirements `requirements/up-1934.yaml`, reviews `reviews/up-1934/claude.json`, `reviews/up-1934/codex.json`, `reviews/up-1934/nemotron.json`
+
+</details>
 
 </details>
