@@ -21,8 +21,9 @@ workflow_dispatch job=facts     ──► facts                        (stage 1 
 | `craci` | After `facts`. Downloads `facts-<n>`, runs `python3 -m countersign.craci attach`: with the `CRACI_API_TOKEN` secret it fetches CRACI's job SBOM and network trace of the `facts` job (`GET /v1preview1/sbom`, `/v1preview1/network-trace`, by GitHub job id) and adds `craci.sbom` / `craci.network` to facts.json; without it both are `skipped` ("no CRACI_API_TOKEN") and the job passes. Uploads `craci-<n>` (facts.json + raw SBOM and trace). | 1 | `presets: [github]`; TLS: `api.craci.com`, `api.github.com` |
 
 Secrets: `NVIDIA_API_KEY` (set by Toivo), `GEMINI_API_KEY` (to come from Rene) and, optional, `CRACI_API_TOKEN`
-(CRACI app → Settings → API tokens; `gh secret set CRACI_API_TOKEN -R Zawaer/countersign`). The keys exist only as
-Actions secrets. The runner reads them from the environment and never writes them to files or logs.
+(CRACI app → Settings → API tokens; `gh secret set CRACI_API_TOKEN -R Zawaer/countersign`). Today only
+`NVIDIA_API_KEY` is set (`gh secret list`): Gemini adjudication has not run, and the `craci` job records
+`craci.sbom` / `craci.network` as skipped. The keys exist only as Actions secrets. The runner reads them from the environment and never writes them to files or logs.
 
 ## Dispatch
 

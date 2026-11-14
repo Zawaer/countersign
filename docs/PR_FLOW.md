@@ -17,7 +17,7 @@ named in the signed mandate assigned:
 ```
 1. agent opens PR            branch ju26-issue-<n>, label agent-written; the branch names the change and its requirement set
 2. facts                     CI recomputes the diff (merge base, head, files, +/-) and checks it matches the evidence
-3. reviewers                 Claude, Codex, Nemotron (same prompt, no shared context); Gemini adjudicates disputes only
+3. reviewers                 Claude, Codex, Nemotron (same prompt, no shared context); Gemini adjudicates disputes only (wired, not run: no key)
 4. verify + decide           every citation re-checked against the PR's git objects; tier = strictest driver
 5. pack comment              one sticky comment: tier, owner, mandate, "evidence matches this PR", pack sha256, the pack
    status + routing          countersign/tier: success (silent/notify) | pending (ask) | failure (block); owner assigned
@@ -110,9 +110,9 @@ repo variable `CI_RUNNER=craci`.
   the flow.
 - **Plain files and one CI job.** The PR step is about 20 seconds on a 2-vCPU runner with recorded inputs. Per change,
   the measured cost of the live inputs (`measurement/costs.yaml`, rendered in [COSTS.md](COSTS.md)): Nemotron
-  40k to 53k input tokens per review, $0 on NVIDIA's free tier (about 40 requests/min, so a busy repo needs a paid or
+  40k to 53k input tokens per review call on the four agent-written changes (3k to 39k on the small upstream controls), $0 on NVIDIA's free tier (about 40 requests/min, so a busy repo needs a paid or
   self-hosted endpoint); Codex about 95k input tokens per change for its second pass and Claude about 48k per change for v1 (both
-  estimates, billed to subscriptions, cost unknown); CRACI pipeline runs 0.4 job-minutes, reviewer jobs 3 to 7
+  estimates; Codex billed to OpenAI credits, Claude to a subscription; cost unknown); CRACI pipeline runs 0.4 job-minutes, reviewer jobs 3 to 7
   job-minutes for one to three changes. A full dotnet facts run is the largest fixed cost (minutes per change, 8 vCPU).
 - **Concurrency.** PR checks run per PR in parallel; ledger writes are serialised by one concurrency group and the
   hash chain, so two owners signing at once cannot overwrite each other: the second is told to sign again.

@@ -10,7 +10,7 @@ This file is the contract between the pipeline's parts. Every stage reads and wr
 change (branch + requirement IDs)
   1. facts      deterministic checks: diff stats, areas touched, build, tests, "tests fail without the fix", API surface, analyzers
   2. reviews    three independent AI reviewers (Claude, Codex/GPT, Nemotron) produce structured findings + per-requirement verdicts;
-                Gemini adjudicates disputed items only (advisory; it can add reasons, never clear)
+                Gemini adjudicates disputed items only (advisory; it can add reasons, never clear; wired but not run: no key)
   3. verify     the engine checks every cited piece of evidence; no verifiable evidence -> finding rejected (logged)
   4. decide     per requirement clause: proven / refused (with reason); risk score (explainable, additive) -> tier
   5. pack       evidence pack (JSON + Markdown + HTML): what was checked and by whom, what wasn't and why, residual risk
@@ -286,7 +286,7 @@ Score bands map to tiers via `risk.thresholds` (score >= threshold): notify 15, 
 
 One table in the mandate (`trust.stages`), applied by `countersign/trust.py` to ledger events only. Per area the AI's clearance right is a stage on the ladder `ask -> notify -> silent`, never above the area's `max_ai_tier` (where each area starts: the owner delegated it by signing).
 
-| stage | entry requirement (mandate v3) |
+| stage | entry requirement (since mandate v3; unchanged in v4) |
 |---|---|
 | `ask` | where an area lands after a drop, and every area while a reviewer version is not released |
 | `notify` | 20 agreeing spot-checks in a row since the last drop or climb, >= 95% agreement over the last 40 spot-checks, no escape in the area's last 50 changes |
