@@ -410,6 +410,34 @@
       "failures_also_on_base": [],
       "log": "evidence/2283-mut3/logs/tests_full_suite.log",
       "duration_s": 6.0
+    },
+    {
+      "id": "injection_scan",
+      "tool": "countersign.injection (deterministic pattern scan)",
+      "tool_version": "injection-v1",
+      "status": "pass",
+      "summary": "no text addressed to automated reviewers in the added lines, commit message or PR text",
+      "scanned": {
+        "diff_added_lines": 226,
+        "files": 4,
+        "commit_message": true,
+        "pr_text": false
+      },
+      "patterns": [
+        "addressed_to_ai",
+        "override_instructions",
+        "verdict_steering",
+        "claimed_approval",
+        "role_play",
+        "lgtm",
+        "hidden_unicode"
+      ],
+      "matches": [],
+      "sources": {
+        "diff": "git diff 32258fdb 9df83c38 (added lines only) + the seeded edit (mutation.after)",
+        "commit_message": "facts.commit_message",
+        "pr_text": "none: the change has no pull request text"
+      }
     }
   ],
   "not_run": [
