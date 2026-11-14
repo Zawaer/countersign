@@ -135,7 +135,9 @@ Open the run in the CRACI web app (or follow the CRACI link on the GitHub job). 
   tier is about 40 requests/min, and the runner retries 429/5xx with backoff.
 - The Nemotron calls go to **NVIDIA's hosted API**. That is fine for MessagePack (open source, `confidential:
   false`). For a confidential repo the runner refuses the hosted endpoint, and you set
-  `COUNTERSIGN_NEMOTRON_BASE_URL` to a self-hosted server. We have not run one.
+  `COUNTERSIGN_NEMOTRON_BASE_URL` to a self-hosted server, or use `--reviewer nemotron-selfhost` (Nemotron 3.5
+  Lightning 30B on our own A100, `scripts/selfhost/`). CI does not run the self-hosted reviewer: it needs the SSH
+  tunnel to the GPU box, so it is run by hand and writes to `reviews-selfhost/`, which `pipeline` does not read.
 - `facts` reproduces real changes only (not the seeded mutants), and only checks that run on Linux (net8.0
   slice; the mandate's `other-targets` known gap still applies). The fail-without-fix worktree reverts every file
   the branch changed under `src/`.

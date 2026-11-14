@@ -200,15 +200,18 @@ def cmd_review_llm(a) -> int:
     status = 0
     for change in a.changes:
         try:
-            out = (llm.review_from_raw(ws, change, a.reviewer, a.repo, budget=a.context_chars, blind=a.blind) if a.from_raw
-                   else llm.run_review(ws, change, a.reviewer, a.repo, budget=a.context_chars, blind=a.blind))
+            kw = {"budget": a.context_chars, "blind": a.blind, "confidential": a.confidential, "out_dir": a.out}
+            out = (llm.review_from_raw(ws, change, a.reviewer, a.repo, **kw) if a.from_raw
+                   else llm.run_review(ws, change, a.reviewer, a.repo, **kw))
         except llm.LLMError as e:
             print(f"error: {change}: {e}", file=sys.stderr)
             status = 1
             continue
         r = read_json(out)
         print(f"wrote {out.relative_to(ws.inputs)} ({r['model']}): " + ", ".join(f"{v['req']} {v['verdict']}" for v in r["requirement_verdicts"])
-              + f"; {len(r['findings'])} findings, {len(r['refusals'])} refusals; tokens {r['runner']['usage']}")
+              + f"; {len(r['findings'])} findings, {len(r['refusals'])} refusals; tokens {r['runner']['usage']}"
+              + (f"; endpoint {r['runner']['endpoint_host']} (self-hosted: {str(r['runner']['self_hosted']).lower()})"
+                 if "endpoint_host" in r["runner"] else ""))
     return status
 
 
@@ -323,6 +326,11 @@ def parser() -> argparse.ArgumentParser:
     sp.add_argument("--from-raw", action="store_true", help="re-parse the saved raw response instead of calling the API")
     sp.add_argument("--blind", action=argparse.BooleanOptionalAction, default=True,
                     help="seeded changes (<n>-mutK, <n>-inject): show the base change's id and no seeding record (default: on)")
+    sp.add_argument("--confidential", action="store_true",
+                    help="treat the change as confidential even if the mandate does not: only a self-hostable reviewer on its "
+                         "own server may read it (vendor-hosted endpoints are refused before anything is sent)")
+    sp.add_argument("--out", default=None, metavar="FOLDER",
+                    help="folder under the workspace for the review (default: reviews; nemotron-selfhost: reviews-selfhost)")
     sp = add("adjudicate", cmd_adjudicate, "only if reviewers disagree: the adjudicator's rulings (advisory; never clears)")
     sp.add_argument("changes", nargs="+")
     sp.add_argument("--adjudicator", default=None, help="default: the mandate's adjudicator")
