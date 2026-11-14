@@ -14,6 +14,8 @@ import json
 import re
 from pathlib import Path
 
+from .icons import CSS as ICON_CSS, icon
+
 
 TAGLINE = "AI reviews code; a named human signs."  # same line as the site header (site/scene.py)
 
@@ -744,66 +746,61 @@ CSS = """
 body{margin:0;overflow-wrap:anywhere;font:15px/1.5 var(--sans);color:var(--fg);background:var(--bg);font-variant-numeric:tabular-nums}
 main{max-width:880px;margin:0 auto;padding:8px 16px 48px}
 a{color:var(--link);text-underline-offset:2px}a:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
-h1{font-size:20px;line-height:1.25;font-weight:600;margin:8px 0 4px}h2{font-size:20px;line-height:1.25;font-weight:600;margin:32px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--line)}
-h3{font-size:12px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;color:var(--mut);margin:16px 0 4px}h4{font-size:16px;font-weight:600;margin:0 0 4px}
+h1{font-size:20px;line-height:1.25;font-weight:600;margin:8px 0 4px}
+h3{font-size:12px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;color:var(--mut);margin:24px 0 2px}h4{font-size:16px;font-weight:600;margin:0 0 4px}
 p{margin:4px 0 8px}ul,ol{margin:4px 0;padding-left:24px}li{margin:4px 0}.mut{color:var(--mut)}.sm{font-size:14px}
 code,pre,.mono{font-family:var(--mono);font-size:.875em}code{overflow-wrap:anywhere;background:var(--sf);border:1px solid var(--line);border-radius:4px;padding:0 4px}
 pre code{background:none;border:0;padding:0}
-.eyebrow{font:12px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin:0}.story{font-size:14px;margin:4px 0 8px}
-nav.jump{font-size:14px;margin:8px 0 0;display:flex;flex-wrap:wrap;gap:4px 16px}
 .banner{background:var(--badb);color:var(--bad);border:1px solid var(--bad);padding:8px 12px;border-radius:6px;font-weight:600}
-.card{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:12px 16px 16px;margin:4px 0 16px}
-.verdict{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
 .tier{display:inline-block;border:1px solid currentColor;border-radius:999px;padding:2px 12px;font:600 14px/20px var(--mono);letter-spacing:.02em;text-transform:uppercase}
 .tier.sm{font-size:12px;line-height:18px;padding:0 8px}
 .t-silent{color:var(--t-silent);background:var(--t-silentb)}.t-notify{color:var(--t-notify);background:var(--t-notifyb)}.t-ask{color:var(--t-ask);background:var(--t-askb)}.t-block{color:var(--t-block);background:var(--t-blockb)}
-ol.reasons{padding-left:24px}ol.reasons li{margin:4px 0}
-ul.rows{list-style:none;padding:0;margin:0}ul.rows>li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 8px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
-ul.rows>li:first-child{border-top:0}
-.st,.sev{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font:600 12px/18px var(--mono);text-transform:uppercase;border:1px solid currentColor;border-radius:999px;padding:0 8px;margin-top:2px}
-.st-proven{color:var(--ok);background:var(--okb)}.st-refused{color:var(--warn);background:var(--warnb)}.st-notmet{color:var(--bad);background:var(--badb)}.st-held{color:var(--held);background:var(--heldb)}
-.sev-blocker,.sev-major{color:var(--bad);background:var(--badb)}.sev-minor{color:var(--warn);background:var(--warnb)}.sev-info{color:var(--held);background:var(--heldb)}
-.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
 .chip{font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--sf);border-radius:6px;padding:0 6px;text-decoration:none;overflow-wrap:anywhere}
 .chip.bad{border-style:dashed;color:var(--mut)}
-.sign{border:1px solid var(--line);border-left:3px solid var(--t-ask);background:var(--sf);border-radius:6px;padding:8px 12px;margin-top:16px}
-.sign q{font-style:italic;quotes:none}
+.sign{border:1px solid var(--line);border-left:3px solid var(--t-ask);background:var(--sf);border-radius:6px;padding:8px 12px;margin-top:8px}
+.sign q{font-style:italic;quotes:none}.sign p{margin:0 0 4px}
 pre{background:var(--sf);border:1px solid var(--line);padding:8px 12px;border-radius:6px;overflow-x:auto;margin:8px 0}
 pre.code{padding:8px 0}pre.code span{display:block;padding:0 12px 0 0;white-space:pre}
 pre.code span i{display:inline-block;min-width:4.2em;padding:0 .8em 0 .5em;text-align:right;color:var(--mut);font-style:normal;user-select:none}
 pre.code span.hl{background:var(--mark);box-shadow:inset 3px 0 0 var(--t-ask)}pre.code span.hl i{color:var(--fg);font-weight:600}
-article,.box{border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin:8px 0;background:var(--bg)}
-article.c-refused,article.c-notmet{border-left:3px solid var(--warn)}article.c-notmet{border-left-color:var(--bad)}article.c-proven{border-left:3px solid var(--ok)}article.c-held{border-left:3px solid var(--held)}
 .callout{border:1px solid var(--line);border-left:3px solid var(--t-ask);background:var(--sf);border-radius:6px;padding:8px 12px;margin:8px 0}
-blockquote{margin:4px 0;padding:4px 12px;border-left:3px solid var(--line);color:var(--mut)}
-ol.chain{padding-left:24px}ol.chain>li{margin:8px 0}
+blockquote{margin:4px 0;padding:2px 12px;border-left:3px solid var(--line);color:var(--mut)}
 .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;margin:8px 0}table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}
 th{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);background:var(--sf)}th,td{overflow-wrap:break-word}td.n{text-align:right}
 .v-met{color:var(--ok);font-weight:600}.v-not_met{color:var(--bad);font-weight:600}.v-cannot_determine,.v-none{color:var(--warn);font-weight:600}
-details.fold{margin-top:32px;border-top:1px solid var(--line);padding-top:8px}details.fold>summary{font-weight:600;cursor:pointer;padding:8px 0}
-details.mini>summary{cursor:pointer;color:var(--link);font-size:14px}
-details.clip>summary{list-style:none;cursor:pointer}details.clip>summary::-webkit-details-marker{display:none}
-details.clip>summary::after{content:" more";color:var(--link);font-size:13px;white-space:nowrap}details.clip[open]>summary::after{content:" less"}
-details.clip>div{margin:4px 0 2px}details.clip>div p{margin:2px 0 6px}details.adj{margin-top:2px}details.adj>summary{font-size:14px}
-pre.cmd span{white-space:nowrap}pre.cmd{white-space:pre-wrap;overflow-wrap:normal;margin:6px 0 4px}.sign details.mini{margin-top:4px}
-:target{scroll-margin-top:8px;outline:2px solid var(--focus);outline-offset:4px;border-radius:6px}
+.sev-blocker,.sev-major{color:var(--bad);font-weight:600}.sev-minor{color:var(--warn);font-weight:600}.sev-info{color:var(--mut);font-weight:600}
+details>summary{cursor:pointer}details.mini>summary{color:var(--link);font-size:14px}
+details.fold{margin-top:24px;border-top:1px solid var(--line);padding-top:8px}details.fold>summary{font-weight:600;padding:8px 0}
+.rows{border-top:1px solid var(--line)}
+.row{border-bottom:1px solid var(--line)}
+.row>summary,div.row{display:flex;gap:8px;align-items:flex-start;padding:7px 2px;list-style:none}
+.row>summary::-webkit-details-marker{display:none}.row>summary:hover{background:var(--sf)}
+.row .i{margin-top:.2em;font-size:1.1em}.row .rt{flex:1;min-width:0}.row .tag .i{margin:0;font-size:1em}
+.row .loc{font:12px/1.9 var(--mono);white-space:nowrap;text-decoration:none}.row .loc:hover{text-decoration:underline}
+.chev{color:var(--mut)}div.row .chev{width:1.1em;flex:none}details[open]>summary>.chev{transform:rotate(180deg)}
+.rd{padding:0 8px 10px 30px;font-size:14px}.rd p{margin:2px 0 6px}.rd ol{margin:2px 0 6px}.rd .i{margin:0}
+.rd.sub{padding:0 0 0 22px}.rd.sub .row:last-child{border-bottom:0}
+.c-ok{color:var(--ok)}.c-bad{color:var(--bad)}.c-warn{color:var(--warn)}.c-mut{color:var(--mut)}
+.c-t-silent{color:var(--t-silent)}.c-t-notify{color:var(--t-notify)}.c-t-ask{color:var(--t-ask)}.c-t-block{color:var(--t-block)}
+.ev{display:none}.ev:target{display:block;border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin:16px 0}
+:target{scroll-margin-top:8px}.row:target{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
 .ok{color:var(--ok);font-weight:600}.no{color:var(--bad);font-weight:600}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .story{min-height:calc(100vh - 160px);min-height:calc(100svh - 160px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px;padding:24px 0}
 .story .brand{font:600 14px/1.4 var(--sans);margin:0}.story .brand .mut{font-weight:400}.story h1{font-size:clamp(22px,4.4vw,32px);line-height:1.2;max-width:28ch;margin:0;text-wrap:balance}
-.pill{display:inline-flex;gap:8px;align-items:baseline;border:2px solid currentColor;border-radius:999px;padding:6px 20px;font:600 20px/1.3 var(--sans);margin:0}
+.pill{display:inline-flex;gap:8px;align-items:center;border:2px solid currentColor;border-radius:999px;padding:6px 20px;font:600 20px/1.3 var(--sans);margin:0}
 .pill b{font-family:var(--mono);letter-spacing:.04em}
 .why{font-size:clamp(18px,3.6vw,22px);margin:0;max-width:32ch}
 ul.marks{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:10px;font-size:clamp(18px,3.6vw,22px);text-align:left}
-ul.marks li{display:flex;gap:12px;align-items:baseline;margin:0}ul.marks .g{display:inline-grid;place-items:center;width:1.4em;height:1.4em;border-radius:50%;font-weight:700;flex:none;border:2px solid currentColor;font-size:.8em}
-.m-ok .g{color:var(--ok);background:var(--okb)}.m-bad .g{color:var(--bad);background:var(--badb)}.m-warn .g{color:var(--warn);background:var(--warnb)}
+ul.marks li{display:flex;gap:12px;align-items:center;margin:0}ul.marks .g{font-size:1.25em}
+.m-ok .g{color:var(--ok)}.m-bad .g{color:var(--bad)}.m-warn .g{color:var(--warn)}
 details#evidence{margin-top:0}details#evidence>summary{font-size:20px;text-align:center;color:var(--link);list-style:none;padding:16px 0}
-details#evidence>summary::-webkit-details-marker{display:none}details#evidence>summary::after{content:" ▾"}details#evidence[open]>summary::after{content:" ▴"}
-.story-l{font-size:14px;margin:8px 0 16px}
-@media (min-width:720px){body{font-size:16px}main{padding:24px 32px 64px}h1{font-size:24px}.story{font-size:15px}.card{padding:16px 24px 24px}}
-@media (max-width:480px){.eyebrow .range{display:none}}
-@media print{details{display:block}details>*{display:block}.jump{display:none}}
+details#evidence>summary::-webkit-details-marker{display:none}details#evidence>summary .chev{color:var(--link);vertical-align:-.25em;font-size:1.2em}
+details.more-all{margin-top:32px}details.more-all>summary{font-size:14px;color:var(--link)}
+@media (min-width:720px){body{font-size:16px}main{padding:24px 32px 64px}h1{font-size:24px}}
+@media print{details{display:block}details>*{display:block}.ev{display:block}}
 """
 
 
@@ -815,13 +812,7 @@ def _tier(t: str, sm: bool = False) -> str:
     return f'<span class="tier{" sm" if sm else ""} t-{_e(t)}">{_e(t)}</span>'
 
 
-def _status(label: str) -> str:
-    cls, glyph, title = STATUS.get(label, ("refused", "?", label))
-    return f'<span class="st st-{cls}" title="{_e(title)}"><span aria-hidden="true">{glyph}</span>{_e(label)}</span>'
-
-
-def _sev(s: str) -> str:
-    return f'<span class="sev sev-{_e(s)}">{_e(s)}</span>'
+ICON_OF = {"proven": "pass", "held before": "partial", "refused": "unknown", "not met": "fail"}  # icons.STATUS meanings
 
 
 def _chip(ref: str, label: str, ok: bool = True) -> str:
@@ -833,89 +824,6 @@ def _table(headers: list[str], rows: list[list[str]], numeric: frozenset = froze
     body = "".join("<tr>" + "".join(f'<td{" class=n" if i in numeric else ""}>{c}</td>' for i, c in enumerate(r)) + "</tr>" for r in rows)
     cap = f'<caption class="sr">{_e(caption)}</caption>' if caption else ""
     return f'<div class="scroll"><table>{cap}<thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>'
-
-
-def _clip(head: str, rest: str, cls: str = "clip") -> str:
-    """A headline that opens to the rest in one tap (both already HTML-escaped). No rest, no fold."""
-    if not rest:
-        return head
-    return f'<details class="{cls}"><summary>{head}</summary><div class="sm mut">{rest}</div></details>'
-
-
-def _html_ruling(p: dict, r: dict, chain: bool = True) -> str:
-    """One line per dispute; the adjudicator's note and full ruling folded under it."""
-    def items(xs: list, title: str) -> str:
-        lis = "".join(f'<li><b>{_e(_name(x.get("reviewer", "?")))}</b>: {_e(x.get("claim"))} <span class="mut">({_e(x.get("why"))})</span></li>' for x in xs)
-        return f"<p><b>{title}</b></p><ul>{lis or '<li>nothing</li>'}</ul>"
-
-    body = ((f'<p>{_e(r["note"])}</p>' if r.get("note") else "") + items(r.get("supported", []), "Backed by the cited evidence")
-            + items(r.get("unsupported", []), "Not backed") + "<p><b>What would settle it</b></p><ul>"
-            + "".join(f"<li>{_e(x)}</li>" for x in r.get("evidence_that_would_settle", [])) + "</ul>")
-    if chain and not str(r.get("dispute", "")).startswith("finding:"):
-        body += f'<p><a href="#chain-{_e(r.get("dispute"))}">The full chain for {_e(_short_id(str(r.get("dispute"))))}</a></p>'
-    return _clip(f'{_e(_ruling_line(p, r))} <span class="mut">(advisory)</span>', body, "clip adj")
-
-
-def _html_parts(p: dict) -> dict:
-    """The sign-off card's pieces, each placed in its group of the Evidence fold."""
-    c, st = p["card"], p["story"]
-    rulings = {str(r.get("dispute")): r for r in _rulings(p)}
-    reasons = ""
-    for r in c["reasons"]:
-        head, rest = _split(r["text"], 110, REASON_SEPS)
-        link = f' <a class="sm" href="{_e(r["link"])}">evidence</a>'
-        reasons += f"<li>{_clip(_e(head) + link, _e(rest))}</li>"
-    more = (f'<p class="sm mut">All {c["more_drivers"]} tier drivers are in <a href="#all-drivers">full detail</a>.</p>' if c["more_drivers"] else "")
-    trace = ""
-    for t in c["trace"]:
-        head, rest = _trace_why(p, t)
-        idl = f'<a href="#{_e(t["anchor"])}"><b title="{_e(t["id"])}">{_e(_short_id(t["id"]))}</b></a> '
-        adj = _html_ruling(p, rulings[t["id"]]) if t["id"] in rulings else ""
-        trace += f'<li>{_status(t["label"])}<div>{_clip(idl + _e(head), _e(rest))}{adj}</div></li>'
-    found = "".join(
-        f'<li>{_sev(f["severity"])}<div><a href="#{_e(f["anchor"])}">{_e(f["title"])}</a> '
-        f'<span class="mut sm">{_e(_name(f["reviewer"]))} {_e(f["key"].split(":", 1)[1])}'
-        + (f', also {_e(", ".join(_name(n) for n in f["shared_with"]))}' if f["shared_with"] else ", only this reviewer") + "</span>"
-        f'<div class="chips">{"".join(_chip(x["ref"], x["label"]) for x in f["chips"])}</div>'
-        + (_html_ruling(p, rulings["finding:" + f["key"]]) if "finding:" + f["key"] in rulings else "") + "</div></li>" for f in c["found"])
-    if not c["found"]:
-        found = '<li><span class="st st-proven">none</span><div>No verified findings.</div></li>'
-    if c["found_total"] > len(c["found"]):
-        found += f'<li><span></span><div class="sm"><a href="#findings">+{c["found_total"] - len(c["found"])} more findings</a></div></li>'
-    refused = ""
-    for g in c["refused"]:
-        head, rest = _split(g["topic"], 80)
-        why = (f"{_e(rest)}<br>" if rest else "") + f'<b>Why the AI would not decide:</b> {_e(g["why"])}'
-        refused += (f'<li id="{_e(g["anchor"])}"><span class="st st-refused"><span aria-hidden="true">?</span>open</span><div>'
-                    f'{_clip("<b>" + _e(head) + "</b>", why)}'
-                    f'<div class="sm">Who: <b>{_e("; ".join(g["who_should_decide"]))}</b> '
-                    f'<span class="mut">(raised by {_e(", ".join(_name(n) for n in g["raised_by"]))})</span></div></div></li>')
-    if c["refused_clauses"]:
-        links = ", ".join(f'<a href="#chain-{_e(x)}">{_e(_short_id(x))}</a>' for x in c["refused_clauses"])
-        refused += (f'<li><span class="st st-refused"><span aria-hidden="true">?</span>open</span><div><b>Whether {links} '
-                    f'{"is" if len(c["refused_clauses"]) == 1 else "are"} met</b><div class="sm">Not proven by the AI (see the trace). '
-                    f'Who: <b>{_e(p["owner"])}</b></div></div></li>')
-    if not refused:
-        refused = '<li><span class="st st-proven">none</span><div>Every clause was proven and no reviewer refused a topic.</div></li>'
-    if c.get("refused_peripheral"):
-        refused += (f'<li><span></span><div class="sm"><details class="mini" id="refused-peripheral"><summary>{_e(_peripheral(c))} (out of scope for this change)</summary><ul>'
-                    + "".join(f'<li id="{_e(g["anchor"])}">{_e(g["topic"])} <span class="mut">(who: {_e("; ".join(g["who_should_decide"]))}; '
-                              f'raised by {_e(", ".join(_name(n) for n in g["raised_by"]))})</span></li>' for g in c["refused_peripheral"])
-                    + "</ul></details></div></li>")
-    nc = ""
-    for x in c["not_checked"]:
-        head, rest = _split(x["reason"], 60)
-        nc += "<li>" + _clip(f"<code>{_e(x['id'])}</code>: {_e(head)}", _e(rest)) + "</li>"
-    if c["known_gaps"]:
-        nc += f'<li class="mut">Standing pipeline gaps: {_e(", ".join(c["known_gaps"]))} (<a href="#not-checked">why</a>)</li>'
-    residual = "".join(f'<li>{_e(r["text"])} <a class="sm" href="{_e(r["link"])}">see</a></li>' for r in c["residual"])
-    if c.get("residual_more"):
-        residual += (f'<li class="mut"><details class="mini"><summary>{_e(_more_risks(c))}</summary><ul>'
-                     + "".join(f'<li>{_e(r["text"])} <a class="sm" href="{_e(r["link"])}">see</a></li>' for r in c["residual_more"])
-                     + "</ul></details></li>")
-    return {"reasons": f'<ol class="reasons">{reasons}</ol>{more}', "trace": f'<ul class="rows">{trace}</ul>',
-            "found": f'<ul class="rows">{found}</ul>', "refused": f'<ul class="rows">{refused}</ul>',
-            "not_checked": f'<ul class="sm">{nc or "<li>Everything mandated ran.</li>"}</ul>', "residual": f'<ul class="sm">{residual}</ul>'}
 
 
 def _html_sign(sg: dict) -> str:
@@ -938,95 +846,6 @@ def _html_sign(sg: dict) -> str:
 
 def _ev_chips(refs: list[str], ev: dict) -> str:
     return "".join(_chip(r, ev[r]["label"], ev[r]["verified"]) for r in refs if r in ev)
-
-
-def _html_trust(p: dict) -> str:
-    ev = p["evidence_index"]
-    out = []
-    for t in p["trust"]:
-        cls = STATUS.get(t["label"], ("refused",))[0]
-        head = f'<h4>{_status(t["label"])} {_e(t["id"])}</h4><blockquote>{_e(t["text"])}</blockquote>'
-        checks = "".join(f'<li><code>{_e(x["id"])}</code> <span class="{"ok" if x["status"] == "pass" else "no"}">{_e(x["status"])}</span>'
-                         f'{": " + _e(x["summary"]) if x.get("summary") else ""}'
-                         + "".join(f' <span class="mono mut sm">{_e(lg)}</span>' for lg in x["logs"][:1]) + "</li>" for x in t["checks"]) or "<li>none mandated</li>"
-        if t["status"] in ("proven", "held_before"):
-            fails = ("".join(_chip(x["ref"], x["name"].rsplit(".", 1)[-1]) if x["ref"] else f'<span class="chip">{_e(x["name"].rsplit(".", 1)[-1])}</span>'
-                             for x in t["tests_fail_without_fix"]) or '<span class="mut">no cited test fails without the fix</span>')
-            passes = "".join(_chip(x["ref"], x["name"].rsplit(".", 1)[-1]) for x in t["tests_pass_without_fix"])
-            revs = "".join(f'<li><b>{_e(_name(r["reviewer"]))}</b> said <span class="v-{_e(r["verdict"])}">{_e(r["verdict"].replace("_", " "))}</span> '
-                           f'<span class="mut sm">({r["verified"]} of {r["cited"]} citations verified)</span>'
-                           f'<div class="chips">{_ev_chips(r["refs"], ev)}</div></li>' for r in t["reviewers"])
-            if t["status"] == "held_before":  # the clause's own tests pass without the fix: say that first, name them
-                body = (f'<p class="sm"><b>Held before:</b> {_e(t["why"])}</p>'
-                        f'<ol class="chain"><li><b>Checks that passed</b><ul class="sm">{checks}</ul></li>'
-                        + (f'<li><b>The clause\'s own tests pass without the fix</b><div class="chips">{passes}</div></li>' if passes else "")
-                        + (f'<li><b>Other cited tests fail without the fix</b> <span class="sm mut">(not this clause\'s own tests)</span>'
-                           f'<div class="chips">{fails}</div></li>' if t["tests_fail_without_fix"] else "")
-                        + f'<li><b>Reviewers who agreed, with verified citations</b><ul>{revs}</ul></li></ol>')
-            else:
-                body = (f'<ol class="chain"><li><b>Checks that passed</b><ul class="sm">{checks}</ul></li>'
-                        f'<li><b>Tests that fail without the fix</b><div class="chips">{fails}</div>'
-                        + (f'<div class="sm mut">Pass without the fix too (they show existing behaviour):</div><div class="chips">{passes}</div>' if passes else "")
-                        + f'</li><li><b>Reviewers who agreed, with verified citations</b><ul>{revs}</ul></li></ol>')
-        else:
-            revs = "".join(f'<li><b>{_e(_name(r["reviewer"]))}</b>: <span class="v-{_e(r["verdict"])}">{_e(r["verdict"].replace("_", " "))}</span> '
-                           f'<span class="mut sm">({r["verified"]}/{r["cited"]} verified)</span><div class="sm">{_e(r["basis"])}</div>'
-                           f'<div class="chips">{_ev_chips(r["refs"] + r["unverified_refs"], ev)}</div></li>' for r in t["reviewers"])
-            revs += "".join(f'<li><b>{_e(_name(n))}</b>: <span class="v-none">no verdict</span></li>' for n in t["missing"])
-            adj = (f'<div class="sm"><b>Adjudicator</b> <span class="mut">(advisory, cannot clear)</span>: {_html_ruling(p, t["adjudication"], chain=False)}</div>'
-                   if t["adjudication"] else "")
-            body = (f'<p><b>Refused:</b> {_e(t["why"])}</p><ol class="chain"><li><b>Who said what</b><ul>{revs}</ul></li>'
-                    f'<li><b>Checks</b><ul class="sm">{checks}</ul></li></ol>{adj}'
-                    f'<p><b>What would settle it</b></p><ul class="sm">{"".join(f"<li>{_e(x)}</li>" for x in t["settle"])}</ul>')
-        out.append(f'<article id="chain-{_e(t["id"])}" class="c-{cls}">{head}{body}</article>')
-    return "".join(out)
-
-
-def _html_panel(p: dict) -> str:
-    pv = p["panel"]
-    rows = pv["rows"]
-    callouts = "".join(f'<p class="callout">{_e(x)}</p>' for x in pv["callouts"])
-    matrix = _table(["Clause", *(_name(r["reviewer"]) for r in rows), "Result"],
-                    [[f'<a href="#chain-{_e(t["id"])}">{_e(_short_id(t["id"]))}</a>',
-                      *(f'<span class="v-{_e(r["verdicts"].get(t["id"]) or "none")}">{_e(VERDICT_SHORT.get(r["verdicts"].get(t["id"]), "?"))}</span>' for r in rows),
-                      _status(t["label"])] for t in p["trust"]], caption="Verdict per clause and reviewer")
-    cards = []
-    for r in rows:
-        if r.get("missing"):
-            cards.append(f'<div class="box"><h4>{_e(_name(r["reviewer"]))}</h4><p class="no">No review on file: every clause waits for it.</p></div>')
-            continue
-        only = "".join(f'<li>{_sev(f["severity"])} <a href="#f-{_e(r["reviewer"])}-{_e(f["id"])}">{_e(f["id"])}: {_e(f["title"])}</a>'
-                       + (' <span class="no sm">rejected</span>' if f["status"] == "rejected" else "") + "</li>" for f in r["only_this_reviewer"])
-        cards.append(f'<div class="box"><h4>{_e(_name(r["reviewer"]))} <span class="mut sm">{_e(r["model"])} &middot; {_e(r["vendor"])} &middot; {_e(r["prompt_version"])}'
-                     f'{" &middot; SIMULATED" if r.get("simulated") else ""}</span></h4>'
-                     f'<p class="sm">Citations: <span class="ok">{r["citations_verified"]} verified</span>, <span class="{"no" if r["citations_rejected"] else "mut"}">'
-                     f'{r["citations_rejected"]} rejected</span> &middot; findings: {r["findings_verified"]} verified, {r["findings_rejected"]} rejected &middot; '
-                     f'{r["refusals"]} refusals</p>'
-                     + (f'<p class="sm"><b>Only {_e(_name(r["reviewer"]))} raised:</b></p><ul class="sm">{only}</ul>' if only else '<p class="sm mut">Raised nothing the others did not.</p>')
-                     + "</div>")
-    adj = ""
-    if p.get("adjudication"):
-        a = p["adjudication"]
-        adj = (f'<div class="box"><h4>{_e(_name(a["reviewer"]))} <span class="mut sm">adjudicator &middot; {_e(a["model"])} &middot; advisory: adds reasons, never clears</span></h4>'
-               + ("".join(f'<div class="sm">{_html_ruling(p, r)}</div>' for r in _rulings(p)) or '<p class="sm mut">No rulings on current disputes (stale).</p>')
-               + "</div>")
-    elif p.get("disputes"):
-        adj = (f'<p class="sm mut">{len(p["disputes"])} disputed item(s) not adjudicated'
-               + (f" ({_e(_name(pv['adjudicator']))} has not run)" if pv["adjudicator"] else "") + f': {_e(", ".join(x["id"] for x in p["disputes"]))}</p>')
-    excl = "".join(f'<p class="sm mut">Excluded {_e(_name(x["name"]))} ({_e(x["vendor"])}): {_e(x["reason"])}</p>' for x in p["reviewer_panel"]["excluded"])
-    rule = '<p class="sm mut">Rule: a clause is proven only if every participating reviewer says met with verified evidence and its checks pass. Unanimity, not a vote: each added reviewer can only make the AI more cautious.</p>'
-    return callouts + matrix + rule + "".join(cards) + adj + excl
-
-
-def _html_finding(f: dict, ev: dict) -> str:
-    rej = f["status"] == "rejected"
-    chips = "".join(_chip(e["ref"], ev.get(e["ref"], {}).get("label", e.get("kind", "?")), e["verified"]) for e in f["evidence"])
-    effect = (f'<p class="sm no">Rejected: {_e(f["rejection_reason"])}</p>' if rej
-              else f'<p class="sm">Tier effect: {_tier(f["tier"], True)} {_e(f.get("tier_reason", ""))}</p>')
-    fix = f'<p class="sm"><b>Suggested fix:</b> {_e(f["suggested_fix"])}</p>' if f.get("suggested_fix") else ""
-    return (f'<article id="f-{_e(f["reviewer"])}-{_e(f["id"])}" class="{"c-notmet" if rej else ""}"><h4>{_sev(f["severity"])} {"<span class=no>REJECTED</span> " if rej else ""}'
-            f'{_e(f["title"])}</h4><p class="sm mut">{_e(_name(f["reviewer"]))} {_e(f["id"])} &middot; {_e(f["category"])}</p><p>{_e(f["claim"])}</p>'
-            f'<div class="chips">{chips}</div>{fix}{effect}</article>')
 
 
 def _html_ev(e: dict) -> str:
@@ -1059,7 +878,7 @@ def _html_ev(e: dict) -> str:
         body = f'<blockquote class="sm">{_e(e.get("clause_text"))}</blockquote>'
     elif e["kind"] == "issue":
         body = f'<p class="sm mono">{_e(e.get("url"))}</p>'
-    return f'<article id="{_e(e["ref"])}">{head}{body}</article>'
+    return f'<article class="ev" id="{_e(e["ref"])}">{head}{body}<p class="sm"><a href="#evidence">Back to the evidence</a></p></article>'
 
 
 def _html_supply(p: dict) -> str:
@@ -1109,6 +928,287 @@ def _html_supply(p: dict) -> str:
     return top + (f'<details class="mini"><summary>Supply-chain detail</summary>{body}</details>' if body else "")
 
 
+# --- the Evidence fold: one compact row per clause, finding, check and reviewer; detail one tap deeper -----------
+# Visible with every row closed: a status icon, a short name, a one-line verdict and the cited file:line. A row opens
+# to a few short lines; long texts are cut to their first sentence with a link to the source file in the repo.
+
+BLOB = "https://github.com/Zawaer/countersign/blob/main/"  # same as site/build.py's src()
+TONE = {"proven": "ok", "held before": "warn", "refused": "warn", "not met": "bad"}
+SEV_TONE = {"blocker": "bad", "major": "bad", "minor": "warn", "info": "mut"}
+
+
+def _ic(name: str, tone: str = "", label: str | None = None) -> str:
+    return icon(name, f"c-{tone}" if tone else "", label)
+
+
+def _src(rel: str | None, label: str) -> str:
+    return f'<a class="src" href="{BLOB}{_e(rel)}">{_e(label)}</a>' if rel else ""
+
+
+def _first(text, limit: int = 140) -> tuple[str, bool]:
+    """(the first sentence, or the text cut at a word near `limit`; whether anything was cut)."""
+    t = " ".join(str(text or "").split())
+    depth = 0
+    for i, ch in enumerate(t):
+        depth += (ch in "([") - (ch in ")]")
+        if (ch == "." and depth == 0 and i >= 20 and (i + 1 == len(t) or t[i + 1] == " ")
+                and t[max(0, i - 3):i] not in ("e.g", "i.e") and not t[i - 1].isdigit()):
+            if i + 1 <= limit:
+                return t[:i + 1], i + 1 < len(t)
+            break
+    if len(t) <= limit:
+        return t, False
+    cut = t.rfind(" ", 0, limit)
+    return t[:cut if cut > 20 else limit].rstrip(",;: ") + "…", True
+
+
+def _short(text, rel: str | None = None, limit: int = 140) -> str:
+    """The first sentence, escaped, with a `full text` link to the source file when the rest was cut."""
+    head, cut = _first(text, limit)
+    return _e(head) + (" " + _src(rel, "full text") if cut and rel else "")
+
+
+def _row(ic: str, body: str, loc: str = "", detail: str = "", rid: str = "", cls: str = "") -> str:
+    """One line: icon, text, cited location. With a detail it is a fold (closed)."""
+    rid = f' id="{_e(rid)}"' if rid else ""
+    line = f'{ic}<span class="rt">{body}</span>{loc}'
+    if not detail:
+        return f'<div class="row{cls}"{rid}>{line}<span class="chev"></span></div>'
+    return f'<details class="row{cls}"{rid}><summary>{line}{icon("expand_more", "chev")}</summary><div class="rd">{detail}</div></details>'
+
+
+def _loc(refs: list, ev: dict) -> str:
+    """The cited line as file:line (a verified code citation first), linking to its excerpt."""
+    es = [ev[r] for r in refs if r in ev and ev[r]["kind"] == "code"]
+    e = next((x for x in es if x["verified"]), None) or next(iter(es), None)
+    return f'<a class="loc" href="#{_e(e["ref"])}">{_e(e["label"].removesuffix(" @head"))}</a>' if e else ""
+
+
+def _pack_path(p: dict) -> str:
+    return f"packs/{p['change']}/pack.json"
+
+
+def _finding_of(p: dict, dispute: str) -> dict | None:
+    """The finding a `finding:<reviewer>:<id>[-suffix]` dispute is about."""
+    who, _, fid = dispute.split(":", 1)[1].partition(":")
+    return next((f for f in p["findings"] if f["reviewer"] == who and (fid == f["id"] or fid.startswith(f["id"] + "-"))), None)
+
+
+def _dispute_anchor(p: dict, dispute: str) -> str:
+    if not dispute.startswith("finding:"):
+        return f"chain-{dispute}"
+    f = _finding_of(p, dispute)
+    return f'f-{f["reviewer"]}-{f["id"]}' if f else "findings"
+
+
+def _rev_path(p: dict, n: str) -> str | None:
+    return ((p.get("inputs") or {}).get("reviews") or {}).get(n, {}).get("path")
+
+
+def _adj_path(p: dict) -> str | None:
+    return ((p.get("inputs") or {}).get("adjudication") or {}).get("path")
+
+
+def _ruling_detail(p: dict, r: dict) -> str:
+    """A ruling in three short lines: what it says, whose claims it backs, what would settle it."""
+    def who(xs: list) -> str:
+        n: dict = {}
+        for x in xs:
+            n[_name(x.get("reviewer", "?"))] = n.get(_name(x.get("reviewer", "?")), 0) + 1
+        return ", ".join(f"{k} ({v})" for k, v in n.items()) or "none"
+    settle = r.get("evidence_that_would_settle") or []
+    return (f'<p>{_ic("gavel", "mut")} <b>{_e(_ruling_line(p, r))}</b> <span class="mut">(advisory)</span></p>'
+            + (f'<p>{_short(r["note"], _adj_path(p))}</p>' if r.get("note") else "")
+            + f'<p class="mut">Claims backed: {_e(who(r.get("supported", [])))}; not backed: {_e(who(r.get("unsupported", [])))}. '
+            + (f'Would settle it: {_short(settle[0], None, 120)}' if settle else "") + f' {_src(_adj_path(p), "full ruling")}</p>')
+
+
+def _clause_verdict(p: dict, t: dict, ruling: dict | None) -> str:
+    """`Not met: Claude; met: Codex, Nemotron; Gemini sided with Claude`, or the status in a few words."""
+    n = len(t["reviewers"])
+    if t["status"] == "proven":
+        return f"Proven: all {n} reviewers say met, checks pass"
+    if t["status"] == "held_before":
+        return "Held before: its tests pass without the fix too"
+    by: dict = {}
+    for r in t["reviewers"]:
+        by.setdefault(r["verdict"], []).append(_name(r["reviewer"]) + (" (unverified)" if r["verdict"] == "met" and not r["verified"] else ""))
+    by.update({None: [_name(x) for x in t["missing"]]} if t["missing"] else {})
+    if set(by) == {"met"}:  # refused although all say met: thin evidence, mutation, ...
+        head = _trace_why(p, t)[0]
+        named = head.split(" ", 1)[0] in {_name(r["reviewer"]) for r in t["reviewers"]}
+        return "Refused: " + (head if named else head[:1].lower() + head[1:])
+    s = "; ".join(f"{VERDICT_SHORT.get(v, v)}: {', '.join(by[v])}" for v in ("not_met", "cannot_determine", "met", None) if v in by)
+    s = s[:1].upper() + s[1:]
+    if ruling:
+        adj = _name(p["adjudication"]["reviewer"])
+        no = [r["reviewer"] for r in t["reviewers"] if r["verdict"] != "met"]
+        backed = [x for x in no if any(y.get("reviewer") == x for y in ruling.get("supported", []))]
+        s += (f"; {adj} sided with {' and '.join(_name(x) for x in backed)}" if backed
+              else f"; {adj} did not back {' and '.join(_name(x) for x in no)}" if no else f"; {adj} ruled (advisory)")
+    return s
+
+
+def _html_clause(p: dict, t: dict, rulings: dict) -> str:
+    ev, ru = p["evidence_index"], rulings.get(t["id"])
+    no = [r for r in t["reviewers"] if r["verdict"] != "met"]
+    loc = _loc([x for r in (no or t["reviewers"]) for x in r["refs"]], ev)
+    d = f'<blockquote>{_short(t["text"], p["inputs"]["requirements"]["path"], 220)}</blockquote>'
+    if t["status"] == "held_before" or not no:  # a dissent is already said by the row and the reviewer lines below
+        d += f'<p>{_short(t["why"], _pack_path(p), 160)}</p>' if t["status"] != "proven" else ""
+    if t["status"] in ("proven", "held_before"):
+        d += "<p>" + ", ".join(f'<b>{_e(_name(r["reviewer"]))}</b> met ({r["verified"]} of {r["cited"]} cited verified)' for r in t["reviewers"]) + "</p>"
+    else:
+        d += "".join(f'<p><b>{_e(_name(r["reviewer"]))}</b> <span class="v-{_e(r["verdict"])}">{_e(VERDICT_SHORT.get(r["verdict"], r["verdict"]))}</span> '
+                     f'<span class="mut">({r["verified"]} of {r["cited"]} cited verified)</span>: {_short(r["basis"], _rev_path(p, r["reviewer"]))}</p>'
+                     for r in t["reviewers"])
+        d += "".join(f'<p><b>{_e(_name(x))}</b> <span class="v-none">no review</span></p>' for x in t["missing"])
+    fails = ", ".join(_chip(x["ref"], x["name"].rsplit(".", 1)[-1]) if x["ref"] else _e(x["name"].rsplit(".", 1)[-1]) for x in t["tests_fail_without_fix"])
+    passes = ", ".join(_chip(x["ref"], x["name"].rsplit(".", 1)[-1]) for x in t["tests_pass_without_fix"])
+    checks = ", ".join(f'{_e(x["id"])} <span class="{"ok" if x["status"] == "pass" else "no"}">{_e(x["status"])}</span>' for x in t["checks"])
+    d += (f'<p>Checks: {checks or "none mandated"}</p>' + (f'<p>Fail without the fix: {fails}</p>' if fails else "")
+          + (f'<p>Pass without the fix: {passes}</p>' if passes else ""))
+    if ru:
+        d += _ruling_detail(p, ru)
+    elif t.get("settle"):
+        d += f'<p class="mut">Would settle it: {_short(t["settle"][0], _pack_path(p), 120)}</p>'
+    return _row(_ic(ICON_OF.get(t["label"], "unknown"), TONE.get(t["label"], "warn"), t["label"]),
+                f'<b>{_e(_short_id(t["id"]))}</b> {_e(_clause_verdict(p, t, ru))}', loc, d, rid=f'chain-{t["id"]}')
+
+
+def _html_finding(p: dict, f: dict, rulings: dict) -> str:
+    ev, path = p["evidence_index"], _rev_path(p, f["reviewer"])
+    rep = (f.get("repro") or {}).get("status") == "reproduced"
+    rej = f["status"] == "rejected"
+    body = (f'<b>{_e(_name(f["reviewer"]))} {_e(f["id"])}</b> <span class="sev-{_e(f["severity"])}">{_e(f["severity"])}</span>'
+            + (' <span class="no">rejected</span>' if rej else "") + f': {_e(f["title"])}'
+            + (f' <span class="tag">{_ic("experiment")} reproduced</span>' if rep else ""))
+    d = f'<p>{_short(f["claim"], path)}</p>'
+    if f.get("repro"):
+        d += f'<p>{_ic("experiment", "mut")} <code>{_e(f["repro"].get("check"))}</code>: {_e(f["repro"].get("summary"))}</p>'
+    if f.get("suggested_fix"):
+        d += f'<p><b>Fix:</b> {_short(f["suggested_fix"], path)}</p>'
+    d += (f'<p class="no">Rejected: {_short(f.get("rejection_reason"), path)}</p>' if rej
+          else f'<p class="mut">Sets {_e(f["tier"])}: {_e(f.get("tier_reason", ""))}</p>')
+    also = [x for x in f.get("confirmed_by") or []]
+    if also:
+        d += f'<p class="mut">Also raised by {_e(", ".join(_name(x) for x in also))}</p>'
+    chips = "".join(_chip(e["ref"], ev.get(e["ref"], {}).get("label", e.get("kind", "?")), e["verified"]) for e in f["evidence"] if e.get("ref"))
+    d += f'<div class="chips">{chips}</div>' if chips else ""
+    for k, r in rulings.items():
+        if k.startswith("finding:") and _finding_of(p, k) is f:
+            d += _ruling_detail(p, r)
+    return _row(_ic("bug_report", "mut" if rej else SEV_TONE.get(f["severity"], "mut"), f["severity"]), body,
+                _loc([e.get("ref") for e in f["evidence"]], ev), d, rid=f'f-{f["reviewer"]}-{f["id"]}')
+
+
+def _keep(f: dict) -> bool:
+    """Findings shown on the first level: blocker and major ones, and any the pipeline reproduced."""
+    return f["severity"] in ("blocker", "major") or (f.get("repro") or {}).get("status") == "reproduced"
+
+
+def _log(t: dict) -> str:
+    logs = [t["log"]] if isinstance(t.get("log"), str) else (t.get("log") or [])
+    return f'<a class="loc" href="{BLOB}{_e(logs[0])}">log{"s" if len(logs) > 1 or logs[0].endswith("/") else ""}</a>' if logs else ""
+
+
+def _html_checks(p: dict) -> str:
+    facts = p["inputs"]["facts"]["path"]
+    tools = p["checked_by"]["tools"]
+    ran = [t for t in tools if t["status"] in ("pass", "fail")]
+    ok = [t for t in ran if t["status"] == "pass"]
+    every = "".join(f'<p>{_ic("pass" if t["status"] == "pass" else "fail" if t["status"] == "fail" else "unknown", {"pass": "ok", "fail": "bad"}.get(t["status"], "mut"))} '
+                    f'<code>{_e(t["id"])}</code> {_short(t.get("summary"), facts, 110)} <span class="mut">{_e(t.get("tool") or "")} {_e(t.get("tool_version") or "")}</span> {_log(t)}</p>'
+                    for t in tools)
+    out = _row(_ic("pass" if len(ok) == len(ran) else "partial", "ok" if len(ok) == len(ran) else "warn"),
+               f"{len(ok)} of {len(ran)} checks pass", "", every + f'<p>{_src(facts, "facts.json")}</p>', rid="every-check")
+    for t in ran:
+        if t["status"] == "fail":
+            out += _row(_ic("fail", "bad", "fails"), f'<b>{_e(t["id"])}</b>: {_e(_check_failed(t))}', _log(t),
+                        f'<p>{_short(t.get("summary"), facts, 220)}</p><p class="mut">{_e(t.get("tool") or "")} {_e(t.get("tool_version") or "")}</p>')
+    sc = p.get("supply_chain")
+    if sc:
+        deps = sc.get("deps") or {}
+        bad = sc["status"] == "fail" or deps.get("vulnerabilities_new") or sc["rules"]
+        line = ("no new packages or advisories" if sc["status"] == "pass" and not bad and not deps.get("packages") and not deps.get("projects_added")
+                else re.sub(r"^deps\.delta pass: ", "", sc["line"].split("; ")[0]).split(" (")[0])
+        out += _row(_ic("fail" if bad else "pass" if sc["status"] == "pass" else "unknown", "bad" if bad else "ok" if sc["status"] == "pass" else "mut"),
+                    f"Supply chain: {_e(line)}", "", _html_supply(p), rid="supply-chain")
+    nc, gaps = p["not_checked"], (p.get("card") or {}).get("known_gaps") or []
+    if nc or gaps:
+        d = "".join(f'<p><code>{_e(x["id"])}</code> <span class="mut">({_e(x["source"])})</span>: {_short(x["reason"], facts, 160)}</p>' for x in nc)
+        d += f'<p class="mut">Standing pipeline gaps: {_e(", ".join(gaps))}</p>' if gaps else ""
+        out += _row(_ic("unknown", "mut"), f"Not run: {len(nc)} check{'' if len(nc) == 1 else 's'}" + (f", {len(gaps)} standing gaps" if gaps else ""),
+                    "", d, rid="not-checked")
+    return out
+
+
+def _html_reviewers(p: dict, rulings: dict) -> str:
+    out = ""
+    for r in p["panel"]["rows"]:
+        if r.get("missing"):
+            out += _row(_ic("fail", "bad"), f'<b>{_e(_name(r["reviewer"]))}</b>: no review on file, every clause waits for it')
+            continue
+        vs = list(r["verdicts"].values())
+        met = sum(v == "met" for v in vs)
+        only = ", ".join(f'<a href="#f-{_e(r["reviewer"])}-{_e(f["id"])}">{_e(f["id"])}</a>' for f in r["only_this_reviewer"])
+        d = (f'<p>{_e(r["model"])}, {_e(r["vendor"])}, prompt {_e(r["prompt_version"])}{" (SIMULATED)" if r.get("simulated") else ""}. '
+             f'Citations: {r["citations_verified"]} verified, {r["citations_rejected"]} rejected. Findings: {r["findings_verified"]} verified, '
+             f'{r["findings_rejected"]} rejected. {r["refusals"]} refusals.</p>'
+             + (f'<p>Only {_e(_name(r["reviewer"]))} raised: {only}</p>' if only else "") + f'<p>{_src(_rev_path(p, r["reviewer"]), "review file")}</p>')
+        n = r["findings_verified"]
+        out += _row(_ic("person", "ok" if met == len(vs) else "warn"),
+                    f'<b>{_e(_name(r["reviewer"]))}</b> <span class="mut">{_e(r["model"].rsplit("/", 1)[-1])}</span> met {met} of {len(vs)} '
+                    f'&middot; {n} finding{"" if n == 1 else "s"}', "", d)
+    a = p.get("adjudication")
+    if a:
+        rs = _rulings(p)
+        links = "".join(f'<p><a href="#{_e(_dispute_anchor(p, str(x.get("dispute"))))}">'
+                        f'{_e(_ruling_line(p, x))}</a></p>' for x in rs)
+        out += _row(_ic("gavel", "mut"), f'<b>{_e(_name(a["reviewer"]))}</b> <span class="mut">{_e(a["model"])}</span> adjudicator: '
+                    f'{len(rs)} ruling{"" if len(rs) == 1 else "s"}, advisory',
+                    "", links + f'<p class="mut">Advisory: adds reasons, never clears. {_src(_adj_path(p), "rulings file")}</p>')
+    elif p.get("disputes"):
+        out += _row(_ic("unknown", "mut"), f'{len(p["disputes"])} disputed item(s) not adjudicated')
+    return out
+
+
+def _html_refusals(p: dict) -> str:
+    c = p["card"]
+    k = len(c["refused"]) + len(c["refused_clauses"])
+    per = c.get("refused_peripheral") or []
+    if not (k or per):
+        return _row(_ic("pass", "ok"), "No open questions: every clause proven, no topic refused", rid="refused")
+    d = "".join(f'<p id="{_e(g["anchor"])}"><b>{_short(g["topic"], None, 120)}</b> <span class="mut">Who: {_e("; ".join(g["who_should_decide"]))}; '
+                f'raised by {_e(", ".join(_name(n) for n in g["raised_by"]))}.</span> {_short(g["why"], _rev_path(p, g["raised_by"][0]), 120)}</p>' for g in c["refused"])
+    if c["refused_clauses"]:
+        d += (f'<p><b>Whether {", ".join(f"<a href=#chain-{_e(x)}>{_e(_short_id(x))}</a>" for x in c["refused_clauses"])} '
+              f'{"is" if len(c["refused_clauses"]) == 1 else "are"} met</b> <span class="mut">Who: {_e(p["owner"])}</span></p>')
+    if per:
+        d += (f'<p class="mut" id="refused-peripheral">Out of scope for this change:</p>'
+              + "".join(f'<p class="mut" id="{_e(g["anchor"])}">{_short(g["topic"], _rev_path(p, g["raised_by"][0]), 120)} '
+                        f'(who: {_e("; ".join(g["who_should_decide"]))})</p>' for g in per))
+    return _row(_ic("unknown", "warn" if k else "mut"), f"Open questions: {k} for a human" + (f" (+{len(per)} out of scope)" if per else ""), "", d, rid="refused")
+
+
+def _html_why(p: dict) -> str:
+    c, r = p["card"], p["risk"]
+    lis = "".join(f'<li>{_e(_split(x["text"], 110, REASON_SEPS)[0])} <a href="{_e(x["link"])}">see</a></li>' for x in c["reasons"])
+    d = (f'<ol>{lis}</ol>' + (f'<p class="mut">All {c["more_drivers"]} tier drivers and the risk factors are in <a href="#all-drivers">full detail</a>.</p>'
+                              if c["more_drivers"] else ""))
+    n = len(c["reasons"])
+    return _row(icon(p["tier"], f"c-t-{p['tier']}"), f'<b>Why {_e(p["tier"])}</b>: {n} reason{"" if n == 1 else "s"}, risk score {_e(r["score"])}', "", d, rid="risk")
+
+
+def _html_residual(p: dict) -> str:
+    c = p["card"]
+    items = c["residual"] + (c.get("residual_more") or [])
+    if not items:
+        return ""
+    d = "".join(f'<p>{_e(x["text"])} <a href="{_e(x["link"])}">see</a></p>' for x in items)
+    return _row(_ic("warn", "warn"), f'You accept {len(items)} residual risk{"" if len(items) == 1 else "s"} by signing', "", d)
+
+
 def _html_full(p: dict) -> dict:
     from .common import now_iso  # imported here so view() stays importable without PyYAML (site/build.py)
     ms = p["mandate"]["signature"]
@@ -1116,10 +1216,6 @@ def _html_full(p: dict) -> dict:
     driver_rows = [[_tier(w["tier"], True), _e(w["source"]), f"<code>{_e(w['id'])}</code>", _e(w["why"])] for w in p["drivers"]]
     risk_rows = [[_e(f["factor"]), _e(f["points"]), _e(f["reason"])] for f in p["risk"]["factors"]]
     risk_rows.append(["<b>total</b>", f"<b>{_e(p['risk']['score'])}</b>", f"{_tier(p['risk']['tier'], True)} (bands {_e(p['risk']['thresholds'])})"])
-    tool_rows = [[f"<code>{_e(t['id'])}</code>", f'<span class="{"ok" if t["status"] == "pass" else "no"}">{_e(t["status"])}</span>',
-                  _e(f"{t.get('tool') or ''} {t.get('tool_version') or ''}"), _e(t.get("summary")),
-                  "<br>".join(f'<span class="mono">{_e(x)}</span>' for x in ([t["log"]] if isinstance(t.get("log"), str) else (t.get("log") or [])))]
-                 for t in p["checked_by"]["tools"]]
     rev_rows = [[_e(r["reviewer"]), _e(f"{r['model']} ({r['vendor']})"), _e(r["prompt_version"]), _e(r["reviewed_at"]),
                  str(r["verified"]), str(r["rejected"]), str(r["refusals"])] for r in p["checked_by"]["reviewers"]]
     area_rows = [[_e(a["name"]), _e(a["owner"]), _e(a["sensitivity"]), _tier(a["cap"], True), _e(a["cap_reason"]), str(len(a["files"]))] for a in p["areas"]]
@@ -1127,21 +1223,15 @@ def _html_full(p: dict) -> dict:
                  "<br>".join(f"{_e(n)}: {_e(v['verdict'])} ({v['verified']}/{v['cited']})" for n, v in c["verdicts"].items()) or "none",
                  "<br>".join(f"{_e(x['id'])}: {_e(x['status'])}" for x in c["checks"]) or "-",
                  "<br>".join(f"<code>{_e(r['code'])}</code> {_e(r['detail'])}" for r in c["reasons"]) or "-"] for c in p["requirements"]]
-    refusals = "".join(f"<li><b>{_e(r['reviewer'])}</b>: {_e(r['topic'])}. <span class=mut>Why: {_e(r['reason'])} Who: {_e(r['who_should_decide'])}</span></li>"
-                       for r in p["refused"]["reviewer_refusals"]) or "<li>none</li>"
     return {
         "drivers": f'<h3 id="all-drivers">All tier drivers (tier = strictest)</h3>{_table(["Tier", "Source", "Id", "Why"], driver_rows)}',
         "risk": f'<h3 id="risk-score">Risk score {_e(p["risk"]["score"])}</h3>{_table(["Factor", "Points", "Reason"], risk_rows, frozenset({1}))}',
-        "checks": f'<h3 id="every-check">Every check</h3>{_table(["Check", "Status", "Tool", "Summary", "Log"], tool_rows)}',
         "reviewers": f"""<h3>Reviewers</h3>
 <p class="sm">Participating: <b>{_e(", ".join(rp["reviewers"]) or "none")}</b>; adjudicator: {_e(rp["adjudicator"] or "none")}; confidential: {_e("yes (" + rp["why"] + ")" if rp["confidential"] else "no")}.</p>
 {"".join(f"<p class='sm mut'>Not used: {_e(x['name'])}: {_e(x['reason'])}</p>" for x in rp["ignored_files"])}
 {_table(["Reviewer", "Model", "Prompt", "Reviewed", "Verified", "Rejected", "Refusals"], rev_rows, frozenset({4, 5, 6}))}""",
-        "refusals": f'<h3>Every reviewer refusal</h3><ul class="sm">{refusals}</ul>',
         "codes": f'<h3>Requirement trace, engine codes</h3>{_table(["Clause", "Status", "Verdicts", "Checks", "Reasons"], req_rows)}',
         "areas": f'<h3 id="areas">Areas touched</h3>{_table(["Area", "Owner", "Sensitivity", "AI cap", "Cap source", "Files"], area_rows, frozenset({5}))}',
-        "not_checked": f"""<h3 id="not-checked">What was not checked, and why</h3>
-<ul class="sm">{"".join(f"<li><code>{_e(x['id'])}</code> <span class=mut>({_e(x['source'])})</span>: {_e(x['reason'])}</li>" for x in p["not_checked"])}</ul>""",
         "residual": f'<h3>Residual risk, every item</h3><ul class="sm">{"".join(f"<li>{_e(r)}</li>" for r in p["residual_risk"])}</ul>',
         "provenance": f"""<h3>Provenance</h3>
 <p class="sm">Branch <code>{_e(p["branch"])}</code> {_e(p["base"])}..{_e(p["head"])}, {_e(p["diff"]["files"])} files, +{_e(p["diff"]["insertions"])} &minus;{_e(p["diff"]["deletions"])}, author {_e(p["author"])} (agent-written: {_e(p["agent_written"])}). Commit: &ldquo;{_e(p["commit_message"])}&rdquo;.</p>
@@ -1152,11 +1242,14 @@ reviews {_e(", ".join(f"{k} ({v['sha256'][:12]})" for k, v in p["inputs"]["revie
     }
 
 
+MARK_ICON = {"\u2713": "pass", "\u2715": "fail", "!": "warn", "?": "unknown", "\u2026": "pending"}  # _marks glyph -> icons.STATUS
+
+
 def _html_story(p: dict, so: dict | None) -> str:
-    """The first screen: verdict pill, the change in one line, one reason, three marks. Status is glyph + words."""
-    marks = "".join(f'<li class="m-{c}"><span class="g" aria-hidden="true">{g}</span>{_e(w)}</li>' for c, g, w in _marks(p, so))
+    """The first screen: verdict pill, the change in one line, one reason, three marks. Status is icon + words."""
+    marks = "".join(f'<li class="m-{c}">{icon(MARK_ICON.get(g, "unknown"), "g")}{_e(w)}</li>' for c, g, w in _marks(p, so))
     who = f" &rarr; {_e(p['owner'])} decides" if p["tier"] in ("ask", "block") else f" &middot; {_e(p['owner'])} is told"
-    pill = f'<b>{_e(p["tier"].upper())}</b>{who}'
+    pill = f'{icon(p["tier"])}<b>{_e(p["tier"].upper())}</b>{who}'
     if so and so.get("current"):  # already decided: say what the ledger records, not what is still to come
         pill = f'{_e(so["signer"])} decided: {_e((so.get("decision") or "").replace("-", " "))}'
     return (f'<section class="story" id="card" aria-labelledby="card-h">'
@@ -1167,60 +1260,66 @@ def _html_story(p: dict, so: dict | None) -> str:
             f'<ul class="marks" aria-label="Checks, reviewers, signature">{marks}</ul></section>')
 
 
+FAVICON = ('<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="icon" href="../../favicon-32.png" type="image/png" sizes="32x32">'
+           '<link rel="apple-touch-icon" href="../../apple-touch-icon.png">')  # the site's icons (pages live at site/packs/<change>/)
+
+
 def to_html(p: dict, ledger: list[dict] | None = None) -> str:
     so = _signoff(p, ledger)
     p = view(p)
     ev = p["evidence_index"]
-    c = _html_parts(p)
+    rulings = {str(r.get("dispute")): r for r in _rulings(p)}
     full = _html_full(p)
-    findings = "".join(_html_finding(f, ev) for f in p["findings"]) or '<p class="sm mut">No verified findings.</p>'
-    rejected = "".join(_html_finding(f, ev) for f in p["rejected_claims"])
+    st, pv, rp = p["story"], p["panel"], p["reviewer_panel"]
+    shown = [f for f in p["findings"] if _keep(f)]
+    rest = [f for f in p["findings"] if not _keep(f)] + p["rejected_claims"]
+    found = "".join(_html_finding(p, f, rulings) for f in shown)
+    if rest:
+        sev = [s for s in SEV_ORDER if any(f["severity"] == s for f in rest)]
+        found += (f'<details class="row more"><summary>{_ic("bug_report", "mut")}<span class="rt">{len(rest)} {"more " if shown else ""}'
+                  f'finding{"" if len(rest) == 1 else "s"} <span class="mut">({", ".join(sev)}'
+                  f'{", " + str(len(p["rejected_claims"])) + " rejected" if p["rejected_claims"] else ""})</span></span>{icon("expand_more", "chev")}</summary>'
+                  f'<div class="rd sub">{"".join(_html_finding(p, f, rulings) for f in rest)}</div></details>')
+    if not p["findings"] and not p["rejected_claims"]:
+        found = _row(_ic("pass", "ok"), "No findings")
     mut = f'<p class="callout">Seeded mutant of {_e(p["mutation"].get("of"))}: {_e(p["mutation"].get("description"))}</p>' if p.get("mutation") else ""
-    st = p["story"]
+    panel = ("".join(f'<p class="sm">{_e(x)}</p>' for x in pv["callouts"])
+             + "".join(f'<p class="sm mut">Excluded {_e(_name(x["name"]))} ({_e(x["vendor"])}): {_e(x["reason"])}</p>' for x in rp["excluded"])
+             + f'<p class="sm mut">Rule: {_e(rp["rule"])}. Unanimity, not a vote: each added reviewer can only make the AI more cautious.</p>')
     body = f"""
 <main>
 {'<p class="banner">Simulated inputs: fixture data, not a real run</p>' if _sim(p) else ""}
 {mut}
 {_html_story(p, so)}
-<details class="fold" id="evidence"><summary>Evidence</summary>
-<nav class="jump" aria-label="Evidence groups"><a href="#requirements">Requirements</a><a href="#findings">Findings</a><a href="#refused">Refusals</a><a href="#checks">Checks</a><a href="#risk">Risk</a><a href="#sign">Sign</a></nav>
-<p class="story-l">{_e(st["headline"])}. {_e(st["what"])} <span class="mut">{_e(st["why"])}</span></p>
-<h2 id="requirements">Requirements</h2>
-{c["trace"]}
-<h3 id="trust">Where the trust comes from</h3>
-<p class="sm mut">For each requirement clause: the checks that passed, the tests that fail without the fix, and the reviewers who agreed with verified citations; for refused clauses, who disagreed and what would settle it.</p>
-{_html_trust(p)}
-<h3 id="panel">Reviewer panel</h3>
-{_html_panel(p)}
-{full["codes"]}
-<h2 id="findings">Findings ({len(p["findings"])} verified{", " + str(len(p["rejected_claims"])) + " rejected" if p["rejected_claims"] else ""})</h2>
-{c["found"]}
-{findings}{rejected}
-<h2 id="refused">Refusals: what the AI would not decide, and who should</h2>
-{c["refused"]}
-{full["refusals"]}
-<h2 id="checks">Checks</h2>
-<h3 id="supply-chain">Supply chain (from the build)</h3>
-{_html_supply(p)}
-{full["checks"]}
-<h3>Not checked, and why</h3>{c["not_checked"]}
-{full["not_checked"]}
-<h3>Cited code, tests and checks ({len(ev)})</h3>
-<p class="sm mut">Code is shown from git at the cited revision; the cited line is highlighted. Tests show every run they appear in, including the run with the fix reverted.</p>
-{"".join(_html_ev(e) for e in ev.values())}
-<h2 id="risk">Risk</h2>
-<h3>Why {_e(p["tier"])}</h3>{c["reasons"]}
+<details class="fold" id="evidence"><summary>Evidence {icon("expand_more", "chev")}</summary>
+<div class="rows">{_html_why(p)}</div>
+<h3 id="requirements">Requirements</h3>
+<div class="rows">{"".join(_html_clause(p, t, rulings) for t in p["trust"])}</div>
+<h3 id="findings">Findings</h3>
+<div class="rows">{found}</div>
+<h3 id="checks">Checks</h3>
+<div class="rows">{_html_checks(p)}</div>
+<h3 id="panel">Reviewers</h3>
+<div class="rows">{_html_reviewers(p, rulings)}{_html_refusals(p)}</div>
+<h3 id="sign">Sign</h3>
+<div class="rows">{_html_residual(p)}</div>
+{_html_sign(p["card"]["sign"])}
+<details class="fold more-all" id="full"><summary>Full detail <span class="mut">(tier drivers, risk score, engine codes, areas, provenance)</span></summary>
+<p class="sm">{_e(st["headline"])}. {_e(st["what"])} <span class="mut">{_e(st["why"])}</span></p>
 {full["drivers"]}
 {full["risk"]}
-<h3>Residual risk you accept by signing</h3>{c["residual"]}
-{full["residual"]}
+{full["codes"]}
 {full["areas"]}
 {full["reviewers"]}
+{panel}
+{full["residual"]}
 {full["provenance"]}
-<h2 id="sign">Sign</h2>
-{_html_sign(p["card"]["sign"])}
+<h3>Cited code, tests and checks ({len(ev)})</h3>
+<div class="chips">{"".join(_chip(e["ref"], e["label"], e["verified"]) for e in ev.values())}</div>
+</details>
+<div class="cited">{"".join(_html_ev(e) for e in ev.values())}</div>
 </details>
 </main>"""
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<meta name="color-scheme" content="light dark">'
-            f"<title>Countersign {_e(p['change'])}: {_e(p['tier'])}, owner {_e(p['owner'])}</title><style>{CSS}</style></head><body>{body}</body></html>\n")
+            f'<meta name="color-scheme" content="light dark">{FAVICON}'
+            f"<title>Countersign {_e(p['change'])}: {_e(p['tier'])}, owner {_e(p['owner'])}</title><style>{CSS}{ICON_CSS}</style></head><body>{body}</body></html>\n")
