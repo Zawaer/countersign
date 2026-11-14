@@ -55,8 +55,17 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 
 > I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
 
+Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+
+- `claude:C1` (major): Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic
+- `claude:C2` (minor): BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source
+- `claude:C3` (info): Fix treats the symptom location; metadata struct backing fields are still walked as members
+
 ```
-countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note "..."
+countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note "..." \
+  --finding claude:C1=<accepted|rejected|unsure> \
+  --finding claude:C2=<accepted|rejected|unsure> \
+  --finding claude:C3=<accepted|rejected|unsure>
 ```
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)

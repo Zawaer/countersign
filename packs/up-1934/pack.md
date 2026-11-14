@@ -49,8 +49,17 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 
 > I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
 
+Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+
+- `claude:C1` (info): Two generic-constraint tests pin C# 9 although their input uses C# 8 features
+- `claude:C2` (info): CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused
+- `nemotron:F1` (info): Test name does not match its source
+
 ```
-countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note "..."
+countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note "..." \
+  --finding claude:C1=<accepted|rejected|unsure> \
+  --finding claude:C2=<accepted|rejected|unsure> \
+  --finding nemotron:F1=<accepted|rejected|unsure>
 ```
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)

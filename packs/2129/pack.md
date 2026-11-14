@@ -51,8 +51,25 @@ Changes 10 source files (Attributes.cs, MsgPack00xMessagePackAnalyzer.cs, Genera
 
 > I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
 
+Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+
+- `claude:C1` (major): New public API in MessagePack.Annotations is not tracked by any PublicAPI file
+- `claude:C3` (minor): New StyleCop warning SA1203 in the new test file
+- `claude:C4` (info): External-type execution tests are excluded from the MapMode execution suite
+- `nemotron:N1` (minor): New ExternalTypes test project is not added to the solution file
+- `nemotron:N2` (major): Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402
+- `nemotron:N3` (minor): New public API added without PublicAPI tracking in MessagePack.Annotations
+- `nemotron:N4` (minor): New StyleCop SA1203 warning in GeneratedMessagePackFormatterTests.cs
+
 ```
-countersign sign 2129 --as Toivo --decision <accept|reject|request-changes> --note "..."
+countersign sign 2129 --as Toivo --decision <reject|request-changes> --note "..." \
+  --finding claude:C1=<accepted|rejected|unsure> \
+  --finding claude:C3=<accepted|rejected|unsure> \
+  --finding claude:C4=<accepted|rejected|unsure> \
+  --finding nemotron:N1=<accepted|rejected|unsure> \
+  --finding nemotron:N2=<accepted|rejected|unsure> \
+  --finding nemotron:N3=<accepted|rejected|unsure> \
+  --finding nemotron:N4=<accepted|rejected|unsure>
 ```
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 1 new project, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)

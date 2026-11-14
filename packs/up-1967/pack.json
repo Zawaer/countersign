@@ -750,6 +750,23 @@
       "request-changes"
     ],
     "command": "countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note \"...\"",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Other broken TOC anchors remain, including the next line (#rpc)",
+        "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "nemotron:N1",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "title": "Pre-existing unresolved anchors remain on untouched lines",
+        "flag": "--finding nemotron:N1=<accepted|rejected|unsure>"
+      }
+    ],
+    "command_with_findings": "countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding nemotron:N1=<accepted|rejected|unsure>",
     "statement": "I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
   },
   "story": {
@@ -928,7 +945,24 @@
         "request-changes"
       ],
       "statement": "I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
-      "command": "countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note \"...\""
+      "command": "countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note \"...\"",
+      "findings": [
+        {
+          "ref": "claude:C1",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "Other broken TOC anchors remain, including the next line (#rpc)",
+          "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "nemotron:N1",
+          "reviewer": "nemotron",
+          "severity": "info",
+          "title": "Pre-existing unresolved anchors remain on untouched lines",
+          "flag": "--finding nemotron:N1=<accepted|rejected|unsure>"
+        }
+      ],
+      "command_with_findings": "countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding nemotron:N1=<accepted|rejected|unsure>"
     },
     "reviewers": 3
   },

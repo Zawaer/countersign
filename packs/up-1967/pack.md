@@ -48,8 +48,15 @@ Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki. Judged against 2 r
 
 > I, Rene, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
 
+Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+
+- `claude:C1` (info): Other broken TOC anchors remain, including the next line (#rpc)
+- `nemotron:N1` (info): Pre-existing unresolved anchors remain on untouched lines
+
 ```
-countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note "..."
+countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note "..." \
+  --finding claude:C1=<accepted|rejected|unsure> \
+  --finding nemotron:N1=<accepted|rejected|unsure>
 ```
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)

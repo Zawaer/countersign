@@ -53,8 +53,19 @@ Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, Formatter
 
 > I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
 
+Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+
+- `claude:C1` (major): Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise
+- `claude:C2` (info): 237-file change is dominated by regenerated test resources
+- `nemotron:N1` (minor): Unrelated formatting change in TransformUtilities.cs outside the requirement scope
+- `claude:v1.C2` (major): Attribute on the generated half of user-declared partial resolvers can break builds (CS0579) and silently hides user code
+
 ```
-countersign sign 2297 --as Toivo --decision <accept|reject|request-changes> --note "..."
+countersign sign 2297 --as Toivo --decision <reject|request-changes> --note "..." \
+  --finding claude:C1=<accepted|rejected|unsure> \
+  --finding claude:C2=<accepted|rejected|unsure> \
+  --finding nemotron:N1=<accepted|rejected|unsure> \
+  --finding claude:v1.C2=<accepted|rejected|unsure>
 ```
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)

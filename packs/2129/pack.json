@@ -1148,7 +1148,59 @@
       "reject",
       "request-changes"
     ],
-    "command": "countersign sign 2129 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "command": "countersign sign 2129 --as Toivo --decision <reject|request-changes> --note \"...\"",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "title": "New public API in MessagePack.Annotations is not tracked by any PublicAPI file",
+        "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "claude:C3",
+        "reviewer": "claude",
+        "severity": "minor",
+        "title": "New StyleCop warning SA1203 in the new test file",
+        "flag": "--finding claude:C3=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "claude:C4",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "External-type execution tests are excluded from the MapMode execution suite",
+        "flag": "--finding claude:C4=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "nemotron:N1",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "title": "New ExternalTypes test project is not added to the solution file",
+        "flag": "--finding nemotron:N1=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "nemotron:N2",
+        "reviewer": "nemotron",
+        "severity": "major",
+        "title": "Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402",
+        "flag": "--finding nemotron:N2=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "nemotron:N3",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "title": "New public API added without PublicAPI tracking in MessagePack.Annotations",
+        "flag": "--finding nemotron:N3=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "nemotron:N4",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "title": "New StyleCop SA1203 warning in GeneratedMessagePackFormatterTests.cs",
+        "flag": "--finding nemotron:N4=<accepted|rejected|unsure>"
+      }
+    ],
+    "command_with_findings": "countersign sign 2129 --as Toivo --decision <reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C3=<accepted|rejected|unsure> \\\n  --finding claude:C4=<accepted|rejected|unsure> \\\n  --finding nemotron:N1=<accepted|rejected|unsure> \\\n  --finding nemotron:N2=<accepted|rejected|unsure> \\\n  --finding nemotron:N3=<accepted|rejected|unsure> \\\n  --finding nemotron:N4=<accepted|rejected|unsure>",
     "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
   },
   "story": {
@@ -1422,7 +1474,59 @@
         "request-changes"
       ],
       "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
-      "command": "countersign sign 2129 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+      "command": "countersign sign 2129 --as Toivo --decision <reject|request-changes> --note \"...\"",
+      "findings": [
+        {
+          "ref": "claude:C1",
+          "reviewer": "claude",
+          "severity": "major",
+          "title": "New public API in MessagePack.Annotations is not tracked by any PublicAPI file",
+          "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "claude:C3",
+          "reviewer": "claude",
+          "severity": "minor",
+          "title": "New StyleCop warning SA1203 in the new test file",
+          "flag": "--finding claude:C3=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "claude:C4",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "External-type execution tests are excluded from the MapMode execution suite",
+          "flag": "--finding claude:C4=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "nemotron:N1",
+          "reviewer": "nemotron",
+          "severity": "minor",
+          "title": "New ExternalTypes test project is not added to the solution file",
+          "flag": "--finding nemotron:N1=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "nemotron:N2",
+          "reviewer": "nemotron",
+          "severity": "major",
+          "title": "Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402",
+          "flag": "--finding nemotron:N2=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "nemotron:N3",
+          "reviewer": "nemotron",
+          "severity": "minor",
+          "title": "New public API added without PublicAPI tracking in MessagePack.Annotations",
+          "flag": "--finding nemotron:N3=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "nemotron:N4",
+          "reviewer": "nemotron",
+          "severity": "minor",
+          "title": "New StyleCop SA1203 warning in GeneratedMessagePackFormatterTests.cs",
+          "flag": "--finding nemotron:N4=<accepted|rejected|unsure>"
+        }
+      ],
+      "command_with_findings": "countersign sign 2129 --as Toivo --decision <reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C3=<accepted|rejected|unsure> \\\n  --finding claude:C4=<accepted|rejected|unsure> \\\n  --finding nemotron:N1=<accepted|rejected|unsure> \\\n  --finding nemotron:N2=<accepted|rejected|unsure> \\\n  --finding nemotron:N3=<accepted|rejected|unsure> \\\n  --finding nemotron:N4=<accepted|rejected|unsure>"
     },
     "reviewers": 3
   },

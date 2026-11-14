@@ -56,8 +56,29 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 
 > I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
 
+Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+
+- `claude:C1` (major): The issue's 3.1.1 regression is not on this base; the change fixes a different crash
+- `claude:C2` (minor): Positional-record Key(null) still crashes the analyzer for suppressed (and other) types
+- `claude:C3` (info): 'continue' on mixed key kinds skips recursive collection of that member's type
+- `claude:C4` (info): Duplicate-key guard makes the generator emit a formatter that silently drops the second member
+- `nemotron:N1` (minor): Duplicate-key diagnostic reports only one diagnostic although two members share the key
+- `nemotron:N2` (minor): New test file triggers StyleCop SA1649 warning
+- `nemotron:N3` (info): Runtime execution tests do not demonstrate the fix
+- `nemotron:N4` (info): README documents behavior accurately
+- `nemotron:N5` (info): Execution tests required SDK 9 override
+
 ```
-countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --note "..."
+countersign sign 2234 --as Toivo --decision <accept|reject|request-changes> --note "..." \
+  --finding claude:C1=<accepted|rejected|unsure> \
+  --finding claude:C2=<accepted|rejected|unsure> \
+  --finding claude:C3=<accepted|rejected|unsure> \
+  --finding claude:C4=<accepted|rejected|unsure> \
+  --finding nemotron:N1=<accepted|rejected|unsure> \
+  --finding nemotron:N2=<accepted|rejected|unsure> \
+  --finding nemotron:N3=<accepted|rejected|unsure> \
+  --finding nemotron:N4=<accepted|rejected|unsure> \
+  --finding nemotron:N5=<accepted|rejected|unsure>
 ```
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)

@@ -48,8 +48,15 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 
 > I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.
 
+Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or `unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.
+
+- `claude:C2` (info): New test covers the analyzer path only
+- `nemotron:I1` (info): TryCreate documentation does not state that abstract types are excluded
+
 ```
-countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note "..."
+countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note "..." \
+  --finding claude:C2=<accepted|rejected|unsure> \
+  --finding nemotron:I1=<accepted|rejected|unsure>
 ```
 
 <a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)

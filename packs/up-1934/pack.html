@@ -73,8 +73,11 @@ details.mini>summary{cursor:pointer;color:var(--link);font-size:14px}
 <h3>Residual risk you accept by signing</h3><ul class="sm"><li>1 question the AI declined to decide (listed above) are yours. <a class="sm" href="#refused">see</a></li><li class="mut"><details class="mini"><summary>3 more risks that do not set the tier</summary><ul><li>2 peripheral refusals (out of scope for this change) are yours too. <a class="sm" href="#refused-peripheral">see</a></li><li>Not run: tests.MessagePack.Tests, tests.execution, build.net472/netstandard, benchmarks, tests.fail_without_fix <a class="sm" href="#not-checked">see</a></li><li>Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance <a class="sm" href="#not-checked">see</a></li></ul></details></li></ul>
 <div class="sign"><p><b>Toivo signs</b> <span class="mut sm">(required;
 allowed: accept, reject, request-changes)</span></p><p><q>I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.</q></p>
-<details class="mini"><summary>How to sign</summary><pre>countersign sign up-1934 --as Toivo --decision &lt;accept|reject|request-changes&gt; --note &quot;...&quot;</pre>
-<p class="mut sm">The signature covers the sha256 of this pack's canonical JSON, the decision, the time and the signer, and is appended to the hash-chained ledger.</p></details></div>
+<details class="mini"><summary>How to sign</summary><p class="sm">Rate each verified finding: <code>accepted</code> (real), <code>rejected</code> (a false positive) or <code>unsure</code>, optionally <code>:reason</code>. A finding without a flag is recorded as <code>unrated</code>.</p><ul class="sm"><li><code>claude:C1</code> <span class="mut">(info)</span> Two generic-constraint tests pin C# 9 although their input uses C# 8 features</li><li><code>claude:C2</code> <span class="mut">(info)</span> CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused</li><li><code>nemotron:F1</code> <span class="mut">(info)</span> Test name does not match its source</li></ul><pre>countersign sign up-1934 --as Toivo --decision &lt;accept|reject|request-changes&gt; --note &quot;...&quot; \
+  --finding claude:C1=&lt;accepted|rejected|unsure&gt; \
+  --finding claude:C2=&lt;accepted|rejected|unsure&gt; \
+  --finding nemotron:F1=&lt;accepted|rejected|unsure&gt;</pre>
+<p class="mut sm">The signature covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.</p></details></div>
 </section>
 <nav class="jump" aria-label="Sections"><a href="#supply-chain">Supply chain</a><a href="#trust">Where the trust comes from</a><a href="#panel">Reviewer panel</a><a href="#evidence">Evidence</a><a href="#full">Full detail</a></nav>
 <h2 id="supply-chain">Supply chain (from the build)</h2>
@@ -110,6 +113,6 @@ allowed: accept, reject, request-changes)</span></p><p><q>I, Toivo, have read wh
 <p class="sm">Mandate messagepack-csharp v4 <code>4b247d4ec39413dd</code>:
 signed by Toivo. countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394).</p>
 <p class="sm mut">Inputs: facts evidence/up-1934/facts.json (d0b5983e9a38), requirements requirements/up-1934.yaml,
-reviews claude (5f1bdc233121), codex (5ebf50fd4d66), nemotron (fbd7b16b924c). Rendered 2026-11-14T04:11:23+00:00.</p>
+reviews claude (5f1bdc233121), codex (5ebf50fd4d66), nemotron (fbd7b16b924c). Rendered 2026-11-14T04:26:03+00:00.</p>
 </details>
 </main></body></html>

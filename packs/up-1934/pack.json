@@ -1169,6 +1169,30 @@
       "request-changes"
     ],
     "command": "countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Two generic-constraint tests pin C# 9 although their input uses C# 8 features",
+        "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "claude:C2",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused",
+        "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "nemotron:F1",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "title": "Test name does not match its source",
+        "flag": "--finding nemotron:F1=<accepted|rejected|unsure>"
+      }
+    ],
+    "command_with_findings": "countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C2=<accepted|rejected|unsure> \\\n  --finding nemotron:F1=<accepted|rejected|unsure>",
     "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
   },
   "story": {
@@ -1379,7 +1403,31 @@
         "request-changes"
       ],
       "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
-      "command": "countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+      "command": "countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+      "findings": [
+        {
+          "ref": "claude:C1",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "Two generic-constraint tests pin C# 9 although their input uses C# 8 features",
+          "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "claude:C2",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "CSharpSourceGeneratorCodeFixVerifier default changed but the verifier is unused",
+          "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "nemotron:F1",
+          "reviewer": "nemotron",
+          "severity": "info",
+          "title": "Test name does not match its source",
+          "flag": "--finding nemotron:F1=<accepted|rejected|unsure>"
+        }
+      ],
+      "command_with_findings": "countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C2=<accepted|rejected|unsure> \\\n  --finding nemotron:F1=<accepted|rejected|unsure>"
     },
     "reviewers": 3
   },

@@ -1094,6 +1094,23 @@
       "request-changes"
     ],
     "command": "countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "findings": [
+      {
+        "ref": "claude:C2",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "New test covers the analyzer path only",
+        "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "nemotron:I1",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "title": "TryCreate documentation does not state that abstract types are excluded",
+        "flag": "--finding nemotron:I1=<accepted|rejected|unsure>"
+      }
+    ],
+    "command_with_findings": "countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C2=<accepted|rejected|unsure> \\\n  --finding nemotron:I1=<accepted|rejected|unsure>",
     "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
   },
   "story": {
@@ -1302,7 +1319,24 @@
         "request-changes"
       ],
       "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
-      "command": "countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+      "command": "countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+      "findings": [
+        {
+          "ref": "claude:C2",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "New test covers the analyzer path only",
+          "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "nemotron:I1",
+          "reviewer": "nemotron",
+          "severity": "info",
+          "title": "TryCreate documentation does not state that abstract types are excluded",
+          "flag": "--finding nemotron:I1=<accepted|rejected|unsure>"
+        }
+      ],
+      "command_with_findings": "countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C2=<accepted|rejected|unsure> \\\n  --finding nemotron:I1=<accepted|rejected|unsure>"
     },
     "reviewers": 3
   },

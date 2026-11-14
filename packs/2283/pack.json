@@ -1637,6 +1637,30 @@
       "request-changes"
     ],
     "command": "countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "title": "Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
+        "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "claude:C2",
+        "reviewer": "claude",
+        "severity": "minor",
+        "title": "BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source",
+        "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+      },
+      {
+        "ref": "claude:C3",
+        "reviewer": "claude",
+        "severity": "info",
+        "title": "Fix treats the symptom location; metadata struct backing fields are still walked as members",
+        "flag": "--finding claude:C3=<accepted|rejected|unsure>"
+      }
+    ],
+    "command_with_findings": "countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C2=<accepted|rejected|unsure> \\\n  --finding claude:C3=<accepted|rejected|unsure>",
     "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision."
   },
   "story": {
@@ -1920,7 +1944,31 @@
         "request-changes"
       ],
       "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
-      "command": "countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note \"...\""
+      "command": "countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note \"...\"",
+      "findings": [
+        {
+          "ref": "claude:C1",
+          "reviewer": "claude",
+          "severity": "major",
+          "title": "Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic",
+          "flag": "--finding claude:C1=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "claude:C2",
+          "reviewer": "claude",
+          "severity": "minor",
+          "title": "BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source",
+          "flag": "--finding claude:C2=<accepted|rejected|unsure>"
+        },
+        {
+          "ref": "claude:C3",
+          "reviewer": "claude",
+          "severity": "info",
+          "title": "Fix treats the symptom location; metadata struct backing fields are still walked as members",
+          "flag": "--finding claude:C3=<accepted|rejected|unsure>"
+        }
+      ],
+      "command_with_findings": "countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --note \"...\" \\\n  --finding claude:C1=<accepted|rejected|unsure> \\\n  --finding claude:C2=<accepted|rejected|unsure> \\\n  --finding claude:C3=<accepted|rejected|unsure>"
     },
     "reviewers": 3
   },
