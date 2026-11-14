@@ -30,7 +30,7 @@ after 90 days), all set (`gh secret list`). Without `CRACI_API_TOKEN` the `craci
 ## Dispatch
 
 ```bash
-# Nemotron reviews (+ Gemini adjudication once its key exists) for some or all changes
+# Nemotron reviews (+ Gemini adjudication of any disputes) for some or all changes
 gh workflow run countersign.yml -R Zawaer/countersign -f job=reviewers -f changes="2234"
 gh workflow run countersign.yml -R Zawaer/countersign -f job=reviewers -f changes="2283 2234 2129 2297"
 

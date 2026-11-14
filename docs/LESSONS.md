@@ -150,14 +150,18 @@ We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed ma
 
 **Lesson:** replaying real history needs no models and no builds, and it answers "would this have let real bugs through?" better than any demo. Its limits: our labels are judgement calls, and 0 of 24 is a small sample.
 
-### Still open
+### The night's open items, and where they ended
 
 - ~~Gemini adjudication~~ ran in CI (run 43580113703) on the disputes in 2234 and 2283; its rulings are in the packs, advisory only.
 - ~~CRACI's own records~~ `craci.sbom` and `craci.network` pass on the four agent changes (0 proxy violations); `build.egress` passes on all four.
 - ~~Merge-gate forgery (T1)~~ closed Sat 11:30 with a dedicated GitHub App.
 - **Nemotron on 2234 N1** sided with Codex (met). The clause stays refused because Claude's `not_met` has verified evidence.
 
-- **L20 (Sat 07:45): attack your own pipeline before a judge does.** A red team of 35 attacks got 28 through the first time: hand-edited generated files, build files that compile test code into the product, evidence that verified but wasn't about the change, homoglyph injections, forged trust events. Most fixes were small (areas capped at `ask`, evidence must touch changed lines, verify the ledger before routing). After them it stops 32; closing two more (size without a cliff, Release-only packages) made it 34 of 35, and mutation testing of the changed lines (a clause's tests must kill a mutant of the change) closed the last one, test theater (TT1), at 11:35: <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n-->. What we learned: a trust system's weak points are its edges (build config, CI, the ledger, the reviewers' own output), not the main review path.
+### L20. Sat 14 Nov 07:45: Attack your own pipeline before a judge does
+
+A red team of <!--n:redteam_total-->35<!--/n--> attacks got 28 through the first time: hand-edited generated files, build files that compile test code into the product, evidence that verified but wasn't about the change, homoglyph injections, forged trust events. Most fixes were small (areas capped at `ask`, evidence must touch changed lines, verify the ledger before routing). After them it stops 32; closing two more (size without a cliff, Release-only packages) made it 34 of 35, and mutation testing of the changed lines (a clause's tests must kill a mutant of the change) closed the last one, test theater (TT1), at 11:35: <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n-->. [REDTEAM.md](security/REDTEAM.md).
+
+**Lesson:** a trust system's weak points are its edges (build config, CI, the ledger, the reviewers' own output), not the main review path.
 
 ### L21. Sat 14 Nov 13:40 (190a685): A model small enough to self-host is a weaker bug-finder
 

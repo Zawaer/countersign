@@ -1,14 +1,14 @@
 # Countersign in a pull-request flow
 
 The four agent-written changes are open as pull requests in our copy of the challenge repo,
-[Zawaer/countersign-messagepack-demo](https://github.com/Zawaer/countersign-messagepack-demo) (private; base `32258fdb`),
+[Zawaer/countersign-messagepack-demo](https://github.com/Zawaer/countersign-messagepack-demo) (base `32258fdb`),
 each with Countersign's evidence pack as a comment, a `countersign/tier` status that `main` requires, and the owner
 named in the signed mandate assigned:
 
 | PR | Change | Tier | `countersign/tier` | Owner |
 |---|---|---|---|---|
 | [#1](https://github.com/Zawaer/countersign-messagepack-demo/pull/1) | 2283, 4 files | ask | pending: awaiting countersignature by Toivo | Toivo (Zawaer) |
-| [#2](https://github.com/Zawaer/countersign-messagepack-demo/pull/2) | 2234, 4 files | ask | pending: awaiting countersignature by Toivo | Toivo (Zawaer) |
+| [#2](https://github.com/Zawaer/countersign-messagepack-demo/pull/2) | 2234, 4 files | ask | failure: changes requested by Toivo (signed, ledger #3); merge blocked | Toivo (Zawaer) |
 | [#3](https://github.com/Zawaer/countersign-messagepack-demo/pull/3) | 2129, 28 files | block | failure: risk score (failing checks, critical area, size) | Toivo (Zawaer) |
 | [#4](https://github.com/Zawaer/countersign-messagepack-demo/pull/4) | 2297, 237 files | block | failure: split-large-change | Toivo (Zawaer) |
 | [#11](https://github.com/Zawaer/countersign-messagepack-demo/pull/11) | demo-docs1, 1 file (merged) | notify | success: AI-cleared: notify under mandate v6 | Rene (notified) |

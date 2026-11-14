@@ -7,8 +7,8 @@ Countersign demo: AI review under a signed mandate; a named human countersigns.
 Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not work if SuppressSourceGeneration = true'.
 
 [1/9] Set up: venv with uv, a temp workspace and a throwaway owner key
-    Python 3.12.16, countersign 0.1.0
-    workspace /tmp/countersign-demo.1VjZaM (empty ledger, throwaway key for Toivo; the repo's ledger/ and keys/ are untouched)
+    Python 3.11.2, countersign 0.1.0
+    workspace /tmp/countersign-demo.gKAMtF (empty ledger, throwaway key for Toivo; the repo's ledger/ and keys/ are untouched)
 
 [2/9] countersign route: the 7 real changes, the tier each gets and the rule that decided it
     change    tier     score  owner  reason
@@ -29,15 +29,16 @@ Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not wor
     Recommended tier: ASK    owner: Toivo (FYI Rene)
     Why:
       1. Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a ...
-      2. 2 of 4 requirement clauses not proven. REQ-2234-N1: Claude says not met (Codex and Nemotron: met); the adj...
-      3. The AI declined to decide 3 questions, e.g. Whether this change resolves issue #2234 for users of the rele...
+      2. 2 of 4 requirement clauses not proven. [...]
+      3. The AI declined to decide 3 questions [...]
          (all 19 tier drivers are in the pack)
 
     Requirement trace:
-      REQ-2234-F1    HELD BEFORE  Met, but already true before this change: all 3 of the clause's tests that were r...
-      REQ-2234-F2    HELD BEFORE  Met, but already true before this change: all 1 of the clause's tests that were r...
-      REQ-2234-N1    NOT MET      Claude says not met (Codex and Nemotron: met); the adjudicator disputes it
+      REQ-2234-F1    HELD BEFORE  Met, but already true before this change [...]
+      REQ-2234-F2    HELD BEFORE  Met, but already true before this change [...]
+      REQ-2234-N1    NOT MET      Claude says not met (Codex and Nemotron: met); Gemini: Claude's objection is supp...
       REQ-2234-N2    REFUSED      Codex said met without verified evidence
+      Gemini on N1: Claude's objection is supported (advisory; full ruling in the pack)
 
     What the AI found:
       [major] The issue's 3.1.1 regression is not on this base; the change fixes a different crash (claude:C1)
@@ -45,7 +46,7 @@ Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not wor
       [minor] Duplicate-key diagnostic reports only one diagnostic although two members share the key (nemotron:N1)
       (+6 more)
 
-    ... (43 more lines: refusals, not checked, residual risk, the sign command; packs/2234/pack.md)
+    ... (25 more lines: refusals, not checked, residual risk, the sign command; packs/2234/pack.md)
 
 [4/9] Why: a verified finding with the line it cites, and a clause the reviewers disagree on
     claude:C1 [major] The issue's 3.1.1 regression is not on this base; the change fixes a different crash
@@ -77,11 +78,11 @@ Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not wor
       do NOT demonstrate the change (runtime behaviour they check is identical with and without the fix)
 
 [6/9] Sign as Toivo (throwaway key): request changes, rate three findings; then verify the ledger
-    signed: ledger #1 request-changes by Toivo, hash 6afbb57aba0dac06
+    signed: ledger #1 request-changes by Toivo, hash 074a18dc47e37ee7
     findings: 2 accepted, 1 rejected, 6 unrated
     (real `countersign sign` code; only its re-build check is skipped: that needs the MessagePack clone and Toivo's
     real key, so the committed pack stands in for the re-build)
-    $ countersign verify-ledger --root /tmp/countersign-demo.1VjZaM
+    $ countersign verify-ledger --root /tmp/countersign-demo.gKAMtF
     ledger OK: 1 entries, hash chain intact, every signature verifies
 
 [7/9] Tamper: turn Toivo's request-changes into accept with sed, verify again
@@ -112,7 +113,7 @@ Change 2234 (agent-written, Tieto's ju26-issue-2234): 'the analyzer does not wor
     Rubber stamp (real): Codex, the control reviewer, raised 0 verified findings and missed 6 verified majors the
       others found; under unanimity its 'met' cleared nothing.
 
-Done in 1s. Next:
+Done in 0s. Next:
   open site/index.html                 the main screen (the diff, the pins, sneak-a-bug mode)
   packs/2234/pack.md (or pack.html)    the full evidence pack Toivo signs
 ```

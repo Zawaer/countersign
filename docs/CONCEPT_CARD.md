@@ -27,8 +27,8 @@ Replace *"did a human read every line?"* with *"did a named human sign for what 
 
 - **Found:** sound code fixing a *different* crash (the reported regression isn't in the base). Only <!--n:t2234_fail_without_fix-->4<!--/n--> of <!--n:t2234_new_tests-->8<!--/n--> new tests fail without it (two clauses *held before*); mutation testing agrees (<!--n:t2234_mutants_killed-->5<!--/n--> of <!--n:t2234_mutants-->8<!--/n--> mutants killed, none by F1's or F2's tests). `Key(null)` still crashes (reproduced).
 - **Refused:** the no-crash clause (reviewers split; Gemini backed Claude); whether #2234 is fixed for 3.1.x users (owner's call).
-- **Routed:** `ask` to Toivo, who learns it's the wrong bug. The pack takes longer than this small diff (<!--n:pack_min_2234-->47<!--/n--> vs <!--n:read_min_2234-->26<!--/n--> min, simulated) but catches what reading misses.
-- **Other six:** 2283 `ask` (silences a warning; reproduced); 2129 `block` (failed checks); 2297 `block` (237 files: split). Upstream controls: two `ask`, a docs fix `notify` (AI clears, tells Rene).
+- **Routed:** `ask` to Toivo, who learns it's the wrong bug and signs *request changes*; on the real PR the gate blocks the merge ([demo PR #2](https://github.com/Zawaer/countersign-messagepack-demo/pull/2)). The pack takes longer than this small diff (<!--n:pack_min_2234-->47<!--/n--> vs <!--n:read_min_2234-->26<!--/n--> min, simulated) but catches what reading misses.
+- **Other seven:** 2283 `ask` (silences a warning; reproduced); 2129 `block` (failed checks); 2297 `block` (237 files: split). Upstream controls: two `ask`, a docs fix `notify` (AI clears, tells Rene). An agent-written docs fix, demo-docs1: `notify`, merged through the gate in 40 s with no human asked ([demo PR #11](https://github.com/Zawaer/countersign-messagepack-demo/pull/11)).
 
 ## Evidence it works
 

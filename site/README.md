@@ -11,4 +11,4 @@ python3 -m http.server 3472 --bind 0.0.0.0 --directory site  # then open http://
 
 Rerun `build.py` after anything under those folders changes. The README screenshots in `docs/img/` come from these pages: rerun `python3 scripts/screenshots.py` (Playwright + Pillow; serves `site/` itself, light theme, 1280x800 at 2x) after a page changes. Missing inputs show as "not recorded yet", never as a made-up number. Design rules: [DESIGN.md](DESIGN.md).
 
-**Publishing.** `.github/workflows/pages.yml` rebuilds and publishes `site/` to GitHub Pages on every push to `main` that touches its inputs. It only works once the repository is public (planned for Sunday, by Toivo) and Pages is set to "GitHub Actions" in the repo settings; until then the deploy step fails; serve `site/` locally as above.
+**Publishing.** `.github/workflows/pages.yml` rebuilds `site/` and publishes it to GitHub Pages when run by hand (`workflow_dispatch`; the file shows the push trigger to add). Pages needs a public repository and its source set to "GitHub Actions". Otherwise serve `site/` locally as above.
