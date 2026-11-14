@@ -1,31 +1,82 @@
-# Demo video script (2:00 hard limit)
+# Demo video script (target 1:55, hard limit 2:00)
 
-About 230 spoken words, which leaves room for pauses at a calm pace (~130 words per minute). Every frame is a capture of a real artifact in this repo; nothing is mocked up except the title cards. Record the voice-over first, then cut the captures to it.
+One take of the real site, no mock-ups. Record the voice-over first (about 190 words, calm pace), then cut the screen capture to it. Captions are burned in, bottom-left, at most 6 words each.
 
-| Time | On screen | Voice-over |
+All URLs are relative to the site root: GitHub Pages once public, or locally `python3 -m http.server 3472 -d site` → `http://localhost:3472/`.
+
+## Shot list
+
+| Time | On screen (page, click) | Caption | Voice-over |
+|---|---|---|---|
+| 0:00–0:10 | `pitch.html#4`: slide "Green CI. AI says met. Wrong bug." Cursor rests on the CI tile (✓ 175/175), then the AI review tile (✓ 4/4 met). | Everything is green | An agent opens a pull request. The build passes, all 175 tests pass, and an AI reviewer says every requirement is met. |
+| 0:10–0:15 | Switch tab to `index.html#2234`: the real diff, four pins, verdict pill on top. No click. | The code, with pins | Countersign shows the code itself, with a few pins. |
+| 0:15–0:27 | Click pin **✗ Fixes a different crash** (line 1383). Its card opens under the line. | It fixes a different bug | This one: the reported crash comes from a commit that isn't in this branch. The agent fixed a different bug. |
+| 0:27–0:38 | Click pin **✗ Still crashes on Key(null) · reproduced** (line 985). Hold on the chips "Claude found it" and "pipeline reproduced it". | Still crashes. Reproduced. | This line still crashes on Key null. A reviewer claimed it; the pipeline reproduced it. |
+| 0:38–0:47 | Scroll a little; click pin **◐ Passes without the fix** (test line 21). | Tests pass without the fix | Revert the fix, and four of the eight new tests still pass. They prove nothing. |
+| 0:47–0:53 | Scroll to top; hover the pill **ASK → Toivo**. | ASK → Toivo | So the AI can't clear it. It asks the named owner, Toivo. |
+| 0:53–1:08 | Switch tab to `tour.html#6` ("Try to forge the record"). Hover **LINE 7 signoff by Toivo**. Click **1. Tamper** → red "LEDGER INVALID … does not match its hash". Click **2. Recompute the hash** → "signature does not verify". | Edit one line: invalid | Toivo requests changes and signs into a hash-chained ledger. Edit one line: invalid. Recompute the hash: still invalid. Only his key signs. |
+| 1:08–1:24 | Back to the `index.html` tab. Bottom bar: click **sneak a bug in**, then **removed guard 2234·2**. Pins: **◐ Got past every check**, **✗ Claude flagged it**; pill **ASK → Toivo · checks missed it; Claude flagged it**. | Every test missed it | Now sneak a bug in: delete one line. Every test passes. A reviewer still points at that line, so it goes to Toivo. |
+| 1:24–1:42 | Switch tab to `overview.html`: the three numbers. Hold on the middle one (0/11). At 1:36 add the caption for the red team. | 0 of 11 escapes cleared · then: Red team: 35 of 35 stopped | Replayed on 109 real merged pull requests, the AI would have cleared 24, and none of the 11 that later needed a revert or fix. We attacked our own pipeline 35 ways; it stops all 35. |
+| 1:42–1:55 | Switch tab to `pitch.html#1`: title slide with the punchline and the repo URL. Hold to the end. | (none: the slide says it) | Countersign. AI clears what it can prove, refuses what it can't, and a named human countersigns the rest. |
+
+## Voice-over (read straight through, 192 words)
+
+> An agent opens a pull request. The build passes, all 175 tests pass, and an AI reviewer says every requirement is met.
+>
+> Countersign shows the code itself, with a few pins.
+>
+> This one: the reported crash comes from a commit that isn't in this branch. The agent fixed a different bug.
+>
+> This line still crashes on Key null. A reviewer claimed it; the pipeline reproduced it.
+>
+> Revert the fix, and four of the eight new tests still pass. They prove nothing.
+>
+> So the AI can't clear it. It asks the named owner, Toivo.
+>
+> Toivo requests changes and signs into a hash-chained ledger. Edit one line: invalid. Recompute the hash: still invalid. Only his key signs.
+>
+> Now sneak a bug in: delete one line. Every test passes. A reviewer still points at that line, so it goes to Toivo.
+>
+> Replayed on 109 real merged pull requests, the AI would have cleared 24, and none of the 11 that later needed a revert or fix. We attacked our own pipeline 35 ways; it stops all 35.
+>
+> Countersign. AI clears what it can prove, refuses what it can't, and a named human countersigns the rest.
+
+## Numbers used
+
+| Number | Where it is said | Source |
 |---|---|---|
-| 0:00–0:10 | GitHub PR page: "Implementation for #2234", author is an agent, 4 files, +262 −4. Zoom on the approver field: **Toivo**. | Friday afternoon. An agent opens a pull request. Two hundred and sixty lines, and your name is on the approval. |
-| 0:10–0:22 | The Countersign PR comment on that PR (tier `ASK`, owner Toivo, link to the pack). Tap the link: [packs/2234/pack.html](../../packs/2234/pack.html) on a phone, 390 px wide, first screen: **ASK · owner Toivo · Why this tier**. TODO(numbers): capture the PR comment from the PR-flow demo once it exists. | With Countersign, the change opens with its own explanation: where it goes, who owns it, and why. |
-| 0:22–0:34 | Pack, "What was checked": highlight `tests.fail_without_fix ... 4/8 failed` and `tests.execution_fail_without_fix: fail ... 0/4`. | First, facts. We revert the fix and keep the new tests. Half of them still pass. They don't test this change. |
-| 0:34–0:50 | Pack, "What the AI found": finding **claude:C1** with its `[OK]` citations (TypeCollector.cs at base, line 1369). Brief split screen with [reviews/2234/codex.md](../../reviews/2234/codex.md). | Then reviewers from different vendors read it separately, and every claim must cite a line, a test or a check that we re-verify. One of them found it: this is sound code that fixes the wrong bug. |
-| 0:50–1:05 | Pack, "Requirement trace": row **REQ-2234-N1 refused — not_met; reviewers_disagree**. Then the refusal: "whether this resolves #2234 for 3.1.x users". | What it can't prove, it refuses, and says why. One reviewer says the no-crash requirement is met; the other reproduced a crash. Disagreement means refusal. Which release this fixes is the owner's call. |
-| 1:05–1:18 | Desktop pack: scroll "What was not checked", "Residual risk", the sign-off statement. Terminal: `countersign sign 2234 --as Toivo --decision request-changes --note "..."`, then the new ledger line. | Toivo reads what was checked, what wasn't, and the risk that's left, and countersigns. His signature and the pack's hash go into a hash-chained ledger. |
-| 1:18–1:26 | Terminal: `countersign verify-ledger` → OK. `sed` edits one entry in a copy. `verify-ledger --inputs /tmp/t` → **LEDGER INVALID: line 2**. | Change one byte, and verification fails. |
-| 1:26–1:42 | Terminal: `countersign route --all` (2283 ask, 2234 ask, 2129 block, 2297 block). Then `countersign trust` table; TODO(numbers): the simulated escape dropping `generator-analyzer-core` to `ask`, labelled SIMULATED on screen. | Review depth follows risk. The 237-file change is blocked until it's split. The AI earns clearance per area from spot-checks, and loses it after a single escape. |
-| 1:42–1:52 | `measurement/results.md`: share routed to humans, seeded defects caught, findings verified per reviewer. Simulated numbers carry the SIMULATED label on screen. TODO(numbers): capture once the replay is committed. | And we measure outcomes: what reaches humans, which findings hold up, and which planted bugs get caught. |
-| 1:52–2:00 | Title card: **Countersign** and the punchline. github.com/Zawaer/countersign | Countersign. AI reviews under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest. |
+| 175 of 175 tests pass | 0:00 | `evidence/2234/facts.json`, check `tests.full_suite` ("175 tests, 175 passed"); also pitch slide 4 |
+| AI reviewer: every requirement met (4 of 4) | 0:00 | `reviews/2234/codex.json`, `requirement_verdicts` (pitch slide 4, "AI review ✓ 4/4 met") |
+| Fixes a different crash (commit not in the branch) | 0:15 | `packs/2234/pack.json`, finding `claude:C1` (upstream `1a74a620` not in base) |
+| Key(null) still crashes, reproduced | 0:27 | `packs/2234/pack.json`, finding `claude:C2` and check `repro.claude.C2` (fails on head and base, passes on control) |
+| 4 of 8 new tests pass without the fix | 0:38 | `evidence/2234/facts.json`, check `tests.fail_without_fix` ("4/8 failed … 4 new tests pass without the fix") |
+| ASK → Toivo | 0:47 | `packs/2234/pack.json` (`tier`, `owner`) |
+| Toivo's request-changes sign-off | 0:53 | `ledger/ledger.jsonl` line 7 (signoff, change 2234, decision request-changes) |
+| Tamper → invalid; rehash → signature fails | 0:53 | live check in `tour.html` step 6 against `ledger/ledger.jsonl` and `keys/toivo.pub` |
+| Seeded bug every test missed, reviewer on the line | 1:08 | `measurement/results.md`, row `2234-mut2` (tests missed it: yes; tier ask; claude N1, nemotron M1 on the planted line ±3) |
+| 109 PRs, 24 cleared, 0 of 11 escapes | 1:24 | `measurement/history/results.md` (mandate v6); README "In numbers" |
+| Red team: 35 attacks, all 35 stopped | 1:24 | README "Red team"; `docs/security/REDTEAM.md`; `tests/redteam/test_redteam_attacks.py` (`KNOWN_MISSES` empty; `scripts/sync_numbers.py` key `redteam_stopped`) |
+| On screen only: 14 of 18 seeded changes failed a check; 4 of 4 agent changes sent to a human | 1:24 | `measurement/results.json` via `overview.html` |
 
-## Capture list
+## Recording checklist
 
-1. PR page for the 2234 change, and the Countersign PR comment (from the PR-flow demo). TODO(numbers): PR URL.
-2. `packs/2234/pack.html` at 390 px (phone): top card, "Why this tier".
-3. `packs/2234/pack.html` on desktop: "What was checked", "What the AI found", "Requirement trace", "Not checked", "Residual risk", "Sign-off".
-4. Terminal, large font, dark theme: `countersign route --all`, `countersign sign ...`, `countersign verify-ledger` before and after the tamper, `countersign trust`.
-5. `measurement/results.md` (once committed).
-6. Title card.
+- **Window:** browser content area exactly 1280×800 (record the window, not the screen). On a Retina Mac this records at 2560×1600; export 1080p or 1440p.
+- **Zoom:** 100%. The 2234 scene and its pins fit one screen at 100%; at 110% the test pins fall below the fold.
+- **Theme:** light (the default; click ◐ top right if the OS is in dark mode). Check every tab is light before rolling.
+- **Clean browser:** a fresh profile or guest window, no bookmarks bar, no extensions, notifications off (macOS Focus on). Hide the dock.
+- **Pre-open tabs, in order:** `pitch.html#4`, `index.html#2234`, `tour.html#6`, `overview.html`, `pitch.html#1`. Load each once, so nothing renders mid-shot. Reset tour step 6 (**Reset**) before the take.
+- **Cursor:** turn on a cursor highlight in the recorder (QuickTime: "Show Mouse Clicks"). Move slowly; rest the cursor on each pin for a beat before clicking.
+- **Timing:** record the voice-over first, then click to it. Hold every number on screen at least 2 seconds. Leave 5 seconds of slack under 2:00: the target is 1:55.
+- **If it runs long:** shorten the overview hold (1:24) first; keep the "still crashes" and "sneak a bug in" shots, they are the story.
+- **Audio:** a headset or lavalier, a quiet room, one take per paragraph, normalised to -16 LUFS.
+- **Captions:** burned in, bottom-left, white on a dark 80%-opacity box, same font as the site (system sans), up 2+ seconds each.
 
-## Rules for the edit
+## 30-second cut
 
-- Every number on screen must be readable for at least two seconds and must come from a file in the repo.
-- Anything simulated (trust events, review minutes) shows a SIMULATED label on screen.
-- If the cut runs long, drop the 1:42 measurement shot first, not the refusal shot: refusals are what the brief asks for.
+| Time | On screen | Caption | Voice-over |
+|---|---|---|---|
+| 0:00–0:05 | `pitch.html#4` (green tiles) | Everything is green | An agent's pull request. Every test passes. |
+| 0:05–0:16 | `index.html#2234`: click **✗ Fixes a different crash**, then **✗ Still crashes on Key(null)** | Wrong bug. Still crashes. | Countersign shows the code: it fixes a different bug, it still crashes, and half its new tests prove nothing. |
+| 0:16–0:21 | Hover **ASK → Toivo** | ASK → Toivo | So it asks the named owner, Toivo, who signs. |
+| 0:21–0:26 | `overview.html`, middle number | 0 of 11 escapes cleared | On 109 real pull requests, it would have cleared 24, and none of the 11 escapes. |
+| 0:26–0:30 | `pitch.html#1` | (none) | AI clears what it can prove. A named human signs the rest. |

@@ -839,6 +839,9 @@ def build_pitch(D: Data, n: dict) -> str:
             + (tile("Claude", f'{cl["findings"]} findings', "bad") if cl else "") + "</div>")
     V[8] = ("It says where it stops.",
             '<div class="tiers lim">' + "".join(f"<span>{x}</span>" for x in ["intent", "requirement quality", "net8.0 / Linux only", "simulated trust"]) + "</div>")
+    V[9] = ("Try it on one repo.",
+            '<div class="tiles3">' + tile("Run", "scripts/demo.sh") + tile("Team", "Toivo · Rene") + "</div>"
+            + f'<p class="repo mono"><a href="{REPO_URL}">{e(REPO_URL.replace("https://", ""))}</a></p>')
 
     out = []
     for i, k in enumerate(sorted(slides)):
@@ -1050,7 +1053,7 @@ details.more[open] summary{margin-bottom:8px}
 .tiles3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 .tile{border:1px solid var(--border);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:8px}
 .tile span{color:var(--muted);font-size:.9em}.tile b{font:600 clamp(22px,2.6vw,36px)/1.2 var(--mono)}
-.tile.ok{border-color:var(--ok)}.tile.ok b{color:var(--ok)}.tile.bad{border-color:var(--bad);background:var(--bad-bg)}.tile.bad b{color:var(--bad)}
+.slide .repo{margin-top:24px;font-size:1.3em}.tile.ok{border-color:var(--ok)}.tile.ok b{color:var(--ok)}.tile.bad{border-color:var(--bad);background:var(--bad-bg)}.tile.bad b{color:var(--bad)}
 .chg{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:1.1em}
 .lim span{border:1px dashed var(--border);border-radius:6px;padding:8px 14px}
 .greyed b{font-size:clamp(28px,4vw,48px)}

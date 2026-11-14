@@ -27,13 +27,13 @@ Paste everything between the two rules into the platform. Character count of tha
 
 **What it showed.** On ju26-issue-2234 the agent wrote sound code that fixes a different crash than the issue reports. Only 4 of 8 new tests fail without it, so two clauses are marked "held before": met, but not achieved by this change. The pipeline reproduced a remaining Key(null) crash. The no-crash clause is refused (Claude: not met; Codex, Nemotron: met). It went to its owner with every reason, and the owner learns it fixes the wrong bug. On small changes like this the pack takes longer than the diff (simulated); the payoff is accountability and catching what a diff read misses, with time saved only on large changes and on changes the AI clears. 2283 goes to its owner (the fix silences a warning; reproduced by the pipeline); 2129 and 2297 are blocked. Of three small upstream controls, a one-line docs fix is cleared by the AI, which tells its owner.
 
-**Measured.** On 109 real merged MessagePack PRs (mandate v6, upstream CI credited as passed), the AI would have cleared 24 and none of the 11 later reverted or fixed. Checks alone catch 14 of 17 seeded changes (11 of 14 one-line bugs, both prompt injections, a supply-chain attack). A simulation showed the old trust rule let escapes rise when reviewers degrade; 20 checks plus canaries fixed it, and we changed the signed mandate (v3; now v6). We attacked our own pipeline 35 ways; after the fixes it stops 34, and the one still open is listed with its fix.
+**Measured.** On 109 real merged MessagePack PRs (mandate v6, upstream CI credited as passed), the AI would have cleared 24 and none of the 11 later reverted or fixed. Checks alone catch 14 of 17 seeded changes (11 of 14 one-line bugs, both prompt injections, a supply-chain attack). A simulation showed the old trust rule let escapes rise when reviewers degrade; 20 checks plus canaries fixed it, and we changed the signed mandate (v3; now v6). We attacked our own pipeline 35 ways; after the fixes it stops all 35. The last needed mutation testing: a clause is proven only if one of its tests kills a mutant of the change.
 
 **Limits.** It can't judge intent and is only as good as the requirement text. Areas without checks fall back to humans. Reviewers share blind spots. Trust over time and review minutes are simulated and labelled.
 
-**Codex.** A reviewer on all seven changes. Given passing tests, its second pass said every clause was met and found nothing; unanimity means that can't clear a change. Codex also reviewed our own pipeline for security; we confirmed 8 issues (4 it missed) and fixed or mitigated all but the merge-gate hole.
+**Codex.** A reviewer on all seven changes. Given passing tests, its second pass said every clause was met and found nothing; unanimity means that can't clear a change. Codex also reviewed our own pipeline for security; we confirmed 8 issues (4 it missed) and fixed 7, including the merge-gate hole (only a dedicated GitHub App can now post the required status), and described the fix for the last, a low-severity one.
 
-**Gemini.** The adjudicator: it reads only disputed items with both sides' evidence and can never clear anything (enforced in code). Wired but not run (no key).
+**Gemini.** The adjudicator: it reads only disputed items with both sides' evidence and can never clear anything (enforced in code). Run in CI on the disputes in 2234 and 2283; its rulings are in the packs.
 
 **CRACI.** Pipeline, facts and reviewer jobs run on CRACI under deny-by-default egress. deps.delta diffs CycloneDX SBOMs of base and head (passes on all four changes, fails on a seeded attack); build.egress records the build's network policy as evidence (wired, no committed run yet). CRACI's own SBOM and network trace are wired but skipped: no CRACI API token is set.
 
@@ -43,7 +43,7 @@ Paste everything between the two rules into the platform. Character count of tha
 
 ---
 
-Character count of the text between the rules: **4,309** (Python `len()` on the stripped text). Recount before pasting:
+Character count of the text between the rules: **4,761** (Python `len()` on the stripped text). Recount before pasting:
 
 ```bash
 python3 -c "print(len(open('docs/pitch/submission.md').read().split('\n---\n',2)[1].strip()))"

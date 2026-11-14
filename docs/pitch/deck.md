@@ -1,4 +1,4 @@
-# Deck outline (8 slides)
+# Deck outline (9 slides)
 
 One message per slide. Visuals are captures of real artifacts unless marked "diagram". Speaker notes are what to say if the deck is presented live; the PDF can carry them as small text or leave them out.
 
@@ -52,7 +52,7 @@ One message per slide. Visuals are captures of real artifacts unless marked "dia
 
 - **Message:** The AI earns clearance per area from spot-checks and loses it after one escape; we measure outcomes, not activity.
 - **Visual:** three numbers. History (real; mandate v6, upstream CI credited as passed): of 109 merged upstream PRs, the AI would clear 24, and none of the 11 later reverted or fixed. Seeded (real): checks alone catch 14 of 17 seeded changes (11 of 14 one-line bugs, both prompt injections, the supply-chain attack). Trust (SIMULATED): with 20-check restore and weekly canaries, escapes stay at the full-review level when reviewers degrade.
-- **Speaker note:** An area reaches `notify` after 20 agreeing spot-checks in a row; an escape, a disagreeing spot-check or a missed canary drops it a stage, and a new reviewer model starts at `ask`. The simulation showed our first rule, 3 checks, barely reacted, so we changed the signed mandate (v3; now v4). Of the 3 seeded bugs every test missed, a reviewer flagged the planted line in 2 with a finding the original did not already have (3 of 3 by location); Nemotron's blind review alone in 2.
+- **Speaker note:** An area reaches `notify` after 20 agreeing spot-checks in a row; an escape, a disagreeing spot-check or a missed canary drops it a stage, and a new reviewer model starts at `ask`. The simulation showed our first rule, 3 checks, barely reacted, so we changed the signed mandate (v3; now v6). Of the 3 seeded bugs every test missed, a reviewer flagged the planted line in 2 with a finding the original did not already have (3 of 3 by location); Nemotron's blind review alone in 2.
 
 ## 7. What we saw go wrong
 
@@ -70,3 +70,9 @@ One message per slide. Visuals are captures of real artifacts unless marked "dia
   - Limits: can't judge intent; only as good as the requirement; areas without checks fall back to humans; reviewers share blind spots; trust over time is simulated; the merge status is owned by a dedicated GitHub App (closed T1).
   - Judges' questions: *Not trust our output?* citations stop verifying, reviewers always agree, canaries missed, any escape. *Who owns it?* the owner of the most sensitive area, named in the signed mandate. *Scale?* humans see only what can't be proven; open-weight reviewers for confidential code.
 - **Speaker note:** Close on the punchline: it clears what it can prove, refuses what it can't, and a named human countersigns the rest.
+
+## 9. Try it
+
+- **Message:** Try it on one repo: one area, one owner, one signed mandate.
+- **Visual:** three tiles: Run `scripts/demo.sh` · Code github.com/Zawaer/countersign · Team Toivo · Rene.
+- **Speaker note:** Our ask: pick one repo and one area, sign a mandate that starts every area at ask, and let the AI earn clearance from there. The demo runs offline in seconds from a fresh clone.
