@@ -723,7 +723,7 @@ def page(scenes, tabs, bugs) -> str:
 <style>{PAGE_CSS.strip()}</style>
 </head><body>
 <header class="top"><a class="mark" href="index.html"><i>✓</i>Countersign</a>
-<nav class="links" aria-label="More"><a href="tour.html">Tour</a><a href="packs/2234/pack.html">Evidence pack</a><a href="overview.html">Numbers</a><a href="pitch.html">Pitch</a>
+<nav class="links" aria-label="More"><a href="tour.html">Tour</a><a href="packs/2234/pack.html">Evidence pack</a><a href="overview.html">Numbers</a><a href="pitch.html">Pitch</a><a href="prs.html">PR flow</a>
 <button type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav></header>
 <main>{"".join(scenes)}</main>
 <nav class="bar" id="bar" aria-label="Choose a change"><div class="row" id="row-main">{main}</div><div class="row" id="row-bugs" hidden>{brow}</div></nav>

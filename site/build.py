@@ -321,7 +321,7 @@ def hero_text(n: dict) -> str:
 
 # ---------------------------------------------------------------- shared page shell
 
-NAV = [("index.html", "Demo"), ("tour.html", "Tour"), ("overview.html", "Numbers"), ("pitch.html", "Pitch"), ("packs/2234/pack.html", "Evidence pack")]
+NAV = [("index.html", "Demo"), ("tour.html", "Tour"), ("overview.html", "Numbers"), ("pitch.html", "Pitch"), ("prs.html", "PR flow"), ("packs/2234/pack.html", "Evidence pack")]
 
 
 def page(fname: str, title: str, body: str, js: str = "", cls: str = "", desc: str = "") -> str:
@@ -640,7 +640,7 @@ def build_tour(D: Data, n: dict) -> str:
                   '<div id="lstatus" class="banner" aria-live="polite"></div><div id="ledger" class="ledger"></div>',
                   more("What the owner signs", f'<blockquote>{e(so.get("statement", ""))}</blockquote><pre class="cmd">$ {e(so.get("command", ""))}</pre>'
                        '<p class="prose">Each line\'s hash is SHA-256 over its content, points to the previous hash, and is signed with the signer\'s Ed25519 key from <code>keys/</code>. Offline: <code>countersign verify-ledger</code>.</p>'),
-                  src('ledger/ledger.jsonl') + ' · ' + src('countersign/ledger.py')))
+                  src('ledger/ledger.jsonl') + ' · ' + src('countersign/ledger.py') + ' · <a href="prs.html">How it looks on a GitHub PR</a>'))
 
     # 7 trust per area
     arow = [[code(a["name"]), e(a.get("owner", "")), tier(a.get("max_ai_tier"))] for a in D.areas]
@@ -1078,10 +1078,238 @@ table.stack td{display:grid;grid-template-columns:96px 1fr;gap:8px;border:0;padd
 .big{font-size:24px}.tstep h1{font-size:22px}.tstep .lead{font-size:17px}.nums{grid-template-columns:1fr;gap:8px}.num{flex-direction:row;align-items:baseline;gap:12px;padding:12px 16px}.num b{font-size:36px;min-width:3.2em}.dstat li{grid-template-columns:minmax(0,1fr) 72px;gap:4px 8px}.dstat li .muted,.dstat .nbar{display:none}.dot span{display:none}.slide{padding:24px 16px}.diffs li{padding-left:40px}
 th,td{padding:6px 8px}}
 @media print{.top,.deckbar,.tnav{display:none}.slide{display:block!important;page-break-after:always;min-height:auto}}
+/* prs.html: a GitHub PR, minimal */
+.prs .cap{font-size:14px;margin:24px 0 16px;max-width:none}
+.pr-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+.pr-t{font-size:24px;font-weight:400;margin:0 0 8px}.pr-t.sm{font-size:16px;font-weight:600}
+.pr-meta{font-size:14px;margin:0 0 8px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.open{display:inline-block;font:600 12px/24px var(--sans);padding:0 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2)}
+.lbl{display:inline-block;font:600 12px/20px var(--sans);padding:0 8px;border-radius:999px;border:1px solid var(--lc);color:var(--fg);background:color-mix(in srgb,var(--lc) 14%,transparent)}
+.botl{display:inline-block;font:500 11px/16px var(--sans);padding:0 6px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+.ghc{border:1px solid var(--border);border-radius:6px;margin:16px 0}
+.ghc-h{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;font-size:14px;border-radius:6px 6px 0 0}
+.ghc-b{padding:16px;font-size:14px;overflow-wrap:break-word}.ghc-b code{overflow-wrap:anywhere}
+.md h3{font-size:20px;margin:0 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}.md h4,.md h5{font-size:16px;margin:16px 0 8px}
+.md table th{text-transform:none;letter-spacing:0;font-size:14px}.md table td:first-child{color:var(--muted);width:30%}
+.md blockquote{font-size:14px}.md p,.md ul,.md ol{margin-bottom:12px}
+.md details{margin:8px 0}.md summary{cursor:pointer}
+.fold{border-top:1px solid var(--border);padding-top:12px;margin-top:4px}.fold>summary{color:var(--accent);font-weight:600}
+.ghs{border:1px solid var(--border);border-radius:6px;margin:16px 0;font-size:14px}
+.ghs-row{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;padding:12px 16px;border-top:1px solid var(--border);align-items:baseline}
+.ghs-row:first-child{border-top:0}.ghs-row.merge{grid-template-columns:20px minmax(0,1fr)}.ghs-row .st{font-size:14px}
+.req{font-size:12px;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:0 8px}
+.pr-side{border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;font-size:14px}
+.pr-side .ghs{margin-bottom:0}.pr-side .ghs-row{grid-template-columns:20px minmax(0,1fr)}.pr-side .req{grid-column:2;justify-self:start}.pr-side h2{margin-top:0}.t1{line-height:1.6;background:var(--bg2);border-radius:6px;padding:8px 12px;font-size:13px}
+@media (max-width:860px){.pr-grid{grid-template-columns:1fr}.pr-t{font-size:20px}.ghs-row{grid-template-columns:20px minmax(0,1fr)}.req{grid-column:2;justify-self:start}}
 """
 
 
 # ---------------------------------------------------------------- main
+
+# ---------------------------------------------------------------- prs.html: the PR flow as a reviewer sees it on GitHub
+
+def gh_inline(s: str, anchor: str = "c-") -> str:
+    """GitHub-flavoured inline Markdown, minimal: code spans, bold, italic, links, and the few HTML tags the sticky
+    comment uses (b, sub, a id). Everything else is escaped."""
+    lk = re.compile(r"\[((?:[^\]`]|`[^`]*`)+)\]\(([^)\s]+)\)")  # links first: their labels may be code spans
+    if lk.search(s):
+        out, k = [], 0
+        for m in lk.finditer(s):
+            href = f"#{anchor}{m.group(2)[1:]}" if m.group(2).startswith("#") else m.group(2)
+            out += [gh_inline(s[k:m.start()], anchor), f'<a href="{e(href)}">{gh_inline(m.group(1), anchor)}</a>']
+            k = m.end()
+        return "".join(out) + gh_inline(s[k:], anchor)
+    parts = re.split(r"(`[^`]*`)", s)
+    out = []
+    for p in parts:
+        if p.startswith("`") and p.endswith("`") and len(p) > 1:
+            out.append(f"<code>{e(p[1:-1])}</code>")
+            continue
+        t = e(p)
+        t = re.sub(r"&lt;(/?)(b|sub)&gt;", r"<\1\2>", t)
+        t = re.sub(r"&lt;a id=&quot;([\w-]+)&quot;&gt;&lt;/a&gt;", lambda m: f'<a id="{anchor}{m.group(1)}"></a>', t)
+        t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+        t = re.sub(r"(?<![*\w])\*([^*\s][^*]*)\*(?![*\w])", r"<i>\1</i>", t)
+        out.append(t)
+    return "".join(out)
+
+
+def gh_markdown(text: str, anchor: str = "c-") -> str:
+    """Block-level Markdown for the sticky comment: headings, paragraphs, quotes, lists, tables, fenced code,
+    <details>/<summary>. Not a general renderer; it covers what countersign/github.py writes."""
+    out: list[str] = []
+    lines = text.splitlines()
+    i = 0
+    para: list[str] = []
+
+    def flush():
+        if para:
+            out.append(f"<p>{gh_inline(' '.join(para), anchor)}</p>")
+            para.clear()
+
+    while i < len(lines):
+        ln = lines[i]
+        s = ln.strip()
+        if s.startswith("<!--"):
+            i += 1
+            continue
+        if s.startswith("```"):
+            flush()
+            j = i + 1
+            while j < len(lines) and not lines[j].strip().startswith("```"):
+                j += 1
+            out.append(f"<pre><code>{e(chr(10).join(lines[i + 1:j]))}</code></pre>")
+            i = j + 1
+            continue
+        m = re.match(r"^<details( open)?>\s*(?:<summary>(.*)</summary>)?\s*$", s)
+        if m:
+            flush()
+            out.append(f"<details{m.group(1) or ''}>" + (f"<summary>{gh_inline(m.group(2), anchor)}</summary>" if m.group(2) is not None else ""))
+            i += 1
+            continue
+        if s == "</details>":
+            flush()
+            out.append("</details>")
+            i += 1
+            continue
+        if not s:
+            flush()
+            i += 1
+            continue
+        h = re.match(r"^(#{1,6})\s+(.*)$", s)
+        if h:
+            flush()
+            lv = min(6, len(h.group(1)) + 1)
+            out.append(f"<h{lv}>{gh_inline(h.group(2), anchor)}</h{lv}>")
+            i += 1
+            continue
+        if s.startswith("|"):
+            flush()
+            rows = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                if not re.match(r"^\s*\|[\s:|-]+\|\s*$", lines[i]):
+                    rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")])
+                i += 1
+            head, body = rows[0], rows[1:]
+            th = "" if not any(head) else "<thead><tr>" + "".join(f"<th>{gh_inline(c, anchor)}</th>" for c in head) + "</tr></thead>"
+            tb = "".join("<tr>" + "".join(f"<td>{gh_inline(c, anchor)}</td>" for c in r) + "</tr>" for r in body)
+            out.append(f'<div class="scroll"><table>{th}<tbody>{tb}</tbody></table></div>')
+            continue
+        if s.startswith(">"):
+            flush()
+            q = []
+            while i < len(lines) and lines[i].strip().startswith(">"):
+                q.append(lines[i].strip()[1:].strip())
+                i += 1
+            out.append(f"<blockquote><p>{gh_inline(' '.join(q), anchor)}</p></blockquote>")
+            continue
+        lm = re.match(r"^\s*([-*]|\d+\.)\s+(.*)$", ln)
+        if lm:
+            flush()
+            tag = "ol" if lm.group(1)[0].isdigit() else "ul"
+            items = []
+            while i < len(lines):
+                mm = re.match(r"^\s*([-*]|\d+\.)\s+(.*)$", lines[i])
+                if not mm or (mm.group(1)[0].isdigit()) != (tag == "ol"):
+                    break
+                items.append(f"<li>{gh_inline(mm.group(2), anchor)}</li>")
+                i += 1
+            out.append(f"<{tag}>{''.join(items)}</{tag}>")
+            continue
+        para.append(s)
+        i += 1
+    flush()
+    return "".join(out)
+
+
+def pr_status_line(st: dict, app_name: str) -> str:
+    state = st.get("state")
+    glyph, cls, word = {"success": ("✓", "ok", "Successful"), "pending": ("●", "warn", "Pending"),
+                        "failure": ("✗", "bad", "Failing"), "error": ("✗", "bad", "Error")}.get(state, ("?", "", state or "?"))
+    bot = st.get("creator") or ""
+    by = f' · by <span title="{e(bot)}">{e(app_name)} <span class="botl">bot</span></span>' if bot.endswith("[bot]") else (f" · by {e(bot)}" if bot else "")
+    return (f'<div class="ghs-row"><span class="st {cls}" aria-hidden="true">{glyph}</span>'
+            f'<div><b class="mono">{e(st.get("context"))}</b> <span class="st {cls}">{word}</span>'
+            f'<span class="muted"> — {e(st.get("description"))}{by}</span></div><span class="req">Required</span></div>')
+
+
+def pr_merge_box(pr: dict, app_name: str, why: bool = True) -> str:
+    rows = "".join(pr_status_line(s, app_name) for s in pr.get("statuses", []))
+    blocked = pr.get("mergeStateStatus") == "BLOCKED"
+    tail = (f'<div class="ghs-row merge"><span class="st bad" aria-hidden="true">✗</span><div><b>Merging is blocked</b>'
+            + ('<div class="muted">Required status check <code>countersign/tier</code> has not succeeded. The merge button stays grey.</div>' if why else '') + '</div></div>'
+            if blocked else f'<div class="ghs-row merge"><div class="muted">mergeStateStatus: {e(pr.get("mergeStateStatus"))}</div></div>')
+    return f'<div class="ghs">{rows}{tail}</div>'
+
+
+def pr_labels(pr: dict) -> str:
+    return "".join(f'<span class="lbl" style="--lc:#{e(x["color"])}">{e(x["name"])}</span>' for x in pr.get("labels", []))
+
+
+def build_prs(D: Data) -> str | None:
+    cap = rj("site/data/pr-capture.json")
+    if not cap or not cap.get("prs"):
+        return None
+    when = dt.datetime.strptime(cap["captured_at"], "%Y-%m-%dT%H:%M:%SZ")
+    day = f"{when.day} {when:%b %Y}, {when:%H:%M} UTC"
+    repo = cap["repo"]
+    by_n = {p["number"]: p for p in cap["prs"]}
+    main, side = by_n.get(2), by_n.get(4)
+    if not main:
+        return None
+    sc = main.get("sticky_comment") or {}
+    app = sc.get("app") or {}
+    app_name = app.get("name") or "GitHub App"
+    body = sc.get("body", "")
+    cut = body.find("\n### How the owner countersigns")
+    first, rest = (body[:cut], body[cut:]) if cut > 0 else (body, "")
+    rest_kb = round(len(rest.encode()) / 1024)
+
+    def head(pr: dict, big: bool) -> str:
+        t = f'{e(pr["title"])} <span class="muted">#{pr["number"]}</span>'
+        return (f'<h1 class="pr-t">{t}</h1>' if big else f'<h2 class="pr-t sm">{t}</h2>') + (
+            f'<p class="pr-meta"><span class="open">{"Open" if pr["state"] == "OPEN" else e(pr["state"].title())}</span> '
+            f'<b>{e(pr["author"])}</b> wants to merge {pr["commits"]} commit{"s" if pr["commits"] != 1 else ""} into <code>{e(pr["base"])}</code> from <code>{e(pr["head"])}</code>'
+            f' <span class="muted">· {pr["changed_files"]} files +{pr["additions"]} −{pr["deletions"]}</span></p>'
+            f'<p class="pr-meta">{pr_labels(pr)} <span class="muted">Assignee:</span> {e(", ".join(pr["assignees"]) or "none")}</p>')
+
+    comment = (f'<div class="ghc"><div class="ghc-h"><b>{e(sc.get("user", "").replace("[bot]", ""))}</b> <span class="botl">bot</span>'
+               f' <span class="muted">commented · sticky, updated on every push</span></div>'
+               f'<div class="ghc-b md">{gh_markdown(first)}'
+               + (f'<details class="fold"><summary>The rest of the comment: how the owner countersigns, and the evidence pack ({rest_kb} KB)</summary>{gh_markdown(rest)}</details>' if rest else "")
+               + "</div></div>")
+
+    prot = cap.get("protection") or {}
+    req = next((c for c in prot.get("required_checks", []) if c.get("context") == "countersign/tier"), {})
+    app_id = req.get("app_id")
+    t1 = (f'<section class="pr-side" aria-labelledby="t1h"><h2 id="t1h" class="h-sm">Who can turn it green</h2>'
+          f'<p class="mono t1">main requires <b>countersign/tier</b><br>from app id <b>{e(app_id)}</b>'
+          f'{" = " + e(app_name) if app.get("id") == app_id else ""}'
+          f'{"<br>enforced for admins" if prot.get("enforce_admins") else ""}</p>'
+          f'<p>An agent can add a workflow that posts <code>countersign/tier: success</code>, but it posts as GitHub Actions, not as this App, '
+          f'and the App\'s key is only released to workflows running from <code>main</code>, so branch protection ignores it.</p>'
+          f'<p class="foot-note">{src("docs/security/TRIAGE.md", "Security triage T1")} · {src("docs/PR_FLOW.md")}</p></section>')
+
+    p4 = ""
+    if side:
+        p4 = (f'<section class="pr-side" aria-label="PR {side["number"]}"><h2 class="pr-t sm">{e(side["title"])} <span class="muted">#{side["number"]}</span></h2>'
+              f'<p class="pr-meta">{pr_labels(side)} <span class="muted">{side["changed_files"]} files +{side["additions"]} −{side["deletions"]}</span></p>'
+              f'{pr_merge_box(side, app_name, why=False)}</section>')
+
+    note = (f'<p class="cap"><b>Captured from the private demo repo on {e(day)}</b>; the repo becomes public on Sunday. '
+            f'<a href="https://github.com/{e(repo)}/pull/{main["number"]}">{e(repo)}#{main["number"]}</a></p>')
+    body_html = f"""
+<div class="wrap prs">
+{note}
+<div class="pr-grid">
+<article class="pr-main" aria-label="PR {main['number']}">{head(main, True)}{comment}{pr_merge_box(main, app_name)}</article>
+<div class="pr-aside">{p4}{t1}</div>
+</div>
+<p class="foot-note">From {src('site/data/pr-capture.json')}, written by {src('scripts/capture_prs.py')} with <code>gh api</code>: PR fields, the sticky comment, commit statuses, branch protection.</p>
+</div>"""
+    return page("prs.html", "PR flow: what the reviewer sees on GitHub", body_html,
+                desc="Countersign's pull-request gate, captured from the demo repo: the sticky comment, the countersign/tier status and the blocked merge.")
+
 
 def copy_packs():
     dst = SITE / "packs"
@@ -1100,6 +1328,9 @@ def main() -> None:
     copy_packs()
     (SITE / "style.css").write_text(CSS.strip() + "\n", encoding="utf-8")
     pages = {"overview.html": build_index(D, n), "attack.html": build_attack(D, n), "tour.html": build_tour(D, n), "pitch.html": build_pitch(D, n)}
+    prs = build_prs(D)
+    if prs:
+        pages["prs.html"] = prs
     for name, htm in pages.items():
         (SITE / name).write_text(htm, encoding="utf-8")
     (SITE / ".nojekyll").write_text("", encoding="utf-8")
