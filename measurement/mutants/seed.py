@@ -61,10 +61,14 @@ def write_facts(m: dict, F) -> None:
     newset = F.new_tests(head)
     facts = {"change": m["id"], "branch": branch, "base": F.BASE[:8], "head": head[:8], "base_full": F.BASE, "head_full": head,
              "commit_message": F.git("log", "-1", "--format=%B", head).strip(), "author": F.git("log", "-1", "--format=%an", head).strip(),
-             "agent_written": True, "diff": F.diff_facts(head), "new_tests_in_diff": sorted(newset),
+             "agent_written": True, "diff": with_mutation_file(F.diff_facts(head), m, F), "new_tests_in_diff": sorted(newset),
              "mutation": {"of": n, "kind": m["kind"], "file": m["file"], "line": rec["line"], "before": rec["before"].strip(), "after": rec["after"].strip(),
                           "description": m["description"], "intended_effect": m["intended_effect"]},
              "diff_note": "diff/commit fields describe the unmutated branch; the mutation is applied on top of head as an uncommitted edit"}
+    if facts["diff"].pop("_added", None):
+        facts["mutation"]["file_added_to_diff"] = True
+        facts["diff_note"] += ("; the branch does not touch the seeded file, so diff.by_file also lists it as a 1-line edit "
+                               "(mutation.file_added_to_diff) and the totals include it")
     meta = F.read_meta(m["id"])
     base_full = F.parse_trx(os.path.join(F.OUT, "base", "full.trx")) or []
     base_fail = {t["name"] for t in base_full if t["outcome"] == "failed"}
@@ -80,6 +84,12 @@ def write_facts(m: dict, F) -> None:
         fc = F.full_check(m["id"], cd, meta, base_fail)
         if fc:
             checks.append(fc)
+    rt = runtime_check(m["id"], n, cd, F)
+    if rt:
+        checks.append(rt)
+        cmp = rt.pop("_vs_original")
+        facts["mutation"]["runtime_suite_vs_original"] = cmp
+        failed += [f"MessagePack.Tests: {x}" for x in cmp["failures_not_on_original"]]
     ex = exec9_check(m["id"], cd, F)
     if ex:
         checks.append(ex)
@@ -97,6 +107,44 @@ def write_facts(m: dict, F) -> None:
     facts["environment"] = {"sdk": F.SDK, "os": "linux-x64 (container)", "configuration": "Debug", "max_cpu": 8}
     Path(cd, "facts.json").write_text(json.dumps(facts, indent=2) + "\n")
     print(m["id"], [(c["id"], c["status"]) for c in checks], "caught" if facts["mutation"]["caught_by_any_deterministic_check"] else "SURVIVED")
+
+
+def with_mutation_file(diff: dict, m: dict, F) -> dict:
+    """The diff fields describe the unmutated branch. A seeded edit in a file the branch does not touch (2283-sec1 edits
+    src/MessagePack/MessagePackSecurity.cs, the branch only the generator) must still be in the diff, or routing (areas,
+    security_sensitive_paths) and the reviewers would never see that file. Add it as the 1-line edit it is."""
+    if any(f["path"] == m["file"] for f in diff["by_file"]):
+        return diff
+    k = F.kind(m["file"])
+    diff["by_file"].append({"path": m["file"], "ins": 1, "del": 1, "kind": k})
+    diff["_added"] = m["file"]  # popped by write_facts into mutation.file_added_to_diff (nothing in diff may say it was added)
+    diff["files"] += 1
+    diff["insertions"] += 1
+    diff["deletions"] += 1
+    diff["by_kind"][k] = diff["by_kind"].get(k, 0) + 1
+    return diff
+
+
+def runtime_check(mid: str, n: str, cd: str, F) -> dict | None:
+    """tests/MessagePack.Tests (net8.0), the runtime library's own suite, for a seed in src/MessagePack/: the mutant vs the
+    unmutated branch (measurement/mutants/runtime-tests.sh <label> <worktree> -> /data/work/out/rt-<label>/)."""
+    out, ctl = Path(F.OUT) / f"rt-{mid}", Path(F.OUT) / f"rt-{n}"
+    if not (out / "meta.txt").exists():
+        return None
+    tests = F.parse_trx(str(out / "full.trx")) or []
+    orig_fail = {t["name"] for t in (F.parse_trx(str(ctl / "full.trx")) or []) if t["outcome"] == "failed"}
+    bad = [t["name"] for t in tests if t["outcome"] == "failed"]
+    new_bad = [x for x in bad if x not in orig_fail]
+    F.copy_log(str(out / "full.log"), os.path.join(cd, "logs", "runtime_suite.full.log"))
+    passed = sum(t["outcome"] == "passed" for t in tests)
+    return {"id": "tests.runtime_suite", "tool": "dotnet test tests/MessagePack.Tests -f net8.0", "tool_version": F.SDK,
+            "status": "fail" if new_bad else ("pass" if tests else "error"),
+            "summary": f"{passed} passed, {len(bad)} failed, {len(tests) - passed - len(bad)} skipped of {len(tests)}",
+            "failed_tests": bad, "log": f"evidence/{mid}/logs/runtime_suite.full.log",
+            "note": "the runtime library's own test suite, run because the change touches src/MessagePack/; not a mandated check id",
+            # the comparison with the unmutated branch goes into mutation.* (a blind reviewer never sees it)
+            "_vs_original": {"control": f"rt-{n} (the unmutated branch, same script)", "failures_not_on_original": new_bad,
+                             "original_failed": sorted(orig_fail)}}
 
 
 def exec9_check(mid: str, cd: str, F) -> dict | None:

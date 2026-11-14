@@ -32,6 +32,8 @@ UP = 'https://github.com/MessagePack-CSharp/MessagePack-CSharp'
 SG = F.SG
 SDK_NOTE_1934 = ('global.json at these commits pins SDK 8.0.300 with rollForward patch; only 8.0.402 is installed, so global.json '
                  'was set to 8.0.402 (rollForward disable) in the scratch worktrees only and restored afterwards')
+SDK_NOTE_2305 = ('global.json at upstream master (f2bfa97e) pins SDK 10.0.300; only 8.0.402 and 9.0.321 are installed, so global.json '
+                 'was set to 9.0.321 (rollForward disable) in the scratch worktrees only (base, head, fwf); every project builds net8.0')
 
 CHANGES = {
     'up-2022': dict(pr=2022, merge='e88df8a75dcfe186e31a9217192d93f667d720b8', issue=2017, kind='source fix + test',
@@ -42,6 +44,13 @@ CHANGES = {
                              'FullyQualifiedName~GenericsFormatterTests.|FullyQualifiedName~PrivateMemberAccessTests.'],
                     fwf=None, sdk_note=SDK_NOTE_1934),
     'up-1967': dict(pr=1967, merge='1d24c54a5049612cabf826e23582468bef96ff44', issue=None, kind='docs only'),
+    # Not merged: an upstream community PR still open when we ran it (no merged fix exists for #2283 or #2234). There is no
+    # merge commit, so base = merge-base of the PR head with upstream master, head = the PR head (fetched as refs/upstream/pr-2305).
+    'up-2305': dict(pr=2305, base='f2bfa97ef56c3e0eda92d7df34856467afcda865', head='b08ebeeb7d77b7cca599cd7c91b2b1fbd9cfb3c4',
+                    issue=2283, kind='source fix + test', state='open (not merged) when run, 2026-11-14',
+                    filters=['FullyQualifiedName~GenericsFormatterTests.'], fwf='fwf',
+                    reverted=['src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs'],
+                    sdk='9.0.321', sdk_note=SDK_NOTE_2305),
 }
 
 
@@ -115,9 +124,13 @@ def skipped(id_, reason):
 def main(argv):
     for n in argv or list(CHANGES):
         c = CHANGES[n]
-        merge = c['merge']
-        base, head = git('rev-parse', merge + '^1').strip(), git('rev-parse', merge + '^2').strip()
-        assert git('diff', base, head) == git('diff', base, merge), 'base..head differs from base..merge'
+        merge = c.get('merge')
+        if merge:
+            base, head = git('rev-parse', merge + '^1').strip(), git('rev-parse', merge + '^2').strip()
+            assert git('diff', base, head) == git('diff', base, merge), 'base..head differs from base..merge'
+        else:  # open PR: no merge commit
+            base, head = c['base'], c['head']
+            assert git('merge-base', base, head).strip() == base, 'base is not the merge-base of the PR head'
         F.BASE = base
         F._tt_cache.clear()
         F.OUT = f'/data/work/up/{c["pr"]}/out'
@@ -128,12 +141,18 @@ def main(argv):
         facts = {'change': n, 'branch': f'upstream PR #{c["pr"]}', 'base': base[:8], 'head': head[:8], 'base_full': base, 'head_full': head,
                  'commit_message': git('log', '-1', '--format=%B', head).strip(), 'author': git('log', '-1', '--format=%an', head).strip(),
                  'agent_written': False,
-                 'upstream': {'pull_request': f'{UP}/pull/{c["pr"]}', 'issue': f'{UP}/issues/{c["issue"]}' if c['issue'] else None,
-                              'merge_commit': merge, 'merged_into': 'develop', 'merged_at': git('log', '-1', '--format=%cI', merge).strip(),
-                              'base_rule': 'base = merge commit first parent (develop before the merge)',
-                              'head_rule': 'head = merge commit second parent (PR branch tip); git diff base..head == git diff base..merge (asserted)',
-                              'control': f'{c["kind"]}; merged upstream, human-written, not reverted or fixed later as far as checked '
-                                         '(measurement/history/candidates.json has no entry for it; later history of the changed lines read by hand)'},
+                 'upstream': ({'pull_request': f'{UP}/pull/{c["pr"]}', 'issue': f'{UP}/issues/{c["issue"]}' if c['issue'] else None,
+                               'merge_commit': merge, 'merged_into': 'develop', 'merged_at': git('log', '-1', '--format=%cI', merge).strip(),
+                               'base_rule': 'base = merge commit first parent (develop before the merge)',
+                               'head_rule': 'head = merge commit second parent (PR branch tip); git diff base..head == git diff base..merge (asserted)',
+                               'control': f'{c["kind"]}; merged upstream, human-written, not reverted or fixed later as far as checked '
+                                          '(measurement/history/candidates.json has no entry for it; later history of the changed lines read by hand)'}
+                              if merge else
+                              {'pull_request': f'{UP}/pull/{c["pr"]}', 'issue': f'{UP}/issues/{c["issue"]}', 'state': c['state'],
+                               'merge_commit': None, 'base_rule': 'base = merge-base of the PR head with upstream master (asserted)',
+                               'head_rule': 'head = PR head commit (refs/pull/<pr>/head)',
+                               'benchmark': f'{c["kind"]}; a fix for the same issue as the agent-written change, written by an upstream '
+                                            'contributor (whether tools helped is not known); not reviewed or merged upstream, so not a control'}),
                  'diff': diff, 'new_tests_in_diff': sorted(newset)}
         checks, not_run = [], []
         if c['kind'] == 'docs only':
@@ -198,7 +217,11 @@ def main(argv):
                        {'id': 'tests.execution', 'reason': 'ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)'},
                        {'id': 'build.net472/netstandard', 'reason': 'only the net8.0 slice of src/MessagePack was built (Linux container, Debug)'},
                        {'id': 'benchmarks', 'reason': 'no runtime serialization hot path touched'}]
-            env = {'sdk': F.SDK, 'os': F.OS_DESC, 'configuration': 'Debug', 'max_cpu': 8, **({'sdk_note': c['sdk_note']} if c.get('sdk_note') else {})}
+            if c.get('sdk'):
+                for x in checks:
+                    if x.get('tool_version') == F.SDK:
+                        x['tool_version'] = c['sdk']
+            env = {'sdk': c.get('sdk', F.SDK), 'os': F.OS_DESC, 'configuration': 'Debug', 'max_cpu': 8, **({'sdk_note': c['sdk_note']} if c.get('sdk_note') else {})}
         facts['checks'], facts['not_run'], facts['environment'] = checks, not_run, env
         json.dump(facts, open(os.path.join(cd, 'facts.json'), 'w'), indent=2)
         print(n, [(x['id'], x['status']) for x in checks])

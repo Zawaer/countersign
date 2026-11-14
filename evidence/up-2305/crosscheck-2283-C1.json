@@ -1,0 +1,22 @@
+{
+  "what": "Cross-check, not a check of this change: Claude's reproduced finding C1 on the agent-written fix 2283 (the location filter drops MsgPack003; evidence/repros/2283/C1) run against PR #2305, to see whether the human fix has the same regression",
+  "test_file": "evidence/repros/2283/C1/ReproClaude2283C1Tests.cs",
+  "test_sha256": "1c94fb7c99155da612809d0626434173537ce292dc73ac6b2db27e33fa3c5a9e",
+  "how": "test copied to tests/MessagePack.SourceGenerator.Tests/CountersignRepro/ in scratch worktrees /data/src/mp-repro-up2305-C1-{head,base} (global.json set to SDK 9.0.321 there only), evidence/scripts/run.sh with --filter FullyQualifiedName~ReproClaude2283C1Tests",
+  "runs": [
+    {
+      "label": "head",
+      "rev": "b08ebeeb7d77b7cca599cd7c91b2b1fbd9cfb3c4",
+      "outcome": "passed",
+      "log": "evidence/up-2305/logs/repro_2283_C1.head.log"
+    },
+    {
+      "label": "base",
+      "rev": "f2bfa97ef56c3e0eda92d7df34856467afcda865",
+      "outcome": "passed",
+      "log": "evidence/up-2305/logs/repro_2283_C1.base.log"
+    }
+  ],
+  "result": "passes on both: PR #2305 still reports MsgPack003 for Lib.Item<App.Foo>; the regression Claude found in the agent's fix (failed on 2283 head, passed on its base) is not in the human fix",
+  "not_a_check_because": "repro.* checks route a change as a reproduced defect; this test was written for another change, so it is kept beside the facts, not in them"
+}

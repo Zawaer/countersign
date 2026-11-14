@@ -469,7 +469,7 @@ FWF_INHERIT_NOTE = ('inherited, not re-run: fail-without-fix reverts src/ to bas
 def inherited_fwf(change):
     """The original's tests.fail_without_fix check for a seeded variant <orig>-mutK / <orig>-inject, marked
     inherited_from, or None if the original has none."""
-    orig = re.sub(r'-(mut\d+|inject\d*)$', '', change)
+    orig = re.sub(r'-(mut\d+|inject\d*|sec\d+)$', '', change)
     if orig == change:
         return None
     p = os.path.join(EVID, orig, 'facts.json')

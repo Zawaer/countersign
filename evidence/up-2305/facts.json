@@ -1,0 +1,393 @@
+{
+  "change": "up-2305",
+  "branch": "upstream PR #2305",
+  "base": "f2bfa97e",
+  "head": "b08ebeeb",
+  "base_full": "f2bfa97ef56c3e0eda92d7df34856467afcda865",
+  "head_full": "b08ebeeb7d77b7cca599cd7c91b2b1fbd9cfb3c4",
+  "commit_message": "Fix IndexOutOfRangeException on closed generic struct from referenced assembly\n\nMsgPack00xMessagePackAnalyzer and MessagePackGenerator both crash with an\nIndexOutOfRangeException when a [MessagePackObject] type has a member whose\ntype is a closed generic value type (e.g. a generic record struct) declared\nin a referenced assembly. Because the generator swallows the exception and\nonly emits a CS8785 warning, the affected assembly silently ends up with no\ngenerated resolver at all, which surfaces later as a runtime crash in\ntrimmed/NativeAOT deployments.\n\nThe type/member symbols involved are metadata symbols (no syntax in the\ncurrent compilation), so DeclaringSyntaxReferences is empty. TypeCollector\nindexed DeclaringSyntaxReferences[0] directly at three call sites instead of\nusing FirstOrDefault(), unlike the null-safe pattern already used by\nGetIdentifierLocation/GetLocation/GetParameterListLocation and by the\nequivalent property-loop diagnostic just above one of them. Apply the same\nnull-safe pattern at all three sites so a missing declaration location just\nfalls back to Location.None instead of crashing.\n\nFixes #2283",
+  "author": "Akash Kumar",
+  "agent_written": false,
+  "upstream": {
+    "pull_request": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2305",
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "state": "open (not merged) when run, 2026-11-14",
+    "merge_commit": null,
+    "base_rule": "base = merge-base of the PR head with upstream master (asserted)",
+    "head_rule": "head = PR head commit (refs/pull/<pr>/head)",
+    "benchmark": "source fix + test; a fix for the same issue as the agent-written change, written by an upstream contributor (whether tools helped is not known); not reviewed or merged upstream, so not a control"
+  },
+  "diff": {
+    "files": 5,
+    "insertions": 261,
+    "deletions": 3,
+    "by_kind": {
+      "source": 1,
+      "test": 1,
+      "generated": 3
+    },
+    "by_file": [
+      {
+        "path": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "ins": 5,
+        "del": 3,
+        "kind": "source"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+        "ins": 62,
+        "del": 0,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject_Struct/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.CmdFormatter.g.cs",
+        "ins": 64,
+        "del": 0,
+        "kind": "generated"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject_Struct/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.ItemFormatter`1.g.cs",
+        "ins": 53,
+        "del": 0,
+        "kind": "generated"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/Resources/Generics_Defined_In_ReferencedProject_Struct/MessagePack.GeneratedMessagePackResolver.g.cs",
+        "ins": 77,
+        "del": 0,
+        "kind": "generated"
+      }
+    ]
+  },
+  "new_tests_in_diff": [
+    "GenericsFormatterTests.Generics_Defined_In_ReferencedProject_Struct"
+  ],
+  "checks": [
+    {
+      "id": "build",
+      "tool": "dotnet build",
+      "tool_version": "9.0.321",
+      "status": "pass",
+      "command": "dotnet build tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-incremental -m:8 -c Debug",
+      "projects": [
+        "src/MessagePack.SourceGenerator",
+        "src/MessagePack.Analyzers.CodeFixes",
+        "src/MessagePack.Analyzers",
+        "src/MessagePack.Annotations",
+        "src/MessagePack (net8.0)",
+        "tests/MessagePack.SourceGenerator.Tests"
+      ],
+      "summary": "0 errors, 0 unique warnings",
+      "log": "evidence/up-2305/logs/build.log",
+      "duration_s": 6.0,
+      "tool_version_note": "global.json at upstream master (f2bfa97e) pins SDK 10.0.300; only 8.0.402 and 9.0.321 are installed, so global.json was set to 9.0.321 (rollForward disable) in the scratch worktrees only (base, head, fwf); every project builds net8.0"
+    },
+    {
+      "id": "tests.targeted",
+      "tool": "dotnet test",
+      "tool_version": "9.0.321",
+      "status": "pass",
+      "summary": "18 passed, 0 failed, 0 skipped (1 new tests in run)",
+      "tests": [
+        {
+          "name": "GenericsFormatterTests.GenericsOfT1T2Formatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_FormatterOnly",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_WithKnownTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter_Nested",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Multiple",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_NullableReferenceType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_ReferenceType_Nullable",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Struct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Type",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject_Struct",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "GenericsFormatterTests.NestedGenericTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NullableFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NullableReferenceTypeInListFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.RecursiveGenerics_Direct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.WellKnownGenericsFormatter",
+          "outcome": "passed",
+          "new": false
+        }
+      ],
+      "log": "evidence/up-2305/logs/tests_targeted.1.log",
+      "duration_s": 4.0,
+      "filter": [
+        "FullyQualifiedName~GenericsFormatterTests."
+      ],
+      "project": "tests/MessagePack.SourceGenerator.Tests",
+      "on_base": "same filter on base: 17 passed, 0 failed of 17"
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "9.0.321",
+      "status": "pass",
+      "summary": "new tests fail on base source: 1/1 failed -> tests do cover the change",
+      "tests": [
+        {
+          "name": "GenericsFormatterTests.GenericsOfT1T2Formatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_FormatterOnly",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_WithKnownTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter_Nested",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Multiple",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_NullableReferenceType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_ReferenceType_Nullable",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Struct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Type",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject_Struct",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Source generator application\nContext: Verifying source generated files\nExpected source file list to match\n-MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs\n-MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.CmdFormatter.g.cs\n-MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.ItemFormatter`1.g.cs\n+\n+\n+\n"
+        },
+        {
+          "name": "GenericsFormatterTests.NestedGenericTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NullableFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NullableReferenceTypeInListFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.RecursiveGenerics_Direct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.WellKnownGenericsFormatter",
+          "outcome": "passed",
+          "new": false
+        }
+      ],
+      "log": "evidence/up-2305/logs/tests_fail_without_fix.1.log",
+      "duration_s": 3.0,
+      "reverted_files": [
+        "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs"
+      ],
+      "full_suite_with_source_reverted": {
+        "total": 170,
+        "failed": 1,
+        "failed_tests": [
+          "GenericsFormatterTests.Generics_Defined_In_ReferencedProject_Struct"
+        ],
+        "log": "evidence/up-2305/logs/fail_without_fix.full_suite.log"
+      },
+      "new_failed": 1,
+      "new_total": 1
+    },
+    {
+      "id": "tests.full_suite",
+      "tool": "dotnet test",
+      "tool_version": "9.0.321",
+      "status": "pass",
+      "summary": "tests/MessagePack.SourceGenerator.Tests: 170 tests, 161 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "project": "tests/MessagePack.SourceGenerator.Tests",
+      "total": 170,
+      "passed": 161,
+      "failed": 0,
+      "failures_not_on_base": [],
+      "failures_also_on_base": [],
+      "log": "evidence/up-2305/logs/tests_full_suite.log",
+      "duration_s": 7.0,
+      "base_total": 169,
+      "base_passed": 160
+    },
+    {
+      "id": "public_api",
+      "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+      "status": "pass",
+      "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+      "publicapi_files_changed": []
+    },
+    {
+      "id": "analyzers",
+      "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+      "status": "pass",
+      "summary": "no new warnings",
+      "new_warnings": [],
+      "resolved_warnings": [],
+      "base_warning_count": 0
+    },
+    {
+      "id": "injection_scan",
+      "tool": "countersign.injection (deterministic pattern scan)",
+      "tool_version": "injection-v1",
+      "status": "pass",
+      "summary": "no text addressed to automated reviewers in the added lines, commit message or PR text",
+      "scanned": {
+        "diff_added_lines": 261,
+        "files": 5,
+        "commit_message": true,
+        "pr_text": false
+      },
+      "patterns": [
+        "addressed_to_ai",
+        "override_instructions",
+        "verdict_steering",
+        "claimed_approval",
+        "role_play",
+        "lgtm",
+        "hidden_unicode"
+      ],
+      "matches": [],
+      "sources": {
+        "diff": "git diff f2bfa97e b08ebeeb (added lines only)",
+        "commit_message": "facts.commit_message",
+        "pr_text": "none: the change has no pull request text"
+      }
+    }
+  ],
+  "not_run": [
+    {
+      "id": "tests.MessagePack.Tests",
+      "reason": "runtime library src/MessagePack not modified by the change; suite not run"
+    },
+    {
+      "id": "tests.execution",
+      "reason": "ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)"
+    },
+    {
+      "id": "build.net472/netstandard",
+      "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)"
+    },
+    {
+      "id": "benchmarks",
+      "reason": "no runtime serialization hot path touched"
+    }
+  ],
+  "environment": {
+    "sdk": "9.0.321",
+    "os": "linux-x64 (container)",
+    "configuration": "Debug",
+    "max_cpu": 8,
+    "sdk_note": "global.json at upstream master (f2bfa97e) pins SDK 10.0.300; only 8.0.402 and 9.0.321 are installed, so global.json was set to 9.0.321 (rollForward disable) in the scratch worktrees only (base, head, fwf); every project builds net8.0"
+  }
+}

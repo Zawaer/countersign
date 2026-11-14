@@ -1,0 +1,17 @@
+### dotnet test tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-build --filter "FullyQualifiedName~ReproClaude2283C1Tests"
+
+Test run for /data/src/mp-repro-up2305-C1-base/bin/MessagePack.SourceGenerator.Tests/Debug/net8.0/MessagePack.SourceGenerator.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.2 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: /data/work/up/2305/out/repro-C1-base/targeted.1.trx
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 1 s - MessagePack.SourceGenerator.Tests.dll (net8.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.62
