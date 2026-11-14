@@ -1,7 +1,7 @@
 # Best use of CRACI: the build as a witness in a code review
 
-**Countersign** reviews agent-written changes under a signed mandate. Deterministic checks come first, then two AI
-reviewers, and a named human countersigns whatever the AI could not prove. Every job runs on CRACI with its own size
+**Countersign** reviews agent-written changes under a mandate. Deterministic checks come first, then two AI
+reviewers, and a named human countersigns whatever the AI could not prove. Every job runs on CRACI with its size
 and a deny-by-default network policy. We use CRACI for three things:
 
 **1. Supply-chain risk as review evidence.** An agent can slip in a new package, a moved version or a new NuGet
@@ -19,7 +19,7 @@ only these hosts". A build step that phones home hits a proxy violation, and the
 
 **3. CRACI's API as an independent record.** A `craci` job pulls CRACI's own SBOM and network trace of the
 `facts` job (`/v1preview1/sbom`, `/v1preview1/network-trace`) and adds them as `craci.sbom` and `craci.network`.
-That means hosts, bytes, the matched rule and every violation, recorded by CRACI and not by our code. The job needs
+That means hosts, bytes, the matched rule and every violation, recorded by CRACI, not by our code. The job needs
 a token and never fails without one.
 
 **What we learned.** CRACI has no NuGet source type, so NuGet goes through a TLS connection rule. CRACI logs those
