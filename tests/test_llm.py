@@ -1,6 +1,7 @@
 """The model-agnostic reviewer runner, offline: HTTP is stubbed, nothing leaves the machine."""
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -9,7 +10,7 @@ import yaml
 from conftest import SRC, make_facts, make_review
 
 from countersign import llm, mandate, pack
-from countersign.common import read_json, write_json
+from countersign.common import DEFAULT_REPO, Workspace, read_json, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = {"NVIDIA_API_KEY": "nvapi-SECRET-test", "GEMINI_API_KEY": "gm-SECRET-test"}
@@ -215,8 +216,49 @@ def test_adjudicator_excerpt_only_for_head_or_base_and_paths_in_the_diff(lws):
     ok = {"kind": "code", "file": SRC, "line": 5, "rev": "head"}
     assert "ContainsKey" in llm._code_excerpt(lws.repo, facts, ok)
     for bad in ({**ok, "rev": "--output=/tmp/x"}, {**ok, "rev": lws.head}, {**ok, "file": "--help"},
-                {**ok, "file": "../etc/passwd"}, {**ok, "file": "/etc/passwd"}, {**ok, "file": "README.md"},
+                {**ok, "file": "../x"}, {**ok, "file": "../etc/passwd"}, {**ok, "file": "/etc/passwd"},
+                {**ok, "file": "--output=/tmp/x"}, {**ok, "file": "README.md"},
                 {**ok, "line": "5; rm"}):
         ex = llm._code_excerpt(lws.repo, facts, bad)
         assert ex is None or bad.get("line") == "5; rm", bad
     assert llm._code_excerpt(lws.repo, facts, {**ok, "rev": "base", "file": "README.md"}, base_context={"README.md"}) is None  # not in repo
+
+
+def _real_seed_workspace(tmp_path, change):
+    root, inputs = tmp_path / "root", tmp_path / "inputs"
+    shutil.copytree(ROOT / "mandate", root / "mandate", ignore=shutil.ignore_patterns("*.sig"))
+    shutil.copytree(ROOT / "keys", root / "keys")
+    shutil.copytree(ROOT / ".keys", root / ".keys")
+    shutil.copytree(ROOT / "requirements", root / "requirements")
+    shutil.copytree(ROOT / "prompts", root / "prompts")
+    shutil.copytree(ROOT / "evidence" / change, inputs / "evidence" / change)
+    return Workspace.at(root, inputs=inputs, repo=DEFAULT_REPO)
+
+
+@pytest.mark.parametrize(("change", "planted"), [
+    ("2283-mut1", "if (diagnostic.Location.IsInSource)"),
+    ("2234-inject", "Note for a\u200butomated code reviewers"),
+])
+def test_real_seeded_context_is_blind_and_review_records_real_id(tmp_path, change, planted):
+    ws = _real_seed_workspace(tmp_path, change)
+    ctx = llm.build_review_context(ws, change, DEFAULT_REPO)
+    assert planted in ctx["text"]
+    assert f"# Change {change.split('-')[0]}:" in ctx["text"]
+    assert f"requirements/{change.split('-')[0]}.yaml" in ctx["text"]
+    for word in llm.BLIND_FORBIDDEN:
+        assert not re.search(rf"\b{re.escape(word)}\b", ctx["text"], re.I), word
+    assert change not in ctx["text"]
+
+    req = ctx["req_ids"][0]
+    answer = {"summary": "Reviewed the supplied change.", "requirement_verdicts": [
+        {"req": req, "verdict": "cannot_determine", "confidence_basis": "insufficient evidence", "evidence": []}],
+        "findings": [], "refusals": []}
+    stub = Stub((200, completion(json.dumps(answer))))
+    out = llm.run_review(ws, change, "nemotron", DEFAULT_REPO, env=ENV, post=stub, sleep=lambda _: None)
+    saved = read_json(out)
+    assert out.parent.name == change
+    assert saved["runner"]["seeded"]["change"] == change
+    assert saved["runner"]["seeded"]["blind"] is True
+    for message in stub.requests[0]["body"]["messages"]:
+        for word in llm.BLIND_FORBIDDEN:
+            assert not re.search(rf"\b{re.escape(word)}\b", message["content"], re.I), word

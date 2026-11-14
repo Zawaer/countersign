@@ -319,7 +319,8 @@ def _compact_facts(facts: dict) -> dict:
 
 # --- seeded changes (mutants, planted injections) ----------------------------------------------------
 
-LEAK = re.compile(r"mutant|mutation|seeded|\bmut\d", re.I)
+BLIND_FORBIDDEN = ("mut", "mutant", "mutation", "inject", "seeded", "canary")
+LEAK = re.compile(r"\b(?:mut|mutant|mutation|inject|seeded|canary)\b", re.I)
 
 
 def _mutated_tree(repo: str, head: str, mut: dict) -> tuple[str, bool]:
@@ -380,7 +381,7 @@ def _blind_facts(facts: dict, change: str, shown: str) -> dict:
         return x
     f = clean(f)
     for r in f.get("not_run", []):
-        if LEAK.search(r.get("reason", "")) or "inject" in r.get("reason", "").lower():
+        if LEAK.search(r.get("reason", "")):
             r["reason"] = "not run for this revision (build, targeted tests, full suite and injection_scan ran)"
     return f
 
@@ -491,7 +492,7 @@ def build_review_context(ws: Workspace, change: str, repo: str, budget: int = DE
     text += "\n## What you did NOT get (refuse anything that depends on it)\n" + "\n".join(f"- {x}" for x in not_given) + "\n"
     inputs = [f"requirements: {reqs['_path']}", f"issue: {reqs.get('source')}", f"facts: evidence/{change}/facts.json",
               f"diff {base[:8]}..{head[:8]} ({len(normal)} non-generated files)"
-              + (f" + the seeded edit at {mut['file']}:{mut['line']} (tree {head_rev[:8]})" if mut and head_rev != head else ""),
+              + (f" plus recorded edit at {mut['file']}:{mut['line']} (tree {head_rev[:8]})" if mut and head_rev != head else ""),
               f"file contents: {len(blocks)} blocks", f"context: {len(text)} chars (budget {budget})"]
     seeded = None
     if mut is not None:
