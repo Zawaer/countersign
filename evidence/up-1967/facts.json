@@ -1,0 +1,123 @@
+{
+  "change": "up-1967",
+  "branch": "upstream PR #1967",
+  "base": "b9b65ddf",
+  "head": "8683d1cd",
+  "base_full": "b9b65ddfb898bbcbb2d14d435efed6ae0592907b",
+  "head_full": "8683d1cde17f4c67bc60fb75935b090923d80601",
+  "commit_message": "Fix AOT README anchor\n - fix anchor ref name to `aot`",
+  "author": "Ali Makki",
+  "agent_written": false,
+  "upstream": {
+    "pull_request": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1967",
+    "issue": null,
+    "merge_commit": "1d24c54a5049612cabf826e23582468bef96ff44",
+    "merged_into": "develop",
+    "merged_at": "2024-09-25T11:52:14-06:00",
+    "base_rule": "base = merge commit first parent (develop before the merge)",
+    "head_rule": "head = merge commit second parent (PR branch tip); git diff base..head == git diff base..merge (asserted)",
+    "control": "docs only; merged upstream, human-written, not reverted or fixed later as far as checked (measurement/history/candidates.json has no entry for it; later history of the changed lines read by hand)"
+  },
+  "diff": {
+    "files": 1,
+    "insertions": 1,
+    "deletions": 1,
+    "by_kind": {
+      "doc": 1
+    },
+    "by_file": [
+      {
+        "path": "README.md",
+        "ins": 1,
+        "del": 1,
+        "kind": "doc"
+      }
+    ]
+  },
+  "new_tests_in_diff": [],
+  "checks": [
+    {
+      "id": "build",
+      "status": "skipped",
+      "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "reason": "docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+    },
+    {
+      "id": "tests.targeted",
+      "status": "skipped",
+      "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "reason": "docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "status": "skipped",
+      "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "reason": "docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+    },
+    {
+      "id": "tests.full_suite",
+      "status": "skipped",
+      "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "reason": "docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+    },
+    {
+      "id": "public_api",
+      "tool": "git diff --name-only (no file under src/ changed)",
+      "status": "pass",
+      "summary": "no public API changes: the change touches no file under src/ and no PublicAPI.*.txt",
+      "publicapi_files_changed": []
+    },
+    {
+      "id": "analyzers",
+      "status": "skipped",
+      "summary": "not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run",
+      "reason": "docs-only change: no compiled or test file changed (only README.md), so nothing was built or run"
+    },
+    {
+      "id": "docs.anchors",
+      "tool": "evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)",
+      "status": "pass",
+      "summary": "1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc)",
+      "links_on_touched_lines": [
+        {
+          "file": "README.md",
+          "line": 60,
+          "anchor": "aot",
+          "resolves_at_head": true
+        }
+      ],
+      "files": [
+        {
+          "file": "README.md",
+          "links_at_head": 62,
+          "links_at_base": 62,
+          "unresolved_at_base": [
+            "aot-code-generation-support-for-unityxamarin",
+            "author-info",
+            "migration-notes-from-v1x",
+            "rpc"
+          ],
+          "unresolved_at_head_on_untouched_lines": [
+            "author-info",
+            "migration-notes-from-v1x",
+            "rpc"
+          ]
+        }
+      ]
+    }
+  ],
+  "not_run": [
+    {
+      "id": "docs.rendering",
+      "reason": "Markdown was not rendered; anchors were resolved with GitHub slug rules re-implemented in upfacts.py"
+    },
+    {
+      "id": "docs.external_links",
+      "reason": "links to other files or URLs were not followed (offline)"
+    }
+  ],
+  "environment": {
+    "os": "linux-x64 (container)",
+    "note": "no .NET build for a docs-only change"
+  }
+}

@@ -1,0 +1,425 @@
+{
+  "change": "up-2022",
+  "branch": "upstream PR #2022",
+  "base": "f5e104ee",
+  "head": "5f4b762a",
+  "base_full": "f5e104eec56d53df064126de8dd5bd4e533e7ea8",
+  "head_full": "5f4b762a00b7f21940c2b737498205481b725156",
+  "commit_message": "Ignore abstract implementations of `IMessagePackFormatter<T>`\n\nFixes #2017",
+  "author": "Andrew Arnott",
+  "agent_written": false,
+  "upstream": {
+    "pull_request": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2022",
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2017",
+    "merge_commit": "e88df8a75dcfe186e31a9217192d93f667d720b8",
+    "merged_into": "develop",
+    "merged_at": "2024-10-18T17:13:31-06:00",
+    "base_rule": "base = merge commit first parent (develop before the merge)",
+    "head_rule": "head = merge commit second parent (PR branch tip); git diff base..head == git diff base..merge (asserted)",
+    "control": "source fix + test; merged upstream, human-written, not reverted or fixed later as far as checked (measurement/history/candidates.json has no entry for it; later history of the changed lines read by hand)"
+  },
+  "diff": {
+    "files": 2,
+    "insertions": 29,
+    "deletions": 0,
+    "by_kind": {
+      "source": 1,
+      "test": 1
+    },
+    "by_file": [
+      {
+        "path": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+        "ins": 6,
+        "del": 0,
+        "kind": "source"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs",
+        "ins": 23,
+        "del": 0,
+        "kind": "test"
+      }
+    ]
+  },
+  "new_tests_in_diff": [
+    "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention"
+  ],
+  "checks": [
+    {
+      "id": "build",
+      "tool": "dotnet build",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "command": "dotnet build tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-incremental -m:8 -c Debug",
+      "projects": [
+        "src/MessagePack.SourceGenerator",
+        "src/MessagePack.Analyzers.CodeFixes",
+        "src/MessagePack.Analyzers",
+        "src/MessagePack.Annotations",
+        "src/MessagePack (net8.0)",
+        "tests/MessagePack.SourceGenerator.Tests"
+      ],
+      "summary": "0 errors, 1 unique warnings",
+      "log": "evidence/up-2022/logs/build.log",
+      "duration_s": 5.0
+    },
+    {
+      "id": "tests.targeted",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "26 passed, 0 failed, 0 skipped (1 new tests in run)",
+      "tests": [
+        {
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToField_WithComment",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToGenericType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecord1",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecord2",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecordPrimaryConstructor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecord",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordStruct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordStructWithPrimaryCtor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordWithPrimaryCtor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_AllowPrivateAttribute",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_MixedVisibility",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_PublicOnly",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddIgnoreAttributesToMembers",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.CodeFixAppliesAcrossFiles",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.DerivedAttributes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.DerivedAttributes_SourceGenerationDisabled",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.DoNotAddAttributesToClassWithPrimaryCtor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.InitPropertyInitializer",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.InvalidMessageFormatterType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.NameCollisionsInForceMapMode",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.NoMessagePackReference",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.NullStringKey",
+          "outcome": "passed",
+          "new": false
+        }
+      ],
+      "log": "evidence/up-2022/logs/tests_targeted.1.log",
+      "duration_s": 3.0,
+      "filter": [
+        "FullyQualifiedName~MsgPack00xAnalyzerTests."
+      ],
+      "project": "tests/MessagePack.SourceGenerator.Tests",
+      "on_base": "same filter on base: 25 passed, 0 failed of 25"
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "new tests fail on base source: 1/1 failed -> tests do cover the change",
+      "tests": [
+        {
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Diagnostics of test state\nMismatch between number of diagnostics returned, expected \"0\" actual \"4\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(4,23): error MsgPack009: Multiple formatters for type System.Object found\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack009).WithSpan(4, 23, 4, 41).WithArguments(\"System.Object\"),\n// /0/Test0.cs(4,23): warning MsgPack013: Formatter should declare a default constructor with at least internal visibility or a public static readonly field named Instance that returns the singleton\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack013).WithSpan(4, 23, 4, 41),\n// /0/Test0.cs(10,23): error MsgPack009: Multiple formatters for type System.Object found\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack009).WithSpan(10, 23, 10, 41).WithArguments(\"System.Object\"),\n// /0/Test0.cs(10,23): warning MsgPack013: Formatter should declare a default constructor with at least internal visibility or a public static readonly field named Instance that returns the singleton\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack013).WithSpan(10, 23, 10, 41),\n\r\n"
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToField_WithComment",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToGenericType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecord1",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecord2",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributeToTypeForRecordPrimaryConstructor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecord",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordStruct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordStructWithPrimaryCtor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembersOfRecordWithPrimaryCtor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_AllowPrivateAttribute",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_MixedVisibility",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddAttributesToMembers_PublicOnly",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.AddIgnoreAttributesToMembers",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.CodeFixAppliesAcrossFiles",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.DerivedAttributes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.DerivedAttributes_SourceGenerationDisabled",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.DoNotAddAttributesToClassWithPrimaryCtor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.InitPropertyInitializer",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.InvalidMessageFormatterType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.MessageFormatterAttribute",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.NameCollisionsInForceMapMode",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.NoMessagePackReference",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "MsgPack00xAnalyzerTests.NullStringKey",
+          "outcome": "passed",
+          "new": false
+        }
+      ],
+      "log": "evidence/up-2022/logs/tests_fail_without_fix.1.log",
+      "duration_s": 4.0,
+      "reverted_files": [
+        "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs"
+      ],
+      "full_suite_with_source_reverted": {
+        "total": 150,
+        "failed": 1,
+        "failed_tests": [
+          "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention"
+        ],
+        "log": "evidence/up-2022/logs/fail_without_fix.full_suite.log"
+      },
+      "new_failed": 1,
+      "new_total": 1
+    },
+    {
+      "id": "tests.full_suite",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "tests/MessagePack.SourceGenerator.Tests: 150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "project": "tests/MessagePack.SourceGenerator.Tests",
+      "total": 150,
+      "passed": 150,
+      "failed": 0,
+      "failures_not_on_base": [],
+      "failures_also_on_base": [],
+      "log": "evidence/up-2022/logs/tests_full_suite.log",
+      "duration_s": 7.0,
+      "base_total": 149,
+      "base_passed": 149
+    },
+    {
+      "id": "public_api",
+      "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+      "status": "pass",
+      "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+      "publicapi_files_changed": []
+    },
+    {
+      "id": "analyzers",
+      "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+      "status": "pass",
+      "summary": "no new warnings",
+      "new_warnings": [],
+      "resolved_warnings": [],
+      "base_warning_count": 1
+    }
+  ],
+  "not_run": [
+    {
+      "id": "tests.MessagePack.Tests",
+      "reason": "runtime library src/MessagePack not modified by the change; suite not run"
+    },
+    {
+      "id": "tests.execution",
+      "reason": "ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)"
+    },
+    {
+      "id": "build.net472/netstandard",
+      "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)"
+    },
+    {
+      "id": "benchmarks",
+      "reason": "no runtime serialization hot path touched"
+    }
+  ],
+  "environment": {
+    "sdk": "8.0.402",
+    "os": "linux-x64 (container)",
+    "configuration": "Debug",
+    "max_cpu": 8
+  }
+}

@@ -1,0 +1,41 @@
+### dotnet test tests/MessagePack.SourceGenerator.Tests --no-build
+
+Test run for /data/src/mp-up2022-fwf/bin/MessagePack.SourceGenerator.Tests/Debug/net8.0/MessagePack.SourceGenerator.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:07.21]     MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention [FAIL]
+  Failed MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention [12 ms]
+  Error Message:
+   System.InvalidOperationException : Context: Diagnostics of test state
+Mismatch between number of diagnostics returned, expected "0" actual "4"
+
+Diagnostics:
+// /0/Test0.cs(4,23): error MsgPack009: Multiple formatters for type System.Object found
+VerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack009).WithSpan(4, 23, 4, 41).WithArguments("System.Object"),
+// /0/Test0.cs(4,23): warning MsgPack013: Formatter should declare a default constructor with at least internal visibility or a public static readonly field named Instance that returns the singleton
+VerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack013).WithSpan(4, 23, 4, 41),
+// /0/Test0.cs(10,23): error MsgPack009: Multiple formatters for type System.Object found
+VerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack009).WithSpan(10, 23, 10, 41).WithArguments("System.Object"),
+// /0/Test0.cs(10,23): warning MsgPack013: Formatter should declare a default constructor with at least internal visibility or a public static readonly field named Instance that returns the singleton
+VerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack013).WithSpan(10, 23, 10, 41),
+
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Equal[T](T expected, T actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 79
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticResults(IEnumerable`1 actualResults, ImmutableArray`1 analyzers, DiagnosticResult[] expectedResults, IVerifier verifier) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 546
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticsAsync(EvaluatedProjectState primaryProject, ImmutableArray`1 additionalProjects, DiagnosticResult[] expected, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 449
+   at Microsoft.CodeAnalysis.Testing.CodeFixTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.CodeFix.Testing/CodeFixTest`1.cs:line 311
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention() in /data/src/mp-up2022-fwf/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs:line 932
+--- End of stack trace from previous location ---
+Results File: /data/work/up/2022/out/fwf/full.trx
+
+Failed!  - Failed:     1, Passed:   149, Skipped:     0, Total:   150, Duration: 7 s - MessagePack.SourceGenerator.Tests.dll (net8.0)
+
+Build FAILED.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:08.17

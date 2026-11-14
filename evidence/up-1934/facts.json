@@ -1,0 +1,846 @@
+{
+  "change": "up-1934",
+  "branch": "upstream PR #1934",
+  "base": "7ef21d4b",
+  "head": "2f9324f9",
+  "base_full": "7ef21d4b6ea661cd346b5beeabfc3545106d83b6",
+  "head_full": "2f9324f9987410677a310a633232411eb978a699",
+  "commit_message": "Change default Language version of generated code to C# 7.3",
+  "author": "Alan Liu",
+  "agent_written": false,
+  "upstream": {
+    "pull_request": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/1934",
+    "issue": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/1925",
+    "merge_commit": "b06681eaafee88475f2b2c958397eb540dad9d0e",
+    "merged_into": "develop",
+    "merged_at": "2024-08-21T18:58:39-06:00",
+    "base_rule": "base = merge commit first parent (develop before the merge)",
+    "head_rule": "head = merge commit second parent (PR branch tip); git diff base..head == git diff base..merge (asserted)",
+    "control": "test only; merged upstream, human-written, not reverted or fixed later as far as checked (measurement/history/candidates.json has no entry for it; later history of the changed lines read by hand)"
+  },
+  "diff": {
+    "files": 6,
+    "insertions": 26,
+    "deletions": 22,
+    "by_kind": {
+      "test": 6
+    },
+    "by_file": [
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/CustomStringKeyFormatterTests.cs",
+        "ins": 2,
+        "del": 1,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs",
+        "ins": 2,
+        "del": 1,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+        "ins": 4,
+        "del": 3,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/PrivateMemberAccessTests.cs",
+        "ins": 12,
+        "del": 12,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorCodeFixVerifier`2.cs",
+        "ins": 1,
+        "del": 1,
+        "kind": "test"
+      },
+      {
+        "path": "tests/MessagePack.SourceGenerator.Tests/Verifiers/CSharpSourceGeneratorVerifier`1+Test.cs",
+        "ins": 5,
+        "del": 4,
+        "kind": "test"
+      }
+    ]
+  },
+  "new_tests_in_diff": [],
+  "checks": [
+    {
+      "id": "build",
+      "tool": "dotnet build",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "command": "dotnet build tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-incremental -m:8 -c Debug",
+      "projects": [
+        "src/MessagePack.SourceGenerator",
+        "src/MessagePack.Analyzers.CodeFixes",
+        "src/MessagePack.Analyzers",
+        "src/MessagePack.Annotations",
+        "src/MessagePack (net8.0)",
+        "tests/MessagePack.SourceGenerator.Tests"
+      ],
+      "summary": "0 errors, 1 unique warnings",
+      "log": "evidence/up-1934/logs/build.log",
+      "duration_s": 11.0,
+      "tool_version_note": "global.json at these commits pins SDK 8.0.300 with rollForward patch; only 8.0.402 is installed, so global.json was set to 8.0.402 (rollForward disable) in the scratch worktrees only and restored afterwards"
+    },
+    {
+      "id": "tests.targeted",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "59 passed, 0 failed, 0 skipped (0 new tests in run)",
+      "tests": [
+        {
+          "name": "CustomStringKeyFormatterTests.RecordWithPrimaryConstructor",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "CustomStringKeyFormatterTests.RecordWithWithInitOnlyProps",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.AdditionalAllowTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.AdditionalFormatterTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.AdditionalFormatterTypes_RedundantAttibute",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.ArrayTypedProperty",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.CustomFormatterViaAttributeOnProperty(usesMapMode: False)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.CustomFormatterViaAttributeOnProperty(usesMapMode: True)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.CustomFormatterWithSingletonPattern",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_Incompatible",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_MemberAssignsToParamType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: Namespace, usesMapMode: False)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: Namespace, usesMapMode: True)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: NestingClass, usesMapMode: False)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: NestingClass, usesMapMode: True)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: None, usesMapMode: False)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: None, usesMapMode: True)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.EnumFormatter_CollidingTypeNames",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.ExcludeFormatterFromSourceGeneratedResolver",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.GenericType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.GenericTypeArg",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.GenericType_CollidingTypeNames",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.ImplicitFormatterTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.MixType_CollidingTypeNames",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.NestedMessagePackObjects",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.NestedMessagePackObjects_Array",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.NoGenerationForAnnotationOnly",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.NonDefaultDeserializingConstructor_Private",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.NonGenericType_CollidingTypeNames",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.SpecifyFormatterFromStockSet",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.UnionFormatter(container: Namespace)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.UnionFormatter(container: NestingClass)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenerationTests.UnionFormatter(container: None)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfT1T2Formatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_FormatterOnly",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_WithKnownTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter_Nested",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Multiple",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_NullableReferenceType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_ReferenceType_Nullable",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Struct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Type",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NestedGenericTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NullableFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.WellKnownGenericsFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"class\", version: CSharp7_3)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"record struct\", version: CSharp10)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"record\", version: CSharp9)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers(type: \"struct\", version: CSharp7_3)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_Nested_NonPartialTypes(type: \"class\", languageVersion: CSharp7_3)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_Nested_NonPartialTypes(type: \"record\", languageVersion: CSharp9)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_Nested_NonPartialTypes(type: \"struct\", languageVersion: CSharp7_3)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_NonPartialTypes(type: \"class\", languageVersion: CSharp7_3)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_NonPartialTypes(type: \"record\", languageVersion: CSharp9)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_NonPartialTypes(type: \"struct\", languageVersion: CSharp7_3)",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_WithNamespace",
+          "outcome": "passed",
+          "new": false
+        }
+      ],
+      "log": "evidence/up-1934/logs/tests_targeted.1.log",
+      "duration_s": 7.0,
+      "filter": [
+        "FullyQualifiedName~CustomStringKeyFormatterTests.|FullyQualifiedName~GenerationTests.|FullyQualifiedName~GenericsFormatterTests.|FullyQualifiedName~PrivateMemberAccessTests."
+      ],
+      "project": "tests/MessagePack.SourceGenerator.Tests",
+      "on_base": "same filter on base: 59 passed, 0 failed of 59"
+    },
+    {
+      "id": "tests.fail_without_fix",
+      "status": "skipped",
+      "summary": "not run: test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)",
+      "reason": "test-only change: no file under src/ changed, so there is no source to revert (see tests.detects_original_regression for what the new test settings catch)"
+    },
+    {
+      "id": "tests.full_suite",
+      "tool": "dotnet test",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "tests/MessagePack.SourceGenerator.Tests: 123 tests, 123 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "project": "tests/MessagePack.SourceGenerator.Tests",
+      "total": 123,
+      "passed": 123,
+      "failed": 0,
+      "failures_not_on_base": [],
+      "failures_also_on_base": [],
+      "log": "evidence/up-1934/logs/tests_full_suite.log",
+      "duration_s": 7.0,
+      "base_total": 123,
+      "base_passed": 123
+    },
+    {
+      "id": "public_api",
+      "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+      "status": "pass",
+      "summary": "no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/",
+      "publicapi_files_changed": []
+    },
+    {
+      "id": "analyzers",
+      "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+      "status": "pass",
+      "summary": "no new warnings",
+      "new_warnings": [],
+      "resolved_warnings": [],
+      "base_warning_count": 1
+    },
+    {
+      "id": "tests.detects_original_regression",
+      "tool": "dotnet test (full SourceGenerator.Tests) on source before the #1926 fix, old vs new test files",
+      "tool_version": "8.0.402",
+      "tool_version_note": "global.json at these commits pins SDK 8.0.300 with rollForward patch; only 8.0.402 is installed, so global.json was set to 8.0.402 (rollForward disable) in the scratch worktrees only and restored afterwards",
+      "status": "pass",
+      "setup": "pre1926 = commit 3ea9234f (merge^1 of #1926, i.e. generator still emitting C# 8/9 syntax, issue #1925) with its own tests; pre1926-newtests = 3ea9234f + git diff 7ef21d4b..2f9324f9 (this PR, test files only; applies cleanly)",
+      "summary": "with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way)",
+      "tests": [
+        {
+          "name": "CustomStringKeyFormatterTests.RecordWithWithInitOnlyProps",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.AdditionalAllowTypes",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.AdditionalFormatterTypes",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.AdditionalFormatterTypes_RedundantAttibute",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.ArrayTypedProperty",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.CustomFormatterWithSingletonPattern",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_Incompatible",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"1\" actual \"4\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(8,16): error MsgPack007: Deserializing constructor parameter type mismatch\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack007).WithSpan(8, 16, 8, 36),\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.Generat"
+        },
+        {
+          "name": "GenerationTests.DeserializingConstructorParameterMemberTypeAssignability_MemberAssignsToParamType",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: Namespace, usesMapMode: False)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: Namespace, usesMapMode: True)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: NestingClass, usesMapMode: False)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: NestingClass, usesMapMode: True)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: None, usesMapMode: False)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.EnumFormatter(container: None, usesMapMode: True)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.EnumFormatter_CollidingTypeNames",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.GenericType",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.GenericTypeArg",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,116): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.GenericType_CollidingTypeNames",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.ImplicitFormatterTypes",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.MixType_CollidingTypeNames",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.NestedMessagePackObjects",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.NestedMessagePackObjects_Array",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.NonDefaultDeserializingConstructor_Private",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.NonGenericType_CollidingTypeNames",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.SpecifyFormatterFromStockSet",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.UnionFormatter(container: Namespace)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.UnionFormatter(container: NestingClass)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenerationTests.UnionFormatter(container: None)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfT1T2Formatter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_FormatterOnly",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,116): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_WithKnownTypes",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter_Nested",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Multiple",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"1\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,116): error CS8400: Feature 'target-typed object creation' is not available in C# 8.0. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Struct",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,116): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Type",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,116): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.NestedGenericTypes",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"6\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.NullableFormatter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "GenericsFormatterTests.WellKnownGenericsFormatter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "ImplicitResolverForCustomFormattersTests.MultipleFunctionalCustomFormattersForType_MultiFormatter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"2\" actual \"5\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(6,16): error MsgPack009: Multiple formatters for type System.Int32 found\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack009).WithSpan(6, 16, 6, 28).WithArguments(\"System.Int32\"),\n// /0/Test0.cs(12,16): error MsgPack009: Multiple formatters for type S"
+        },
+        {
+          "name": "ImplicitResolverForCustomFormattersTests.MultipleFunctionalCustomFormattersForType_OnlyOneNonExcluded",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "ImplicitResolverForCustomFormattersTests.OpenGenericFormatter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,116): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "MessagePackFormatterAttributeTests.CanGenerateMessagePackFormatterAttr",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "MultipleTypesTests.TwoTypes(usesMapMode: False)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "MultipleTypesTests.TwoTypes(usesMapMode: True)",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "PrivateMemberAccessTests.FormatterForClassWithPrivateMembers_WithNamespace",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterOnlyDefaultValue",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterOnlyIgnore",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterOnlyMixed",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterOnlyWithParameterizedConstructor",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterOnlyWithParameterizedConstructorDefaultValue",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterOnlyWithParameterizedConstructorPartially",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterSetter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithDefaultValue",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithDefaultValueInputPartially",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructor",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructorAndDefaultValue",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructorDoNotUseSetter",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        },
+        {
+          "name": "StringKeyedFormatterTests.PropertiesGetterSetterWithParameterizedConstructorPartially",
+          "outcome": "failed",
+          "outcome_with_old_tests": "passed",
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs(42,118): error CS8370: Feature 'target-typed object creation' is not available in C# 7.3. Please use language version 9.0 or greater.\nDiagnosticResul"
+        }
+      ],
+      "failed_either_way": [],
+      "log": [
+        "evidence/up-1934/logs/detects_original_regression.newtests.log",
+        "evidence/up-1934/logs/detects_original_regression.oldtests.log"
+      ]
+    }
+  ],
+  "not_run": [
+    {
+      "id": "tests.MessagePack.Tests",
+      "reason": "runtime library src/MessagePack not modified by the change; suite not run"
+    },
+    {
+      "id": "tests.execution",
+      "reason": "ExecutionTests/MapModeExecutionTests not run for this control (generator output is covered by the snapshot tests in the full suite)"
+    },
+    {
+      "id": "build.net472/netstandard",
+      "reason": "only the net8.0 slice of src/MessagePack was built (Linux container, Debug)"
+    },
+    {
+      "id": "benchmarks",
+      "reason": "no runtime serialization hot path touched"
+    }
+  ],
+  "environment": {
+    "sdk": "8.0.402",
+    "os": "linux-x64 (container)",
+    "configuration": "Debug",
+    "max_cpu": 8,
+    "sdk_note": "global.json at these commits pins SDK 8.0.300 with rollForward patch; only 8.0.402 is installed, so global.json was set to 8.0.402 (rollForward disable) in the scratch worktrees only and restored afterwards"
+  }
+}
