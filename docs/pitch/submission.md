@@ -12,37 +12,38 @@ Paste everything between the two rules into the platform. Character count of tha
 
 **Tech challenges:** Codex, Gemini, CRACI, Nemotron
 
-**Repo:** https://github.com/Zawaer/countersign
+**Repo:** https://github.com/Zawaer/countersign (demo: site/index.html)
 
 **The problem.** Agents write more code than people can read line by line, yet a named person still answers for every merge. "The AI said it was fine" is not something they can sign.
 
-**Our recommendation.** Stop asking "did a human read every line?" and ask "did a named human sign for what was proven, what was refused, and the risk left?" Review becomes delegated authority:
+**Our recommendation.** Ask "did a named human sign for what was proven, what was refused, and the risk left?", not "did a human read every line?"
 
-1. A signed, versioned mandate per repo and area says what the AI may clear alone (silent, notify), what goes to a named owner (ask) and what is refused (block).
-2. Facts first: build, tests, "do the new tests fail without the fix?", public-API and analyzer checks run before any model reads the diff.
-3. Reviewers from different vendors work separately. Every claim must cite a file line, test, check or requirement clause, and the engine re-checks each citation. No evidence, no finding.
-4. A requirement clause is proven only if every reviewer says met with verified evidence and its checks pass. Anything else is refused, with the reason.
-5. The change explains itself: an evidence pack with the tier and why, requirement trace, findings, refusals, what wasn't checked, residual risk.
-6. The named owner countersigns (Ed25519) into a hash-chained ledger.
-7. Trust is earned per area from spot-checks and withdrawn after an escape.
+0. A failing check can't be argued away: no verdict or trust record clears it.
+1. A signed mandate per repo and area sets the tier the AI may give alone: silent or notify (AI clears), ask (a named owner signs), block (fix or split).
+2. Facts first: build, tests, "do the new tests fail without the fix?", public API, analyzers, dependency diff, a scan for text planted for AI reviewers.
+3. Claude, Codex and Nemotron review separately. Every claim cites evidence the engine re-checks. A requirement clause is proven only if all three say met and its checks pass; otherwise it is refused, with the reason. A bug a reviewer claims is re-run by the pipeline as a test.
+4. The evidence pack says what was checked, found, refused and not checked, and the residual risk. The owner signs its hash into a hash-chained ledger.
+5. Trust is earned per area: 20 agreeing spot-checks in a row to reach notify. An escape (a merged change later reverted or fixed), a disagreeing spot-check or a missed seeded-bug canary drops a stage. A new model or prompt starts at ask.
 
-**What it showed on Tieto's sample changes.** On ju26-issue-2234 the agent wrote sound, tested code that fixes a different bug than the issue reports: the regression comes from an upstream commit that isn't in the branch's base. Reverting the fix showed only 4 of the 8 new tests fail without it. The AI refused the "must not crash" requirement because one reviewer reproduced a remaining crash and the other said met, and it refused to decide whether the change fixes users' release line. It routed the change to its owner with every reason listed; nobody had to read 262 lines to find out. 2283 also goes to its owner (the fix silences a warning users relied on); 2129 and 2297 are blocked (new public API and failing checks; 237 files, split it).
+**What it showed.** On ju26-issue-2234 the agent wrote sound code that fixes a different crash than the issue reports. Only 4 of 8 new tests fail without it, so two clauses are marked "held before": met, but not achieved by this change. The pipeline reproduced a remaining Key(null) crash. The no-crash clause is refused (Claude: not met; Codex, Nemotron: met). It went to its owner with every reason; nobody read 262 lines. 2283 goes to its owner (the fix silences a warning; reproduced by the pipeline); 2129 and 2297 are blocked. Of three small upstream controls, a one-line docs fix is cleared by the AI, which tells its owner.
 
-**Trade-offs and limits.** More refusals at first, in exchange for fewer escapes. Several reviewers cost more than one, but cross-vendor disagreement is an honest uncertainty signal and self-reported confidence isn't. It can't judge intent, is only as good as the requirement text, and areas without checks fall back to humans. Trust events and review-time estimates in the demo are simulated and labelled as such.
+**Measured.** On 109 real merged MessagePack PRs, the AI would have cleared 24 and none of the 11 later reverted or fixed. Checks alone catch 13 of 16 seeded changes (11 of 14 bugs and both prompt injections). A simulation showed the old trust rule let escapes rise when reviewers degrade; 20 checks plus canaries fixed it, and we changed the signed mandate.
 
-**Codex.** Codex is our second-vendor reviewer. It reviewed all four changes twice, read-only: before the deterministic facts existed and after. Both passes are kept and every run is logged. The comparison is our clearest lesson: given passing tests, Codex marked all 11 requirement clauses met and raised no findings, while the other reviewer found the wrong-bug problem. That is why one reviewer's "all good" can never clear a change.
+**Limits.** It can't judge intent and is only as good as the requirement text. Areas without checks fall back to humans. Reviewers share blind spots. Trust over time and review minutes are simulated and labelled. In the demo repo any Actions workflow can post the merge status; a dedicated GitHub App would close that.
 
-**Gemini.** Gemini is the adjudicator in the mandate's reviewer panel. When reviewers disagree, it reads only the disputed items with both sides' cited evidence and the engine's verification results, and says which claims hold up and what evidence would settle the rest. The engine enforces that it can only add reasons and route to a human, never clear anything: a tie-breaker that can clear would be one model approving the change.
+**Codex.** A reviewer on all seven changes. Given passing tests, its second pass said every clause was met and found nothing; unanimity means that can't clear a change. Codex also reviewed our own pipeline for security; we confirmed and fixed real issues.
 
-**CRACI.** The pipeline runs as a GitHub Actions job on CRACI runners: engine tests, ledger verification, routing, and a check that every committed evidence pack rebuilds byte for byte, under a deny-by-default network policy. A second job runs the Nemotron reviews and Gemini adjudication with API keys as secrets. CRACI's per-job egress trace and SBOM show exactly what the review job could reach and install.
+**Gemini.** The adjudicator: it reads only disputed items with both sides' evidence and can never clear anything (enforced in code). Wired, runs when the key is set; not yet run.
 
-**Nemotron.** Nemotron is the third reviewer and the only open-weight one, marked self-hostable in the mandate. A repo or area marked confidential admits only self-hostable reviewers, and the runner refuses to send its code to a vendor-hosted endpoint, so a client's code can stay on its own infrastructure. TODO(numbers): one line on Nemotron's results on the four changes once its reviews land.
+**CRACI.** Pipeline, facts and reviewer jobs run on CRACI under deny-by-default egress. deps.delta diffs CycloneDX SBOMs of base and head (passes on all four changes, fails on a seeded attack); build.egress records the build's network policy as evidence.
+
+**Nemotron.** The open-weight reviewer, run live in CI on all 7 real and 16 seeded changes. Of the 3 seeded bugs every test missed, its blind review points at the planted line in 2. A repo marked confidential may use only self-hostable reviewers like it.
 
 **Team:** Toivo and Rene.
 
 ---
 
-Character count of the text between the rules: **4,526** (Python `len()` on the stripped text, including the one remaining `TODO(numbers)` placeholder in the Nemotron paragraph, about 110 characters). That leaves about 590 characters for the Nemotron result; recount before pasting:
+Character count of the text between the rules: **4,037** (Python `len()` on the stripped text). Recount before pasting:
 
 ```bash
 python3 -c "print(len(open('docs/pitch/submission.md').read().split('\n---\n',2)[1].strip()))"
