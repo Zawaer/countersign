@@ -73,8 +73,11 @@ details.mini>summary{cursor:pointer;color:var(--link);font-size:14px}
 <h3>Residual risk you accept by signing</h3><ul class="sm"><li>Open major finding: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic <a class="sm" href="#f-claude-C1">see</a></li><li>Not proven by the AI: REQ-2283-N1. Signing means you judge them yourself. <a class="sm" href="#chain-REQ-2283-N1">see</a></li><li>1 question the AI declined to decide (listed above) are yours. <a class="sm" href="#refused">see</a></li><li class="mut"><details class="mini"><summary>4 more risks that do not set the tier</summary><ul><li>4 peripheral refusals (out of scope for this change) are yours too. <a class="sm" href="#refused-peripheral">see</a></li><li>Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks <a class="sm" href="#not-checked">see</a></li><li>2 disputed items not adjudicated <a class="sm" href="#panel">see</a></li><li>Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance <a class="sm" href="#not-checked">see</a></li></ul></details></li></ul>
 <div class="sign"><p><b>Toivo signs</b> <span class="mut sm">(required;
 allowed: accept, reject, request-changes)</span></p><p><q>I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.</q></p>
-<details class="mini"><summary>How to sign</summary><pre>countersign sign 2283 --as Toivo --decision &lt;accept|reject|request-changes&gt; --note &quot;...&quot;</pre>
-<p class="mut sm">The signature covers the sha256 of this pack's canonical JSON, the decision, the time and the signer, and is appended to the hash-chained ledger.</p></details></div>
+<details class="mini"><summary>How to sign</summary><p class="sm">Rate each verified finding: <code>accepted</code> (real), <code>rejected</code> (a false positive) or <code>unsure</code>, optionally <code>:reason</code>. A finding without a flag is recorded as <code>unrated</code>.</p><ul class="sm"><li><code>claude:C1</code> <span class="mut">(major)</span> Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic</li><li><code>claude:C2</code> <span class="mut">(minor)</span> BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source</li><li><code>claude:C3</code> <span class="mut">(info)</span> Fix treats the symptom location; metadata struct backing fields are still walked as members</li></ul><pre>countersign sign 2283 --as Toivo --decision &lt;accept|reject|request-changes&gt; --note &quot;...&quot; \
+  --finding claude:C1=&lt;accepted|rejected|unsure&gt; \
+  --finding claude:C2=&lt;accepted|rejected|unsure&gt; \
+  --finding claude:C3=&lt;accepted|rejected|unsure&gt;</pre>
+<p class="mut sm">The signature covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.</p></details></div>
 </section>
 <nav class="jump" aria-label="Sections"><a href="#supply-chain">Supply chain</a><a href="#trust">Where the trust comes from</a><a href="#panel">Reviewer panel</a><a href="#evidence">Evidence</a><a href="#full">Full detail</a></nav>
 <h2 id="supply-chain">Supply chain (from the build)</h2>
@@ -110,6 +113,6 @@ allowed: accept, reject, request-changes)</span></p><p><q>I, Toivo, have read wh
 <p class="sm">Mandate messagepack-csharp v4 <code>4b247d4ec39413dd</code>:
 signed by Toivo. countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394).</p>
 <p class="sm mut">Inputs: facts evidence/2283/facts.json (e64176372fda), requirements requirements/2283.yaml,
-reviews claude (8b8a2a678edf), codex (c5730ada03bb), nemotron (5c0c4d94314f). Rendered 2026-11-14T04:11:23+00:00.</p>
+reviews claude (8b8a2a678edf), codex (c5730ada03bb), nemotron (5c0c4d94314f). Rendered 2026-11-14T04:26:03+00:00.</p>
 </details>
 </main></body></html>
