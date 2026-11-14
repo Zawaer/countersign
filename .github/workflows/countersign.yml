@@ -73,6 +73,14 @@ jobs:
           git -C "$RUNNER_TEMP/mp" remote set-url --push origin DISABLED   # never push there
           echo "MP=$RUNNER_TEMP/mp" >> "$GITHUB_ENV"
           echo "COUNTERSIGN_REPO=$RUNNER_TEMP/mp" >> "$GITHUB_ENV"   # also lets the fixture tests run
+      - name: Add commits the challenge repo lacks (evidence/*/head.bundle) to the clone
+        run: |
+          # Same as in the reviewers job: the generated variants and the demo-repo changes exist only as bundles here.
+          for b in evidence/*/head.bundle; do
+            [ -e "$b" ] || continue
+            git -C "$MP" bundle verify -q "$GITHUB_WORKSPACE/$b"
+            git -C "$MP" fetch -q "$GITHUB_WORKSPACE/$b" 'refs/heads/cs-var/*:refs/cs-var/*'
+          done
       - name: pytest
         run: uv run pytest -q
       - name: Docs' headline numbers match the result files (scripts/sync_numbers.py)
