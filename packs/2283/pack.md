@@ -7,10 +7,10 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 **Why ask**
 
 1. Claude found a verified major issue: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic ([evidence](#f-claude-C1))
-2. 1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence ([evidence](#chain-REQ-2283-N1))
-3. The AI declined to decide 1 question, e.g. Whether the placeholder requirement set matches the upstream issue #2283 intent ([evidence](#refused))
+2. 1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence; the adjudicator disputes it ([evidence](#chain-REQ-2283-N1))
+3. The adjudicator (Gemini) found the evidence on REQ-2283-N1, finding:claude:C1 disputed ([evidence](#panel))
 
-<sub>All 12 tier drivers are under Full detail.</sub>
+<sub>All 14 tier drivers are under Full detail.</sub>
 
 **Requirement trace**
 
@@ -19,7 +19,7 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 | **PROVEN** | [REQ-2283-F1](#chain-REQ-2283-F1) | All 3 reviewers say met (12 verified citations); build, tests.targeted pass |
 | **PROVEN** | [REQ-2283-F2](#chain-REQ-2283-F2) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
 | **PROVEN** | [REQ-2283-F3](#chain-REQ-2283-F3) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
-| **NOT MET** | [REQ-2283-N1](#chain-REQ-2283-N1) | Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence |
+| **NOT MET** | [REQ-2283-N1](#chain-REQ-2283-N1) | Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence; the adjudicator disputes it |
 | **PROVEN** | [REQ-2283-N2](#chain-REQ-2283-N2) | All 3 reviewers say met (8 verified citations); build, tests.fail_without_fix pass |
 
 **What the AI found**
@@ -49,7 +49,7 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 - Not proven by the AI: REQ-2283-N1. Signing means you judge them yourself.
 - 1 question the AI declined to decide (listed above) are yours.
 
-<details><summary>4 more risks that do not set the tier</summary>4 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks · 2 disputed items not adjudicated · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
+<details><summary>3 more risks that do not set the tier</summary>4 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
 
 **Toivo signs** (required; allowed: accept, reject, request-changes)
 
@@ -124,7 +124,8 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 - **Codex: met** (0/1 verified). The source-generator test suite passes in full after the change.
 - **Nemotron: met** (1/1 verified). Full suite on head: 170 passed, 0 failed, with no failures that also fail on base and no new failures, so existing analyzer diagnostics for in-compilation types are unchanged.
 - **Checks:** `build` pass, `tests.full_suite` pass
-- **What would settle it:** A fix, or evidence that refutes Claude's objection; Codex citing evidence the engine can verify
+- **Adjudicator (Gemini, advisory):** Supported by the cited evidence: Codex: The existing source-generator test suite passes in full (170/170). (facts.json tests.full_suite passes with 170 passed, 0 failed, and 0 newly failing tests.); Nemotron: The full source-generator suite passes on head with no newly failing tests. (facts.json tests.full_suite confirms 170 passed, 0 failed, and no failures on head or base.); Claude: The existing test suite passes, and ReportIfLocatedInCompilation filters out diagnostics not located in a syntax tree of the current compilation, including when TypeMustBeMessagePackObject uses a metadata callerSymbol.Locations[0]. (facts.json tests.full_suite confirms 170/170 pass; verified quotes at TypeCollector.cs:1446 and 1341 show the IsInSource + ContainsSyntaxTree check and callerSymbol.Locations[0] usage, and facts.json repro.claude.C1 confirms the scenario passes on base and fails on head.). Not supported: Codex: All existing analyzer diagnostics for types declared in the current compilation keep working unchanged. (tests.full_suite only covers the 170 existing tests and does not cover an in-compilation type reached via a metadata generic member, where facts.json repro.claude.C1 shows behavior changed from base to head.); Nemotron: All existing analyzer diagnostics for types declared in the current compilation keep working unchanged. (tests.full_suite only verifies the existing test suite and does not rule out regressions in uncovered cases such as repro.claude.C1.); Claude: class Item<T> worked on base per the issue table. (The cited issue quote '| class Item<T> | ok |' is unverified offline and supports nothing.). What would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]..
+- **What would settle it:** Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject].; A fix, or evidence that refutes Claude's objection; Codex citing evidence the engine can verify
 
 <a id="chain-REQ-2283-N2"></a>
 #### REQ-2283-N2: **PROVEN**
@@ -157,7 +158,9 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 - **Codex** (GPT-6, OpenAI): citations 12 verified / 0 rejected; findings 0 verified / 0 rejected; 1 refusals.
 - **Nemotron** (nvidia/nemotron-3.5-super-vl-120b-a12b, NVIDIA): citations 18 verified / 0 rejected; findings 0 verified / 0 rejected; 2 refusals.
 
-2 disputed item(s), not adjudicated: REQ-2283-N1, finding:claude:C1
+Adjudicator **Gemini** (gemini-4-hydrogen, adjudicate-v1), advisory only: it can add reasons, never clear.
+- **REQ-2283-N1**: Supported by the cited evidence: Codex: The existing source-generator test suite passes in full (170/170). (facts.json tests.full_suite passes with 170 passed, 0 failed, and 0 newly failing tests.); Nemotron: The full source-generator suite passes on head with no newly failing tests. (facts.json tests.full_suite confirms 170 passed, 0 failed, and no failures on head or base.); Claude: The existing test suite passes, and ReportIfLocatedInCompilation filters out diagnostics not located in a syntax tree of the current compilation, including when TypeMustBeMessagePackObject uses a metadata callerSymbol.Locations[0]. (facts.json tests.full_suite confirms 170/170 pass; verified quotes at TypeCollector.cs:1446 and 1341 show the IsInSource + ContainsSyntaxTree check and callerSymbol.Locations[0] usage, and facts.json repro.claude.C1 confirms the scenario passes on base and fails on head.). Not supported: Codex: All existing analyzer diagnostics for types declared in the current compilation keep working unchanged. (tests.full_suite only covers the 170 existing tests and does not cover an in-compilation type reached via a metadata generic member, where facts.json repro.claude.C1 shows behavior changed from base to head.); Nemotron: All existing analyzer diagnostics for types declared in the current compilation keep working unchanged. (tests.full_suite only verifies the existing test suite and does not rule out regressions in uncovered cases such as repro.claude.C1.); Claude: class Item<T> worked on base per the issue table. (The cited issue quote '| class Item<T> | ok |' is unverified offline and supports nothing.). What would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]..
+- **finding:claude:C1**: Supported by the cited evidence: Claude: ReportIfLocatedInCompilation drops diagnostics whose location is not in a syntax tree of the current compilation, causing MsgPack003 (located at callerSymbol.Locations[0]) to be dropped when callerSymbol is in metadata even if the target type is in the current compilation. (Verified quotes at TypeCollector.cs:1446 and TypeCollector.cs:1341-1345 show the filter and location selection, and facts.json repro.claude.C1 reproduces the failure on head while passing on base.). Not supported: Claude: Roslyn permits analyzers to report Location.None and metadata locations, and the generator still emits App.R.g.cs and a formatter for Lib.Item`1 causing a runtime failure. (TypeCollector.cs:1442 confirms the doc comment text, but no Roslyn specification/test or generated-output inspection is included in the cited evidence to verify Roslyn's rules or the exact emitted code.). What would settle it: An automated test in MessagePack.SourceGenerator.Tests matching repro.claude.C1 (metadata generic class Lib.Item<T> with an in-compilation type Foo lacking [MessagePackObject]) asserting that MsgPack003 is reported at Foo's source location or Location.None rather than dropped.; Confirmation of whether Roslyn analyzer rules in this repo permit reporting MsgPack003 at formattedType.Locations[0] (when in source) or Location.None when callerSymbol is from metadata..
 
 </details>
 
@@ -199,58 +202,22 @@ Tier effect: silent
 <a id="ev-600c5196b9"></a>
 **TypeCollector.cs:1077 @base** (verified; cited by claude on REQ-2283-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at base 32258fdb
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 32258fdb
-  1074 |                             {
-  1075 |                                 Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true
-  1076 |                                     ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())
-> 1077 |                                     : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);
-  1078 |                                 if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)
-  1079 |                                 {
-  1080 |                                     this.reportDiagnostic?.Invoke(diagnostic);
-```
+`MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation()`
 
 <a id="ev-e2b1723b1a"></a>
 **TypeCollector.cs:1077 @head** (verified; cited by claude on REQ-2283-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1074 |                             {
-  1075 |                                 Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true
-  1076 |                                     ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())
-> 1077 |                                     : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);
-  1078 |                                 if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)
-  1079 |                                 {
-  1080 |                                     this.reportDiagnostic?.Invoke(diagnostic);
-```
+`MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()`
 
 <a id="ev-8dd72e446f"></a>
 **TypeCollector.cs:651 @head** (verified; cited by claude on REQ-2283-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:651 at head 9df83c38; context only, not counted: line 651 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  648 |             // Collect substituted types for the properties and fields.
-  649 |             // NOTE: It is used to register formatters from nested generic type.
-  650 |             //       However, closed generic types such as `Foo<string>` are not registered as a formatter.
-> 651 |             this.GetObjectInfo(type, callerSymbol);
-  652 | 
-  653 |             // Collect generic type definition, that is not collected when it is defined outside target project.
-  654 |             this.CollectCore(type.OriginalDefinition, callerSymbol);
-```
+`this.GetObjectInfo(type, callerSymbol);`
 
 <a id="ev-e27f824d96"></a>
 **GenericsFormatterTests.cs:658 @head** (verified; cited by claude on REQ-2283-F1): quote matches tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs:658 at head 9df83c38
 
-```text
-// tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs @ 9df83c38
-  655 |             .GetRunResult();
-  656 |         Assert.Empty(runResult.Diagnostics.Where(d => d.Severity >= DiagnosticSeverity.Warning));
-  657 |         var hintNames = runResult.Results.SelectMany(r => r.GeneratedSources).Select(s => s.HintName).ToList();
-> 658 |         Assert.Contains(expectedResolverHintName, hintNames);
-  659 |     }
-  660 | 
-  661 |     private static async Task<MetadataReference> CompileToMetadataReferenceAsync(string assemblyName, string source, LanguageVersion languageVersion)
-```
+`Assert.Contains(expectedResolverHintName, hintNames);`
 
 <a id="ev-751fd9609c"></a>
 **test ClosedGenericRecordStruct_FromMetadataReference passed** (verified; cited by claude on REQ-2283-F1, nemotron on REQ-2283-F1, codex on REQ-2283-F2): facts.json tests.targeted: passed (new test)
@@ -287,16 +254,7 @@ Tier effect: silent
 <a id="ev-6afda546ae"></a>
 **TypeCollector.cs:1446 @head** (verified; cited by codex on REQ-2283-F1, claude on REQ-2283-F3, codex on REQ-2283-F3, nemotron on REQ-2283-F3, claude:C1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1443 |     /// </remarks>
-  1444 |     private void ReportIfLocatedInCompilation(Action<Diagnostic> report, Diagnostic diagnostic)
-  1445 |     {
-> 1446 |         if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))
-  1447 |         {
-  1448 |             report(diagnostic);
-  1449 |         }
-```
+`if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))`
 
 <a id="ev-72235a3098"></a>
 **test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed** (verified; cited by nemotron on REQ-2283-F1, claude on REQ-2283-F3, nemotron on REQ-2283-F3, codex on REQ-2283-N2): facts.json tests.targeted: passed (new test)
@@ -308,16 +266,7 @@ Tier effect: silent
 <a id="ev-463700b774"></a>
 **TypeCollector.cs:1077 @head** (verified; cited by nemotron on REQ-2283-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1074 |                             {
-  1075 |                                 Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true
-  1076 |                                     ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())
-> 1077 |                                     : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);
-  1078 |                                 if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)
-  1079 |                                 {
-  1080 |                                     this.reportDiagnostic?.Invoke(diagnostic);
-```
+`Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);`
 
 <a id="ev-62faeb2508"></a>
 **check tests.fail_without_fix pass** (verified; cited by nemotron on REQ-2283-F1, nemotron on REQ-2283-F2, nemotron on REQ-2283-N2): facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change
@@ -335,58 +284,22 @@ Tier effect: silent
 <a id="ev-46dc7a6309"></a>
 **TypeCollector.cs:985 @head** (verified; cited by claude on REQ-2283-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  982 |                     var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;
-  983 |                     if (intKey == null && stringKey == null)
-  984 |                     {
-> 985 |                         this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));
-  986 |                     }
-  987 | 
-  988 |                     // A property with an init accessor and an initializer has a default that will be discarded by the deserializer.
-```
+`GetPropertyIdentifierLocation(item)`
 
 <a id="ev-73cd23393f"></a>
 **TypeCollector.cs:985 @base** (verified; cited by claude on REQ-2283-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at base 32258fdb
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 32258fdb
-  982 |                     var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;
-  983 |                     if (intKey == null && stringKey == null)
-  984 |                     {
-> 985 |                         this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));
-  986 |                     }
-  987 | 
-  988 |                     // A property with an init accessor and an initializer has a default that will be discarded by the deserializer.
-```
+`((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()`
 
 <a id="ev-ce1eecc974"></a>
 **TypeCollector.cs:239 @head** (verified; cited by codex on REQ-2283-F2, nemotron on REQ-2283-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  236 |     private TypeCollector(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, ITypeSymbol targetType, Action<Diagnostic>? reportAnalyzerDiagnostic, CancellationToken cancellationToken)
-  237 |     {
-  238 |         this.typeReferences = referenceSymbols;
-> 239 |         this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);
-  240 |         this.options = options;
-  241 |         this.compilation = compilation;
-  242 |         this.cancellationToken = cancellationToken;
-```
+`this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);`
 
 <a id="ev-7876fdb7f1"></a>
 **TypeCollector.cs:239 @head** (verified; cited by claude on REQ-2283-F3): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  236 |     private TypeCollector(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, ITypeSymbol targetType, Action<Diagnostic>? reportAnalyzerDiagnostic, CancellationToken cancellationToken)
-  237 |     {
-  238 |         this.typeReferences = referenceSymbols;
-> 239 |         this.reportDiagnostic = reportAnalyzerDiagnostic is null ? null : diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic);
-  240 |         this.options = options;
-  241 |         this.compilation = compilation;
-  242 |         this.cancellationToken = cancellationToken;
-```
+`diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic)`
 
 <a id="ev-9b34c726e9"></a>
 **test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed** (verified; cited by claude on REQ-2283-F3, nemotron on REQ-2283-F3, claude on REQ-2283-N2, nemotron on REQ-2283-N2): facts.json tests.fail_without_fix: failed (new test)
@@ -398,44 +311,17 @@ Tier effect: silent
 <a id="ev-a7d205a394"></a>
 **TypeCollector.cs:1434 @head** (verified; cited by codex on REQ-2283-F3, nemotron on REQ-2283-F3): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1431 |     /// </summary>
-  1432 |     /// <param name="property">The property symbol. It may be declared in metadata, in which case <see langword="null" /> is returned.</param>
-  1433 |     /// <returns>The location of the identifier, or <see langword="null" /> if the property has no declaration in source.</returns>
-> 1434 |     private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();
-  1435 | 
-  1436 |     /// <summary>
-  1437 |     /// Reports a diagnostic only when its location belongs to the compilation being analyzed.
-```
+`private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();`
 
 <a id="ev-d1a7e0fbac"></a>
 **TypeCollector.cs:1341 @head** (verified; cited by claude on REQ-2283-N1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38; context only, not counted: line 1341 of src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs is not a line this change touched (added at head)
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1338 |         {
-  1339 |             if (formattedType.IsDefinition)
-  1340 |             {
-> 1341 |                 Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];
-  1342 |                 var targetName = callerSymbol is not null ? callerSymbol.ContainingType.Name + "." + callerSymbol.Name : formattedType.Name;
-  1343 | 
-  1344 |                 ImmutableDictionary<string, string?> typeInfo = ImmutableDictionary.Create<string, string?>().Add("type", formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
-```
+`Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];`
 
 <a id="ev-94826533c2"></a>
 **TypeCollector.cs:1446 @head** (verified; cited by claude on REQ-2283-N1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1443 |     /// </remarks>
-  1444 |     private void ReportIfLocatedInCompilation(Action<Diagnostic> report, Diagnostic diagnostic)
-  1445 |     {
-> 1446 |         if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))
-  1447 |         {
-  1448 |             report(diagnostic);
-  1449 |         }
-```
+`diagnostic.Location.IsInSource`
 
 <a id="ev-df050a6665"></a>
 **check tests.full_suite** (verified; cited by claude on REQ-2283-N1, codex on REQ-2283-N1, claude:C1): facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)
@@ -460,72 +346,27 @@ Tier effect: silent
 <a id="ev-03c1f89f96"></a>
 **TypeCollector.cs:1341 @head** (verified; cited by claude:C1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1338 |         {
-  1339 |             if (formattedType.IsDefinition)
-  1340 |             {
-> 1341 |                 Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];
-  1342 |                 var targetName = callerSymbol is not null ? callerSymbol.ContainingType.Name + "." + callerSymbol.Name : formattedType.Name;
-  1343 | 
-  1344 |                 ImmutableDictionary<string, string?> typeInfo = ImmutableDictionary.Create<string, string?>().Add("type", formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
-```
+`callerSymbol.Locations[0]`
 
 <a id="ev-5a604cf84d"></a>
 **TypeCollector.cs:1442 @head** (verified; cited by claude:C1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1442 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1439 |     /// <remarks>
-  1440 |     /// Types and members that come from metadata (or from another compilation) have no location in the compilation being analyzed.
-  1441 |     /// Their problems are reported by the compilation that defines them, so they are dropped here rather than being reported
-> 1442 |     /// against a location that does not exist, which analyzers are not permitted to do.
-  1443 |     /// </remarks>
-  1444 |     private void ReportIfLocatedInCompilation(Action<Diagnostic> report, Diagnostic diagnostic)
-  1445 |     {
-```
+`which analyzers are not permitted to do`
 
 <a id="ev-532df5c2da"></a>
 **TypeCollector.cs:1434 @head** (verified; cited by claude:C2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1431 |     /// </summary>
-  1432 |     /// <param name="property">The property symbol. It may be declared in metadata, in which case <see langword="null" /> is returned.</param>
-  1433 |     /// <returns>The location of the identifier, or <see langword="null" /> if the property has no declaration in source.</returns>
-> 1434 |     private static Location? GetPropertyIdentifierLocation(IPropertySymbol property) => (property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation();
-  1435 | 
-  1436 |     /// <summary>
-  1437 |     /// Reports a diagnostic only when its location belongs to the compilation being analyzed.
-```
+`(property.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation()`
 
 <a id="ev-ddf4848149"></a>
 **TypeCollector.cs:985 @head** (verified; cited by claude:C2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:985 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  982 |                     var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;
-  983 |                     if (intKey == null && stringKey == null)
-  984 |                     {
-> 985 |                         this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));
-  986 |                     }
-  987 | 
-  988 |                     // A property with an init accessor and an initializer has a default that will be discarded by the deserializer.
-```
+`BothStringAndIntKeyAreNull, GetPropertyIdentifierLocation(item)`
 
 <a id="ev-cf1d452cfa"></a>
 **TypeCollector.cs:1077 @head** (verified; cited by claude:C3): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38
 
-```text
-// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
-  1074 |                             {
-  1075 |                                 Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true
-  1076 |                                     ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())
-> 1077 |                                     : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);
-  1078 |                                 if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)
-  1079 |                                 {
-  1080 |                                     this.reportDiagnostic?.Invoke(diagnostic);
-```
+`item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()`
 
 <a id="ev-c6793f8043"></a>
 **issue 2283** (NOT verified; cited by claude:C3): issue text cannot be verified offline (not counted as evidence)
@@ -542,7 +383,9 @@ Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toi
 #### All tier drivers (tier = strictest)
 
 - ask: verified finding `claude:C1`: major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic (reproduced by the pipeline (repro.claude.C1))
-- ask: refused clause `REQ-2283-N1`: not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)
+- ask: refused clause `REQ-2283-N1`: not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count); adjudicator_dispute: gemini: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject].
+- ask: adjudicator `REQ-2283-N1`: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject].
+- ask: adjudicator `finding:claude:C1`: supported by cited evidence: claude; not supported: claude; would settle it: An automated test in MessagePack.SourceGenerator.Tests matching repro.claude.C1 (metadata generic class Lib.Item<T> with an in-compilation type Foo lacking [MessagePackObject]) asserting that MsgPack003 is reported at Foo's source location or Location.None rather than dropped.; Confirmation of whether Roslyn analyzer rules in this repo permit reporting MsgPack003 at formattedType.Locations[0] (when in source) or Location.None when callerSymbol is from metadata.
 - ask: reviewer refusal `nemotron`: Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)
 - ask: risk score `risk`: score 41.0 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 8.7 + reviewer_disagreement 8
 - notify: verified finding `claude:C2`: minor: BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source
@@ -588,7 +431,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | REQ-2283-F1 | proven | claude: met (5/8), codex: met (2/3), nemotron: met (5/5) | build: pass, tests.targeted: pass | - |
 | REQ-2283-F2 | proven | claude: met (4/5), codex: met (2/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
 | REQ-2283-F3 | proven | claude: met (4/4), codex: met (2/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
-| REQ-2283-N1 | refused | claude: not_met (1/5), codex: met (0/1), nemotron: met (1/1) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree, thin_evidence |
+| REQ-2283-N1 | refused | claude: not_met (1/5), codex: met (0/1), nemotron: met (1/1) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree, thin_evidence, adjudicator_dispute |
 | REQ-2283-N2 | proven | claude: met (3/4), codex: met (1/2), nemotron: met (4/4) | build: pass, tests.fail_without_fix: pass | - |
 
 #### What the AI refused to decide (every reviewer refusal)
@@ -622,7 +465,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 
 #### Residual risk (every item)
 
-- REQ-2283-N1 not proven: not_met; reviewers_disagree; thin_evidence
+- REQ-2283-N1 not proven: not_met; reviewers_disagree; thin_evidence; adjudicator_dispute
 - Reviewer refusal (claude): Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (out of scope: notify)
 - Reviewer refusal (claude): Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (out of scope: notify)
 - Reviewer refusal (codex): Execution-test behavior under a compiler that loads the generator (out of scope: notify)
@@ -633,7 +476,6 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 - tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)
 - build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))
 - benchmarks not run (no runtime serialization hot path touched (generator/analyzer only))
-- 2 disputed item(s) were not adjudicated (adjudicator gemini has not run)
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>

@@ -53,6 +53,10 @@
         "path": "reviews/2283/nemotron.json",
         "sha256": "5c0c4d94314f94fe2e274562e2db6295659bb06eab58497d6e2cf315376708ce"
       }
+    },
+    "adjudication": {
+      "path": "reviews/2283/adjudication.gemini.json",
+      "sha256": "3fc5672254e25fa399fdfc402faa87e65c9a0f6304984dafb41690836c3492ee"
     }
   },
   "requirement_set": {
@@ -75,9 +79,22 @@
       "codes": [
         "not_met",
         "reviewers_disagree",
-        "thin_evidence"
+        "thin_evidence",
+        "adjudicator_dispute"
       ],
-      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)"
+      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count); adjudicator_dispute: gemini: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+    },
+    {
+      "source": "adjudicator",
+      "id": "REQ-2283-N1",
+      "tier": "ask",
+      "why": "supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+    },
+    {
+      "source": "adjudicator",
+      "id": "finding:claude:C1",
+      "tier": "ask",
+      "why": "supported by cited evidence: claude; not supported: claude; would settle it: An automated test in MessagePack.SourceGenerator.Tests matching repro.claude.C1 (metadata generic class Lib.Item<T> with an in-compilation type Foo lacking [MessagePackObject]) asserting that MsgPack003 is reported at Foo's source location or Location.None rather than dropped.; Confirmation of whether Roslyn analyzer rules in this repo permit reporting MsgPack003 at formattedType.Locations[0] (when in source) or Location.None when callerSymbol is from metadata."
     },
     {
       "source": "reviewer refusal",
@@ -106,9 +123,22 @@
       "codes": [
         "not_met",
         "reviewers_disagree",
-        "thin_evidence"
+        "thin_evidence",
+        "adjudicator_dispute"
       ],
-      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)"
+      "why": "not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count); adjudicator_dispute: gemini: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+    },
+    {
+      "source": "adjudicator",
+      "id": "REQ-2283-N1",
+      "tier": "ask",
+      "why": "supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+    },
+    {
+      "source": "adjudicator",
+      "id": "finding:claude:C1",
+      "tier": "ask",
+      "why": "supported by cited evidence: claude; not supported: claude; would settle it: An automated test in MessagePack.SourceGenerator.Tests matching repro.claude.C1 (metadata generic class Lib.Item<T> with an in-compilation type Foo lacking [MessagePackObject]) asserting that MsgPack003 is reported at Foo's source location or Location.None rather than dropped.; Confirmation of whether Roslyn analyzer rules in this repo permit reporting MsgPack003 at formattedType.Locations[0] (when in source) or Location.None when callerSymbol is from metadata."
     },
     {
       "source": "reviewer refusal",
@@ -861,8 +891,56 @@
           "detail": "codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)",
           "reviewer": "codex",
           "verdict": "met"
+        },
+        {
+          "code": "adjudicator_dispute",
+          "detail": "gemini: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
         }
-      ]
+      ],
+      "adjudication": {
+        "dispute": "REQ-2283-N1",
+        "supported": [
+          {
+            "reviewer": "codex",
+            "claim": "The existing source-generator test suite passes in full (170/170).",
+            "why": "facts.json tests.full_suite passes with 170 passed, 0 failed, and 0 newly failing tests."
+          },
+          {
+            "reviewer": "nemotron",
+            "claim": "The full source-generator suite passes on head with no newly failing tests.",
+            "why": "facts.json tests.full_suite confirms 170 passed, 0 failed, and no failures on head or base."
+          },
+          {
+            "reviewer": "claude",
+            "claim": "The existing test suite passes, and ReportIfLocatedInCompilation filters out diagnostics not located in a syntax tree of the current compilation, including when TypeMustBeMessagePackObject uses a metadata callerSymbol.Locations[0].",
+            "why": "facts.json tests.full_suite confirms 170/170 pass; verified quotes at TypeCollector.cs:1446 and 1341 show the IsInSource + ContainsSyntaxTree check and callerSymbol.Locations[0] usage, and facts.json repro.claude.C1 confirms the scenario passes on base and fails on head."
+          }
+        ],
+        "unsupported": [
+          {
+            "reviewer": "codex",
+            "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+            "why": "tests.full_suite only covers the 170 existing tests and does not cover an in-compilation type reached via a metadata generic member, where facts.json repro.claude.C1 shows behavior changed from base to head."
+          },
+          {
+            "reviewer": "nemotron",
+            "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+            "why": "tests.full_suite only verifies the existing test suite and does not rule out regressions in uncovered cases such as repro.claude.C1."
+          },
+          {
+            "reviewer": "claude",
+            "claim": "class Item<T> worked on base per the issue table.",
+            "why": "The cited issue quote '| class Item<T> | ok |' is unverified offline and supports nothing."
+          }
+        ],
+        "evidence_that_would_settle": [
+          "Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.",
+          "An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+        ],
+        "route_to": "MessagePack.SourceGenerator area owner",
+        "note": "The existing 170-test suite passes, but facts.json repro.claude.C1 confirms a regression on head when an in-compilation type is reached through a metadata generic member.",
+        "stale": false
+      }
     },
     {
       "id": "REQ-2283-N2",
@@ -1038,7 +1116,84 @@
       ]
     }
   ],
-  "adjudication": null,
+  "adjudication": {
+    "reviewer": "gemini",
+    "model": "gemini-4-hydrogen",
+    "vendor": "Google",
+    "prompt_version": "adjudicate-v1",
+    "reviewed_at": "2026-11-14T11:28:46+02:00",
+    "role": "adjudicator (can add reasons and route to a human; never clears)",
+    "rulings": [
+      {
+        "dispute": "REQ-2283-N1",
+        "supported": [
+          {
+            "reviewer": "codex",
+            "claim": "The existing source-generator test suite passes in full (170/170).",
+            "why": "facts.json tests.full_suite passes with 170 passed, 0 failed, and 0 newly failing tests."
+          },
+          {
+            "reviewer": "nemotron",
+            "claim": "The full source-generator suite passes on head with no newly failing tests.",
+            "why": "facts.json tests.full_suite confirms 170 passed, 0 failed, and no failures on head or base."
+          },
+          {
+            "reviewer": "claude",
+            "claim": "The existing test suite passes, and ReportIfLocatedInCompilation filters out diagnostics not located in a syntax tree of the current compilation, including when TypeMustBeMessagePackObject uses a metadata callerSymbol.Locations[0].",
+            "why": "facts.json tests.full_suite confirms 170/170 pass; verified quotes at TypeCollector.cs:1446 and 1341 show the IsInSource + ContainsSyntaxTree check and callerSymbol.Locations[0] usage, and facts.json repro.claude.C1 confirms the scenario passes on base and fails on head."
+          }
+        ],
+        "unsupported": [
+          {
+            "reviewer": "codex",
+            "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+            "why": "tests.full_suite only covers the 170 existing tests and does not cover an in-compilation type reached via a metadata generic member, where facts.json repro.claude.C1 shows behavior changed from base to head."
+          },
+          {
+            "reviewer": "nemotron",
+            "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+            "why": "tests.full_suite only verifies the existing test suite and does not rule out regressions in uncovered cases such as repro.claude.C1."
+          },
+          {
+            "reviewer": "claude",
+            "claim": "class Item<T> worked on base per the issue table.",
+            "why": "The cited issue quote '| class Item<T> | ok |' is unverified offline and supports nothing."
+          }
+        ],
+        "evidence_that_would_settle": [
+          "Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.",
+          "An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+        ],
+        "route_to": "MessagePack.SourceGenerator area owner",
+        "note": "The existing 170-test suite passes, but facts.json repro.claude.C1 confirms a regression on head when an in-compilation type is reached through a metadata generic member.",
+        "stale": false
+      },
+      {
+        "dispute": "finding:claude:C1",
+        "supported": [
+          {
+            "reviewer": "claude",
+            "claim": "ReportIfLocatedInCompilation drops diagnostics whose location is not in a syntax tree of the current compilation, causing MsgPack003 (located at callerSymbol.Locations[0]) to be dropped when callerSymbol is in metadata even if the target type is in the current compilation.",
+            "why": "Verified quotes at TypeCollector.cs:1446 and TypeCollector.cs:1341-1345 show the filter and location selection, and facts.json repro.claude.C1 reproduces the failure on head while passing on base."
+          }
+        ],
+        "unsupported": [
+          {
+            "reviewer": "claude",
+            "claim": "Roslyn permits analyzers to report Location.None and metadata locations, and the generator still emits App.R.g.cs and a formatter for Lib.Item`1 causing a runtime failure.",
+            "why": "TypeCollector.cs:1442 confirms the doc comment text, but no Roslyn specification/test or generated-output inspection is included in the cited evidence to verify Roslyn's rules or the exact emitted code."
+          }
+        ],
+        "evidence_that_would_settle": [
+          "An automated test in MessagePack.SourceGenerator.Tests matching repro.claude.C1 (metadata generic class Lib.Item<T> with an in-compilation type Foo lacking [MessagePackObject]) asserting that MsgPack003 is reported at Foo's source location or Location.None rather than dropped.",
+          "Confirmation of whether Roslyn analyzer rules in this repo permit reporting MsgPack003 at formattedType.Locations[0] (when in source) or Location.None when callerSymbol is from metadata."
+        ],
+        "route_to": "MessagePack.SourceGenerator area owner",
+        "note": "The location-filtering behavior and base-vs-head behavioral difference are supported by TypeCollector.cs:1341,1446 and facts.json repro.claude.C1.",
+        "stale": false
+      }
+    ]
+  },
   "checked_by": {
     "tools": [
       {
@@ -1462,8 +1617,56 @@
             "detail": "codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)",
             "reviewer": "codex",
             "verdict": "met"
+          },
+          {
+            "code": "adjudicator_dispute",
+            "detail": "gemini: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
           }
-        ]
+        ],
+        "adjudication": {
+          "dispute": "REQ-2283-N1",
+          "supported": [
+            {
+              "reviewer": "codex",
+              "claim": "The existing source-generator test suite passes in full (170/170).",
+              "why": "facts.json tests.full_suite passes with 170 passed, 0 failed, and 0 newly failing tests."
+            },
+            {
+              "reviewer": "nemotron",
+              "claim": "The full source-generator suite passes on head with no newly failing tests.",
+              "why": "facts.json tests.full_suite confirms 170 passed, 0 failed, and no failures on head or base."
+            },
+            {
+              "reviewer": "claude",
+              "claim": "The existing test suite passes, and ReportIfLocatedInCompilation filters out diagnostics not located in a syntax tree of the current compilation, including when TypeMustBeMessagePackObject uses a metadata callerSymbol.Locations[0].",
+              "why": "facts.json tests.full_suite confirms 170/170 pass; verified quotes at TypeCollector.cs:1446 and 1341 show the IsInSource + ContainsSyntaxTree check and callerSymbol.Locations[0] usage, and facts.json repro.claude.C1 confirms the scenario passes on base and fails on head."
+            }
+          ],
+          "unsupported": [
+            {
+              "reviewer": "codex",
+              "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+              "why": "tests.full_suite only covers the 170 existing tests and does not cover an in-compilation type reached via a metadata generic member, where facts.json repro.claude.C1 shows behavior changed from base to head."
+            },
+            {
+              "reviewer": "nemotron",
+              "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+              "why": "tests.full_suite only verifies the existing test suite and does not rule out regressions in uncovered cases such as repro.claude.C1."
+            },
+            {
+              "reviewer": "claude",
+              "claim": "class Item<T> worked on base per the issue table.",
+              "why": "The cited issue quote '| class Item<T> | ok |' is unverified offline and supports nothing."
+            }
+          ],
+          "evidence_that_would_settle": [
+            "Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.",
+            "An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+          ],
+          "route_to": "MessagePack.SourceGenerator area owner",
+          "note": "The existing 170-test suite passes, but facts.json repro.claude.C1 confirms a regression on head when an in-compilation type is reached through a metadata generic member.",
+          "stale": false
+        }
       }
     ],
     "reviewer_refusals": [
@@ -1558,7 +1761,7 @@
     }
   ],
   "residual_risk": [
-    "REQ-2283-N1 not proven: not_met; reviewers_disagree; thin_evidence",
+    "REQ-2283-N1 not proven: not_met; reviewers_disagree; thin_evidence; adjudicator_dispute",
     "Reviewer refusal (claude): Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (out of scope: notify)",
     "Reviewer refusal (claude): Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (out of scope: notify)",
     "Reviewer refusal (codex): Execution-test behavior under a compiler that loads the generator (out of scope: notify)",
@@ -1569,7 +1772,6 @@
     "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
     "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
     "benchmarks not run (no runtime serialization hot path touched (generator/analyzer only))",
-    "2 disputed item(s) were not adjudicated (adjudicator gemini has not run)",
     "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
   ],
   "risk": {
@@ -1714,15 +1916,15 @@
         "link": "#f-claude-C1"
       },
       {
-        "text": "1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence",
+        "text": "1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence; the adjudicator disputes it",
         "link": "#chain-REQ-2283-N1"
       },
       {
-        "text": "The AI declined to decide 1 question, e.g. Whether the placeholder requirement set matches the upstream issue #2283 intent",
-        "link": "#refused"
+        "text": "The adjudicator (Gemini) found the evidence on REQ-2283-N1, finding:claude:C1 disputed",
+        "link": "#panel"
       }
     ],
-    "more_drivers": 12,
+    "more_drivers": 14,
     "trace": [
       {
         "id": "REQ-2283-F1",
@@ -1749,7 +1951,7 @@
         "id": "REQ-2283-N1",
         "status": "refused",
         "label": "not met",
-        "why": "Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence",
+        "why": "Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence; the adjudicator disputes it",
         "anchor": "chain-REQ-2283-N1"
       },
       {
@@ -1934,11 +2136,6 @@
       {
         "text": "Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
         "link": "#not-checked",
-        "drives": false
-      },
-      {
-        "text": "2 disputed items not adjudicated",
-        "link": "#panel",
         "drives": false
       },
       {
@@ -2269,7 +2466,7 @@
       "text": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite).",
       "status": "refused",
       "label": "not met",
-      "why": "Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence",
+      "why": "Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence; the adjudicator disputes it",
       "checks": [
         {
           "id": "build",
@@ -2354,10 +2551,59 @@
           "detail": "codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count)",
           "reviewer": "codex",
           "verdict": "met"
+        },
+        {
+          "code": "adjudicator_dispute",
+          "detail": "gemini: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
         }
       ],
-      "adjudication": null,
+      "adjudication": {
+        "dispute": "REQ-2283-N1",
+        "supported": [
+          {
+            "reviewer": "codex",
+            "claim": "The existing source-generator test suite passes in full (170/170).",
+            "why": "facts.json tests.full_suite passes with 170 passed, 0 failed, and 0 newly failing tests."
+          },
+          {
+            "reviewer": "nemotron",
+            "claim": "The full source-generator suite passes on head with no newly failing tests.",
+            "why": "facts.json tests.full_suite confirms 170 passed, 0 failed, and no failures on head or base."
+          },
+          {
+            "reviewer": "claude",
+            "claim": "The existing test suite passes, and ReportIfLocatedInCompilation filters out diagnostics not located in a syntax tree of the current compilation, including when TypeMustBeMessagePackObject uses a metadata callerSymbol.Locations[0].",
+            "why": "facts.json tests.full_suite confirms 170/170 pass; verified quotes at TypeCollector.cs:1446 and 1341 show the IsInSource + ContainsSyntaxTree check and callerSymbol.Locations[0] usage, and facts.json repro.claude.C1 confirms the scenario passes on base and fails on head."
+          }
+        ],
+        "unsupported": [
+          {
+            "reviewer": "codex",
+            "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+            "why": "tests.full_suite only covers the 170 existing tests and does not cover an in-compilation type reached via a metadata generic member, where facts.json repro.claude.C1 shows behavior changed from base to head."
+          },
+          {
+            "reviewer": "nemotron",
+            "claim": "All existing analyzer diagnostics for types declared in the current compilation keep working unchanged.",
+            "why": "tests.full_suite only verifies the existing test suite and does not rule out regressions in uncovered cases such as repro.claude.C1."
+          },
+          {
+            "reviewer": "claude",
+            "claim": "class Item<T> worked on base per the issue table.",
+            "why": "The cited issue quote '| class Item<T> | ok |' is unverified offline and supports nothing."
+          }
+        ],
+        "evidence_that_would_settle": [
+          "Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.",
+          "An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject]."
+        ],
+        "route_to": "MessagePack.SourceGenerator area owner",
+        "note": "The existing 170-test suite passes, but facts.json repro.claude.C1 confirms a regression on head when an in-compilation type is reached through a metadata generic member.",
+        "stale": false
+      },
       "settle": [
+        "Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.",
+        "An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject].",
         "A fix, or evidence that refutes Claude's objection",
         "Codex citing evidence the engine can verify"
       ]

@@ -116,6 +116,7 @@
         "verified finding claude:C1",
         "refused clause REQ-2234-N1",
         "refused clause REQ-2234-N2",
+        "adjudicator REQ-2234-N1",
         "reviewer refusal claude",
         "reviewer refusal nemotron",
         "reviewer refusal nemotron",
@@ -258,6 +259,7 @@
         "risk score risk"
       ],
       "caught_by": [
+        "refused clause REQ-2234-N1 (not_met, reviewers_disagree)",
         "refused clause REQ-2234-N2 (cannot_determine, reviewers_disagree)",
         "verified finding claude:N1",
         "verified finding claude:N2",
@@ -563,6 +565,8 @@
       "why": [
         "verified finding claude:C1",
         "refused clause REQ-2283-N1",
+        "adjudicator REQ-2283-N1",
+        "adjudicator finding:claude:C1",
         "reviewer refusal nemotron",
         "risk score risk"
       ],
@@ -1560,6 +1564,7 @@
           "nemotron:M1"
         ],
         "other": [
+          "refused clause REQ-2234-N1 (not_met, reviewers_disagree)",
           "refused clause REQ-2234-N2 (cannot_determine, reviewers_disagree)",
           "verified finding claude:N2"
         ]
@@ -2600,15 +2605,15 @@
           "confirmed_by_another": 1,
           "missed_others_verified_major": 1
         },
-        "codex": {
-          "major_raised_verified": 0,
-          "confirmed_by_another": 0,
-          "missed_others_verified_major": 6
-        },
         "nemotron": {
           "major_raised_verified": 20,
           "confirmed_by_another": 1,
           "missed_others_verified_major": 8
+        },
+        "codex": {
+          "major_raised_verified": 0,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 6
         }
       },
       "simulated": false,
@@ -2657,8 +2662,8 @@
     },
     "model_tokens_per_change": {
       "value": {
-        "2283": 233512,
-        "2234": 275180,
+        "2283": 240524,
+        "2234": 280955,
         "2129": 295729,
         "2297": 239227,
         "up-2022": 127795,
