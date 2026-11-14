@@ -57,5 +57,7 @@ if [ -n "$EXEC_FILTER" ]; then
   [ -z "$FWF" ] || "$here/exec9.sh" "$FWF" "$SRC/mp-$FWF" "$EXEC_FILTER"
   "$here/exec9.sh" base "$SRC/mp-base" "$EXEC_FILTER"
 fi
+# reviewer repros (evidence/repros/<change>/<finding>/): the claimed defect as a test, run on head and base
+[ ! -d "$here/../repros/$change" ] || python3 -I "$here/repro.py" "$change"
 python3 "$here/facts.py"
 echo "wrote $WORK/evidence/$change/facts.json"

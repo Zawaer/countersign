@@ -12,7 +12,7 @@ fails on head, passes on base). For every run this script
 facts.py turns those runs into the check `repro.<reviewer>.<finding>` (see repro_checks there).
 The checkout in $SRC/mp is never touched; only worktrees are added next to it.
 
-usage: python3 -I evidence/scripts/repro.py [<change>/<finding> ...]     (default: every repro under evidence/repros)
+usage: python3 -I evidence/scripts/repro.py [<change>[/<finding>] ...]     (default: every repro under evidence/repros)
 """
 import hashlib
 import json
@@ -85,7 +85,9 @@ def run_one(path):
 
 
 def main(argv):
-    for path in argv or all_repros():
+    every = all_repros()
+    # an argument is <change>/<finding>, or <change> for all of that change's repros
+    for path in [p for a in argv for p in every if p == a or p.split('/')[0] == a] if argv else every:
         run_one(path)
     print('ALLDONE')
 
