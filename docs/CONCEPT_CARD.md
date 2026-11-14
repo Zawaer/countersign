@@ -29,7 +29,7 @@ Stop asking *"did a human read every line?"* Ask *"did a named human sign for wh
 
 - **Found:** sound code that fixes a *different* crash; the reported regression comes from a commit not in the base. Only 4 of 8 new tests fail without the change, so two clauses are *held before*. `Key(null)` still crashes the analyzer; the pipeline reproduced it.
 - **Refused:** the no-crash clause (Claude: not met; Codex and Nemotron: met); whether #2234 is fixed for 3.1.x users (the owner's call).
-- **Routed:** `ask` to Toivo, without anyone reading 262 lines.
+- **Routed:** `ask` to Toivo, who learns it fixes the wrong bug and decides whether to request changes. On a change this small the pack takes longer than the diff (47 vs 26 min, simulated); the payoff is accountability and what a diff read misses. Time is saved only on large changes (2129, 2297) and on changes the AI clears.
 - **Other six:** 2283 `ask` (silences a warning; reproduced); 2129 `block` (failed checks); 2297 `block` (237 files: split). Upstream controls: up-2022, up-1934 `ask` (one Nemotron refusal each); up-1967, a docs fix, `notify`: the AI clears it and tells Rene.
 
 ## Evidence it works

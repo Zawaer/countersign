@@ -641,9 +641,8 @@ def build_tour(D: Data, n: dict) -> str:
                   src('mandate/messagepack.mandate.yaml')))
 
     # 8 recap
-    lines = d.get("insertions", 0) + d.get("deletions", 0) if d else "all the"
     steps.append(("Recap", "What you just saw",
-                  f"Nobody read {lines} lines; the owner still learned it fixes the wrong bug.",
+                  "The owner learned it fixes the wrong bug, and decides under their name. Not faster on a change this small.",
                   '<p class="ctas"><a class="btn primary" href="index.html#2234-mut2">Sneak a bug in</a><a class="btn" href="overview.html">The numbers</a><a class="btn" href="packs/2234/pack.html">Pack 2234</a></p>',
                   "", ""))
 

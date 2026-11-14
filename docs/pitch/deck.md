@@ -24,7 +24,7 @@ One message per slide. Visuals are captures of real artifacts unless marked "dia
 
 ## 4. Where the trust comes from: change 2234
 
-- **Message:** Nobody read 262 lines, and the owner still learned the change fixes the wrong bug.
+- **Message:** The owner learned the change fixes the wrong bug, which a diff read would likely miss. On a change this small the pack is not faster (47 vs 26 min, simulated); it buys accountability. Time is saved on large changes and on what the AI clears.
 - **Visual:** the 2234 pack at 390 px (phone) beside three callouts:
   - **Found:** the reported regression comes from an upstream commit not in this base; the agent fixed a different crash. Only 4 of 8 new tests fail without the change, so F1 and F2 are "held before". A `Key(null)` crash remains, reproduced by the pipeline.
   - **Refused:** REQ-2234-N1 (Claude: not met; Codex and Nemotron: met), and whether it fixes #2234 for 3.1.x users (owner's call).

@@ -36,7 +36,9 @@ Branch `ju26-issue-2234`, written by an agent: "The analyzer does not work if `S
 7. **Sign.** `countersign sign 2234 --as Toivo --decision request-changes --note "..."`. Only the named owner's key is accepted, and signing is refused if the pack changed. Toivo's private key is not in the repo.
 8. **Try to tamper.** Copy `ledger/` to `/tmp/t`, edit one line, run `countersign verify-ledger --inputs /tmp/t`: `LEDGER INVALID: line 2: content does not match its hash`.
 
-Nobody read 262 lines. The owner still learned that the change fixes a different bug, that half its tests prove nothing, which clause the reviewers disagree on, and what they are signing for.
+What the owner learns from the pack: the change fixes a different bug, half its new tests prove nothing, the reviewers disagree on the no-crash clause, and a `Key(null)` crash remains. What they decide: request changes or accept that risk, under their name.
+
+The pack does not save reading time here. On small changes (2234, 2283) it takes longer to read than the diff (47 vs 26 minutes on 2234, simulated reading model). The payoff is accountability and catching what a diff read misses: a green, fully tested change that fixes the wrong bug. Time is saved only on large changes (2129, 2297) and on changes the AI clears.
 
 ## All seven real changes
 
