@@ -7,20 +7,20 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 **Why ask**
 
 1. Claude found a verified major issue: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic ([evidence](#f-claude-C1))
-2. 5 of 5 requirement clauses not proven. REQ-2283-F1: No verdict from Nemotron (2 of 3 reviewers answered) (+4 more) ([evidence](#chain-REQ-2283-F1))
-3. The AI declined to decide 3 questions, e.g. Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) ([evidence](#refused))
+2. 1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met) ([evidence](#chain-REQ-2283-N1))
+3. The AI declined to decide 5 questions, e.g. Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) ([evidence](#refused))
 
-<sub>All 14 tier drivers are under Full detail.</sub>
+<sub>All 12 tier drivers are under Full detail.</sub>
 
 **Requirement trace**
 
 | Status | Clause | Why |
 |---|---|---|
-| **REFUSED** | [REQ-2283-F1](#chain-REQ-2283-F1) | No verdict from Nemotron (2 of 3 reviewers answered) |
-| **REFUSED** | [REQ-2283-F2](#chain-REQ-2283-F2) | No verdict from Nemotron (2 of 3 reviewers answered) |
-| **REFUSED** | [REQ-2283-F3](#chain-REQ-2283-F3) | No verdict from Nemotron (2 of 3 reviewers answered) |
-| **NOT MET** | [REQ-2283-N1](#chain-REQ-2283-N1) | Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered) |
-| **REFUSED** | [REQ-2283-N2](#chain-REQ-2283-N2) | No verdict from Nemotron (2 of 3 reviewers answered) |
+| **PROVEN** | [REQ-2283-F1](#chain-REQ-2283-F1) | All 3 reviewers say met (16 verified citations); build, tests.targeted pass |
+| **PROVEN** | [REQ-2283-F2](#chain-REQ-2283-F2) | All 3 reviewers say met (12 verified citations); build, tests.targeted pass |
+| **PROVEN** | [REQ-2283-F3](#chain-REQ-2283-F3) | All 3 reviewers say met (11 verified citations); build, tests.targeted pass |
+| **NOT MET** | [REQ-2283-N1](#chain-REQ-2283-N1) | Claude says not met (Codex and Nemotron: met) |
+| **PROVEN** | [REQ-2283-N2](#chain-REQ-2283-N2) | All 3 reviewers say met (10 verified citations); build, tests.fail_without_fix pass |
 
 **What the AI found**
 
@@ -33,7 +33,9 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 - <a id="refusal-1"></a>Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended). *Why:* tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it. *Who:* source-generator area owner (run the execution tests under SDK 9 or a two-project repro) (raised by Claude)
 - <a id="refusal-2"></a>Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour. *Why:* It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it). *Who:* MessagePack-CSharp maintainers / analyzer area owner (raised by Claude)
 - <a id="refusal-3"></a>Execution-test behavior under a compiler that loads the generator. *Why:* The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change. *Who:* area owner (raised by Codex)
-- Whether [REQ-2283-F1](#chain-REQ-2283-F1), [REQ-2283-F2](#chain-REQ-2283-F2), [REQ-2283-F3](#chain-REQ-2283-F3), [REQ-2283-N1](#chain-REQ-2283-N1), [REQ-2283-N2](#chain-REQ-2283-N2) are met: see the trace. *Who:* Toivo
+- <a id="refusal-4"></a>End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests). *Why:* Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead. *Who:* area owner or maintainer, with an SDK that ships Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx) (raised by Nemotron)
+- <a id="refusal-5"></a>Whether the placeholder requirement set matches the upstream issue #2283 intent. *Why:* The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully. *Who:* area owner or maintainer (raised by Nemotron)
+- Whether [REQ-2283-N1](#chain-REQ-2283-N1) is met: see the trace. *Who:* Toivo
 
 **Not checked, and why**
 
@@ -46,8 +48,8 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 **Residual risk you accept by signing**
 
 - Open major finding: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic
-- Not proven by the AI: REQ-2283-F1, REQ-2283-F2, REQ-2283-F3, REQ-2283-N1, REQ-2283-N2. Signing means you judge them yourself.
-- 3 questions the AI declined to decide (listed above) are yours.
+- Not proven by the AI: REQ-2283-N1. Signing means you judge them yourself.
+- 5 questions the AI declined to decide (listed above) are yours.
 - Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks
 - 2 disputed items not adjudicated
 - Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance
@@ -63,37 +65,37 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 <details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
 
 <a id="chain-REQ-2283-F1"></a>
-#### REQ-2283-F1: **REFUSED**
+#### REQ-2283-F1: **PROVEN**
 
 > Building a project whose [MessagePackObject] type has a member of a closed generic value type defined in a referenced assembly must not crash the source generator (no CS8785) and must produce a generated resolver.
 
-- **Claude: met** (8/8 verified). Root cause confirmed: Roslyn imports private fields of metadata structs, so the compiler-generated backing field of Item<T> looks like an unkeyed member and the base field path indexed DeclaringSyntaxReferences[0] unconditionally (outside the ?.Invoke), crashing the generator as well as the analyzer; head uses FirstOrDefault there, the three new tests (which also run the generator and assert the resolver hint name and no warnings) pass at head and all 3 fail on base source; my own probe of the exact issue repro (record struct Item<T> in a metadata reference) gave CS8785 + no files on base and App.R.g.cs with no generator diagnostics on head. Runtime round-trip of the generated resolver was not executed (tests.execution not run for this change), so only 'produces a resolver' is established, not that it serializes Item<int> correctly.
-- **Codex: met** (3/3 verified). The new metadata-reference tests pass with the change and fail when the source is reverted; the added collector logic handles missing source declarations and drops diagnostics outside the analyzed compilation.
-- **Nemotron**: no verdict
-- **Checks:** `build` pass, `tests.targeted` pass
-- **What would settle it:** A verdict from Nemotron with verified evidence
+- **Checks passed:** `build` pass, `tests.targeted` pass
+- **Fails without the fix:** [`ClosedGenericRecordStruct_FromMetadataReference`](#ev-751fd9609c), [`ClosedGenericStruct_FromMetadataReference`](#ev-f073740910), [`ClosedGenericStruct_FromMetadataReference_UnkeyedMember`](#ev-72235a3098)
+- **Claude** says met (8/8 citations verified): [`TypeCollector.cs:1077 @base`](#ev-600c5196b9) [`TypeCollector.cs:1077 @head`](#ev-e2b1723b1a) [`TypeCollector.cs:651 @head`](#ev-8dd72e446f) [`GenericsFormatterTests.cs:658 @head`](#ev-e27f824d96) [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`test ClosedGenericRecordStruct_FromMetadataReference failed`](#ev-bf91cd8726) [`check tests.fail_without_fix`](#ev-d78b746a74) [`REQ-2283-F1 text`](#ev-19107a84ed)
+- **Codex** says met (3/3 citations verified): [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`check tests.fail_without_fix`](#ev-d78b746a74) [`TypeCollector.cs:1446 @head`](#ev-6afda546ae)
+- **Nemotron** says met (5/5 citations verified): [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed`](#ev-72235a3098) [`TypeCollector.cs:1077 @head`](#ev-463700b774) [`check tests.fail_without_fix pass`](#ev-62faeb2508)
 
 <a id="chain-REQ-2283-F2"></a>
-#### REQ-2283-F2: **REFUSED**
+#### REQ-2283-F2: **PROVEN**
 
 > The MsgPack00x analyzer must not throw (no AD0001) for the same input.
 
-- **Claude: met** (5/5 verified). The new tests run MsgPack00xMessagePackAnalyzer through VerifyCS expecting zero diagnostics; on base all three fail with AD0001 IndexOutOfRangeException at TypeCollector.GetObjectInfo (facts fail_without_fix errors), at head they pass. The other hard index the issue names (BothStringAndIntKeyAreNull cast) is also replaced by a null-safe helper.
-- **Codex: met** (3/3 verified). The failing-without-fix evidence records AD0001 for the new metadata-reference cases on base source, while all three cases pass with the fix.
-- **Nemotron**: no verdict
-- **Checks:** `build` pass, `tests.targeted` pass
-- **What would settle it:** A verdict from Nemotron with verified evidence
+- **Checks passed:** `build` pass, `tests.targeted` pass
+- **Fails without the fix:** [`ClosedGenericStruct_FromMetadataReference`](#ev-cb2de557cf), [`ClosedGenericRecordStruct_FromMetadataReference`](#ev-751fd9609c)
+- **Claude** says met (5/5 citations verified): [`test ClosedGenericStruct_FromMetadataReference failed`](#ev-cb2de557cf) [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`TypeCollector.cs:985 @head`](#ev-46dc7a6309) [`TypeCollector.cs:985 @base`](#ev-73cd23393f) [`check tests.fail_without_fix`](#ev-d78b746a74)
+- **Codex** says met (3/3 citations verified): [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`check tests.fail_without_fix`](#ev-d78b746a74) [`TypeCollector.cs:239 @head`](#ev-ce1eecc974)
+- **Nemotron** says met (4/4 citations verified): [`test ClosedGenericStruct_FromMetadataReference failed`](#ev-cb2de557cf) [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`TypeCollector.cs:239 @head`](#ev-ce1eecc974) [`check tests.fail_without_fix pass`](#ev-62faeb2508)
 
 <a id="chain-REQ-2283-F3"></a>
-#### REQ-2283-F3: **REFUSED**
+#### REQ-2283-F3: **PROVEN**
 
 > Diagnostics about members of a type declared in a referenced assembly must not be reported at locations outside the compilation being analyzed.
 
-- **Claude: met** (4/4 verified). Every analyzer diagnostic now passes through ReportIfLocatedInCompilation, which only forwards diagnostics whose location is in a syntax tree of the current compilation. I checked that this filter is what makes ClosedGenericStruct_FromMetadataReference_UnkeyedMember pass: with only the filter reverted (FirstOrDefault kept) that test fails with two location-less MsgPack004 diagnostics for MyGenericStruct.Unkeyed (my own run, not in facts.json). So the clause is enforced. It is over-enforced, though: see finding C1.
-- **Codex: met** (3/3 verified). The change filters analyzer diagnostics to source locations belonging to this compilation and uses nullable syntax-reference lookups for members that may come from metadata.
-- **Nemotron**: no verdict
-- **Checks:** `build` pass, `tests.targeted` pass
-- **What would settle it:** A verdict from Nemotron with verified evidence
+- **Checks passed:** `build` pass, `tests.targeted` pass
+- **Fails without the fix:** [`ClosedGenericStruct_FromMetadataReference_UnkeyedMember`](#ev-72235a3098)
+- **Claude** says met (4/4 citations verified): [`TypeCollector.cs:239 @head`](#ev-7876fdb7f1) [`TypeCollector.cs:1446 @head`](#ev-6afda546ae) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed`](#ev-72235a3098) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed`](#ev-9b34c726e9)
+- **Codex** says met (3/3 citations verified): [`TypeCollector.cs:1446 @head`](#ev-6afda546ae) [`TypeCollector.cs:1434 @head`](#ev-a7d205a394) [`check tests.fail_without_fix`](#ev-d78b746a74)
+- **Nemotron** says met (4/4 citations verified): [`TypeCollector.cs:1446 @head`](#ev-6afda546ae) [`TypeCollector.cs:1434 @head`](#ev-a7d205a394) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed`](#ev-72235a3098) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed`](#ev-9b34c726e9)
 
 <a id="chain-REQ-2283-N1"></a>
 #### REQ-2283-N1: **NOT MET**
@@ -102,41 +104,40 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 
 - **Claude: not met** (4/5 verified). The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.
 - **Codex: met** (1/1 verified). The source-generator test suite passes in full after the change.
-- **Nemotron**: no verdict
+- **Nemotron: met** (1/1 verified). Full suite on head: 170 passed, 0 failed, with no failures that also fail on base and no new failures, so existing analyzer diagnostics for in-compilation types are unchanged.
 - **Checks:** `build` pass, `tests.full_suite` pass
-- **What would settle it:** A verdict from Nemotron with verified evidence; A fix, or evidence that refutes Claude's objection
+- **What would settle it:** A fix, or evidence that refutes Claude's objection
 
 <a id="chain-REQ-2283-N2"></a>
-#### REQ-2283-N2: **REFUSED**
+#### REQ-2283-N2: **PROVEN**
 
 > The fix is covered by automated tests that fail without it.
 
-- **Claude: met** (4/4 verified). tests.fail_without_fix: 3/3 new tests fail on base source with AD0001 IndexOutOfRangeException in GetObjectInfo (the issue's exact exception) and pass at head; one of them (UnkeyedMember) also pins the location filter, as I checked by reverting just that line. Not covered by any failing-without-fix test: the BothStringAndIntKeyAreNull change at line 985 (no test reaches it with a metadata or positional-record property).
-- **Codex: met** (2/2 verified). All three added metadata-reference tests pass with the fix and fail with the source reverted.
-- **Nemotron**: no verdict
-- **Checks:** `build` pass, `tests.fail_without_fix` pass
-- **What would settle it:** A verdict from Nemotron with verified evidence
+- **Checks passed:** `build` pass, `tests.fail_without_fix` pass
+- **Fails without the fix:** [`ClosedGenericStruct_FromMetadataReference_UnkeyedMember`](#ev-9b34c726e9), [`ClosedGenericRecordStruct_FromMetadataReference`](#ev-bf91cd8726), [`ClosedGenericStruct_FromMetadataReference`](#ev-cb2de557cf)
+- **Claude** says met (4/4 citations verified): [`check tests.fail_without_fix`](#ev-d78b746a74) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed`](#ev-9b34c726e9) [`test ClosedGenericRecordStruct_FromMetadataReference failed`](#ev-bf91cd8726) [`test ClosedGenericStruct_FromMetadataReference failed`](#ev-cb2de557cf)
+- **Codex** says met (2/2 citations verified): [`check tests.fail_without_fix`](#ev-d78b746a74) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed`](#ev-72235a3098)
+- **Nemotron** says met (4/4 citations verified): [`check tests.fail_without_fix pass`](#ev-62faeb2508) [`test ClosedGenericRecordStruct_FromMetadataReference failed`](#ev-bf91cd8726) [`test ClosedGenericStruct_FromMetadataReference failed`](#ev-cb2de557cf) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed`](#ev-9b34c726e9)
 
 </details>
 
 <details><summary><b>Reviewer panel</b> (who said what)</summary>
 <a id="panel"></a>
 
-> Codex said met to all 5 clauses; Claude raised a verified major finding they did not (claude:C1: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic). Claude also did not say met on REQ-2283-N1, so that clause is refused. Unanimity is required: one verified objection is enough to send it to Toivo.
-> Nemotron is on the panel but has no review yet, so no clause can be proven until it answers.
-> REQ-2283-N1: Claude: not met; Codex: met. A split verdict is a refusal, not a vote.
+> Codex and Nemotron said met to all 5 clauses; Claude raised a verified major finding they did not (claude:C1: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic). Claude also did not say met on REQ-2283-N1, so that clause is refused. Unanimity is required: one verified objection is enough to send it to Toivo.
+> REQ-2283-N1: Claude: not met; Codex, Nemotron: met. A split verdict is a refusal, not a vote.
 
 | Clause | Claude | Codex | Nemotron | Result |
 |---|---|---|---|---|
-| REQ-2283-F1 | met | met | no review | **refused** |
-| REQ-2283-F2 | met | met | no review | **refused** |
-| REQ-2283-F3 | met | met | no review | **refused** |
-| REQ-2283-N1 | not met | met | no review | **not met** |
-| REQ-2283-N2 | met | met | no review | **refused** |
+| REQ-2283-F1 | met | met | met | **proven** |
+| REQ-2283-F2 | met | met | met | **proven** |
+| REQ-2283-F3 | met | met | met | **proven** |
+| REQ-2283-N1 | not met | met | met | **not met** |
+| REQ-2283-N2 | met | met | met | **proven** |
 
 - **Claude** (claude-opus-5-5, Anthropic): citations 32 verified / 2 rejected; findings 3 verified / 0 rejected; 2 refusals. Only Claude raised: [C1](#f-claude-C1) major Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic, [C2](#f-claude-C2) minor BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source, [C3](#f-claude-C3) info Fix treats the symptom location; metadata struct backing fields are still walked as members
 - **Codex** (GPT-6, OpenAI): citations 12 verified / 0 rejected; findings 0 verified / 0 rejected; 1 refusals.
-- **Nemotron**: no review on file
+- **Nemotron** (nvidia/nemotron-3.5-super-vl-120b-a12b, NVIDIA): citations 18 verified / 0 rejected; findings 0 verified / 0 rejected; 2 refusals.
 
 2 disputed item(s), not adjudicated: REQ-2283-N1, finding:claude:C1
 
@@ -234,14 +235,14 @@ Tier effect: silent
 ```
 
 <a id="ev-751fd9609c"></a>
-**test ClosedGenericRecordStruct_FromMetadataReference passed** (verified; cited by claude on REQ-2283-F1, codex on REQ-2283-F2): facts.json tests.targeted: passed (new test)
+**test ClosedGenericRecordStruct_FromMetadataReference passed** (verified; cited by claude on REQ-2283-F1, nemotron on REQ-2283-F1, codex on REQ-2283-F2): facts.json tests.targeted: passed (new test)
 
 - change head (`tests.targeted`): **passed**
 - source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
 - Without the fix it **failed**: it tests the change
 
 <a id="ev-bf91cd8726"></a>
-**test ClosedGenericRecordStruct_FromMetadataReference failed** (verified; cited by claude on REQ-2283-F1, claude on REQ-2283-N2): facts.json tests.fail_without_fix: failed (new test)
+**test ClosedGenericRecordStruct_FromMetadataReference failed** (verified; cited by claude on REQ-2283-F1, claude on REQ-2283-N2, nemotron on REQ-2283-N2): facts.json tests.fail_without_fix: failed (new test)
 
 - change head (`tests.targeted`): **passed**
 - source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
@@ -259,14 +260,14 @@ Tier effect: silent
 > Building a project whose [MessagePackObject] type has a member of a closed generic value type defined in a referenced assembly must not crash the source generator (no CS8785) and must produce a generated resolver.
 
 <a id="ev-f073740910"></a>
-**test ClosedGenericStruct_FromMetadataReference passed** (verified; cited by codex on REQ-2283-F1, claude on REQ-2283-F2): facts.json tests.targeted: passed (new test)
+**test ClosedGenericStruct_FromMetadataReference passed** (verified; cited by codex on REQ-2283-F1, nemotron on REQ-2283-F1, claude on REQ-2283-F2, nemotron on REQ-2283-F2): facts.json tests.targeted: passed (new test)
 
 - change head (`tests.targeted`): **passed**
 - source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
 - Without the fix it **failed**: it tests the change
 
 <a id="ev-6afda546ae"></a>
-**TypeCollector.cs:1446 @head** (verified; cited by codex on REQ-2283-F1, claude on REQ-2283-F3, codex on REQ-2283-F3, claude:C1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38
+**TypeCollector.cs:1446 @head** (verified; cited by codex on REQ-2283-F1, claude on REQ-2283-F3, codex on REQ-2283-F3, nemotron on REQ-2283-F3, claude:C1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 at head 9df83c38
 
 ```text
 // src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
@@ -279,8 +280,35 @@ Tier effect: silent
   1449 |         }
 ```
 
+<a id="ev-72235a3098"></a>
+**test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed** (verified; cited by nemotron on REQ-2283-F1, claude on REQ-2283-F3, nemotron on REQ-2283-F3, codex on REQ-2283-N2): facts.json tests.targeted: passed (new test)
+
+- change head (`tests.targeted`): **passed**
+- source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
+- Without the fix it **failed**: it tests the change
+
+<a id="ev-463700b774"></a>
+**TypeCollector.cs:1077 @head** (verified; cited by nemotron on REQ-2283-F1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1077 at head 9df83c38
+
+```text
+// src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
+  1074 |                             {
+  1075 |                                 Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true
+  1076 |                                     ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())
+> 1077 |                                     : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);
+  1078 |                                 if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)
+  1079 |                                 {
+  1080 |                                     this.reportDiagnostic?.Invoke(diagnostic);
+```
+
+<a id="ev-62faeb2508"></a>
+**check tests.fail_without_fix pass** (verified; cited by nemotron on REQ-2283-F1, nemotron on REQ-2283-F2, nemotron on REQ-2283-N2): facts.json: tests.fail_without_fix pass: new tests fail on base source: 3/3 failed -> tests do cover the change
+
+- `tests.fail_without_fix` **pass**: new tests fail on base source: 3/3 failed -> tests do cover the change (dotnet test (source reverted, tests kept) 8.0.402)
+- log: `evidence/2283/logs/tests_fail_without_fix.1.log`
+
 <a id="ev-cb2de557cf"></a>
-**test ClosedGenericStruct_FromMetadataReference failed** (verified; cited by claude on REQ-2283-F2, claude on REQ-2283-N2): facts.json tests.fail_without_fix: failed (new test)
+**test ClosedGenericStruct_FromMetadataReference failed** (verified; cited by claude on REQ-2283-F2, nemotron on REQ-2283-F2, claude on REQ-2283-N2, nemotron on REQ-2283-N2): facts.json tests.fail_without_fix: failed (new test)
 
 - change head (`tests.targeted`): **passed**
 - source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
@@ -315,7 +343,7 @@ Tier effect: silent
 ```
 
 <a id="ev-ce1eecc974"></a>
-**TypeCollector.cs:239 @head** (verified; cited by codex on REQ-2283-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38
+**TypeCollector.cs:239 @head** (verified; cited by codex on REQ-2283-F2, nemotron on REQ-2283-F2): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:239 at head 9df83c38
 
 ```text
 // src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
@@ -342,22 +370,15 @@ Tier effect: silent
   242 |         this.cancellationToken = cancellationToken;
 ```
 
-<a id="ev-72235a3098"></a>
-**test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed** (verified; cited by claude on REQ-2283-F3, codex on REQ-2283-N2): facts.json tests.targeted: passed (new test)
-
-- change head (`tests.targeted`): **passed**
-- source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
-- Without the fix it **failed**: it tests the change
-
 <a id="ev-9b34c726e9"></a>
-**test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed** (verified; cited by claude on REQ-2283-F3, claude on REQ-2283-N2): facts.json tests.fail_without_fix: failed (new test)
+**test ClosedGenericStruct_FromMetadataReference_UnkeyedMember failed** (verified; cited by claude on REQ-2283-F3, nemotron on REQ-2283-F3, claude on REQ-2283-N2, nemotron on REQ-2283-N2): facts.json tests.fail_without_fix: failed (new test)
 
 - change head (`tests.targeted`): **passed**
 - source reverted, tests kept (without the fix) (`tests.fail_without_fix`): **failed**
 - Without the fix it **failed**: it tests the change
 
 <a id="ev-a7d205a394"></a>
-**TypeCollector.cs:1434 @head** (verified; cited by codex on REQ-2283-F3): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38
+**TypeCollector.cs:1434 @head** (verified; cited by codex on REQ-2283-F3, nemotron on REQ-2283-F3): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1434 at head 9df83c38
 
 ```text
 // src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs @ 9df83c38
@@ -411,6 +432,12 @@ Tier effect: silent
 
 <a id="ev-23c90ec85d"></a>
 **issue 2283** (NOT verified; cited by claude on REQ-2283-N1): issue text cannot be verified offline (not counted as evidence)
+
+<a id="ev-d448f979e6"></a>
+**check tests.full_suite pass** (verified; cited by nemotron on REQ-2283-N1): facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base)
+
+- `tests.full_suite` **pass**: tests/MessagePack.SourceGenerator.Tests: 170 tests, 170 passed, 0 failed (0 not failing on base, 0 also failing on base) (dotnet test 8.0.402)
+- log: `evidence/2283/logs/tests_full_suite.log`
 
 <a id="ev-03c1f89f96"></a>
 **TypeCollector.cs:1341 @head** (verified; cited by claude:C1): quote matches src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1341 at head 9df83c38
@@ -497,14 +524,12 @@ Mandate `messagepack-csharp` v2 sha256 `39cc2060685638e1`, signature: valid, Toi
 #### All tier drivers (tier = strictest)
 
 - ask: verified finding `claude:C1`: major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic
-- ask: refused clause `REQ-2283-F1`: missing_review: nemotron gave no verdict
-- ask: refused clause `REQ-2283-F2`: missing_review: nemotron gave no verdict
-- ask: refused clause `REQ-2283-F3`: missing_review: nemotron gave no verdict
-- ask: refused clause `REQ-2283-N1`: missing_review: nemotron gave no verdict; not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met
-- ask: refused clause `REQ-2283-N2`: missing_review: nemotron gave no verdict
+- ask: refused clause `REQ-2283-N1`: not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met
 - ask: reviewer refusal `claude`: Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.)
 - ask: reviewer refusal `claude`: Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).)
 - ask: reviewer refusal `codex`: Execution-test behavior under a compiler that loads the generator (The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change.)
+- ask: reviewer refusal `nemotron`: End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead.)
+- ask: reviewer refusal `nemotron`: Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)
 - ask: risk score `risk`: score 41.1 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 9.1 + reviewer_disagreement 8
 - notify: verified finding `claude:C2`: minor: BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source
 - notify: trust cap `generator-analyzer-core`: generator-analyzer-core: AI may clear at most to notify (mandate clearance right)
@@ -519,6 +544,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 |---|---|---|---|---|---|
 | claude | claude-opus-5-5 (Anthropic) | review-v1 | 3 | 0 | 2 |
 | codex | GPT-6 (OpenAI) | review-v1 | 0 | 0 | 1 |
+| nemotron | nvidia/nemotron-3.5-super-vl-120b-a12b (NVIDIA) | review-v1 | 0 | 0 | 2 |
 
 #### Every check
 
@@ -537,17 +563,19 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc2060
 
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
-| REQ-2283-F1 | refused | claude: met (8/8), codex: met (3/3) | build: pass, tests.targeted: pass | missing_review |
-| REQ-2283-F2 | refused | claude: met (5/5), codex: met (3/3) | build: pass, tests.targeted: pass | missing_review |
-| REQ-2283-F3 | refused | claude: met (4/4), codex: met (3/3) | build: pass, tests.targeted: pass | missing_review |
-| REQ-2283-N1 | refused | claude: not_met (4/5), codex: met (1/1) | build: pass, tests.full_suite: pass | missing_review, not_met, reviewers_disagree |
-| REQ-2283-N2 | refused | claude: met (4/4), codex: met (2/2) | build: pass, tests.fail_without_fix: pass | missing_review |
+| REQ-2283-F1 | proven | claude: met (8/8), codex: met (3/3), nemotron: met (5/5) | build: pass, tests.targeted: pass | - |
+| REQ-2283-F2 | proven | claude: met (5/5), codex: met (3/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
+| REQ-2283-F3 | proven | claude: met (4/4), codex: met (3/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
+| REQ-2283-N1 | refused | claude: not_met (4/5), codex: met (1/1), nemotron: met (1/1) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree |
+| REQ-2283-N2 | proven | claude: met (4/4), codex: met (2/2), nemotron: met (4/4) | build: pass, tests.fail_without_fix: pass | - |
 
 #### What the AI refused to decide (every reviewer refusal)
 
 - **claude** refused: Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended). Why: tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it. Who should decide: source-generator area owner (run the execution tests under SDK 9 or a two-project repro)
 - **claude** refused: Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour. Why: It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it). Who should decide: MessagePack-CSharp maintainers / analyzer area owner
 - **codex** refused: Execution-test behavior under a compiler that loads the generator. Why: The supplied facts mark execution tests as not run under SDK 8 because its compiler cannot load this generator; no SDK 9 execution result is supplied for this change. Who should decide: area owner
+- **nemotron** refused: End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests). Why: Not run: SDK 8.0.402 ships Roslyn 4.11 while MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (CS9057) and consumer projects fail to compile (CS0117). The mismatch also occurs on base, so it is pre-existing and not caused by the change. In-process generator/analyzer tests were used instead. Who should decide: area owner or maintainer, with an SDK that ships Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx)
+- **nemotron** refused: Whether the placeholder requirement set matches the upstream issue #2283 intent. Why: The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully. Who should decide: area owner or maintainer
 
 <a id="areas"></a>
 #### Areas
@@ -572,14 +600,12 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc2060
 
 #### Residual risk (every item)
 
-- REQ-2283-F1 not proven: missing_review
-- REQ-2283-F2 not proven: missing_review
-- REQ-2283-F3 not proven: missing_review
-- REQ-2283-N1 not proven: missing_review; not_met; reviewers_disagree
-- REQ-2283-N2 not proven: missing_review
+- REQ-2283-N1 not proven: not_met; reviewers_disagree
 - Reviewer refusal (claude): Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended)
 - Reviewer refusal (claude): Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour
 - Reviewer refusal (codex): Execution-test behavior under a compiler that loads the generator
+- Reviewer refusal (nemotron): End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests)
+- Reviewer refusal (nemotron): Whether the placeholder requirement set matches the upstream issue #2283 intent
 - Open major finding claude:C1: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic
 - tests.execution not run (SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.)
 - tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)
@@ -605,6 +631,6 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v2 (39cc2060
 | failed_checks | 0 | 0 failed check(s) x 25 |
 | **total** | **41.1** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
-Inputs: facts `evidence/2283/facts.json`, requirements `requirements/2283.yaml`, reviews `reviews/2283/claude.json`, `reviews/2283/codex.json`
+Inputs: facts `evidence/2283/facts.json`, requirements `requirements/2283.yaml`, reviews `reviews/2283/claude.json`, `reviews/2283/codex.json`, `reviews/2283/nemotron.json`
 
 </details>

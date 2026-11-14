@@ -48,6 +48,10 @@
       "codex": {
         "path": "reviews/2297/codex.json",
         "sha256": "b70e8c40632f4090686df3d8678c5d1e018e2f0a5d968edc0409b8d033459ea4"
+      },
+      "nemotron": {
+        "path": "reviews/2297/nemotron.json",
+        "sha256": "ce4952561af485b682705710988e397408df458ca7cf447d971eaf7c46a1e254"
       }
     }
   },
@@ -89,11 +93,10 @@
       "id": "REQ-2297-F1",
       "tier": "ask",
       "codes": [
-        "missing_review",
         "not_met",
         "reviewers_disagree"
       ],
-      "why": "missing_review: nemotron gave no verdict; not_met: claude: On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission.; reviewers_disagree: claude says not_met, codex says met"
+      "why": "not_met: claude: On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission.; reviewers_disagree: claude says not_met, codex says met, nemotron says met"
     },
     {
       "source": "reviewer refusal",
@@ -120,10 +123,28 @@
       "why": "Coverage of generated code not exercised by the supplied generator test fixture (The supplied tests exercise the generated output represented by their fixture; I did not independently inspect every generation path or framework configuration beyond the cited template and facts.)"
     },
     {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "netstandard2.0 and .NET Framework compilation of generated output (build.net472/netstandard was not run (Linux container, only net8.0 built), so the #if guard's effect for those targets was not compile-verified; only the template text was inspected.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "runtime execution of generated formatters/resolvers (execution tests) (tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change.)"
+    },
+    {
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
       "why": "score 64.5 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + files_changed 20 + generated_files 10"
+    },
+    {
+      "source": "verified finding",
+      "id": "nemotron:N1",
+      "tier": "notify",
+      "why": "minor: Unrelated formatting change in TransformUtilities.cs outside the requirement scope"
     },
     {
       "source": "trust cap",
@@ -535,21 +556,126 @@
               "ref": "ev-d78b746a74"
             }
           ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "All six source-generator templates emit [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] behind the #if !NETSTANDARD2_0 && !NETFRAMEWORK guard (e.g. ResolverTemplate.tt lines 14-16 and FormatterTemplate.tt lines 14-16; the same pattern appears in CompositeResolverTemplate, EnumTemplate, StringKeyFormatterTemplate and UnionTemplate), the checked-in generated outputs were regenerated accordingly, the new test CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage passes on head and failed on base source, and the full 169-test generator suite passes on head.",
+          "verified": 11,
+          "cited": 11,
+          "evidence": [
+            {
+              "kind": "requirement",
+              "req": "REQ-2297-F1",
+              "quote": "Add ExcludeFromCodeCoverage attribute to generated code.",
+              "verified": true,
+              "note": "REQ-2297-F1 text contains the quote",
+              "ref": "ev-f03b126649"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+              "line": 14,
+              "rev": "head",
+              "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:14 at head a0aa5ab2",
+              "ref": "ev-8a0e2d6f3d"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+              "line": 15,
+              "rev": "head",
+              "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:15 at head a0aa5ab2",
+              "ref": "ev-0cbe903c62"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+              "line": 14,
+              "rev": "head",
+              "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2",
+              "ref": "ev-ad9cf8085f"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+              "line": 15,
+              "rev": "head",
+              "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:15 at head a0aa5ab2",
+              "ref": "ev-1de9933827"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+              "line": 7,
+              "rev": "head",
+              "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:7 at head a0aa5ab2",
+              "ref": "ev-85a77b3f18"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+              "line": 8,
+              "rev": "head",
+              "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:8 at head a0aa5ab2",
+              "ref": "ev-291c35f5ef"
+            },
+            {
+              "kind": "test",
+              "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted: passed (new test)",
+              "ref": "ev-1ea94bff54"
+            },
+            {
+              "kind": "test",
+              "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-09419f4337"
+            },
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 2/2 failed -> tests do cover the change",
+              "ref": "ev-62faeb2508"
+            }
+          ]
         }
       },
       "status": "refused",
       "reasons": [
-        {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
-        },
         {
           "code": "not_met",
           "detail": "claude: On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission."
         },
         {
           "code": "reviewers_disagree",
-          "detail": "claude says not_met, codex says met"
+          "detail": "claude says not_met, codex says met, nemotron says met"
         }
       ]
     }
@@ -574,7 +700,8 @@
       "about": "REQ-2297-F1",
       "reviewers": [
         "claude",
-        "codex"
+        "codex",
+        "nemotron"
       ]
     },
     {
@@ -677,6 +804,25 @@
         "verified": 0,
         "rejected": 0,
         "refusals": 1
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T01:59:11+02:00",
+        "inputs": [
+          "requirements: requirements/2297.yaml",
+          "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2297",
+          "facts: evidence/2297/facts.json",
+          "diff 32258fdb..a0aa5ab2 (9 non-generated files)",
+          "file contents: 15 blocks",
+          "context: 180156 chars (budget 180000)"
+        ],
+        "findings": 1,
+        "verified": 1,
+        "rejected": 0,
+        "refusals": 2
       }
     ],
     "engine": "countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)"
@@ -784,6 +930,41 @@
       "status": "verified",
       "reviewer": "claude",
       "tier": "silent",
+      "confirmed_by": []
+    },
+    {
+      "id": "N1",
+      "title": "Unrelated formatting change in TransformUtilities.cs outside the requirement scope",
+      "severity": "minor",
+      "category": "scope",
+      "claim": "TransformUtilities.cs line 58 changed the brace emission for nested types that carry type constraints from emitting just \"{\" to emitting \"{\\r\\n\", adding a newline after the opening brace in generated code. This is unrelated to REQ-2297-F1 (ExcludeFromCodeCoverage) and changes generated output beyond the requirement's scope.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs",
+          "line": 58,
+          "rev": "head",
+          "quote": "writer(anyConstraints ? \"{\\r\\n\" : \" {\\r\\n\");",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58 at head a0aa5ab2",
+          "ref": "ev-66b5ead8c5"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs",
+          "line": 58,
+          "rev": "base",
+          "quote": "writer(anyConstraints ? \"{\" : \" {\\r\\n\");",
+          "verified": true,
+          "note": "quote matches src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58 at base 32258fdb",
+          "ref": "ev-064cb49fd0"
+        }
+      ],
+      "suggested_fix": "Revert TransformUtilities.cs to the base line, or move this formatting change to a separate change so this change stays limited to ExcludeFromCodeCoverage emission.",
+      "verified_count": 2,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "notify",
       "confirmed_by": []
     }
   ],
@@ -905,21 +1086,126 @@
                 "ref": "ev-d78b746a74"
               }
             ]
+          },
+          "nemotron": {
+            "verdict": "met",
+            "basis": "All six source-generator templates emit [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] behind the #if !NETSTANDARD2_0 && !NETFRAMEWORK guard (e.g. ResolverTemplate.tt lines 14-16 and FormatterTemplate.tt lines 14-16; the same pattern appears in CompositeResolverTemplate, EnumTemplate, StringKeyFormatterTemplate and UnionTemplate), the checked-in generated outputs were regenerated accordingly, the new test CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage passes on head and failed on base source, and the full 169-test generator suite passes on head.",
+            "verified": 11,
+            "cited": 11,
+            "evidence": [
+              {
+                "kind": "requirement",
+                "req": "REQ-2297-F1",
+                "quote": "Add ExcludeFromCodeCoverage attribute to generated code.",
+                "verified": true,
+                "note": "REQ-2297-F1 text contains the quote",
+                "ref": "ev-f03b126649"
+              },
+              {
+                "kind": "code",
+                "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+                "line": 14,
+                "rev": "head",
+                "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+                "verified": true,
+                "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:14 at head a0aa5ab2",
+                "ref": "ev-8a0e2d6f3d"
+              },
+              {
+                "kind": "code",
+                "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+                "line": 15,
+                "rev": "head",
+                "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+                "verified": true,
+                "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:15 at head a0aa5ab2",
+                "ref": "ev-0cbe903c62"
+              },
+              {
+                "kind": "code",
+                "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+                "line": 14,
+                "rev": "head",
+                "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+                "verified": true,
+                "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2",
+                "ref": "ev-ad9cf8085f"
+              },
+              {
+                "kind": "code",
+                "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+                "line": 15,
+                "rev": "head",
+                "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+                "verified": true,
+                "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:15 at head a0aa5ab2",
+                "ref": "ev-1de9933827"
+              },
+              {
+                "kind": "code",
+                "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+                "line": 7,
+                "rev": "head",
+                "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+                "verified": true,
+                "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:7 at head a0aa5ab2",
+                "ref": "ev-85a77b3f18"
+              },
+              {
+                "kind": "code",
+                "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+                "line": 8,
+                "rev": "head",
+                "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+                "verified": true,
+                "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:8 at head a0aa5ab2",
+                "ref": "ev-291c35f5ef"
+              },
+              {
+                "kind": "test",
+                "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
+                "outcome": "passed",
+                "verified": true,
+                "note": "facts.json tests.targeted: passed (new test)",
+                "ref": "ev-1ea94bff54"
+              },
+              {
+                "kind": "test",
+                "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
+                "outcome": "failed",
+                "check": "tests.fail_without_fix",
+                "verified": true,
+                "note": "facts.json tests.fail_without_fix: failed (new test)",
+                "ref": "ev-09419f4337"
+              },
+              {
+                "kind": "check",
+                "id": "tests.full_suite",
+                "status": "pass",
+                "verified": true,
+                "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+                "ref": "ev-d448f979e6"
+              },
+              {
+                "kind": "check",
+                "id": "tests.fail_without_fix",
+                "status": "pass",
+                "verified": true,
+                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 2/2 failed -> tests do cover the change",
+                "ref": "ev-62faeb2508"
+              }
+            ]
           }
         },
         "status": "refused",
         "reasons": [
-          {
-            "code": "missing_review",
-            "detail": "nemotron gave no verdict"
-          },
           {
             "code": "not_met",
             "detail": "claude: On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission."
           },
           {
             "code": "reviewers_disagree",
-            "detail": "claude says not_met, codex says met"
+            "detail": "claude says not_met, codex says met, nemotron says met"
           }
         ]
       }
@@ -952,6 +1238,20 @@
         "who_should_decide": "area owner",
         "reviewer": "codex",
         "model": "GPT-6"
+      },
+      {
+        "topic": "netstandard2.0 and .NET Framework compilation of generated output",
+        "reason": "build.net472/netstandard was not run (Linux container, only net8.0 built), so the #if guard's effect for those targets was not compile-verified; only the template text was inspected.",
+        "who_should_decide": "area owner / maintainer with a multi-target build",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      {
+        "topic": "runtime execution of generated formatters/resolvers (execution tests)",
+        "reason": "tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change.",
+        "who_should_decide": "area owner / maintainer, after moving to an SDK with Roslyn >= 4.12",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
       }
     ]
   },
@@ -999,11 +1299,13 @@
     }
   ],
   "residual_risk": [
-    "REQ-2297-F1 not proven: missing_review; not_met; reviewers_disagree",
+    "REQ-2297-F1 not proven: not_met; reviewers_disagree",
     "Reviewer refusal (claude): Whether all 228 regenerated test resource files differ from base only by the coverage attribute and the brace/newline fix",
     "Reviewer refusal (claude): Effect on generated code in consumers built with older compilers or with ImplicitUsings/nullable settings",
     "Reviewer refusal (claude): The TransformUtilities brace change ('{' to '{\\r\\n' when constraints exist): intended fix or incidental",
     "Reviewer refusal (codex): Coverage of generated code not exercised by the supplied generator test fixture",
+    "Reviewer refusal (nemotron): netstandard2.0 and .NET Framework compilation of generated output",
+    "Reviewer refusal (nemotron): runtime execution of generated formatters/resolvers (execution tests)",
     "Open major finding claude:C1: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise",
     "tests.execution not run (SDK 8.0.402 ships Roslyn 4.11 but MessagePack.SourceGenerator references Microsoft.CodeAnalysis 4.12.0, so csc refuses to load the generator (warning CS9057) and projects that consume it as an analyzer (tests/MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) fail to compile (CS0117 'GeneratedMessagePackResolver' does not contain 'Instance'). This also happens on base 32258fdb, so it is an environment/toolchain mismatch, not caused by the change. Needs an SDK with Roslyn >= 4.12 (e.g. .NET SDK 9.0.1xx); swapping in a newer compiler toolset was not permitted in this run.)",
     "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
@@ -1144,17 +1446,17 @@
         "link": "#f-claude-C1"
       },
       {
-        "text": "Also routes to a human. 1 of 1 requirement clauses not proven. Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered)",
+        "text": "Also routes to a human. 1 of 1 requirement clauses not proven. Claude says not met (Codex and Nemotron: met)",
         "link": "#chain-REQ-2297-F1"
       }
     ],
-    "more_drivers": 12,
+    "more_drivers": 15,
     "trace": [
       {
         "id": "REQ-2297-F1",
         "status": "refused",
         "label": "not met",
-        "why": "Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered)",
+        "why": "Claude says not met (Codex and Nemotron: met)",
         "anchor": "chain-REQ-2297-F1"
       }
     ],
@@ -1179,6 +1481,27 @@
         "shared_with": []
       },
       {
+        "key": "nemotron:N1",
+        "anchor": "f-nemotron-N1",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "title": "Unrelated formatting change in TransformUtilities.cs outside the requirement scope",
+        "tier": "notify",
+        "chips": [
+          {
+            "ref": "ev-66b5ead8c5",
+            "label": "TransformUtilities.cs:58 @head"
+          },
+          {
+            "ref": "ev-064cb49fd0",
+            "label": "TransformUtilities.cs:58 @base"
+          }
+        ],
+        "shared_with": [
+          "claude"
+        ]
+      },
+      {
         "key": "claude:C2",
         "anchor": "f-claude-C2",
         "reviewer": "claude",
@@ -1195,10 +1518,12 @@
             "label": "TransformUtilities.cs:58 @head"
           }
         ],
-        "shared_with": []
+        "shared_with": [
+          "nemotron"
+        ]
       }
     ],
-    "found_total": 2,
+    "found_total": 3,
     "rejected_total": 0,
     "refused": [
       {
@@ -1244,6 +1569,28 @@
           "area owner"
         ],
         "anchor": "refusal-4"
+      },
+      {
+        "topic": "netstandard2.0 and .NET Framework compilation of generated output",
+        "why": "build.net472/netstandard was not run (Linux container, only net8.0 built), so the #if guard's effect for those targets was not compile-verified; only the template text was inspected.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / maintainer with a multi-target build"
+        ],
+        "anchor": "refusal-5"
+      },
+      {
+        "topic": "runtime execution of generated formatters/resolvers (execution tests)",
+        "why": "tests.execution was not run: SDK 8.0.402 ships Roslyn 4.11 while the generator references Microsoft.CodeAnalysis 4.12.0, so execution test projects fail to compile (CS9057/CS0117); this mismatch exists on base too and is environmental, not caused by the change.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / maintainer, after moving to an SDK with Roslyn >= 4.12"
+        ],
+        "anchor": "refusal-6"
       }
     ],
     "refused_clauses": [
@@ -1283,7 +1630,7 @@
         "link": "#chain-REQ-2297-F1"
       },
       {
-        "text": "4 questions the AI declined to decide (listed above) are yours.",
+        "text": "6 questions the AI declined to decide (listed above) are yours.",
         "link": "#refused"
       },
       {
@@ -1317,7 +1664,7 @@
       "text": "Add ExcludeFromCodeCoverage attribute to generated code.",
       "status": "refused",
       "label": "not met",
-      "why": "Claude says not met (Codex: met); no verdict from Nemotron (2 of 3 reviewers answered)",
+      "why": "Claude says not met (Codex and Nemotron: met)",
       "checks": [
         {
           "id": "build",
@@ -1366,17 +1713,37 @@
             "ev-d78b746a74"
           ],
           "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "All six source-generator templates emit [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] behind the #if !NETSTANDARD2_0 && !NETFRAMEWORK guard (e.g. ResolverTemplate.tt lines 14-16 and FormatterTemplate.tt lines 14-16; the same pattern appears in CompositeResolverTemplate, EnumTemplate, StringKeyFormatterTemplate and UnionTemplate), the checked-in generated outputs were regenerated accordingly, the new test CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage passes on head and failed on base source, and the full 169-test generator suite passes on head.",
+          "verified": 11,
+          "cited": 11,
+          "refs": [
+            "ev-f03b126649",
+            "ev-8a0e2d6f3d",
+            "ev-0cbe903c62",
+            "ev-ad9cf8085f",
+            "ev-1de9933827",
+            "ev-85a77b3f18",
+            "ev-291c35f5ef",
+            "ev-1ea94bff54",
+            "ev-09419f4337",
+            "ev-d448f979e6",
+            "ev-62faeb2508"
+          ],
+          "unverified_refs": []
         }
       ],
       "agree": [
-        "codex"
+        "codex",
+        "nemotron"
       ],
       "disagree": [
         "claude"
       ],
-      "missing": [
-        "nemotron"
-      ],
+      "missing": [],
       "tests_fail_without_fix": [
         {
           "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
@@ -1392,21 +1759,16 @@
       "tests_pass_without_fix": [],
       "reasons": [
         {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
-        },
-        {
           "code": "not_met",
           "detail": "claude: On net5+ consumers the attribute is emitted on every generated type (AllGeneratedTypesAreExcludedFromCodeCoverage passes at head and fails on base). But every emission is wrapped in '#if !NETSTANDARD2_0 && !NETFRAMEWORK', which is evaluated in the consumer's compilation, so consumers targeting netstandard2.0 or .NET Framework get no attribute. The stated reason ('not available on netstandard2.0 or .NET Framework') is wrong: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute is in the netstandard 2.0 reference assembly (I checked netstandard.library 2.0.3's netstandard.xml) and has been in .NET Framework since 4.0, with AttributeTargets.Class allowed. So for targets MessagePack supports, the requirement is not met, and a test pins the omission."
         },
         {
           "code": "reviewers_disagree",
-          "detail": "claude says not_met, codex says met"
+          "detail": "claude says not_met, codex says met, nemotron says met"
         }
       ],
       "adjudication": null,
       "settle": [
-        "A verdict from Nemotron with verified evidence",
         "A fix, or evidence that refutes Claude's objection"
       ]
     }
@@ -1432,12 +1794,6 @@
             "severity": "major",
             "title": "Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise",
             "status": "verified"
-          },
-          {
-            "id": "C2",
-            "severity": "info",
-            "title": "237-file change is dominated by regenerated test resources",
-            "status": "verified"
           }
         ],
         "refusals": 3
@@ -1460,16 +1816,24 @@
       },
       {
         "reviewer": "nemotron",
-        "missing": true,
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "simulated": false,
         "verdicts": {
-          "REQ-2297-F1": null
-        }
+          "REQ-2297-F1": "met"
+        },
+        "citations_verified": 13,
+        "citations_rejected": 0,
+        "findings_verified": 1,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 2
       }
     ],
     "callouts": [
-      "Codex said met to all 1 clauses; Claude raised a verified major finding they did not (claude:C1: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise). Claude also did not say met on REQ-2297-F1, so that clause is refused. Unanimity is required: one verified objection is enough to send it to Toivo.",
-      "Nemotron is on the panel but has no review yet, so no clause can be proven until it answers.",
-      "REQ-2297-F1: Claude: not met; Codex: met. A split verdict is a refusal, not a vote."
+      "Codex and Nemotron said met to all 1 clauses; Claude raised a verified major finding they did not (claude:C1: Coverage attribute is suppressed for netstandard2.0 and .NET Framework consumers based on a false premise). Claude also did not say met on REQ-2297-F1, so that clause is refused. Unanimity is required: one verified objection is enough to send it to Toivo.",
+      "REQ-2297-F1: Claude: not met; Codex, Nemotron: met. A split verdict is a refusal, not a vote."
     ],
     "adjudicator": "gemini"
   },
@@ -1486,6 +1850,7 @@
       "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:14 at head a0aa5ab2",
       "cited_by": [
         "claude on REQ-2297-F1",
+        "nemotron on REQ-2297-F1",
         "claude:C1"
       ],
       "excerpt": {
@@ -1541,7 +1906,8 @@
       "note": "facts.json tests.targeted: passed (new test)",
       "cited_by": [
         "claude on REQ-2297-F1",
-        "codex on REQ-2297-F1"
+        "codex on REQ-2297-F1",
+        "nemotron on REQ-2297-F1"
       ],
       "runs": [
         {
@@ -1577,7 +1943,8 @@
       "verified": true,
       "note": "facts.json tests.fail_without_fix: failed (new test)",
       "cited_by": [
-        "claude on REQ-2297-F1"
+        "claude on REQ-2297-F1",
+        "nemotron on REQ-2297-F1"
       ],
       "runs": [
         {
@@ -1649,7 +2016,8 @@
       "verified": true,
       "note": "REQ-2297-F1 text contains the quote",
       "cited_by": [
-        "claude on REQ-2297-F1"
+        "claude on REQ-2297-F1",
+        "nemotron on REQ-2297-F1"
       ],
       "clause_text": "Add ExcludeFromCodeCoverage attribute to generated code."
     },
@@ -1664,7 +2032,8 @@
       "verified": true,
       "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:15 at head a0aa5ab2",
       "cited_by": [
-        "codex on REQ-2297-F1"
+        "codex on REQ-2297-F1",
+        "nemotron on REQ-2297-F1"
       ],
       "excerpt": {
         "sha": "a0aa5ab2",
@@ -1701,6 +2070,161 @@
         ]
       }
     },
+    "ev-0cbe903c62": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
+      "line": 15,
+      "rev": "head",
+      "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+      "ref": "ev-0cbe903c62",
+      "label": "ResolverTemplate.tt:15 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt:15 at head a0aa5ab2",
+      "cited_by": [
+        "nemotron on REQ-2297-F1"
+      ],
+      "excerpt": {
+        "sha": "a0aa5ab2",
+        "start": 12,
+        "highlight": 15,
+        "lines": [
+          "",
+          "/// <summary>A MessagePack resolver that uses generated formatters for types in this assembly.</summary>",
+          "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+          "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+          "#endif",
+          "partial class <#= ResolverName.Name #> : MsgPack::IFormatterResolver",
+          "{"
+        ]
+      }
+    },
+    "ev-ad9cf8085f": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+      "line": 14,
+      "rev": "head",
+      "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+      "ref": "ev-ad9cf8085f",
+      "label": "FormatterTemplate.tt:14 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2",
+      "cited_by": [
+        "nemotron on REQ-2297-F1",
+        "claude:C1"
+      ],
+      "excerpt": {
+        "sha": "a0aa5ab2",
+        "start": 11,
+        "highlight": 14,
+        "lines": [
+          "<# using (this.EmitNestingTypesAndNamespaces(this.Write)) { #>",
+          "",
+          "<#  bool isFormatterResolverNecessary = GeneratorUtilities.ShouldUseFormatterResolver(Info.Members);#>",
+          "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+          "\t[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+          "#endif",
+          "\tinternal sealed class <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : MsgPack::Formatters.IMessagePackFormatter<<#= Info.DataType.GetQualifiedName(genericStyle: GenericParameterStyle.Identifiers) #>>"
+        ]
+      }
+    },
+    "ev-85a77b3f18": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+      "line": 7,
+      "rev": "head",
+      "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+      "ref": "ev-85a77b3f18",
+      "label": "CompositeResolverTemplate.tt:7 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:7 at head a0aa5ab2",
+      "cited_by": [
+        "nemotron on REQ-2297-F1"
+      ],
+      "excerpt": {
+        "sha": "a0aa5ab2",
+        "start": 4,
+        "highlight": 7,
+        "lines": [
+          "",
+          "<# using (TransformUtilities.EmitNestingTypesAndNamespaces(this.ResolverName, this.Write)) { #>",
+          "",
+          "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+          "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+          "#endif",
+          "partial class <#= ResolverName.Name #> : MsgPack::IFormatterResolver"
+        ]
+      }
+    },
+    "ev-291c35f5ef": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+      "line": 8,
+      "rev": "head",
+      "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+      "ref": "ev-291c35f5ef",
+      "label": "CompositeResolverTemplate.tt:8 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt:8 at head a0aa5ab2",
+      "cited_by": [
+        "nemotron on REQ-2297-F1"
+      ],
+      "excerpt": {
+        "sha": "a0aa5ab2",
+        "start": 5,
+        "highlight": 8,
+        "lines": [
+          "<# using (TransformUtilities.EmitNestingTypesAndNamespaces(this.ResolverName, this.Write)) { #>",
+          "",
+          "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
+          "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
+          "#endif",
+          "partial class <#= ResolverName.Name #> : MsgPack::IFormatterResolver",
+          "{"
+        ]
+      }
+    },
+    "ev-d448f979e6": {
+      "kind": "check",
+      "id": "tests.full_suite",
+      "status": "pass",
+      "ref": "ev-d448f979e6",
+      "label": "check tests.full_suite pass",
+      "verified": true,
+      "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "cited_by": [
+        "nemotron on REQ-2297-F1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 169 tests, 169 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2297/logs/tests_full_suite.log"
+        ]
+      }
+    },
+    "ev-62faeb2508": {
+      "kind": "check",
+      "id": "tests.fail_without_fix",
+      "status": "pass",
+      "ref": "ev-62faeb2508",
+      "label": "check tests.fail_without_fix pass",
+      "verified": true,
+      "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 2/2 failed -> tests do cover the change",
+      "cited_by": [
+        "nemotron on REQ-2297-F1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "new tests fail on base source: 2/2 failed -> tests do cover the change",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2297/logs/tests_fail_without_fix.1.log"
+        ]
+      }
+    },
     "ev-e39874618a": {
       "kind": "code",
       "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt",
@@ -1726,34 +2250,6 @@
           "\t[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
           "#endif",
           "\tprivate static class FormatterCache<T>"
-        ]
-      }
-    },
-    "ev-ad9cf8085f": {
-      "kind": "code",
-      "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
-      "line": 14,
-      "rev": "head",
-      "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
-      "ref": "ev-ad9cf8085f",
-      "label": "FormatterTemplate.tt:14 @head",
-      "verified": true,
-      "note": "quote matches src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt:14 at head a0aa5ab2",
-      "cited_by": [
-        "claude:C1"
-      ],
-      "excerpt": {
-        "sha": "a0aa5ab2",
-        "start": 11,
-        "highlight": 14,
-        "lines": [
-          "<# using (this.EmitNestingTypesAndNamespaces(this.Write)) { #>",
-          "",
-          "<#  bool isFormatterResolverNecessary = GeneratorUtilities.ShouldUseFormatterResolver(Info.Members);#>",
-          "#if !NETSTANDARD2_0 && !NETFRAMEWORK",
-          "\t[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]",
-          "#endif",
-          "\tinternal sealed class <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : MsgPack::Formatters.IMessagePackFormatter<<#= Info.DataType.GetQualifiedName(genericStyle: GenericParameterStyle.Identifiers) #>>"
         ]
       }
     },
@@ -1844,7 +2340,8 @@
       "verified": true,
       "note": "quote matches src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58 at head a0aa5ab2",
       "cited_by": [
-        "claude:C2"
+        "claude:C2",
+        "nemotron:N1"
       ],
       "excerpt": {
         "sha": "a0aa5ab2",
@@ -1855,6 +2352,34 @@
           "                bool anyConstraints = EmitTypeConstraints(nestingType, writer, leadingLineFeedIfAny: true);",
           "",
           "                writer(anyConstraints ? \"{\\r\\n\" : \" {\\r\\n\");",
+          "                reverseAction.Push(new DisposeAction(() => writer(\"}\\r\\n\")));",
+          "",
+          "                return new DisposeAction(() =>"
+        ]
+      }
+    },
+    "ev-064cb49fd0": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs",
+      "line": 58,
+      "rev": "base",
+      "quote": "writer(anyConstraints ? \"{\" : \" {\\r\\n\");",
+      "ref": "ev-064cb49fd0",
+      "label": "TransformUtilities.cs:58 @base",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs:58 at base 32258fdb",
+      "cited_by": [
+        "nemotron:N1"
+      ],
+      "excerpt": {
+        "sha": "32258fdb",
+        "start": 55,
+        "highlight": 58,
+        "lines": [
+          "                writer($\"partial {kind} {nestingType.GetQualifiedName(Qualifiers.None, GenericParameterStyle.Identifiers)}\");",
+          "                bool anyConstraints = EmitTypeConstraints(nestingType, writer, leadingLineFeedIfAny: true);",
+          "",
+          "                writer(anyConstraints ? \"{\" : \" {\\r\\n\");",
           "                reverseAction.Push(new DisposeAction(() => writer(\"}\\r\\n\")));",
           "",
           "                return new DisposeAction(() =>"

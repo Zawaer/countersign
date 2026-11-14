@@ -141,3 +141,15 @@ def test_extract_json_handles_fences_and_think_blocks():
     assert llm.extract_json('Sure! {"a": {"b": 2}} done') == {"a": {"b": 2}}
     with pytest.raises(ValueError):
         llm.extract_json("nothing here")
+
+
+def test_from_raw_reparses_a_saved_answer_without_calling_the_api(lws):
+    odd = json.loads(json.dumps(GOOD))
+    odd["findings"][0]["category"] = "build"  # not in the brief's list; only displayed, so it is kept
+    stub = Stub((200, completion(json.dumps(odd))))
+    llm.run_review(lws, "9001", "nemotron", lws.repo, env=ENV, post=stub, sleep=lambda s: None)
+    (lws.inputs / "reviews" / "9001" / "nemotron.json").unlink()
+    out = llm.review_from_raw(lws, "9001", "nemotron", lws.repo, env=ENV)
+    r = read_json(out)
+    assert r["findings"][0]["category"] == "build" and "re-parsed offline" in r["runner"]["reparsed_from_raw"]
+    assert len(stub.requests) == 1

@@ -48,6 +48,10 @@
       "codex": {
         "path": "reviews/2129/codex.json",
         "sha256": "6a3e92f60f46ee00861bcc38044c6c7056a8c4f2144e0924df3a3c0f7050358d"
+      },
+      "nemotron": {
+        "path": "reviews/2129/nemotron.json",
+        "sha256": "f7395c2149dfca6329869bbf8e84fb2c03f87e34e8c4fa0e2c5519d886b2d96e"
       }
     }
   },
@@ -85,13 +89,10 @@
       "why": "major: New public API in MessagePack.Annotations is not tracked by any PublicAPI file"
     },
     {
-      "source": "refused clause",
-      "id": "REQ-2129-F1",
+      "source": "verified finding",
+      "id": "nemotron:N2",
       "tier": "ask",
-      "codes": [
-        "missing_review"
-      ],
-      "why": "missing_review: nemotron gave no verdict"
+      "why": "major: Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402"
     },
     {
       "source": "reviewer refusal",
@@ -118,6 +119,18 @@
       "why": "Full acceptance and compatibility review of the external formatter feature (This is a scoped review. The placeholder requirement contains only a broad feature statement; I did not comprehensively review all generator paths, API compatibility, or serialization contracts. The supplied facts also record a public API check failure, analyzer warning, and missing solution membership for the new test project.)"
     },
     {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Generated output of FormatterTemplate.cs and StringKeyFormatterTemplate.cs (The two generated template .cs files were listed as changed but their contents/diffs were not provided, so the exact generated formatter class text could not be inspected directly; behavior was verified through the passing execution tests instead.)"
+    },
+    {
+      "source": "reviewer refusal",
+      "id": "nemotron",
+      "tier": "ask",
+      "why": "Security review of serializing externally defined types via generated formatters (No runtime deserialization code was changed by this branch, but the library deserializes untrusted input and this feature lets formats be generated for types the reviewer cannot inspect; a formal security judgement is beyond the provided evidence.)"
+    },
+    {
       "source": "trust cap",
       "id": "annotations-api",
       "tier": "ask",
@@ -134,6 +147,24 @@
       "id": "claude:C3",
       "tier": "notify",
       "why": "minor: New StyleCop warning SA1203 in the new test file"
+    },
+    {
+      "source": "verified finding",
+      "id": "nemotron:N1",
+      "tier": "notify",
+      "why": "minor: New ExternalTypes test project is not added to the solution file"
+    },
+    {
+      "source": "verified finding",
+      "id": "nemotron:N3",
+      "tier": "notify",
+      "why": "minor: New public API added without PublicAPI tracking in MessagePack.Annotations"
+    },
+    {
+      "source": "verified finding",
+      "id": "nemotron:N4",
+      "tier": "notify",
+      "why": "minor: New StyleCop SA1203 warning in GeneratedMessagePackFormatterTests.cs"
     },
     {
       "source": "trust cap",
@@ -377,15 +408,105 @@
               "ref": "ev-fc2d818fd3"
             }
           ]
+        },
+        "nemotron": {
+          "verdict": "met",
+          "basis": "The branch adds the [GeneratedMessagePackFormatter] attribute (Attributes.cs:166), generator discovery of such formatters (MessagePackGenerator.cs:30) and their collection into the resolver model (GeneratedFormatterCollector.cs:72), with contractless and surrogate member selection; execution tests round-trip types from ExternalTypes, an assembly without any MessagePack reference, and pass, while the same tests fail on base source and the execution tests do not compile without the fix.",
+          "verified": 9,
+          "cited": 10,
+          "evidence": [
+            {
+              "kind": "code",
+              "file": "src/MessagePack.Annotations/Attributes.cs",
+              "line": 166,
+              "rev": "head",
+              "quote": "public class GeneratedMessagePackFormatterAttribute : Attribute",
+              "verified": true,
+              "note": "quote matches src/MessagePack.Annotations/Attributes.cs:166 at head 083afd99",
+              "ref": "ev-75f4296476"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+              "line": 30,
+              "rev": "head",
+              "quote": "$\"{AttributeNamespace}.{GeneratedMessagePackFormatterAttributeName}\"",
+              "verified": true,
+              "note": "quote matches src/MessagePack.SourceGenerator/MessagePackGenerator.cs:30 at head 083afd99",
+              "ref": "ev-3c55828f31"
+            },
+            {
+              "kind": "code",
+              "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+              "line": 72,
+              "rev": "head",
+              "quote": "GeneratedFormatterCollector.Collect(s.Left.Right, options, referenceSymbols, reportDiagnostic: null, request.Formatter, request.Surrogate, ct) is FullModel generatedModel",
+              "verified": false,
+              "note": "quote not on src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs:72 ±3 at head; not found anywhere in the file",
+              "ref": "ev-3e30bdc09c"
+            },
+            {
+              "kind": "test",
+              "name": "GeneratedFormatterForExternalTypesTests.ContractlessClassRoundTrips",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted.execution: passed (new test)",
+              "ref": "ev-494a53650c"
+            },
+            {
+              "kind": "test",
+              "name": "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership",
+              "outcome": "passed",
+              "verified": true,
+              "note": "facts.json tests.targeted.execution: passed (new test)",
+              "ref": "ev-7019ece62f"
+            },
+            {
+              "kind": "test",
+              "name": "GeneratedMessagePackFormatterTests.FormatterMustBePartial",
+              "outcome": "failed",
+              "check": "tests.fail_without_fix",
+              "verified": true,
+              "note": "facts.json tests.fail_without_fix: failed (new test)",
+              "ref": "ev-cabf78af9d"
+            },
+            {
+              "kind": "check",
+              "id": "tests.fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 6/6 failed -> tests do cover the change",
+              "ref": "ev-62faeb2508"
+            },
+            {
+              "kind": "check",
+              "id": "tests.execution_fail_without_fix",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.execution_fail_without_fix pass: new runtime tests do not compile with the source reverted (tests/MessagePack.SourceGenerator.ExecutionTests): 7 tests cannot exist without the fix; errors are the missing feature itself (see compile_failure) -> tests depend on the change",
+              "ref": "ev-dfdcb008d6"
+            },
+            {
+              "kind": "check",
+              "id": "tests.full_suite",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 173 tests, 173 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+              "ref": "ev-d448f979e6"
+            },
+            {
+              "kind": "check",
+              "id": "tests.execution_full_suite",
+              "status": "pass",
+              "verified": true,
+              "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 21/21 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 20/20 passed (base 20/20), 0 failures not on base",
+              "ref": "ev-98002ca52b"
+            }
+          ]
         }
       },
-      "status": "refused",
-      "reasons": [
-        {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
-        }
-      ]
+      "status": "proven",
+      "reasons": []
     }
   ],
   "reviewer_panel": {
@@ -401,16 +522,7 @@
     "ignored_files": [],
     "rule": "proven needs every participating reviewer to say met with verified evidence, and the clause's checks to pass"
   },
-  "disputes": [
-    {
-      "id": "finding:claude:C1",
-      "kind": "finding",
-      "about": "claude:C1",
-      "reviewers": [
-        "claude"
-      ]
-    }
-  ],
+  "disputes": [],
   "adjudication": null,
   "checked_by": {
     "tools": [
@@ -553,6 +665,25 @@
         "verified": 0,
         "rejected": 0,
         "refusals": 1
+      },
+      {
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "reviewed_at": "2026-11-14T01:56:41+02:00",
+        "inputs": [
+          "requirements: requirements/2129.yaml",
+          "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2129",
+          "facts: evidence/2129/facts.json",
+          "diff 32258fdb..083afd99 (26 non-generated files)",
+          "file contents: 19 blocks",
+          "context: 182626 chars (budget 180000)"
+        ],
+        "findings": 4,
+        "verified": 4,
+        "rejected": 0,
+        "refusals": 2
       }
     ],
     "engine": "countersign 0.1.0 under mandate messagepack-csharp v2 (39cc20606856)"
@@ -673,152 +804,102 @@
       "reviewer": "claude",
       "tier": "silent",
       "confirmed_by": []
+    },
+    {
+      "id": "N1",
+      "title": "New ExternalTypes test project is not added to the solution file",
+      "severity": "minor",
+      "category": "build",
+      "claim": "The new project tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj is not added to MessagePack.sln; it is only referenced from ExecutionTests.csproj, so solution-level builds may not include or build it consistently.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "solution_membership",
+          "status": "fail",
+          "verified": true,
+          "note": "facts.json: solution_membership fail: new project tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj is not added to MessagePack.sln (only referenced from ExecutionTests.csproj)",
+          "ref": "ev-4e1de141f2"
+        }
+      ],
+      "suggested_fix": "Add the ExternalTypes project to MessagePack.sln and verify it builds in solution context.",
+      "verified_count": 1,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "notify",
+      "confirmed_by": []
+    },
+    {
+      "id": "N2",
+      "title": "Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402",
+      "severity": "major",
+      "category": "build",
+      "claim": "Building tests/MessagePack.SourceGenerator.ExecutionTests with SDK 8.0.402 fails with CS9057 because the source generator references Microsoft.CodeAnalysis 4.12 while SDK 8 ships Roslyn 4.11; the SDK 9 override existed only in the scratch worktree, so builds on the pinned SDK cannot compile these new tests (the targeted run passes only under SDK 9).",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.targeted.execution",
+          "status": "pass",
+          "verified": true,
+          "note": "facts.json: tests.targeted.execution pass: GeneratedFormatterForExternalTypesTests: 7 passed, 0 failed (7 new test results; runtime: generator runs inside csc, no CS9057); tests/MessagePack.SourceGenerator.MapModeExecutionTests: no tests match the filter (the test file is excluded from this project)",
+          "ref": "ev-b644d3bd4a"
+        }
+      ],
+      "suggested_fix": "Align global.json/CI to SDK 9 for these projects, or align the generator's Roslyn dependency with the pinned SDK; area owner to decide.",
+      "verified_count": 1,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "ask",
+      "confirmed_by": []
+    },
+    {
+      "id": "N3",
+      "title": "New public API added without PublicAPI tracking in MessagePack.Annotations",
+      "severity": "minor",
+      "category": "maintainability",
+      "claim": "MessagePack.Annotations gains public class GeneratedMessagePackFormatterAttribute with public Type? SurrogateType, and the analyzer gains four public DiagnosticDescriptors (MsgPack019–022), but MessagePack.Annotations has no PublicAPI.*.txt so PublicApiAnalyzers did not flag the addition; future breaking changes to this surface will not be caught by that analyzer.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "public_api",
+          "status": "fail",
+          "verified": true,
+          "note": "facts.json: public_api fail: public API added: new public class MessagePack.GeneratedMessagePackFormatterAttribute (with public Type? SurrogateType) in src/MessagePack.Annotations/Attributes.cs; MessagePack.Annotations has no PublicAPI.*.txt tracking so PublicApiAnalyzers did not flag it. Also 4 new public DiagnosticDescriptors MsgPack019-022 (analyzer assembly) and 4 rows added to AnalyzerReleases.Unshipped.md",
+          "ref": "ev-e0387b49a2"
+        }
+      ],
+      "suggested_fix": "Add PublicAPI tracking for MessagePack.Annotations or review the new surface as intentional public API.",
+      "verified_count": 1,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "notify",
+      "confirmed_by": []
+    },
+    {
+      "id": "N4",
+      "title": "New StyleCop SA1203 warning in GeneratedMessagePackFormatterTests.cs",
+      "severity": "minor",
+      "category": "maintainability",
+      "claim": "A new warning SA1203 (constant fields should appear before non-constant fields) appears versus base, because the const string Members is declared after the non-constant testOutputHelper field.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "analyzers",
+          "status": "fail",
+          "verified": true,
+          "note": "facts.json: analyzers fail: 1 new warnings vs base",
+          "ref": "ev-b8090ba411"
+        }
+      ],
+      "suggested_fix": "Reorder fields so constants precede non-constant fields, or justify a suppression.",
+      "verified_count": 1,
+      "status": "verified",
+      "reviewer": "nemotron",
+      "tier": "notify",
+      "confirmed_by": []
     }
   ],
   "refused": {
-    "clauses": [
-      {
-        "id": "REQ-2129-F1",
-        "type": "functional",
-        "text": "Feature Request: Allow generation of Formatter for a type in a referenced assembly",
-        "checks": [
-          {
-            "id": "build",
-            "status": "pass"
-          },
-          {
-            "id": "tests.targeted",
-            "status": "pass"
-          }
-        ],
-        "verdicts": {
-          "claude": {
-            "verdict": "met",
-            "basis": "The feature is new and absent on base (the runtime tests don't compile with the source reverted; tests.execution_fail_without_fix pass). Under SDK 9 the 7 execution tests pass: a consuming assembly declares [GeneratedMessagePackFormatter] partial formatters for types in a test assembly that deliberately doesn't reference MessagePack (the issue's Project A scenario), and they round-trip and register in the generated resolver. This covers the clause as written. It does not cover everything the issue discusses (Union and other attribute-driven settings for external types), which I refuse below.",
-            "verified": 9,
-            "cited": 9,
-            "evidence": [
-              {
-                "kind": "code",
-                "file": "src/MessagePack.Annotations/Attributes.cs",
-                "line": 166,
-                "rev": "head",
-                "quote": "public class GeneratedMessagePackFormatterAttribute : Attribute",
-                "verified": true,
-                "note": "quote matches src/MessagePack.Annotations/Attributes.cs:166 at head 083afd99",
-                "ref": "ev-75f4296476"
-              },
-              {
-                "kind": "code",
-                "file": "tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj",
-                "line": 4,
-                "rev": "head",
-                "quote": "This assembly deliberately does NOT reference MessagePack.",
-                "verified": true,
-                "note": "quote matches tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj:4 at head 083afd99",
-                "ref": "ev-922578020e"
-              },
-              {
-                "kind": "code",
-                "file": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs",
-                "line": 9,
-                "rev": "head",
-                "quote": "[GeneratedMessagePackFormatter]",
-                "verified": true,
-                "note": "quote matches tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs:9 at head 083afd99",
-                "ref": "ev-cbd24f9115"
-              },
-              {
-                "kind": "test",
-                "name": "GeneratedFormatterForExternalTypesTests.ContractlessClassRoundTrips",
-                "outcome": "passed",
-                "check": "tests.targeted.execution",
-                "verified": true,
-                "note": "facts.json tests.targeted.execution: passed (new test)",
-                "ref": "ev-0b4fbdae24"
-              },
-              {
-                "kind": "test",
-                "name": "GeneratedFormatterForExternalTypesTests.GeneratedFormattersAreRegisteredInGeneratedResolver",
-                "outcome": "passed",
-                "check": "tests.targeted.execution",
-                "verified": true,
-                "note": "facts.json tests.targeted.execution: passed (new test)",
-                "ref": "ev-3d8a67cf2e"
-              },
-              {
-                "kind": "test",
-                "name": "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership",
-                "outcome": "passed",
-                "check": "tests.targeted.execution",
-                "verified": true,
-                "note": "facts.json tests.targeted.execution: passed (new test)",
-                "ref": "ev-0ecf09dcfa"
-              },
-              {
-                "kind": "check",
-                "id": "tests.execution_fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.execution_fail_without_fix pass: new runtime tests do not compile with the source reverted (tests/MessagePack.SourceGenerator.ExecutionTests): 7 tests cannot exist without the fix; errors are the missing feature itself (see compile_failure) -> tests depend on the change",
-                "ref": "ev-05862d94ce"
-              },
-              {
-                "kind": "check",
-                "id": "tests.execution_full_suite",
-                "verified": true,
-                "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 21/21 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 20/20 passed (base 20/20), 0 failures not on base",
-                "ref": "ev-fbc74f77d6"
-              },
-              {
-                "kind": "check",
-                "id": "tests.fail_without_fix",
-                "verified": true,
-                "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 6/6 failed -> tests do cover the change",
-                "ref": "ev-d78b746a74"
-              }
-            ]
-          },
-          "codex": {
-            "verdict": "met",
-            "basis": "The supplied execution tests show generated formatters for external types pass, and those tests depend on the new feature according to the fail-without-fix result.",
-            "verified": 3,
-            "cited": 3,
-            "evidence": [
-              {
-                "kind": "check",
-                "id": "tests.execution_full_suite",
-                "verified": true,
-                "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 21/21 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 20/20 passed (base 20/20), 0 failures not on base",
-                "ref": "ev-fbc74f77d6"
-              },
-              {
-                "kind": "test",
-                "name": "GeneratedFormatterForExternalTypesTests.MessagePackObjectCanContainExternalTypes",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted.execution: passed (new test)",
-                "ref": "ev-648e85e32d"
-              },
-              {
-                "kind": "test",
-                "name": "GeneratedFormatterForExternalTypesTests.GeneratedFormattersAreRegisteredInGeneratedResolver",
-                "outcome": "passed",
-                "verified": true,
-                "note": "facts.json tests.targeted.execution: passed (new test)",
-                "ref": "ev-fc2d818fd3"
-              }
-            ]
-          }
-        },
-        "status": "refused",
-        "reasons": [
-          {
-            "code": "missing_review",
-            "detail": "nemotron gave no verdict"
-          }
-        ]
-      }
-    ],
+    "clauses": [],
     "reviewer_refusals": [
       {
         "topic": "Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching)",
@@ -847,6 +928,20 @@
         "who_should_decide": "area owner",
         "reviewer": "codex",
         "model": "GPT-6"
+      },
+      {
+        "topic": "Generated output of FormatterTemplate.cs and StringKeyFormatterTemplate.cs",
+        "reason": "The two generated template .cs files were listed as changed but their contents/diffs were not provided, so the exact generated formatter class text could not be inspected directly; behavior was verified through the passing execution tests instead.",
+        "who_should_decide": "area owner (or re-run this review with the generated file contents)",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      {
+        "topic": "Security review of serializing externally defined types via generated formatters",
+        "reason": "No runtime deserialization code was changed by this branch, but the library deserializes untrusted input and this feature lets formats be generated for types the reviewer cannot inspect; a formal security judgement is beyond the provided evidence.",
+        "who_should_decide": "area owner / security reviewer",
+        "reviewer": "nemotron",
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
       }
     ]
   },
@@ -889,16 +984,17 @@
     }
   ],
   "residual_risk": [
-    "REQ-2129-F1 not proven: missing_review",
     "Reviewer refusal (claude): Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching)",
     "Reviewer refusal (claude): Whether the API design (SurrogateType, contractless default for external types) is the right answer to the issue, which also asks for Union and other attribute-driven settings",
     "Reviewer refusal (claude): Security/trust implications of generating formatters that access members of external types (e.g. non-public members)",
     "Reviewer refusal (codex): Full acceptance and compatibility review of the external formatter feature",
+    "Reviewer refusal (nemotron): Generated output of FormatterTemplate.cs and StringKeyFormatterTemplate.cs",
+    "Reviewer refusal (nemotron): Security review of serializing externally defined types via generated formatters",
     "Open major finding claude:C1: New public API in MessagePack.Annotations is not tracked by any PublicAPI file",
+    "Open major finding nemotron:N2: Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402",
     "tests.MessagePack.Tests not run (runtime library src/MessagePack not modified by the change; suite not run)",
     "build.net472/netstandard not run (only the net8.0 slice of src/MessagePack was built (Linux container, Debug))",
     "benchmarks not run (no runtime serialization hot path touched (generator/analyzer only))",
-    "1 disputed item(s) were not adjudicated (adjudicator gemini has not run)",
     "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
   ],
   "risk": {
@@ -1032,21 +1128,21 @@
         "link": "#risk"
       },
       {
-        "text": "Also routes to a human. Claude found a verified major issue: New public API in MessagePack.Annotations is not tracked by any PublicAPI file",
+        "text": "Also routes to a human. Claude found a verified major issue: New public API in MessagePack.Annotations is not tracked by any PublicAPI file (and 1 more finding)",
         "link": "#f-claude-C1"
       },
       {
-        "text": "Also routes to a human. 1 of 1 requirement clauses not proven. No verdict from Nemotron (2 of 3 reviewers answered)",
-        "link": "#chain-REQ-2129-F1"
+        "text": "Also routes to a human. The AI declined to decide 6 questions, e.g. Correctness of GeneratedFormatterCollector.cs and the MessagePackGenerator.cs pipeline changes beyond what the 7 execution and 6 generator tests exercise (generic formatters, nested/abstract types, interaction with existing [MessagePackObject] collection, incremental-generator caching)",
+        "link": "#refused"
       }
     ],
-    "more_drivers": 15,
+    "more_drivers": 20,
     "trace": [
       {
         "id": "REQ-2129-F1",
-        "status": "refused",
-        "label": "refused",
-        "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+        "status": "proven",
+        "label": "proven",
+        "why": "All 3 reviewers say met (21 verified citations); build, tests.targeted pass",
         "anchor": "chain-REQ-2129-F1"
       }
     ],
@@ -1068,7 +1164,26 @@
             "label": "Attributes.cs:166 @head"
           }
         ],
-        "shared_with": []
+        "shared_with": [
+          "nemotron"
+        ]
+      },
+      {
+        "key": "nemotron:N2",
+        "anchor": "f-nemotron-N2",
+        "reviewer": "nemotron",
+        "severity": "major",
+        "title": "Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402",
+        "tier": "ask",
+        "chips": [
+          {
+            "ref": "ev-b644d3bd4a",
+            "label": "check tests.targeted.execution pass"
+          }
+        ],
+        "shared_with": [
+          "claude"
+        ]
       },
       {
         "key": "claude:C2",
@@ -1083,29 +1198,12 @@
             "label": "check solution_membership"
           }
         ],
-        "shared_with": []
-      },
-      {
-        "key": "claude:C3",
-        "anchor": "f-claude-C3",
-        "reviewer": "claude",
-        "severity": "minor",
-        "title": "New StyleCop warning SA1203 in the new test file",
-        "tier": "notify",
-        "chips": [
-          {
-            "ref": "ev-4c0f1d94ae",
-            "label": "check analyzers"
-          },
-          {
-            "ref": "ev-e94831e6af",
-            "label": "GeneratedMessagePackFormatterTests.cs:22 @head"
-          }
-        ],
-        "shared_with": []
+        "shared_with": [
+          "nemotron"
+        ]
       }
     ],
-    "found_total": 4,
+    "found_total": 8,
     "rejected_total": 0,
     "refused": [
       {
@@ -1151,11 +1249,31 @@
           "area owner"
         ],
         "anchor": "refusal-4"
+      },
+      {
+        "topic": "Generated output of FormatterTemplate.cs and StringKeyFormatterTemplate.cs",
+        "why": "The two generated template .cs files were listed as changed but their contents/diffs were not provided, so the exact generated formatter class text could not be inspected directly; behavior was verified through the passing execution tests instead.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner (or re-run this review with the generated file contents)"
+        ],
+        "anchor": "refusal-5"
+      },
+      {
+        "topic": "Security review of serializing externally defined types via generated formatters",
+        "why": "No runtime deserialization code was changed by this branch, but the library deserializes untrusted input and this feature lets formats be generated for types the reviewer cannot inspect; a formal security judgement is beyond the provided evidence.",
+        "raised_by": [
+          "nemotron"
+        ],
+        "who_should_decide": [
+          "area owner / security reviewer"
+        ],
+        "anchor": "refusal-6"
       }
     ],
-    "refused_clauses": [
-      "REQ-2129-F1"
-    ],
+    "refused_clauses": [],
     "not_checked": [
       {
         "id": "tests.MessagePack.Tests",
@@ -1182,20 +1300,16 @@
         "link": "#f-claude-C1"
       },
       {
-        "text": "Not proven by the AI: REQ-2129-F1. Signing means you judge them yourself.",
-        "link": "#chain-REQ-2129-F1"
+        "text": "Open major finding: Execution tests require SDK 9 / Roslyn 4.12 but the repo pins SDK 8.0.402",
+        "link": "#f-nemotron-N2"
       },
       {
-        "text": "4 questions the AI declined to decide (listed above) are yours.",
+        "text": "6 questions the AI declined to decide (listed above) are yours.",
         "link": "#refused"
       },
       {
         "text": "Not run: tests.MessagePack.Tests, build.net472/netstandard, benchmarks",
         "link": "#not-checked"
-      },
-      {
-        "text": "1 disputed item not adjudicated",
-        "link": "#panel"
       },
       {
         "text": "Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance",
@@ -1218,9 +1332,9 @@
     {
       "id": "REQ-2129-F1",
       "text": "Feature Request: Allow generation of Formatter for a type in a referenced assembly",
-      "status": "refused",
-      "label": "refused",
-      "why": "No verdict from Nemotron (2 of 3 reviewers answered)",
+      "status": "proven",
+      "label": "proven",
+      "why": "All 3 reviewers say met (21 verified citations); build, tests.targeted pass",
       "checks": [
         {
           "id": "build",
@@ -1271,28 +1385,47 @@
             "ev-fc2d818fd3"
           ],
           "unverified_refs": []
+        },
+        {
+          "reviewer": "nemotron",
+          "verdict": "met",
+          "basis": "The branch adds the [GeneratedMessagePackFormatter] attribute (Attributes.cs:166), generator discovery of such formatters (MessagePackGenerator.cs:30) and their collection into the resolver model (GeneratedFormatterCollector.cs:72), with contractless and surrogate member selection; execution tests round-trip types from ExternalTypes, an assembly without any MessagePack reference, and pass, while the same tests fail on base source and the execution tests do not compile without the fix.",
+          "verified": 9,
+          "cited": 10,
+          "refs": [
+            "ev-75f4296476",
+            "ev-3c55828f31",
+            "ev-494a53650c",
+            "ev-7019ece62f",
+            "ev-cabf78af9d",
+            "ev-62faeb2508",
+            "ev-dfdcb008d6",
+            "ev-d448f979e6",
+            "ev-98002ca52b"
+          ],
+          "unverified_refs": [
+            "ev-3e30bdc09c"
+          ]
         }
       ],
       "agree": [
         "claude",
-        "codex"
-      ],
-      "disagree": [],
-      "missing": [
+        "codex",
         "nemotron"
       ],
-      "tests_fail_without_fix": [],
-      "tests_pass_without_fix": [],
-      "reasons": [
+      "disagree": [],
+      "missing": [],
+      "tests_fail_without_fix": [
         {
-          "code": "missing_review",
-          "detail": "nemotron gave no verdict"
+          "name": "GeneratedMessagePackFormatterTests.FormatterMustBePartial",
+          "ref": "ev-cabf78af9d",
+          "without_fix": "failed"
         }
       ],
+      "tests_pass_without_fix": [],
+      "reasons": [],
       "adjudication": null,
-      "settle": [
-        "A verdict from Nemotron with verified evidence"
-      ]
+      "settle": []
     }
   ],
   "panel": {
@@ -1310,32 +1443,7 @@
         "citations_rejected": 0,
         "findings_verified": 4,
         "findings_rejected": 0,
-        "only_this_reviewer": [
-          {
-            "id": "C1",
-            "severity": "major",
-            "title": "New public API in MessagePack.Annotations is not tracked by any PublicAPI file",
-            "status": "verified"
-          },
-          {
-            "id": "C2",
-            "severity": "minor",
-            "title": "New test-support project is not in MessagePack.sln",
-            "status": "verified"
-          },
-          {
-            "id": "C3",
-            "severity": "minor",
-            "title": "New StyleCop warning SA1203 in the new test file",
-            "status": "verified"
-          },
-          {
-            "id": "C4",
-            "severity": "info",
-            "title": "External-type execution tests are excluded from the MapMode execution suite",
-            "status": "verified"
-          }
-        ],
+        "only_this_reviewer": [],
         "refusals": 3
       },
       {
@@ -1356,16 +1464,22 @@
       },
       {
         "reviewer": "nemotron",
-        "missing": true,
+        "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "vendor": "NVIDIA",
+        "prompt_version": "review-v1",
+        "simulated": false,
         "verdicts": {
-          "REQ-2129-F1": null
-        }
+          "REQ-2129-F1": "met"
+        },
+        "citations_verified": 13,
+        "citations_rejected": 1,
+        "findings_verified": 4,
+        "findings_rejected": 0,
+        "only_this_reviewer": [],
+        "refusals": 2
       }
     ],
-    "callouts": [
-      "Codex said met to all 1 clauses; Claude raised a verified major finding they did not (claude:C1: New public API in MessagePack.Annotations is not tracked by any PublicAPI file). The finding alone routes the change to a human. Unanimity is required: one verified objection is enough to send it to Toivo.",
-      "Nemotron is on the panel but has no review yet, so no clause can be proven until it answers."
-    ],
+    "callouts": [],
     "adjudicator": "gemini"
   },
   "evidence_index": {
@@ -1381,6 +1495,7 @@
       "note": "quote matches src/MessagePack.Annotations/Attributes.cs:166 at head 083afd99",
       "cited_by": [
         "claude on REQ-2129-F1",
+        "nemotron on REQ-2129-F1",
         "claude:C1"
       ],
       "excerpt": {
@@ -1672,6 +1787,246 @@
       ],
       "without_fix": null
     },
+    "ev-3c55828f31": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+      "line": 30,
+      "rev": "head",
+      "quote": "$\"{AttributeNamespace}.{GeneratedMessagePackFormatterAttributeName}\"",
+      "ref": "ev-3c55828f31",
+      "label": "MessagePackGenerator.cs:30 @head",
+      "verified": true,
+      "note": "quote matches src/MessagePack.SourceGenerator/MessagePackGenerator.cs:30 at head 083afd99",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "excerpt": {
+        "sha": "083afd99",
+        "start": 27,
+        "highlight": 30,
+        "lines": [
+          "            transform: static (context, _) => (ITypeSymbol)context.TargetSymbol);",
+          "",
+          "        var generatedFormatters = context.SyntaxProvider.ForAttributeWithMetadataName(",
+          "            $\"{AttributeNamespace}.{GeneratedMessagePackFormatterAttributeName}\",",
+          "            predicate: static (node, _) => node is ClassDeclarationSyntax,",
+          "            transform: static (context, _) => new GeneratedFormatterRequest(",
+          "                (INamedTypeSymbol)context.TargetSymbol,"
+        ]
+      }
+    },
+    "ev-3e30bdc09c": {
+      "kind": "code",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+      "line": 72,
+      "rev": "head",
+      "quote": "GeneratedFormatterCollector.Collect(s.Left.Right, options, referenceSymbols, reportDiagnostic: null, request.Formatter, request.Surrogate, ct) is FullModel generatedModel",
+      "ref": "ev-3e30bdc09c",
+      "label": "GeneratedFormatterCollector.cs:72 @head",
+      "verified": false,
+      "note": "quote not on src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs:72 ±3 at head; not found anywhere in the file",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "excerpt": {
+        "sha": "083afd99",
+        "start": 69,
+        "highlight": null,
+        "lines": [
+          "                MsgPack00xMessagePackAnalyzer.GeneratedFormatterDataTypeNotSupported,",
+          "                location,",
+          "                formatterName,",
+          "                dataTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)));",
+          "            return null;",
+          "        }",
+          ""
+        ]
+      }
+    },
+    "ev-494a53650c": {
+      "kind": "test",
+      "name": "GeneratedFormatterForExternalTypesTests.ContractlessClassRoundTrips",
+      "outcome": "passed",
+      "ref": "ev-494a53650c",
+      "label": "test ContractlessClassRoundTrips passed",
+      "verified": true,
+      "note": "facts.json tests.targeted.execution: passed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted.execution",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2129/logs/execution.ExecutionTests.build.log",
+            "evidence/2129/logs/execution.ExecutionTests.targeted.log",
+            "evidence/2129/logs/execution.ExecutionTests.full.log",
+            "evidence/2129/logs/execution.MapModeExecutionTests.build.log",
+            "evidence/2129/logs/execution.MapModeExecutionTests.targeted.log",
+            "evidence/2129/logs/execution.MapModeExecutionTests.full.log"
+          ]
+        }
+      ],
+      "without_fix": null
+    },
+    "ev-7019ece62f": {
+      "kind": "test",
+      "name": "GeneratedFormatterForExternalTypesTests.SurrogateControlsKeysAndMembership",
+      "outcome": "passed",
+      "ref": "ev-7019ece62f",
+      "label": "test SurrogateControlsKeysAndMembership passed",
+      "verified": true,
+      "note": "facts.json tests.targeted.execution: passed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted.execution",
+          "outcome": "passed",
+          "project": "tests/MessagePack.SourceGenerator.ExecutionTests",
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2129/logs/execution.ExecutionTests.build.log",
+            "evidence/2129/logs/execution.ExecutionTests.targeted.log",
+            "evidence/2129/logs/execution.ExecutionTests.full.log",
+            "evidence/2129/logs/execution.MapModeExecutionTests.build.log",
+            "evidence/2129/logs/execution.MapModeExecutionTests.targeted.log",
+            "evidence/2129/logs/execution.MapModeExecutionTests.full.log"
+          ]
+        }
+      ],
+      "without_fix": null
+    },
+    "ev-cabf78af9d": {
+      "kind": "test",
+      "name": "GeneratedMessagePackFormatterTests.FormatterMustBePartial",
+      "outcome": "failed",
+      "check": "tests.fail_without_fix",
+      "ref": "ev-cabf78af9d",
+      "label": "test FormatterMustBePartial failed",
+      "verified": true,
+      "note": "facts.json tests.fail_without_fix: failed (new test)",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "runs": [
+        {
+          "check": "tests.targeted",
+          "outcome": "passed",
+          "project": null,
+          "run": "change head",
+          "without_fix": false,
+          "logs": [
+            "evidence/2129/logs/tests_targeted.1.log"
+          ]
+        },
+        {
+          "check": "tests.fail_without_fix",
+          "outcome": "failed",
+          "project": null,
+          "run": "source reverted, tests kept (without the fix)",
+          "without_fix": true,
+          "logs": [
+            "evidence/2129/logs/tests_fail_without_fix.1.log"
+          ]
+        }
+      ],
+      "without_fix": "failed"
+    },
+    "ev-62faeb2508": {
+      "kind": "check",
+      "id": "tests.fail_without_fix",
+      "status": "pass",
+      "ref": "ev-62faeb2508",
+      "label": "check tests.fail_without_fix pass",
+      "verified": true,
+      "note": "facts.json: tests.fail_without_fix pass: new tests fail on base source: 6/6 failed -> tests do cover the change",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "new tests fail on base source: 6/6 failed -> tests do cover the change",
+        "tool": "dotnet test (source reverted, tests kept)",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2129/logs/tests_fail_without_fix.1.log"
+        ]
+      }
+    },
+    "ev-dfdcb008d6": {
+      "kind": "check",
+      "id": "tests.execution_fail_without_fix",
+      "status": "pass",
+      "ref": "ev-dfdcb008d6",
+      "label": "check tests.execution_fail_without_fix pass",
+      "verified": true,
+      "note": "facts.json: tests.execution_fail_without_fix pass: new runtime tests do not compile with the source reverted (tests/MessagePack.SourceGenerator.ExecutionTests): 7 tests cannot exist without the fix; errors are the missing feature itself (see compile_failure) -> tests depend on the change",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "new runtime tests do not compile with the source reverted (tests/MessagePack.SourceGenerator.ExecutionTests): 7 tests cannot exist without the fix; errors are the missing feature itself (see compile_failure) -> tests depend on the change",
+        "tool": "dotnet test (source reverted, tests kept) - ExecutionTests",
+        "tool_version": "9.0.321",
+        "logs": [
+          "evidence/2129/logs/execution_fail_without_fix.ExecutionTests.build.log",
+          "evidence/2129/logs/execution_fail_without_fix.MapModeExecutionTests.build.log",
+          "evidence/2129/logs/execution_fail_without_fix.MapModeExecutionTests.targeted.log",
+          "evidence/2129/logs/execution_fail_without_fix.MapModeExecutionTests.full.log"
+        ]
+      }
+    },
+    "ev-d448f979e6": {
+      "kind": "check",
+      "id": "tests.full_suite",
+      "status": "pass",
+      "ref": "ev-d448f979e6",
+      "label": "check tests.full_suite pass",
+      "verified": true,
+      "note": "facts.json: tests.full_suite pass: tests/MessagePack.SourceGenerator.Tests: 173 tests, 173 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.Tests: 173 tests, 173 passed, 0 failed (0 not failing on base, 0 also failing on base)",
+        "tool": "dotnet test",
+        "tool_version": "8.0.402",
+        "logs": [
+          "evidence/2129/logs/tests_full_suite.log"
+        ]
+      }
+    },
+    "ev-98002ca52b": {
+      "kind": "check",
+      "id": "tests.execution_full_suite",
+      "status": "pass",
+      "ref": "ev-98002ca52b",
+      "label": "check tests.execution_full_suite pass",
+      "verified": true,
+      "note": "facts.json: tests.execution_full_suite pass: tests/MessagePack.SourceGenerator.ExecutionTests: 21/21 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 20/20 passed (base 20/20), 0 failures not on base",
+      "cited_by": [
+        "nemotron on REQ-2129-F1"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "tests/MessagePack.SourceGenerator.ExecutionTests: 21/21 passed (base 14/14), 0 failures not on base; tests/MessagePack.SourceGenerator.MapModeExecutionTests: 20/20 passed (base 20/20), 0 failures not on base",
+        "tool": "dotnet test (whole ExecutionTests, MapModeExecutionTests) vs base",
+        "tool_version": "9.0.321",
+        "logs": [
+          "evidence/2129/logs/execution.ExecutionTests.full.log",
+          "evidence/2129/logs/execution.MapModeExecutionTests.full.log"
+        ]
+      }
+    },
     "ev-351e9825c5": {
       "kind": "check",
       "id": "public_api",
@@ -1805,6 +2160,89 @@
           "evidence/2129/logs/execution.MapModeExecutionTests.targeted.log",
           "evidence/2129/logs/execution.MapModeExecutionTests.full.log"
         ]
+      }
+    },
+    "ev-4e1de141f2": {
+      "kind": "check",
+      "id": "solution_membership",
+      "status": "fail",
+      "ref": "ev-4e1de141f2",
+      "label": "check solution_membership fail",
+      "verified": true,
+      "note": "facts.json: solution_membership fail: new project tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj is not added to MessagePack.sln (only referenced from ExecutionTests.csproj)",
+      "cited_by": [
+        "nemotron:N1"
+      ],
+      "check_result": {
+        "status": "fail",
+        "summary": "new project tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj is not added to MessagePack.sln (only referenced from ExecutionTests.csproj)",
+        "tool": "grep MessagePack.sln",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-b644d3bd4a": {
+      "kind": "check",
+      "id": "tests.targeted.execution",
+      "status": "pass",
+      "ref": "ev-b644d3bd4a",
+      "label": "check tests.targeted.execution pass",
+      "verified": true,
+      "note": "facts.json: tests.targeted.execution pass: GeneratedFormatterForExternalTypesTests: 7 passed, 0 failed (7 new test results; runtime: generator runs inside csc, no CS9057); tests/MessagePack.SourceGenerator.MapModeExecutionTests: no tests match the filter (the test file is excluded from this project)",
+      "cited_by": [
+        "nemotron:N2"
+      ],
+      "check_result": {
+        "status": "pass",
+        "summary": "GeneratedFormatterForExternalTypesTests: 7 passed, 0 failed (7 new test results; runtime: generator runs inside csc, no CS9057); tests/MessagePack.SourceGenerator.MapModeExecutionTests: no tests match the filter (the test file is excluded from this project)",
+        "tool": "dotnet build + dotnet test (ExecutionTests, MapModeExecutionTests)",
+        "tool_version": "9.0.321",
+        "logs": [
+          "evidence/2129/logs/execution.ExecutionTests.build.log",
+          "evidence/2129/logs/execution.ExecutionTests.targeted.log",
+          "evidence/2129/logs/execution.ExecutionTests.full.log",
+          "evidence/2129/logs/execution.MapModeExecutionTests.build.log",
+          "evidence/2129/logs/execution.MapModeExecutionTests.targeted.log",
+          "evidence/2129/logs/execution.MapModeExecutionTests.full.log"
+        ]
+      }
+    },
+    "ev-e0387b49a2": {
+      "kind": "check",
+      "id": "public_api",
+      "status": "fail",
+      "ref": "ev-e0387b49a2",
+      "label": "check public_api fail",
+      "verified": true,
+      "note": "facts.json: public_api fail: public API added: new public class MessagePack.GeneratedMessagePackFormatterAttribute (with public Type? SurrogateType) in src/MessagePack.Annotations/Attributes.cs; MessagePack.Annotations has no PublicAPI.*.txt tracking so PublicApiAnalyzers did not flag it. Also 4 new public DiagnosticDescriptors MsgPack019-022 (analyzer assembly) and 4 rows added to AnalyzerReleases.Unshipped.md",
+      "cited_by": [
+        "nemotron:N3"
+      ],
+      "check_result": {
+        "status": "fail",
+        "summary": "public API added: new public class MessagePack.GeneratedMessagePackFormatterAttribute (with public Type? SurrogateType) in src/MessagePack.Annotations/Attributes.cs; MessagePack.Annotations has no PublicAPI.*.txt tracking so PublicApiAnalyzers did not flag it. Also 4 new public DiagnosticDescriptors MsgPack019-022 (analyzer assembly) and 4 rows added to AnalyzerReleases.Unshipped.md",
+        "tool": "git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/",
+        "tool_version": null,
+        "logs": []
+      }
+    },
+    "ev-b8090ba411": {
+      "kind": "check",
+      "id": "analyzers",
+      "status": "fail",
+      "ref": "ev-b8090ba411",
+      "label": "check analyzers fail",
+      "verified": true,
+      "note": "facts.json: analyzers fail: 1 new warnings vs base",
+      "cited_by": [
+        "nemotron:N4"
+      ],
+      "check_result": {
+        "status": "fail",
+        "summary": "1 new warnings vs base",
+        "tool": "dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base",
+        "tool_version": null,
+        "logs": []
       }
     }
   }
