@@ -93,7 +93,7 @@ def _more(r: dict, v, ci: dict) -> dict:
     out["nemotron_survivors_flagged"] = len(nem["flagged_test_survivors"])
     out["nemotron_survivors_reviewed"] = len(nem["reviewed_test_survivors"])
     # the seven real changes
-    real = [c for c in _json("measurement/results.json")["changes"] if not c.get("mutant")]
+    real = [c for c in _json("measurement/results.json")["changes"] if not c.get("mutant") and not c.get("benchmark") and not c["change"].startswith("var-")]
     agent = [c for c in real if not c["change"].startswith("up-")]
     human = ("ask", "block")
     out["real_changes"] = len(real)

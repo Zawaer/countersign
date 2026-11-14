@@ -8,7 +8,7 @@ Short answer: on small changes Countersign costs the owner more reading time tha
 
 | Reviewer | Tokens per change | Metered? | Price |
 |---|---|---|---|
-| Nemotron (CI job) | One review call: 8.7k on a 1-line docs fix (up-1967), <!--n:nemotron_call_min_k-->38<!--/n-->k to <!--n:nemotron_call_max_k-->70<!--/n-->k on everything from 2 to 237 files. A JSON repair turn added 45k to 54k on 2 of 4 agent changes | yes, the API's `usage` field, per change | $0 (NVIDIA free tier, about 40 requests/min) |
+| Nemotron (CI job) | One review call: 8.7k on a 1-line docs fix (up-1967), <!--n:nemotron_call_min_k-->38<!--/n-->k to <!--n:nemotron_call_max_k-->71<!--/n-->k on everything from 2 to 237 files. A JSON repair turn added 45k to 54k on 2 of 4 agent changes | yes, the API's `usage` field, per change | $0 (NVIDIA free tier, about 40 requests/min) |
 | Codex | about 126k (two passes) on the agent changes, 90k on the controls | no: run summaries, split evenly over the changes in a run | unknown (OpenAI credits) |
 | Claude | about 48k (v1 pass); later passes not recorded | no: one usage report for four changes; three runs unknown | unknown (subscription) |
 
@@ -53,5 +53,5 @@ All reviewers together: <!--n:tokens_agent_min_k-->239<!--/n-->k to <!--n:tokens
 ## Three numbers for a slide
 
 1. **<!--n:history_cleared-->24<!--/n--> of <!--n:history_prs-->109<!--/n--> real PRs cleared by the AI, <!--n:history_escapes_cleared-->0<!--/n--> of <!--n:history_escapes-->11<!--/n--> escapes among them** (real; [measurement/history/results.json](../measurement/history/results.json)).
-2. **<!--n:nemotron_call_min_k-->38<!--/n-->k to <!--n:nemotron_call_max_k-->70<!--/n-->k tokens and about 2 CI minutes per review, from 2 to 237 files** (measured; Nemotron rows in [measurement/costs.yaml](../measurement/costs.yaml), CRACI runs 43546838730 and 43530175195).
+2. **<!--n:nemotron_call_min_k-->38<!--/n-->k to <!--n:nemotron_call_max_k-->71<!--/n-->k tokens and about 2 CI minutes per review, from 2 to 237 files** (measured; Nemotron rows in [measurement/costs.yaml](../measurement/costs.yaml), CRACI runs 43546838730 and 43530175195).
 3. **23% fewer human minutes a week with escapes not rising: 549 vs 710 min, 0.13 vs 0.16 escapes** (simulated; [measurement/simulation/results.json](../measurement/simulation/results.json)).

@@ -53,4 +53,4 @@ More refusals for fewer escapes. Unanimity: each added reviewer only adds cautio
 
 - **What would make us distrust our output?** Citations that stop verifying, reviewers that always agree, missed canaries, escapes in AI-cleared areas. Each is measured; the last two drop trust automatically.
 - **Who owns the decision?** The owner of the most sensitive area touched, named in the signed mandate. Only a signature merges.
-- **How does it scale?** Not by saving reading time on small changes. Machine cost is bounded (<!--n:nemotron_call_min_k-->38<!--/n-->k to <!--n:nemotron_call_max_k-->70<!--/n-->k tokens, about 2 CI minutes per review, any size); proven changes cost no human time; every decision has a name ([SCALING.md](SCALING.md)).
+- **How does it scale?** Not by saving reading time on small changes. Machine cost is bounded (<!--n:nemotron_call_min_k-->38<!--/n-->k to <!--n:nemotron_call_max_k-->71<!--/n-->k tokens, about 2 CI minutes per review, any size); proven changes cost no human time; every decision has a name ([SCALING.md](SCALING.md)).

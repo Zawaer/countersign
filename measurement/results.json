@@ -4,6 +4,7 @@
     {
       "change": "2129",
       "mutant": false,
+      "benchmark": false,
       "of": null,
       "mutation": null,
       "tier": "block",
@@ -23,6 +24,7 @@
     {
       "change": "2129-mut1",
       "mutant": true,
+      "benchmark": false,
       "of": "2129",
       "mutation": {
         "of": "2129",
@@ -67,6 +69,7 @@
     {
       "change": "2129-mut2",
       "mutant": true,
+      "benchmark": false,
       "of": "2129",
       "mutation": {
         "of": "2129",
@@ -106,6 +109,7 @@
     {
       "change": "2234",
       "mutant": false,
+      "benchmark": false,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -132,6 +136,7 @@
     {
       "change": "2234-inject",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "of": "2234",
@@ -181,6 +186,7 @@
     {
       "change": "2234-mut1",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
@@ -227,6 +233,7 @@
     {
       "change": "2234-mut2",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
@@ -275,6 +282,7 @@
     {
       "change": "2234-mut3",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "of": "2234",
@@ -321,6 +329,7 @@
     {
       "change": "2234-mut4",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "of": "2234",
@@ -369,6 +378,7 @@
     {
       "change": "2234-mut5",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "of": "2234",
@@ -425,6 +435,7 @@
     {
       "change": "2234-mut6",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "of": "2234",
@@ -508,6 +519,7 @@
     {
       "change": "2234-mut7",
       "mutant": true,
+      "benchmark": false,
       "of": "2234",
       "mutation": {
         "of": "2234",
@@ -556,6 +568,7 @@
     {
       "change": "2283",
       "mutant": false,
+      "benchmark": false,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -581,6 +594,7 @@
     {
       "change": "2283-inject",
       "mutant": true,
+      "benchmark": false,
       "of": "2283",
       "mutation": {
         "of": "2283",
@@ -628,6 +642,7 @@
     {
       "change": "2283-mut1",
       "mutant": true,
+      "benchmark": false,
       "of": "2283",
       "mutation": {
         "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
@@ -672,6 +687,7 @@
     {
       "change": "2283-mut2",
       "mutant": true,
+      "benchmark": false,
       "of": "2283",
       "mutation": {
         "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
@@ -722,6 +738,7 @@
     {
       "change": "2283-mut3",
       "mutant": true,
+      "benchmark": false,
       "of": "2283",
       "mutation": {
         "of": "2283",
@@ -804,6 +821,7 @@
     {
       "change": "2283-mut4",
       "mutant": true,
+      "benchmark": false,
       "of": "2283",
       "mutation": {
         "of": "2283",
@@ -846,6 +864,7 @@
     {
       "change": "2283-mut5",
       "mutant": true,
+      "benchmark": false,
       "of": "2283",
       "mutation": {
         "of": "2283",
@@ -893,6 +912,7 @@
     {
       "change": "2283-sec1",
       "mutant": true,
+      "benchmark": false,
       "of": "2283",
       "mutation": {
         "of": "2283",
@@ -940,6 +960,7 @@
     {
       "change": "2297",
       "mutant": false,
+      "benchmark": false,
       "of": null,
       "mutation": null,
       "tier": "block",
@@ -959,6 +980,7 @@
     {
       "change": "up-1934",
       "mutant": false,
+      "benchmark": false,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -978,6 +1000,7 @@
     {
       "change": "up-1967",
       "mutant": false,
+      "benchmark": false,
       "of": null,
       "mutation": null,
       "tier": "notify",
@@ -998,6 +1021,7 @@
     {
       "change": "up-2022",
       "mutant": false,
+      "benchmark": false,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -1017,6 +1041,7 @@
     {
       "change": "var-2234-v1",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -1041,6 +1066,7 @@
     {
       "change": "var-2234-v2",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -1065,6 +1091,7 @@
     {
       "change": "var-2234-v3",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "block",
@@ -1084,6 +1111,7 @@
     {
       "change": "var-2234-v4",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -1116,6 +1144,7 @@
     {
       "change": "var-2283-v1",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -1141,6 +1170,7 @@
     {
       "change": "var-2283-v2",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -1166,6 +1196,7 @@
     {
       "change": "var-2283-v3",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "ask",
@@ -1192,6 +1223,7 @@
     {
       "change": "var-2283-v4",
       "mutant": false,
+      "benchmark": true,
       "of": null,
       "mutation": null,
       "tier": "block",
@@ -2473,7 +2505,7 @@
       "how": "seeded defects the AI would have cleared"
     },
     "share_routed_to_humans": {
-      "value": 0.93,
+      "value": 0.86,
       "simulated": false,
       "how": "real changes (not mutants) at ask/block"
     },
@@ -2505,17 +2537,17 @@
       "how": "verified vs rejected (unsupported) findings over all replayed changes"
     },
     "human_minutes_full_read": {
-      "value": 564.4,
+      "value": 439.9,
       "simulated": true,
       "how": "reading-speed model in the mandate: lines/min + minutes per file"
     },
     "human_minutes_with_pack": {
-      "value": 404,
+      "value": 188,
       "simulated": true,
       "how": "pack reading time by tier + per refused item + per verified finding"
     },
     "review_time_saved_share": {
-      "value": 0.28,
+      "value": 0.57,
       "simulated": true,
       "how": "1 - with_pack / full_read"
     },
@@ -2798,15 +2830,15 @@
           "confirmed_by_another": 1,
           "missed_others_verified_major": 1
         },
-        "codex": {
-          "major_raised_verified": 0,
-          "confirmed_by_another": 0,
-          "missed_others_verified_major": 6
-        },
         "nemotron": {
           "major_raised_verified": 28,
           "confirmed_by_another": 1,
           "missed_others_verified_major": 8
+        },
+        "codex": {
+          "major_raised_verified": 0,
+          "confirmed_by_another": 0,
+          "missed_others_verified_major": 6
         }
       },
       "simulated": false,
@@ -2848,46 +2880,6 @@
           "full_read_min": 4.4,
           "with_pack_min": 21,
           "saved_min": -16.6
-        },
-        "var-2234-v1": {
-          "full_read_min": 2.5,
-          "with_pack_min": 31,
-          "saved_min": -28.5
-        },
-        "var-2234-v2": {
-          "full_read_min": 54.0,
-          "with_pack_min": 28,
-          "saved_min": 26.0
-        },
-        "var-2234-v3": {
-          "full_read_min": 8.2,
-          "with_pack_min": 21,
-          "saved_min": -12.8
-        },
-        "var-2234-v4": {
-          "full_read_min": 3.7,
-          "with_pack_min": 31,
-          "saved_min": -27.3
-        },
-        "var-2283-v1": {
-          "full_read_min": 11.5,
-          "with_pack_min": 27,
-          "saved_min": -15.5
-        },
-        "var-2283-v2": {
-          "full_read_min": 25.8,
-          "with_pack_min": 27,
-          "saved_min": -1.2
-        },
-        "var-2283-v3": {
-          "full_read_min": 8.8,
-          "with_pack_min": 22,
-          "saved_min": -13.2
-        },
-        "var-2283-v4": {
-          "full_read_min": 10.0,
-          "with_pack_min": 29,
-          "saved_min": -19.0
         }
       },
       "simulated": true,

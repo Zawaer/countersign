@@ -300,7 +300,7 @@ def replay(ws: Workspace) -> dict:
         full, guided = _minutes(p, mm)
         packs[change] = p
         rows.append({
-            "change": change, "mutant": is_mutant(change), "of": base_change(change) if is_mutant(change) else None,
+            "change": change, "mutant": is_mutant(change), "benchmark": change.startswith("var-"), "of": base_change(change) if is_mutant(change) else None,
             "mutation": p.get("mutation"), "tier": p["tier"], "score": p["risk"]["score"], "owner": p["owner"],
             "routed_to_human": p["tier"] in HUMAN_TIERS,
             "why": [f"{w['source']} {w['id']}" for w in p["why"]],
@@ -313,7 +313,7 @@ def replay(ws: Workspace) -> dict:
     for r in rows:
         if r["mutant"]:
             r["caught_by"] = _caught_by(packs[r["change"]], packs.get(r["of"]))
-    real = [r for r in rows if not r["mutant"]]
+    real = [r for r in rows if not r["mutant"] and not r.get("benchmark")]  # var-*: generated benchmark variants, not real changes
     mutants = [r for r in rows if r["mutant"]]
     caught = [r for r in mutants if r["routed_to_human"]]
     catalogue = _catalogue(ws)
@@ -566,7 +566,7 @@ def render_numbers(ws: Workspace, result: dict) -> str:
                     f"{_signoff_text('findings_rejected', met['findings_rejected']['value'])}" if met["findings_rated"]["value"] else "")
                  + " (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |")
         L.append("| Owner overrode the routing | " + _signoff_text("tier_overrides", met["tier_overrides"]["value"]) + " | same |")
-    L.append(f"| Real changes routed to a human | {met['share_routed_to_humans']['value']:.0%} of {len([r for r in result['changes'] if not r['mutant']])} | same |")
+    L.append(f"| Real changes routed to a human | {met['share_routed_to_humans']['value']:.0%} of {len([r for r in result['changes'] if not r['mutant'] and not r.get('benchmark')])} | same |")
     tok = met["model_tokens_per_change"]["value"]
     if tok:
         L.append(f"| Model tokens per change (estimates, see docs/COSTS.md) | " + ", ".join(f"{c}: {t:,}" for c, t in sorted(tok.items())) + " | `measurement/costs.yaml` |")

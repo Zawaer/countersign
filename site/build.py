@@ -159,7 +159,7 @@ class Data:
 
     def change_rows(self):
         """Real changes: results.json first, pack.json as fallback."""
-        by = {r["change"]: r for r in self.results.get("changes", []) if not r.get("mutant")}
+        by = {r["change"]: r for r in self.results.get("changes", []) if not r.get("mutant") and not r["change"].startswith("var-")}
         out = []
         for c in CHANGES:
             p = self.packs.get(c) or {}
@@ -832,7 +832,7 @@ def build_pitch(D: Data, n: dict) -> str:
     V[4] = ("Green CI. AI says met. Wrong bug.",
             '<div class="tiles3">' + tile("CI", f"✓ {s_pass}/{s_tot}", "ok") + tile("AI review", f"✓ {c_met}/{len(cv)} met", "ok")
             + tile("Countersign", f'✗ {e(str(p.get("tier", "")).upper())} → {e(p.get("owner", ""))}', "bad") + "</div>")
-    real = [r for r in D.results.get("changes", []) if not r.get("mutant")] or [{"change": r["change"], "tier": r["tier"]} for r in rows]
+    real = [r for r in D.results.get("changes", []) if not r.get("mutant") and not r["change"].startswith("var-")] or [{"change": r["change"], "tier": r["tier"]} for r in rows]
     cleared = [r for r in real if r.get("tier") not in HUMAN_TIERS]
     V[5] = ("Every change says why. Low risk can clear." if cleared else "Every change reached a human, with a reason.",
             '<div class="tiers">' + "".join(f'<span class="chg"><code>{e(r["change"])}</code>{tier(r.get("tier"))}</span>' for r in real) + "</div>")
