@@ -1,0 +1,88 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T13:01:01+02:00",
+  "inputs": [
+    "requirements: requirements/2297.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2297",
+    "facts: evidence/2297/facts.json",
+    "diff 32258fdb..a0aa5ab2 (9 non-generated files)",
+    "file contents: 15 blocks",
+    "context: 181317 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the contents and diffs of 228 generated files (listed above by name only)",
+    "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/UnionTemplate.tt at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.tt at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/Transforms/UnionTemplate.tt at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/2297/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 53154,
+      "completion_tokens": 4474
+    },
+    "preset": "nemotron-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": true,
+    "confidential_forced": true,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 131072,
+    "max_tokens": 32768,
+    "wall_clock_s": 31.8,
+    "gpu_hours": 0.0088,
+    "usd_estimate": 0.0211
+  },
+  "summary": "The change adds [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] attribute to generated MessagePack formatter and resolver code templates, guarded by #if !NETSTANDARD2_0 && !NETFRAMEWORK so it only emits where the attribute is available. The new CodeCoverageExclusionTests pass with the change and fail on base, confirming the fix addresses the requirement. The full 169-test suite also passes.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2297-F1",
+      "verdict": "met",
+      "confidence_basis": "The change adds the ExcludeFromCodeCoverage attribute to all relevant generated code templates with proper framework guards, and the new tests verify the attribute appears in generated output and is absent on base.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+          "line": 8,
+          "rev": "head",
+          "quote": "[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]"
+        },
+        {
+          "kind": "test",
+          "name": "CodeCoverageExclusionTests.AllGeneratedTypesAreExcludedFromCodeCoverage",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "CodeCoverageExclusionTests.ExcludeAttributeIsGuardedForTargetsWhereItIsUnavailable",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": [],
+  "refutations": []
+}

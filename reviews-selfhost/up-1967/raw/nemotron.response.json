@@ -1,0 +1,63 @@
+{
+  "endpoint": "http://127.0.0.1:8000/v1/chat/completions",
+  "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "vendor": "NVIDIA",
+  "context_sha256": "fa5bdca08563fa3a230ff3113373760f95575773880af5a6b8c7fc95ee7de37b",
+  "context_file": "raw/nemotron.context.md",
+  "prompt_version": "review-v1",
+  "started": "2026-11-14T13:02:56+02:00",
+  "preset": "nemotron-selfhost",
+  "endpoint_host": "127.0.0.1",
+  "self_hosted": true,
+  "calls": [
+    {
+      "latency_ms": 13068,
+      "retries": 0,
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 3737,
+        "completion_tokens": 2134,
+        "total_tokens": 5871
+      },
+      "response": {
+        "id": "chatcmpl-83303b7d44cb1c63",
+        "object": "chat.completion",
+        "created": 1794654176,
+        "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"summary\": \"The change updates the anchor reference in the README TOC from the auto‑generated slug \\\"#aot-code-generation-support-for-unityxamarin\\\" to the explicit \\\"#aot\\\", ensuring the TOC entry links to an existing anchor. No other README content is modified.\",\n  \"requirement_verdicts\": [\n    {\n      \"req\": \"REQ-up-1967-F1\",\n      \"verdict\": \"met\",\n      \"confidence_basis\": \"The head README.md line 60 contains the TOC entry linking to \\\"#aot\\\", and the docs.anchors check confirms this link resolves to an existing anchor at head.\",\n      \"evidence\": [\n        {\n          \"kind\": \"code\",\n          \"file\": \"README.md\",\n          \"line\": 60,\n          \"rev\": \"head\",\n          \"quote\": \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\"\n        },\n        {\n          \"kind\": \"check\",\n          \"id\": \"docs.anchors\",\n          \"status\": \"pass\",\n          \"quote\": \"1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: ... anchor \\\"aot\\\" resolves_at_head true\"\n        }\n      ]\n    },\n    {\n      \"req\": \"REQ-up-1967-N1\",\n      \"verdict\": \"met\",\n      \"confidence_basis\": \"The diff shows exactly one insertion and one deletion in README.md, with no other content changed, confirming that only the documentation anchor was altered.\",\n      \"evidence\": [\n        {\n          \"kind\": \"code\",\n          \"file\": \"README.md\",\n          \"line\": 60,\n          \"rev\": \"head\",\n          \"quote\": \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\"\n        },\n        {\n          \"kind\": \"check\",\n          \"id\": \"public_api\",\n          \"status\": \"pass\",\n          \"quote\": \"no public API changes: the change touches no file under src/ and no PublicAPI.*.txt\"\n        }\n      ]\n    }\n  ],\n  \"findings\": [],\n  \"refusals\": [],\n  \"refutations\": []\n}",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "We need to produce a JSON review for this change up-1967. The change is docs-only: fix anchor ref name to `aot`. Requirement set: REQ-up-1967-F1: \"The README table-of-contents entry \"AOT Code Generation (support for Unity/Xamarin)\" must link to an anchor that exists in README.md (the AOT Code Generation section).\" REQ-up-1967-N1: \"Only documentation changes; no other README content is altered.\"\n\nWe need to produce verdicts for each requirement clause: met, not_met, cannot_determine, with evidence.\n\nWe have facts: docs.anchors check passes: 1 intra-document link on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc). Links_on_touched_lines: line 60 anchor \"aot\", resolves_at_head true.\n\nDiff shows change: line 60 changed from \"#aot-code-generation-support-for-unityxamarin\" to \"#aot\". Actually diff: - [AOT Code Generation (support for Unity/Xamarin)](#aot-code-generation-support-for-unityxamarin) +- [AOT Code Generation (support for Unity/Xamarin)](#aot). So the anchor changed from the long slug to \"aot\". The requirement F1: The TOC entry must link to an anchor that exists in README.md (the AOT Code Generation section). In head, the anchor is \"aot\". Does that anchor exist? We have docs.anchors check says link on line 60 anchor \"aot\", resolves_at_head true. That suggests the anchor \"aot\" exists at head. But does the section have an anchor with id \"aot\"? In GitHub, heading slug for \"AOT Code Generation (support for Unity/Xamarin)\" would be something like \"aot-code-generation-support-for-unityxamarin\". Changing to \"aot\" creates an anchor \"aot\". The section heading likely remains same, but the anchor id is overridden by the explicit `#aot` in the link. However the heading itself may also generate an anchor, but the link now points to \"#aot\". Does that anchor exist? In the rendered HTML, there might be an id attribute on the heading? The check says resolves_at_head true, meaning the link resolves. So requirement F1 is met: the TOC entry now links to an anchor that exists.\n\nBut we need evidence: code quote from README.md line 60 after change: the link line: \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\". Provide quote after '| 60' maybe. The file README.md line 60 (as per diff) contains that line. We'll quote the line content after gutter: \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\". Actually line numbers: diff shows line 57-60 etc. The facts show link on line 60. We'll use that.\n\nRequirement N1: Only documentation changes; no other README content is altered. The diff shows only that one line changed, no other content. So N1 is met. Evidence: diff shows only one file changed, one insertion, one deletion, no other modifications. Could cite check public_api pass, but that's about src/. But we can just note that diff only touches README.md and only that line.\n\nThus both requirements met.\n\nNow produce JSON with summary, requirement_verdicts array with two objects, findings (none maybe), refusals (none), refutations (none). Ensure we follow format.\n\nWe must include evidence items for each verdict. For F1, evidence: code quote from README.md line 60, and docs.anchors check id. Also maybe the diff itself. Provide evidence array with at least one item.\n\nFor N1, evidence: diff showing only that line changed, maybe also public_api check pass but not needed. Provide evidence: code diff line or check.\n\nMake sure each evidence item follows allowed kinds: code, test, check, requirement, issue. We'll use code quote and check.\n\nThus:\n\n{\n  \"summary\": \"The change updates the anchor reference in the README TOC from the auto‑generated slug \\\"#aot-code-generation-support-for-unityxamarin\\\" to the explicit \\\"#aot\\\", ensuring the TOC entry links to an existing anchor. No other README content is modified.\",\n  \"requirement_verdicts\": [\n    {\n      \"req\": \"REQ-up-1967-F1\",\n      \"verdict\": \"met\",\n      \"confidence_basis\": \"The head README.md line 60 contains the TOC entry linking to \\\"#aot\\\", and the docs.anchors check confirms this link resolves to an existing anchor at head.\",\n      \"evidence\": [\n        {\"kind\": \"code\", \"file\": \"README.md\", \"line\": 60, \"rev\": \"head\", \"quote\": \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\"},\n        {\"kind\": \"check\", \"id\": \"docs.anchors\", \"status\": \"pass\", \"quote\": \"1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: ... anchor \\\"aot\\\" resolves_at_head true\"}\n      ]\n    },\n    {\n      \"req\": \"REQ-up-1967-N1\",\n      \"verdict\": \"met\",\n      \"confidence_basis\": \"The diff shows exactly one insertion and one deletion in README.md, with no other content changed, confirming that only the documentation anchor was altered.\",\n      \"evidence\": [\n        {\"kind\": \"code\", \"file\": \"README.md\", \"line\": 58, \"rev\": \"head\", \"quote\": \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\"},  // actually line 58? but we can use diff summary. maybe better use check public_api pass? But we can just cite diff. However evidence must be code quote from file. We'll use line 58 or 59? The diff shows context lines 57-61. We'll quote the line that changed: line 58? Actually original diff: line 57: \" - [AOT Code Generation (support for Unity/Xamarin)](#aot-code-generation-support-for-unityxamarin)\" and line 58 is blank? Let's just quote the changed line: \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\". We'll set line 60 as earlier. Use same line.\n        {\"kind\": \"check\", \"id\": \"public_api\", \"status\": \"pass\", \"quote\": \"no public API changes: the change touches no file under src/ and no PublicAPI.*.txt\"} // not directly about N1 but shows no other changes. Might be okay.\n      ]\n    }\n  ],\n  \"findings\": [],\n  \"refusals\": [],\n  \"refutations\": []\n}\n\nBut need to ensure evidence quotes are exact substring of that line, after gutter. The line content after gutter is \"- [AOT Code Generation (support for Unity/Xamarin)](#aot\". That's correct.\n\nPotential issue: The line number 60 is from facts; but diff shows line numbers starting at 57. We'll just use 60 as given.\n\nNow produce JSON only, no prose. Ensure proper formatting, no trailing commas.\n\nCheck that requirement verdicts are in order given: REQ-up-1967-F1 then REQ-up-1967-N1. Good.\n\nMake sure no extra fields.\n\nNow output."
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-0.27.1-537ab252",
+        "usage": {
+          "prompt_tokens": 3737,
+          "total_tokens": 5871,
+          "completion_tokens": 2134,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    }
+  ]
+}

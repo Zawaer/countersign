@@ -1,0 +1,159 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T12:56:00+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files)",
+    "file contents: 4 blocks",
+    "context: 172905 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/2234/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 50831,
+      "completion_tokens": 24209
+    },
+    "preset": "nemotron-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": true,
+    "confidential_forced": true,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 131072,
+    "max_tokens": 32768,
+    "wall_clock_s": 154.7,
+    "gpu_hours": 0.043,
+    "usd_estimate": 0.1025
+  },
+  "summary": "Change 2234 modifies TypeCollector.cs to add duplicate key checks and skip members with mismatched key kinds when processing [MessagePackObject(SuppressSourceGeneration = true)] types. The 8 new analyzer tests all pass on head, with 4 failing without the fix (demonstrating the change is necessary) and the full suite passing with no regressions. However, an external reproduction test (C2) shows a crash still exists on head for positional records with Key(null), indicating the fix is incomplete for all crash scenarios.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The change ensures the analyzer reports contract diagnostics for [MessagePackObject(SuppressSourceGeneration = true)] types, as evidenced by 4 new tests passing on head but failing without the fix, and 3 supporting tests all passing on head.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "check": {
+            "id": "tests.fail_without_fix",
+            "status": "pass"
+          }
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "check": {
+            "id": "tests.fail_without_fix",
+            "status": "pass"
+          }
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "check": {
+            "id": "tests.fail_without_fix",
+            "status": "pass"
+          }
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member."
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1023,
+          "rev": "head",
+          "quote": "if (!intMembers.ContainsKey(member.IntKey))"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "The change correctly skips source-generation-only diagnostics for types with SuppressSourceGeneration = true, as demonstrated by the SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed test passing on head.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "cannot_determine",
+      "confidence_basis": "While the change prevents crashes in duplicate/mixed key scenarios for SuppressSourceGeneration types (4 tests fail without fix), a crash still exists for positional records with Key(null) as demonstrated by external reproduction, so cannot deterministically establish that the analyzer will not crash on all invalid contracts.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "met",
+      "confidence_basis": "The fix is covered by 4 new tests that fail without the fix (demonstrating the change is necessary), and the full test suite passes with no regressions (175 tests, all pass).",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": [],
+  "refutations": []
+}

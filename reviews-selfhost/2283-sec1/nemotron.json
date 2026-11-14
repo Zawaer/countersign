@@ -1,0 +1,151 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T13:04:49+02:00",
+  "inputs": [
+    "requirements: requirements/2283.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "facts: evidence/2283-sec1/facts.json",
+    "diff 32258fdb..9df83c38 (5 non-generated files) plus recorded edit at src/MessagePack/MessagePackSecurity.cs:38 (tree 144e4b3f)",
+    "file contents: 5 blocks",
+    "context: 176934 chars (budget 180000)"
+  ],
+  "not_given": [
+    "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs at head: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "src/MessagePack/MessagePackSecurity.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack004.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/2283-sec1/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 50293,
+      "completion_tokens": 12175
+    },
+    "seeded": {
+      "change": "2283-sec1",
+      "shown_as": "2283",
+      "blind": true,
+      "kind": "security_downgrade",
+      "file": "src/MessagePack/MessagePackSecurity.cs",
+      "line": 38,
+      "mutated_tree": "144e4b3fda8971652a37c5f38cb3efa7780f3518",
+      "seeding_note_removed_from_line": false
+    },
+    "preset": "nemotron-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": true,
+    "confidential_forced": true,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 131072,
+    "max_tokens": 32768,
+    "wall_clock_s": 80.0,
+    "gpu_hours": 0.0222,
+    "usd_estimate": 0.053
+  },
+  "summary": "Implementation for #2283 adds ReportIfLocatedInCompilation to TypeCollector.cs, preventing analyzer crashes (no CS8785, no AD0001) when types/members come from metadata references. All 5 requirements are satisfied: the fix handles closed generic value types from referenced assemblies, existing diagnostics remain unchanged (170/170 full suite passes), and 3 new automated tests confirm the fix is necessary.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "3 new tests pass with fix and fail without it, specifically testing closed generic value types from referenced assemblies produce correct resolvers without CS8785",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "met",
+      "confidence_basis": "The 3 new tests previously threw AD0001 (IndexOutOfRangeException) on base; with fix they pass, confirming no analyzer throws for the same input",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "summary": "new tests fail on base source: 3/3 failed -> tests do cover the change"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "ReportIfLocatedInCompilation method ensures diagnostics about members from referenced assemblies are only reported when located in the compilation being analyzed",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "Full test suite of 170 tests passes with zero failures, no regressions in existing analyzer diagnostics",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass",
+          "summary": "170 tests, 170 passed, 0 failed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "met",
+      "confidence_basis": "3 new tests fail on base source without the fix, confirming the fix is covered by automated tests that validate the change",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "summary": "new tests fail on base source: 3/3 failed -> tests do cover the change"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": [],
+  "refutations": []
+}

@@ -1,0 +1,124 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T13:01:33+02:00",
+  "inputs": [
+    "requirements: requirements/up-2022.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2017",
+    "facts: evidence/up-2022/facts.json",
+    "diff f5e104ee..5f4b762a (2 non-generated files)",
+    "file contents: 3 blocks",
+    "context: 78902 chars (budget 180000)"
+  ],
+  "not_given": [
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/up-2022/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 27144,
+      "completion_tokens": 2355
+    },
+    "preset": "nemotron-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": true,
+    "confidential_forced": true,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 131072,
+    "max_tokens": 32768,
+    "wall_clock_s": 16.3,
+    "gpu_hours": 0.0045,
+    "usd_estimate": 0.0108
+  },
+  "summary": "The change adds a check in FormatterDescriptor.TryCreate to skip abstract types implementing IMessagePackFormatter<T>, preventing them from being counted as formatters. This fixes the root cause of issues #2017 (MsgPack013 and MsgPack009 for abstract formatters). All four requirements are satisfied: the new test passes on head and fails on base without the fix, confirming the change addresses the issue; the full suite shows no regressions; and non-abstract formatters continue to be discovered as before.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-up-2022-F1",
+      "verdict": "met",
+      "confidence_basis": "The analyzer skips abstract types in TryCreate (line 221-225 head), so abstract classes implementing IMessagePackFormatter<T> are not counted as formatters, preventing MsgPack013. The new test AbstractFormatterDoesNotAttractAttention passes on head and fails on base without the fix.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 221,
+          "rev": "head",
+          "quote": "if (type.IsAbstract) { formatter = null; return false; }"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-F2",
+      "verdict": "met",
+      "confidence_basis": "Abstract implementations are excluded from formatter counting (TryCreate returns false for abstract types), so two abstract formatters for the same type cannot trigger MsgPack009. The test AbstractFormatterDoesNotAttractAttention has two abstract classes both implementing IMessagePackFormatter<object> and passes on head, confirming no MsgPack009 is reported.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/AnalyzerOptions.cs",
+          "line": 221,
+          "rev": "head",
+          "quote": "if (type.IsAbstract) { formatter = null; return false; }"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "quote": "new tests fail on base source: 1/1 failed -> tests do cover the change"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-N1",
+      "verdict": "met",
+      "confidence_basis": "The fix is covered by automated tests that fail without it: tests.fail_without_fix status is pass, and the new test AbstractFormatterDoesNotAttractAttention fails on base (source reverted) but passes on head.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "quote": "new tests fail on base source: 1/1 failed -> tests do cover the change"
+        },
+        {
+          "kind": "test",
+          "name": "MsgPack00xAnalyzerTests.AbstractFormatterDoesNotAttractAttention",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    },
+    {
+      "req": "REQ-up-2022-N2",
+      "verdict": "met",
+      "confidence_basis": "The full suite passes with 150/150 tests on head, and the base had 149 tests with 0 failures. No regressions introduced; non-abstract formatters continue to be discovered and diagnosed as before.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass",
+          "quote": "150 tests, 150 passed, 0 failed (0 not failing on base, 0 also failing on base)"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": [],
+  "refutations": []
+}

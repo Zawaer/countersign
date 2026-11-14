@@ -192,3 +192,28 @@ def test_compare_writes_selfhost_measurement(tmp_path):
     assert "1 of 2 hosted findings" in md.replace("\n", " ") or "| 1/2 |" in md
     assert "9002" in md and "not run" in md
     assert "3.0 GPU-hours" in md and "$7.50" in md
+
+
+def test_gemma_selfhost_adjudicates_into_reviews_selfhost_without_a_key(lws):
+    """The self-hosted adjudicator (Gemma on our vLLM) sits in the mandate's adjudicator slot, needs no API key, logs
+    GPU time, and writes reviews-selfhost/<c>/adjudication.gemma.json: the hosted reviews/<c>/adjudication.gemini.json
+    is never touched."""
+    from conftest import make_review
+    from test_llm import Stub
+    from countersign.common import write_json
+    write_json(lws.inputs / "reviews" / "9001" / "codex.json", make_review("codex", verdict="cannot_determine"))
+    ruling = {"rulings": [{"dispute": "REQ-9001-F1", "supported": [], "unsupported": [], "route_to": "Toivo"}]}
+    stub = Stub((200, completion(json.dumps(ruling))))
+    env = {**selfhost_env("http://127.0.0.1:8000/v1"), "COUNTERSIGN_SELFHOST_MAX_MODEL_LEN": "32768"}
+    out = llm.run_adjudication(lws, "9001", lws.repo, adjudicator="gemma-selfhost", env=env, post=stub)
+    assert out == lws.inputs / "reviews-selfhost" / "9001" / "adjudication.gemma.json"
+    assert not (lws.inputs / "reviews" / "9001" / "adjudication.gemma.json").exists()
+    a = read_json(out)
+    assert a["reviewer"] == "gemma-selfhost" and a["model"] == "google/gemma-4-31B-it-qat-w4a16-ct" and a["vendor"] == "Google"
+    assert a["runner"]["endpoint_host"] == "127.0.0.1" and a["runner"]["self_hosted"] is True and a["runner"]["gpu_hours"] >= 0
+    assert a["runner"]["raw"] == "reviews-selfhost/9001/raw/adjudication.gemma.response.json"
+    req = stub.requests[0]
+    assert req["url"] == "http://127.0.0.1:8000/v1/chat/completions" and "Authorization" not in req["headers"]
+    assert req["body"]["max_tokens"] <= 16384
+    row = yaml.safe_load((lws.inputs / "measurement" / "costs.yaml").read_text())["runs"][-1]
+    assert row["provider"] == "verda" and row["purpose"].startswith("adjudicate 9001 (gemma-selfhost") and row["usd"] is not None

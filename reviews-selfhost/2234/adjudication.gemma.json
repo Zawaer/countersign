@@ -1,0 +1,89 @@
+{
+  "reviewer": "gemma-selfhost",
+  "model": "google/gemma-4-31B-it-qat-w4a16-ct",
+  "vendor": "Google",
+  "prompt_version": "adjudicate-v1",
+  "reviewed_at": "2026-11-14T13:33:31+02:00",
+  "role": "adjudicator: advisory; can add reasons and route to a human, never clears",
+  "disputes_given": [
+    "REQ-2234-N1",
+    "finding:claude:C1"
+  ],
+  "runner": {
+    "tool": "countersign adjudicate",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/2234/raw/adjudication.gemma.response.json",
+    "preset": "gemma-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": false,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 32768,
+    "max_tokens": 16384,
+    "wall_clock_s": 121.4,
+    "gpu_hours": 0.0337,
+    "usd_estimate": 0.0804
+  },
+  "rulings": [
+    {
+      "dispute": "REQ-2234-N1",
+      "supported": [
+        {
+          "reviewer": "codex",
+          "claim": "The analyzer and generator do not crash on duplicate keys.",
+          "why": "Supported by SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure passing in tests.targeted."
+        },
+        {
+          "reviewer": "nemotron",
+          "claim": "The analyzer and generator do not crash on duplicate keys or mixed key kinds.",
+          "why": "Supported by targeted tests for duplicate int/string keys and mixed key kinds passing in tests.targeted."
+        },
+        {
+          "reviewer": "claude",
+          "claim": "There is a potential crash site in the code.",
+          "why": "The verified quote at TypeCollector.cs:985 shows a hard cast to PropertyDeclarationSyntax, which can cause an InvalidCastException if the member is a field or record parameter."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "claude",
+          "claim": "The analyzer crashes on [Key(null)] record parameters.",
+          "why": "This claim is based on a probe not included in the verified facts.json."
+        }
+      ],
+      "evidence_that_would_settle": [
+        "A test case that defines a [MessagePackObject(SuppressSourceGeneration = true)] type with a [Key] attribute on a primary constructor parameter (record) or a field, to verify if the hard cast at TypeCollector.cs:985 causes a crash."
+      ],
+      "route_to": "area owner",
+      "note": "Targeted tests prove fix for some invalid contracts, but a verified hard cast suggests other invalid contracts may still trigger crashes."
+    },
+    {
+      "dispute": "finding:claude:C1",
+      "supported": [
+        {
+          "reviewer": "claude",
+          "claim": "The duplicate-key crash was not present on base.",
+          "why": "Supported by SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes failing the tests.fail_without_fix check (meaning it passed on base)."
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "claude",
+          "claim": "The regression (analyzer not working for suppressed types) is not on this base.",
+          "why": "Contradicted by SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported passing the tests.fail_without_fix check, which indicates the analyzer was NOT reporting this diagnostic on base."
+        },
+        {
+          "reviewer": "claude",
+          "claim": "This change would not restore the analyzer for suppressed types.",
+          "why": "Contradicted by the fact that tests for suppressed types (e.g. MemberWithoutKeyIsReported) fail on base and pass on head."
+        }
+      ],
+      "evidence_that_would_settle": [],
+      "route_to": "area owner",
+      "note": "Claude correctly identifies a non-regression for crashes, but is contradicted by the test results regarding the analyzer's functionality on base."
+    }
+  ]
+}

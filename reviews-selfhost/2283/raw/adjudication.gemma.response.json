@@ -1,0 +1,63 @@
+{
+  "endpoint": "http://127.0.0.1:8000/v1/chat/completions",
+  "model": "google/gemma-4-31B-it-qat-w4a16-ct",
+  "vendor": "Google",
+  "context_sha256": "6be39619d8959b00d7bac4488dcac042f43d42afb52617319965029fc26d50c2",
+  "context_file": "raw/adjudication.gemma.context.md",
+  "prompt_version": "adjudicate-v1",
+  "started": "2026-11-14T13:35:33+02:00",
+  "preset": "gemma-selfhost",
+  "endpoint_host": "127.0.0.1",
+  "self_hosted": true,
+  "calls": [
+    {
+      "latency_ms": 52988,
+      "retries": 0,
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 6339,
+        "completion_tokens": 2637,
+        "total_tokens": 8976
+      },
+      "response": {
+        "id": "chatcmpl-aac726ed045f0ff8",
+        "object": "chat.completion",
+        "created": 1794656133,
+        "model": "google/gemma-4-31B-it-qat-w4a16-ct",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "```json\n{\n  \"rulings\": [\n    {\n      \"dispute\": \"REQ-2283-N1\",\n      \"supported\": [\n        {\n          \"reviewer\": \"codex\",\n          \"claim\": \"no regressions in the existing test suite\",\n          \"why\": \"verified by tests.full_suite (170/170 passed)\"\n        },\n        {\n          \"reviewer\": \"nemotron\",\n          \"claim\": \"no regressions in the existing test suite\",\n          \"why\": \"verified by tests.full_suite (170/170 passed)\"\n        }\n      ],\n      \"unsupported\": [\n        {\n          \"reviewer\": \"claude\",\n          \"claim\": \"the location filter drops diagnostics about types declared in the current compilation when the reporting location is a metadata member\",\n          \"why\": \"the behavioral claim relies on a personal probe not included in the evidence/facts.json\"\n        },\n        {\n          \"reviewer\": \"codex\",\n          \"claim\": \"Existing analyzer diagnostics for types declared in the current compilation keep working unchanged\",\n          \"why\": \"test suite passage is insufficient to prove no regressions in all possible configurations, especially given the logic in the cited filter\"\n        }\n      ],\n      \"evidence_that_would_settle\": [\n        \"A test case where a type in the current compilation lacks [MessagePackObject] and is used as a generic argument for a closed generic type defined in a referenced assembly, asserting that MsgPack003 is reported on both base and head.\"\n      ],\n      \"route_to\": \"area owner\",\n      \"note\": \"The test suite passes, but there is a plausible claim of a regression in the diagnostic reporting logic.\"\n    },\n    {\n      \"dispute\": \"finding:claude:C1\",\n      \"supported\": [\n        {\n          \"reviewer\": \"claude\",\n          \"claim\": \"ReportIfLocatedInCompilation drops every diagnostic whose location is not a source location in this compilation\",\n          \"why\": \"verified by line 1446\"\n        },\n        {\n          \"reviewer\": \"claude\",\n          \"claim\": \"TypeMustBeMessagePackObject (MsgPack003) is located at callerSymbol.Locations[0]\",\n          \"why\": \"verified by line 1341\"\n        }\n      ],\n      \"unsupported\": [\n        {\n          \"reviewer\": \"claude\",\n          \"claim\": \"base reports MsgPack003 (metadata location), head reports nothing\",\n          \"why\": \"the probe used to verify this is not in the evidence/facts.json\"\n        }\n      ],\n      \"evidence_that_would_settle\": [\n        \"A test case reproducing the scenario: a member of a referenced generic (Lib.Item<T>.Content) where T is an app type without [MessagePackObject] (Item<Foo]), comparing diagnostic output between base and head.\"\n      ],\n      \"route_to\": \"area owner\",\n      \"note\": \"The code mechanism for the finding is verified, but the actual regression in behavior is not.\"\n    }\n  ]\n}\n```",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "The dispute is whether REQ-2283-N1 is met: \"Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite).\"\n\n    *   Verdict: `not_met`.\n    *   Basis: While tests pass, there's a regression in a specific scenario: types declared in the current compilation whose diagnostic location is derived from a metadata member (e.g., a member of a closed generic type in a referenced assembly).\n    *   Evidence:\n        *   Cites `TypeCollector.cs:1446`: `if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))`. This filter drops diagnostics not in the current source tree.\n        *   Cites `TypeCollector.cs:1341`: `Location location = callerSymbol is not null ? callerSymbol.Locations[0] : formattedType.Locations[0];`.\n        *   Claims that if `callerSymbol` is a member of a referenced generic (metadata), `callerSymbol.Locations[0]` will be a metadata location. If the diagnostic is actually about a type in the current compilation (e.g., `App.Foo`), but the location is associated with the metadata member, it gets dropped by the filter at line 1446.\n        *   Mentions a personal probe (not in facts.json) where base reports `MsgPack003` and head does not.\n\n    *   Verdict: `met`.\n    *   Basis: The existing test suite passes.\n    *   Evidence: `tests.full_suite` (170/170 passed).\n\n    *   Verdict: `met`.\n    *   Basis: Similar to Codex, relies on `tests.full_suite` passing.\n    *   Evidence: `tests.full_suite` (170/170 passed).\n\n    *   The requirement has two parts: (1) diagnostics keep working unchanged, and (2) no regressions in the existing test suite.\n    *   Codex and Nemotron prove part (2) using `tests.full_suite`.\n    *   Claude challenges part (1) by describing a specific scenario (the \"probe\") where a diagnostic that used to be reported is no longer reported.\n    *   Claude's evidence for the *mechanism* of the regression is verified: line 1446 implements a strict filter requiring `IsInSource` and membership in the current compilation's syntax trees.\n    *   Line 1341 shows how the location for `MsgPack003` is determined.\n    *   The key question: Does `callerSymbol.Locations[0]` for a member of a referenced generic result in a location that fails the check at line 1446, even if the diagnostic is intended for a type in the current compilation?\n    *   Claude's claim: \"when the caller is a member of a referenced generic (Lib.Item<T>.Content) and T is an app type without [MessagePackObject] (Item<Foo>), the diagnostic is about App.Foo but is now discarded.\"\n    *   The evidence provided for the *code* is verified. The evidence for the *behavior* (the probe) is not verified by the engine (not in facts.json).\n\n    *   Codex/Nemotron: Claimed \"met\" based on tests.\n    *   Claude: Claimed \"not met\" based on code analysis and an external probe.\n    *   The evidence for the *code* that implements the filter (line 1446) is verified.\n    *   The evidence for the *test suite* passing is verified.\n    *   The dispute is whether the filter at 1446 introduces a regression not caught by the tests.\n    *   The \"probe\" is not verified. However, the logic Claude presents is:\n        1.  `location` is set to `callerSymbol.Locations[0]` (verified at line 1341).\n        2.  If `callerSymbol` is in a referenced assembly, `location.IsInSource` is likely false or `this.compilation.ContainsSyntaxTree(...)` is false.\n        3.  The filter at 1446 drops these.\n    *   If this is true, then diagnostics for types in the current compilation that are reached via these paths are dropped.\n\n    *   Is this a regression? The requirement says \"diagnostics for types declared in the current compilation keep working unchanged\". If a diagnostic for `App.Foo` is dropped because it's associated with a metadata location, is that \"working unchanged\"? Probably not.\n\n    *   Who is supported?\n        *   Codex/Nemotron are supported in the \"no regressions in the existing test suite\" part.\n        *   Claude's claim about the *possibility* of a regression is supported by the code (the filter).\n        *   Claude's claim that it *is* a regression is based on an unverified probe.\n\n    *   The evidence provided by Codex/Nemotron is insufficient to prove \"keep working unchanged\" generally, only that the *tests* passed.\n    *   The evidence provided by Claude about the code is verified, but the *behavioral* evidence (the probe) is not.\n    *   To settle this, we need a test case that reproduces Claude's probe: a project with a referenced assembly containing a generic type, and a type in the current project without `[MessagePackObject]` used as a generic argument.\n\n    *   `dispute`: \"REQ-2283-N1\"\n    *   `supported`:\n        *   Codex/Nemotron: \"no regressions in the existing test suite\" (via `tests.full_suite`).\n    *   `unsupported`:\n        *   Claude: \"diagnostic is discarded for in-compilation types reached through metadata\" (probe not verified, though code logic is cited).\n        *   Codex/Nemotron: \"diagnostics... keep working unchanged\" (test suite passing is not proof of no regressions in all scenarios).\n    *   `evidence_that_would_settle`: A test case mimicking the \"probe\" (Lib.Item<T> in referenced assembly, App.Foo without [MessagePackObject] in current compilation) to see if MsgPack003 is reported on head vs base.\n\n    *   Actually, Claude's claim is specifically that `ReportIfLocatedInCompilation` drops diagnostics.\n    *   Line 1446: `if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))`\n    *   If `location` is `callerSymbol.Locations[0]` and `callerSymbol` is in a referenced assembly, then `location.IsInSource` is likely false or the source tree is not in the current compilation.\n    *   This strongly suggests that Claude's logic is correct regarding the code.\n\n    *   Let's refine the \"supported\" for Claude: The claim that the filter *can* drop diagnostics for types in the current compilation if the location is derived from a metadata symbol is supported by lines 1341 and 1446.\n    *   The claim that this *is* a regression compared to base is unsupported because the \"probe\" is not in the facts.\n\n    *   Wait, the `finding:claude:C1` is also part of the disputes. It essentially argues the same point.\n    *   For `REQ-2283-N1`, the conflict is \"Tests pass\" vs \"Logic allows for a regression\".\n    *   For `finding:claude:C1`, the conflict is whether the finding is \"verified\". The finding *is* a claim about a regression.\n\n    *   Let's look at the requirements again.\n    *   REQ-2283-N1: \"Existing analyzer diagnostics for types declared in the current compilation keep working unchanged (no regressions in the existing test suite).\"\n    *   Codex/Nemotron claim it's met because the tests pass.\n    *   Claude claims it's not met because a specific scenario now fails to report a diagnostic.\n\n    *   The \"no regressions in the existing test suite\" part is definitely met.\n    *   The \"keep working unchanged\" part is the core of the dispute.\n\n    *   Final ruling structure:\n        *   Supported: Codex/Nemotron on the \"no regressions in test suite\" part.\n        *   Unsupported: Codex/Nemotron on \"keep working unchanged\" (absence of evidence in tests is not evidence of absence of regression).\n        *   Unsupported: Claude's specific regression claim (probe not verified).\n        *   Settle: A test case reproducing the probe."
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": 106,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-0.27.1-386d9a98",
+        "usage": {
+          "prompt_tokens": 6339,
+          "total_tokens": 8976,
+          "completion_tokens": 2637,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      }
+    }
+  ]
+}

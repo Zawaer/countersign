@@ -1,0 +1,91 @@
+{
+  "reviewer": "gemma-selfhost",
+  "model": "google/gemma-4-31B-it-qat-w4a16-ct",
+  "vendor": "Google",
+  "prompt_version": "adjudicate-v1",
+  "reviewed_at": "2026-11-14T13:35:33+02:00",
+  "role": "adjudicator: advisory; can add reasons and route to a human, never clears",
+  "disputes_given": [
+    "REQ-2283-N1",
+    "finding:claude:C1"
+  ],
+  "runner": {
+    "tool": "countersign adjudicate",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/2283/raw/adjudication.gemma.response.json",
+    "preset": "gemma-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": false,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 32768,
+    "max_tokens": 16384,
+    "wall_clock_s": 53.0,
+    "gpu_hours": 0.0147,
+    "usd_estimate": 0.0351
+  },
+  "rulings": [
+    {
+      "dispute": "REQ-2283-N1",
+      "supported": [
+        {
+          "reviewer": "codex",
+          "claim": "no regressions in the existing test suite",
+          "why": "verified by tests.full_suite (170/170 passed)"
+        },
+        {
+          "reviewer": "nemotron",
+          "claim": "no regressions in the existing test suite",
+          "why": "verified by tests.full_suite (170/170 passed)"
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "claude",
+          "claim": "the location filter drops diagnostics about types declared in the current compilation when the reporting location is a metadata member",
+          "why": "the behavioral claim relies on a personal probe not included in the evidence/facts.json"
+        },
+        {
+          "reviewer": "codex",
+          "claim": "Existing analyzer diagnostics for types declared in the current compilation keep working unchanged",
+          "why": "test suite passage is insufficient to prove no regressions in all possible configurations, especially given the logic in the cited filter"
+        }
+      ],
+      "evidence_that_would_settle": [
+        "A test case where a type in the current compilation lacks [MessagePackObject] and is used as a generic argument for a closed generic type defined in a referenced assembly, asserting that MsgPack003 is reported on both base and head."
+      ],
+      "route_to": "area owner",
+      "note": "The test suite passes, but there is a plausible claim of a regression in the diagnostic reporting logic."
+    },
+    {
+      "dispute": "finding:claude:C1",
+      "supported": [
+        {
+          "reviewer": "claude",
+          "claim": "ReportIfLocatedInCompilation drops every diagnostic whose location is not a source location in this compilation",
+          "why": "verified by line 1446"
+        },
+        {
+          "reviewer": "claude",
+          "claim": "TypeMustBeMessagePackObject (MsgPack003) is located at callerSymbol.Locations[0]",
+          "why": "verified by line 1341"
+        }
+      ],
+      "unsupported": [
+        {
+          "reviewer": "claude",
+          "claim": "base reports MsgPack003 (metadata location), head reports nothing",
+          "why": "the probe used to verify this is not in the evidence/facts.json"
+        }
+      ],
+      "evidence_that_would_settle": [
+        "A test case reproducing the scenario: a member of a referenced generic (Lib.Item<T>.Content) where T is an app type without [MessagePackObject] (Item<Foo]), comparing diagnostic output between base and head."
+      ],
+      "route_to": "area owner",
+      "note": "The code mechanism for the finding is verified, but the actual regression in behavior is not."
+    }
+  ]
+}

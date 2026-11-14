@@ -1,0 +1,171 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T13:04:07+02:00",
+  "inputs": [
+    "requirements: requirements/2283.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "facts: evidence/2283-mut1/facts.json",
+    "diff 32258fdb..9df83c38 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 (tree c1a64493)",
+    "file contents: 3 blocks",
+    "context: 165337 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack004.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/2283-mut1/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 48218,
+      "completion_tokens": 6155
+    },
+    "seeded": {
+      "change": "2283-mut1",
+      "shown_as": "2283",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1446,
+      "mutated_tree": "c1a64493106da3ff1f2505d5c1bbba45cd5e0b8f",
+      "seeding_note_removed_from_line": false
+    },
+    "preset": "nemotron-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": true,
+    "confidential_forced": true,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 131072,
+    "max_tokens": 32768,
+    "wall_clock_s": 42.0,
+    "gpu_hours": 0.0117,
+    "usd_estimate": 0.0278
+  },
+  "summary": "The change fixes issue #2283 by modifying TypeCollector.cs to handle closed generic value types from referenced assemblies. Three new tests verify the fix: they pass with the head change and fail on base, confirming the root cause is addressed. The full test suite shows no regressions.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "Three new tests for closed generic types from metadata references pass with head and fail on base, confirming the source generator no longer crashes (no CS8785) and produces a generated resolver.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "met",
+      "confidence_basis": "The three new tests specifically verify no AD0001 analyzer exceptions occur for closed generic types from referenced assemblies; all pass with head and fail on base.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "met",
+      "confidence_basis": "The ReportIfLocatedInCompilation method ensures diagnostics are only reported for in-source locations, preventing reporting against metadata-referenced types. The new tests confirm no AD0001 errors for such types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "The full suite of 170 tests passes with 0 failures, and targeted generator tests all pass (19/19), confirming no regressions in existing diagnostics.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.targeted",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "met",
+      "confidence_basis": "The tests.fail_without_fix check confirms 3/3 new tests fail on base source, demonstrating the fix is covered by automated tests that fail without it.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": [],
+  "refutations": []
+}

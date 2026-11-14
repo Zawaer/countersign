@@ -1,0 +1,154 @@
+{
+  "reviewer": "nemotron",
+  "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "vendor": "NVIDIA",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T13:03:09+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut2/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1148 (tree 08a8c06f)",
+    "file contents: 4 blocks",
+    "context: 140823 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "countersign review-llm",
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "self_hostable": true,
+    "calls": 1,
+    "json_repaired": false,
+    "raw": "reviews-selfhost/2234-mut2/raw/nemotron.response.json",
+    "usage": {
+      "prompt_tokens": 40337,
+      "completion_tokens": 8920
+    },
+    "seeded": {
+      "change": "2234-mut2",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1148,
+      "mutated_tree": "08a8c06f23d43c04834bb95c962eb8daa0ee61a9",
+      "seeding_note_removed_from_line": true
+    },
+    "preset": "nemotron-selfhost",
+    "endpoint_host": "127.0.0.1",
+    "self_hosted": true,
+    "confidential": true,
+    "confidential_forced": true,
+    "provider": "verda",
+    "gpu": "A100 80GB x1",
+    "max_model_len": 131072,
+    "max_tokens": 32768,
+    "wall_clock_s": 58.0,
+    "gpu_hours": 0.0161,
+    "usd_estimate": 0.0385
+  },
+  "summary": "The change implements support for [MessagePackObject(SuppressSourceGeneration = true)] by modifying TypeCollector.cs to properly report contract diagnostics (missing [Key], duplicate keys, mixed key kinds) for suppressed types while suppressing formatter-generation-only diagnostics (partial-class requirement, AOT-only checks). The fix adds duplicate-key checks before adding members to dictionaries, preventing AD0001 analyzer crashes that occurred on invalid contracts for suppressed types.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The 4 targeted tests that fail without the fix (DuplicateIntKeysAreReportedWithoutAnalyzerFailure, DuplicateStringKeysAreReportedWithoutAnalyzerFailure, MixedKeyKindsAreReportedWithoutAnalyzerFailure, DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes) all expect and now receive contract diagnostics for SuppressSourceGeneration=true types; without the fix they crash with AD0001 instead of reporting the expected MsgPack005 diagnostics. The other 4 new tests (MemberWithoutKeyIsReported, AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported, SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed) pass both with and without the fix, confirming the analyzer correctly validates contract rules and skips formatter-only diagnostics.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed",
+          "check": "tests.targeted"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed",
+          "check": "tests.targeted"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed",
+          "check": "tests.targeted"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "outcome": "passed",
+          "check": "tests.targeted"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "summary": "4/8 new tests fail without the fix, confirming they cover the change; 4 pass without fix"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "The test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passes, and the code at TypeCollector.cs line 1383-1387 explicitly returns null (skipping source generation) when suppressSourceGeneration is true, preventing MsgPack011/016/017 diagnostics from being reported for suppressed types.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed",
+          "check": "tests.targeted"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": "1383",
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true) { // Skip any source generation return null; }"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "met",
+      "confidence_basis": "The full_suite check passes (175 tests, 0 failed). The fail_without_fix check shows the analyzer crashed with AD0001 on invalid contracts for suppressed types without the fix; with the fix the full suite passes and no crashes occur.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass",
+          "summary": "175 tests, 175 passed, 0 failed"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass",
+          "summary": "new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "met",
+      "confidence_basis": "The fail_without_fix check confirms 4 of 8 new tests fail without the fix, demonstrating the tests cover the change. The full_suite check shows 0 regressions (0 failing on base, 0 also failing on base).",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass",
+          "summary": "175 tests, 0 failing on base, 0 also failing on base"
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "refusals": [],
+  "refutations": []
+}
