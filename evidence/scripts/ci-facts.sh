@@ -60,4 +60,6 @@ fi
 # reviewer repros (evidence/repros/<change>/<finding>/): the claimed defect as a test, run on head and base
 [ ! -d "$here/../repros/$change" ] || python3 -I "$here/repro.py" "$change"
 python3 "$here/facts.py"
+# supply chain: restore every *.csproj of base and head, CycloneDX SBOMs, the deps.delta check (countersign/sbom.py)
+python3 "$here/deps-delta.py" "$change" --summary "${GITHUB_STEP_SUMMARY:-/dev/null}"
 echo "wrote $WORK/evidence/$change/facts.json"
