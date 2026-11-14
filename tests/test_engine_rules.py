@@ -139,15 +139,17 @@ def test_reproduced_finding_with_unverifiable_citations_still_counts(ws):
     assert p["findings"][0]["verified_by"] == "repro" and p["tier"] == "ask"
 
 
-def test_not_reproduced_finding_is_shown_but_does_not_route_by_itself(ws):
+def test_not_reproduced_finding_is_labelled_not_demoted_and_is_no_failed_check(ws):
     with_check(ws, {"id": "repro.claude.M", "status": "fail", "summary": "did not reproduce"})
     review(ws, "claude", make_review("claude", findings=[{**MAJOR, "severity": "blocker",
                                                           "evidence": [GOOD_CODE, {"kind": "check", "id": "repro.claude.M"}]}]))
     p = pack.build(ws, "9001")
     f = p["findings"][0]
-    assert f["repro"]["status"] == "not_reproduced" and f["tier"] == "silent"
-    assert p["tier"] == "notify"  # a failed repro is not a failed check of the change either
+    assert f["repro"]["status"] == "not_reproduced" and f["repro"]["label"] == "not reproduced"
+    assert f["tier"] == "ask" and p["tier"] == "ask"  # its own severity, not block: a failed repro is not a failing check
     assert not any(x["factor"] == "failed_checks" and x["points"] for x in p["risk"]["factors"])
+    review(ws, "claude", make_review("claude", findings=[{**MAJOR, "severity": "minor"}]))
+    assert pack.build(ws, "9001")["tier"] == "notify"  # the label itself adds no routing
 
 
 # --- R-INJECT ------------------------------------------------------------------------------

@@ -358,9 +358,9 @@ def grade_findings(reviews: dict, facts: dict, m: Mandate, carried: list[dict] |
         f["tier"] = d["finding_tiers"][f["severity"]] if f["status"] == "verified" else "silent"
         f["confirmed_by"] = []
         if repro == "not_reproduced" and f["status"] == "verified":
-            f["tier"] = "silent"
-            f["tier_reason"] = f"the pipeline could not reproduce it ({f['repro']['check']} failed): shown, does not route by itself"
-            continue
+            # Labelled, not demoted: the label adds no routing of its own, and a repro the pipeline could not make work
+            # does not argue away the reviewer's other verified evidence (the finding keeps its severity tier).
+            f["tier_reason"] = f"not reproduced by the pipeline ({f['repro']['check']} failed); routed on its other verified evidence"
         if repro == "reproduced" and f["status"] == "verified":
             f["tier_reason"] = f"reproduced by the pipeline ({f['repro']['check']})"
             if f["severity"] == "blocker":

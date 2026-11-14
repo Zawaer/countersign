@@ -1,10 +1,15 @@
 # Countersign principles
 
-Twelve rules a team could adopt on Monday. Each says what the rule is, why we hold it, how the reference implementation enforces it (file or command you can check), and what it costs. The reference implementation is a Python CLI over plain files; see [ARCHITECTURE.md](ARCHITECTURE.md) for the full contract.
+Thirteen rules (0 to 12) a team could adopt on Monday. Each says what the rule is, why we hold it, how the reference implementation enforces it (file or command you can check), and what it costs. The reference implementation is a Python CLI over plain files; see [ARCHITECTURE.md](ARCHITECTURE.md) for the full contract.
 
 The short version: **the AI gathers and checks evidence, the mandate says how far that evidence may carry, and a named human signs for the rest.**
 
 ---
+
+## 0. A failing check can't be argued away
+
+- **Rule.** When a check the mandate requires fails or errors, no combination of reviewer verdicts, adjudication or earned trust can prove the clause it covers or clear the change.
+- **How it's enforced.** `decide.principle_zero` lists every mandated check (an area's `checks`, a clause's checks) whose status is `fail` or `error`, adds a driver at `ask` that nothing can lower, and asserts no such clause is `proven` or `held_before`; the signed mandate's `mandated-check-failed` rule raises a failure to `block`. The floor is in code, so it holds even if the mandate's rules are edited. Tested over every verdict combination, with and without adjudication, with every area's trust cap at `silent` (`tests/test_engine_rules.py`).
 
 ## 1. Every change has one named owner, and only that person can sign it
 

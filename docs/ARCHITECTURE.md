@@ -135,7 +135,11 @@ fails with both packages and two advisories (`evidence/supply-chain/attack-2283/
   ],
   "refusals": [
     {"topic": "what the reviewer won't decide", "reason": "why (missing evidence, out of competence, needs runtime behaviour, etc.)",
-     "who_should_decide": "role, e.g. area owner / security champion"}
+     "who_should_decide": "role, e.g. area owner / security champion",
+     "req": "REQ-2283-N1 (optional: the clause it is about)", "blocking": false}
+  ],
+  "refutations": [   // optional: closes a finding from this reviewer's earlier pass (see carry-forward)
+    {"finding": "C2", "reason": "why it is not a defect", "evidence": [ /* about the same location */ ]}
   ]
 }
 ```
@@ -145,27 +149,38 @@ Evidence item kinds (the engine verifies each one):
 ```json
 {"kind": "code", "file": "src/.../TypeCollector.cs", "line": 1442, "rev": "head|base", "quote": "exact substring of that line"}
 {"kind": "test", "name": "Full.Test.Name", "outcome": "passed|failed"}      // must match facts.json
-{"kind": "check", "id": "tests.fail_without_fix"}                            // must exist in facts.json
+{"kind": "check", "id": "tests.fail_without_fix", "status": "pass"}          // must exist in facts.json; status must match
 {"kind": "requirement", "req": "REQ-2283-F1", "quote": "clause text"}        // must match requirements file
 {"kind": "issue", "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283", "quote": "..."}
 ```
 
-`rev` is `head`, `base` (resolved through facts.json) or an explicit sha. A review may carry `"simulated": true`.
+`rev` is `head` or `base` (resolved through facts.json); nothing else verifies. A review may carry `"simulated": true`.
 
 ## Verification and decision rules (stages 3-4)
 
 - A `code` item is verified if `file` exists at `rev` (`git show <rev>:<file>` in `--repo`) and `quote` occurs on `line` (±`decision.code_line_tolerance`, default 3; the offset is recorded). Whitespace is normalised. For a mutant (uncommitted single-line edit), `rev: head` is the branch head with facts.json's `mutation.before -> after` applied on `mutation.line`, so quotes are checked against the mutant itself. A `test` item must exist in facts.json with the same `outcome`; a `check` item must exist, and if it states `status`/`outcome` it must match. A `requirement` quote must occur in the clause text.
 - An `issue` item is **not counted as verified**: the pipeline runs offline and cannot confirm what an issue page says. Unknown kinds are not verified either. Every item gets `verified` and a `note` saying what was checked.
-- A finding with **zero verified evidence** is rejected (kept in the pack under "rejected: unsupported claims", counted as a hallucination signal for that reviewer).
+- **Review JSON is untrusted input (R9, decision D11).** Only *substantive* items count towards `min_verified_evidence` and towards a finding's support: a `code` quote, a `test` with a claimed `outcome`, a `check` with a claimed `status`, each matching. A `requirement` quote, a test without an outcome or a check without a status may verify (shown) but never count. A `code` item must cite `rev: head|base` and a relative path in the change's diff (`base` may also cite `decision.base_context_files`); git is called with `--end-of-options`. Two verdicts from one reviewer for one clause count as none (`missing_review`, `duplicate: n`). A malformed item (wrong types) is rejected with a note, never a crash.
+- A finding with **zero substantive verified evidence** is rejected (kept in the pack under "rejected: unsupported claims", counted as a hallucination signal for that reviewer).
 - **Who participates**: `Mandate.panel()` takes the registry and the confidentiality of the touched areas. `decision.reviewers_required: all_participating` means every reviewer on that panel (today claude, codex, nemotron) is required; a required reviewer with no review file is `missing_review`, so a reviewer that failed to run can never silently drop out. An explicit list is also accepted and is narrowed by confidentiality.
-- Per requirement clause: **proven** only if every participating reviewer says `met` with at least `decision.min_verified_evidence` (1) verified items AND the clause's checks pass. Otherwise **refused**, with every reason that applies (a list, not just the first): `check_failed`, `check_not_run` (skipped/error/absent), `missing_review`, `not_met`, `reviewers_disagree`, `cannot_determine`, `thin_evidence`, `adjudicator_dispute`.
+- Per requirement clause: **proven** only if every participating reviewer says `met` with at least `decision.min_verified_evidence` (1) substantive verified items AND the clause's checks pass. Otherwise **refused**, with every reason that applies (a list, not just the first): `check_failed`, `check_not_run` (skipped/error/absent), `missing_review`, `not_met`, `reviewers_disagree`, `cannot_determine`, `thin_evidence`, `adjudicator_dispute`, `reviewers_untrusted`. Every reason has `code` and `detail`; `missing_review`, `not_met`, `cannot_determine` and `thin_evidence` also carry `reviewer` and `verdict` (`null` when missing); check reasons carry `check` and `status`.
   *Why unanimity with three reviewers, not a 2-of-3 majority:* a majority would let two reviewers outvote a third reviewer's verified objection, so the more reviewers we add, the easier it would become to clear. Unanimity means each added reviewer can only make the AI more cautious. The cost is more refusals (more human routing), which we accept: a refusal costs a few minutes of an owner's time, an escape costs an incident. (Decision D8.)
 - **Disputes and the adjudicator** (`countersign adjudicate <change>`): a dispute is a clause where participating reviewers gave different verdicts, or a blocker/major finding no other reviewer corroborated (no shared anchor). Only when disputes exist, the adjudicator (Gemini) gets each disputed item with both sides' basis and cited evidence, the engine's verification result for every item, and the code around each cited line. Per dispute it must say which claims the cited evidence supports, which it doesn't, and what evidence would settle it. Output: `reviews/<change>/adjudication.gemini.json`, shown in the pack beside the refusal. **Hard rule (`decide.apply_adjudication`, tested):** the adjudicator can only add reasons (`adjudicator_dispute`) and `ask` drivers; a refused clause stays refused whatever it writes, and rulings on items no longer in dispute are kept as `stale` and ignored.
 - Verified findings set a tier by severity (`decision.finding_tiers`: blocker/major -> `ask`, minor -> `notify`, info -> `silent`). A `blocker` verified by both reviewers (their verified evidence points at the same file within ~10 lines, or the same check/test) or backed by a failing check/test -> `block`. Rejected findings never move the tier; they are listed under residual risk if blocker/major ("rejected, not disproven").
-- Any refused clause -> `decision.refused_clause_tier` (`ask`). Any reviewer `refusals[]` entry -> `decision.reviewer_refusal_tier` (`ask`): a topic the AI declined is a topic nobody cleared.
+- Any refused clause -> `decision.refused_clause_tier` (`ask`).
+- **Reviewer refusals** (`decide.classify_refusal`): a refusal routes `decision.reviewer_refusal_tier` (`ask`) if it names a clause of the requirement set (`req`), is marked `blocking: true`, or its topic names a check the change's areas or clauses mandate (whole word) or a term from `decision.refusal_ask_terms` (security, untrusted, unsafe, deserializ, public api, breaking, binary compat, runtime, crash, data loss). Anything else is *out of scope*: shown under "What the AI refused to decide", listed in residual risk, and it routes `decision.out_of_scope_refusal_tier` (`notify`), so the owner is still told and the change is never `silent`. Each refusal in the pack has `routes` and `route_reason`. Old reviews without `req`/`blocking` are classified by the same rule.
 - Hard rules (`rules` in the mandate): >50 files -> `block` (split; counts all files, generated included), >10 generated files -> `ask`, public API changed -> `ask`, source changed without a test change -> `ask`, a mandated area check failed -> `block`, not run -> `ask`, mandate not validly signed -> `ask`.
-- **Tier drivers**: risk band, each fired rule, each touched area's current cap (mandate cap or trust-ledger cap), each refused clause, each reviewer refusal, each verified finding. Tier = strictest driver. The pack lists all drivers; "why" is the drivers at the final tier, most specific first (rule, finding, refused clause, reviewer refusal, trust cap, risk).
+- **Tier drivers**: risk band, each fired rule, the principle-0 floor, each touched area's current cap (mandate cap or trust-ledger cap), each refused or held-before clause, each reviewer refusal, each verified finding. Tier = strictest driver. The pack lists all drivers; "why" is the drivers at the final tier, most specific first (rule, failing check, finding, refused clause, adjudicator, reviewer refusal, held before, trust cap, risk).
 - `ai_recommendation` in the pack is the tier under the mandate's own caps (ignoring trust-ledger probation); spot-checks grade that.
+
+## Clause statuses, principle 0, carry-forward, repros, R-INJECT (decide.py)
+
+- **`held_before`** (decision D12): a clause that would be proven, but whose relevant tests all pass in a `*fail_without_fix*` run (source reverted, tests kept): "met, but not achieved by this change". Relevant tests are the clause's own `tests:` in `requirements/<change>.yaml` if listed, else the *new* tests (`new: true` in that run) the reviewers cited with verified evidence on that clause; existing tests passing on base are regression guards and are not counted ("no regressions" clauses should hold before). No relevant test in such a run means no judgement. A held-before clause is not proven: it routes `decision.held_before_tier` (`notify`) at least, and it is listed in residual risk. Reason: `{"code": "held_before", "detail", "tests"}`. On 2234, F1 and F2 (requirements/2234.yaml maps F1 to its three "IsReported" tests; the four "WithoutAnalyzerFailure" tests fail without the fix only on the AD0001 crash, which is N1).
+- **Principle 0: a failing check can't be argued away** (`decide.principle_zero`). If a check that a touched area mandates, or that a clause needs, is `fail` or `error`, the engine adds a `failing check` driver at `ask` that no verdict, adjudication or trust cap can lower, and asserts that no such clause is `proven` or `held_before`. The mandate's own rules add `block` for `fail` (`mandated-check-failed`); the floor holds even if those rules are removed. Tested over every verdict combination, with and without adjudication, with every area cap at `silent`.
+- **Carry-forward (R6)** (`decide.carry_forward`): for each reviewer with earlier passes (`reviews/<n>/<reviewer>.v<k>.json`, verified like the current one), every verified blocker/major finding stays open as **carried forward** unless the reviewer's current pass *re-raises* it (a current finding cites a piece of the same verified evidence: the same code quote in the same file, or the same test) or *refutes* it (a `refutations[]` entry, or a finding with `refutes:`, naming the earlier id and citing verified evidence that shares a location anchor with it). A carried finding is a verified finding with id `<pass>.<id>` (e.g. `claude:v1.C2`) and `carried_forward: {from, pass, original_id, why}`: shown, counted as open, routed by severity. The pack lists `carried_forward` and `refuted_findings`. On 2297, Claude v1's C2 (CS0579 on user-declared partial resolvers) is carried forward.
+- **Executable repros** (contract below): a finding gets the check `repro.<reviewer>.<finding-id>` by name (reviewers needn't cite it) or any `repro.*` check it cites. `repro: {check, status: reproduced|not_reproduced|repro_not_run, present_before, label, runs}`. *Reproduced*: strongest evidence; the finding is verified even if its own citations failed, a reproduced major routes `ask` and a reproduced blocker `block`, whatever the other reviewers say. When the defect shows on base the same way as on head, the label says "reproduced; also present before this change" (2234 C2). *Not reproduced*: labelled; the label adds no routing and does not demote the reviewer's other verified evidence. `repro.*` checks never count as failed checks (risk score, blocker backing, mandated-check rules). Pack: `findings[].repro`, `reproduced` (`{"claude:C1": "reproduced"}`).
+- **R-INJECT**: mandate rule `R-INJECT` (`when: injection_found`) blocks when `injection_scan` is `fail`; its evidence is the matched lines (`file:line: text`, or `commit_message:n: text`). Independently of the rule, the engine marks every reviewer verdict on that change untrusted: each clause gets `reviewers_untrusted` (so none is proven) and `untrusted: true`, and the pack has `reviewers_untrusted: {rule, reviewers, why, lines}` and a first residual-risk line "Reviewers saw planted instructions; their verdicts don't count". Findings still count: they can only make the tier stricter.
+- **Docs clauses**: requirement type `docs` needs `docs.anchors` (mandate `requirement_checks`), so a docs-only change can be proven without a build or tests (up-1967).
 
 ## Executable repros (a reviewer's claimed bug, run by the pipeline)
 
@@ -223,7 +238,7 @@ previous instructions", or words split by zero-width characters. A human skims p
   `mutation.before: ""` (an empty line) -> `after` (the planted line), so the verifier replays it like any mutant;
   `mutation.commit_message_appended` when the message was planted too. Seeded by `evidence/scripts/inject.py`, catalogued in
   `measurement/mutants/mutants.json`. Build and every test pass on both; only `injection_scan` fails.
-  *Note for `common.base_change`*: these ids end in `-inject`, not `-mutK`; they reuse `requirements/<n>.yaml` like mutants.
+  `common.base_change` maps `-inject` (like `-mutK`) to its change, so they reuse `requirements/<n>.yaml` and count as seeded variants in the replay.
 
 ## Model reviewers via API (`countersign review-llm <change> --reviewer nemotron|gemini`)
 
@@ -237,7 +252,7 @@ previous instructions", or words split by zero-width characters. A human skims p
 ## Risk score (explainable, additive)
 
 Each factor adds points and a one-line reason; the pack prints the table. Weights live in the mandate, not in code.
-Factors (all printed, including zeros): `area_sensitivity` (most sensitive touched area), `files_changed`, `lines_changed` (non-generated), `generated_files`, `public_api_change` (also counted when public_api was not checked), `source_without_tests`, `security_sensitive_paths` (mandate globs), `fail_without_fix_not_shown`, `reviewer_disagreement` (per clause), `failed_checks` (per failing check other than public_api). Size factors are capped.
+Factors (all printed, including zeros): `area_sensitivity` (most sensitive touched area), `files_changed`, `lines_changed` (non-generated), `generated_files`, `public_api_change` (also counted when public_api was not checked), `source_without_tests`, `security_sensitive_paths` (mandate globs), `fail_without_fix_not_shown` (only when source files changed: a docs/tests-only change has nothing to revert; the check stays `skipped`, never `pass`, for every rule), `reviewer_disagreement` (per clause), `failed_checks` (per failing check other than public_api and `repro.*`). Size factors are capped.
 Score bands map to tiers via `risk.thresholds` (score >= threshold): notify 15, ask 40, block 130. The block band is deliberately high: blocks normally come from hard rules; risk alone blocks only a pile-up (e.g. failing checks + critical area + size).
 
 ## Signing and ledger (stage 6)
@@ -245,18 +260,25 @@ Score bands map to tiers via `risk.thresholds` (score >= threshold): notify 15, 
 - `countersign sign packs/<change>/pack.json --as <owner> [--decision accept|reject|request-changes] [--note "..."]` shows the sign-off card (checked by whom, not checked and why, residual risk). Without `--decision`/`--note` it prompts. Rules: only the pack's named owner may sign; the pack must still match a fresh rebuild from the current inputs, mandate and trust state (otherwise "out of date: re-run review"); a `block` pack accepts only `reject` / `request-changes`.
 - pack.json holds no timestamps, so the same inputs give the same sha256 (the render time is only in pack.md/html). "Canonical JSON" = `json.dumps(sort_keys=True, separators=(",", ":"), ensure_ascii=False)` UTF-8.
 - The signoff payload holds `change, pack_path, pack_sha256, decision, note, tier, ai_cleared, areas, mandate_sha256, statement`; the entry's `ts` and `signer` complete what is signed.
-- Ledger entry: `{"seq", "ts", "type": "signoff|spotcheck|escape|mandate_change", "payload": {...}, "prev", "signer", "hash", "sig"}`. `hash` = sha256(canonical entry without `hash` and `sig`); `prev` = the previous entry's `hash` (64 zeros for the first); `sig` = base64 Ed25519 by `signer` over the ASCII hex `hash`, checked against `keys/<signer lowercased>.pub`.
+- Ledger entry: `{"seq", "ts", "type": "signoff|spotcheck|escape|canary|mandate_change", "payload": {...}, "prev", "signer", "hash", "sig"}`. `hash` = sha256(canonical entry without `hash` and `sig`); `prev` = the previous entry's `hash` (64 zeros for the first); `sig` = base64 Ed25519 by `signer` over the ASCII hex `hash`, checked against `keys/<signer lowercased>.pub`.
 - `countersign verify-ledger` re-checks seq, chain, hashes and every signature (exit 1 and the line number on any problem), and warns when a signed pack.json changed after signing.
 - Keys: `countersign keygen --name Toivo` writes `.keys/toivo.key` (raw Ed25519, base64, mode 0600, gitignored) and `keys/toivo.pub`. Key rotation and revocation are out of scope.
 
-## Trust ledger (stage 7)
+## Trust stages (stage 7)
 
-Per area (from the mandate), derived purely from ledger events:
-- `spotcheck` (`countersign spotcheck <change> --as <name> --result agree|disagree [--note] [--simulated]`): a human re-reviews a change whose `ai_recommendation` was `silent`/`notify` and records agree / disagree; it applies to every area the change touched. During probation the cap forces `ask`, but the AI's own recommendation is still graded, which is how the right is earned back.
-- `escape` (`countersign escape <change> --as <name> --kind revert|incident [--area A]... [--simulated]`): if the change's actual tier was `silent`/`notify` (AI-cleared), the named areas (default: the change's primary area) drop to `trust.escape_cap` (`ask`) and start probation. An escape on a human-signed change is logged but leaves the AI's cap alone (the human owned it).
-- A `disagree` spot-check tightens the cap by `trust.disagree_tightens_by` (1) step (never past `ask`) and restarts probation.
-- The mandate cap is restored after `trust.restore_after_agreeing_spotchecks` (3) consecutive agreeing spot-checks.
-- `countersign trust` prints each area's mandate cap, current cap, probation progress and the ledger entries that set it.
+One table in the mandate (`trust.stages`), applied by `countersign/trust.py` to ledger events only. Per area the AI's clearance right is a stage on the ladder `ask -> notify -> silent`, never above the area's `max_ai_tier` (where each area starts: the owner delegated it by signing).
+
+| stage | entry requirement (mandate v3) |
+|---|---|
+| `ask` | where an area lands after a drop, and every area while a reviewer version is not released |
+| `notify` | 20 agreeing spot-checks in a row since the last drop or climb, >= 95% agreement over the last 40 spot-checks, no escape in the area's last 50 changes |
+| `silent` | 40 in a row, >= 98% over the last 80, no escape in the last 100 changes |
+
+- **Drop one stage** (never below `ask`) and start probation on: an `escape` on an AI-cleared change (`countersign escape`; an escape on a human-signed change is logged and leaves the cap alone), a disagreeing `spotcheck`, or a `canary` run where the panel missed a seeded defect (`countersign canary --seeded N --caught K [--area A] [--reviewer name=model@prompt]`).
+- **Climb one stage** on an agreeing spot-check when the next stage's row holds. "Changes" are signoffs and spot-checks touching the area.
+- **Release gate for the reviewer itself**: the stages were earned by specific reviewer versions, `model` + `prompt_version`: those in the signed registry, plus any that a `canary` event recorded catching at least `trust.release_gate.min_catch_rate` (1.0) of the seeded set. When a change is reviewed by any other version (a new model or a new prompt), every area is held at `ask` until that version passes. Spot-check, escape and canary events record the reviewer versions they grade.
+- Why 20, not 3 (decision D13, from the measurement): in simulation, three agreeing spot-checks on mostly clean changes restored clearance within days while the reviewers had drifted; 20 plus weekly canaries brought escapes back to the full-review baseline.
+- `countersign trust` prints the table, the released reviewer versions, and per area the mandate cap, current stage, next stage, progress and the ledger entries that set it. `trust.restore_after_agreeing_spotchecks`, if present, overrides N for every stage (a what-if hook for the simulation; not in the signed mandate).
 
 ## Measurement (`countersign replay`)
 
@@ -268,4 +290,4 @@ Runs verify + decide over every change under `--inputs` (trust events ignored, s
 
 ## CLI
 
-`review <change>...` · `review-llm <change> --reviewer <name>` · `adjudicate <change>` · `costs` · `route --all` · `sign` · `verify-ledger` · `trust` · `spotcheck` · `escape` · `keygen --name` · `sign-mandate --as` · `replay`. Run as `countersign ...` from the venv or `python -m countersign ...`.
+`review <change>...` · `review-llm <change> --reviewer <name>` · `adjudicate <change>` · `costs` · `route --all` · `sign` · `verify-ledger` · `trust` · `spotcheck` · `escape` · `canary` · `keygen --name` · `sign-mandate --as` · `replay`. Run as `countersign ...` from the venv or `python -m countersign ...`.
