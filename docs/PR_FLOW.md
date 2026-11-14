@@ -63,8 +63,12 @@ The check then also confirms that the key on file is one GitHub lists for that l
 
 ### Merge gate
 
-`main` is protected: the required status is `countersign/tier`, pinned to the GitHub Actions app (a person with a token
-cannot post a fake green status). The ledger branch `countersign-ledger` refuses force pushes and deletion, so it can
+`main` is protected: the required status is `countersign/tier`, pinned to the GitHub Actions app, so a person with
+a personal token cannot post a fake green status. **Known hole (security triage T1, open):** GitHub Actions as a whole
+is trusted, so a workflow file added on an agent's own branch could post `countersign/tier=success` itself. The fix
+is a dedicated Countersign GitHub App whose key lives in an environment secret limited to `main`, with branch
+protection requiring the status from that App only; it needs the repo owner to create the App. The lesson for the
+concept: the gate must come from an identity the agent cannot use. The ledger branch `countersign-ledger` refuses force pushes and deletion, so it can
 only grow; `countersign verify-ledger` re-checks the whole chain and every signature from any clone. Protection is
 enforced for admins too, so not even the repo owner can merge an `ask` PR without the countersignature (pushing a
 new snapshot to `main` means switching that off for the push and back on).
@@ -72,8 +76,8 @@ new snapshot to `main` means switching that off for the push and back on).
 ## What is real in the demo, and what is recorded
 
 Real, on every run: the PRs and their commits; the diff recomputed from git and compared with the recorded evidence;
-verifying every cited code line against the PR's git objects; the decision and tier under the signed mandate (v2,
-signature checked); the pack and its sha256; the sticky comment, the status, the label and the owner assignment; the
+verifying every cited code line against the PR's git objects; the decision and tier under the signed mandate (the version vendored at
+the pinned commit, signature checked); the pack and its sha256; the sticky comment, the status, the label and the owner assignment; the
 ledger check; and the merge gate. Owner signatures are verified with the real Ed25519 keys in `keys/`.
 
 Recorded: the reviewers' output (`reviews/<n>/`), the adjudication and the build/test results in `evidence/<n>/facts.json`
