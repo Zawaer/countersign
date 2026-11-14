@@ -80,3 +80,27 @@ All URLs are relative to the site root: GitHub Pages once public, or locally `py
 | 0:16–0:21 | Hover **ASK → Toivo** | ASK → Toivo | So it asks the named owner, Toivo, who signs. |
 | 0:21–0:26 | `overview.html`, middle number | 0 of 11 escapes cleared | On 109 real pull requests, it would have cleared 24, and none of the 11 escapes. |
 | 0:26–0:30 | `pitch.html#1` | (none) | AI clears what it can prove. A named human signs the rest. |
+
+## Rendering the video (scripts/video/)
+
+The video is rendered, not filmed: `scripts/video/make_video.py` drives the real `site/` in headless Chromium (1280×720 CSS at device scale 1.5, captured as 1920×1080 frames through the DevTools screencast), moves a visible cursor dot and clicks on the voice-over's words, then burns in the captions with ffmpeg. Nothing on screen is generated.
+
+```bash
+python3 site/build.py
+uv run --with playwright python -m playwright install chromium --with-deps   # once
+uv run --with playwright python scripts/video/make_video.py            # ElevenLabs voice
+uv run --with playwright python scripts/video/make_video.py --silent   # silent placeholder voice, same pipeline
+```
+
+- **Input:** the voice-over paragraphs and captions are read from this file (number markers stripped), one paragraph per shot. `SHOT_OVERRIDES` in the script lists where the video departs from the table.
+- **Voice:** ElevenLabs `eleven_multilingual_v2`, voice "George" (`JBFqnCBsd6RMkjVDRZzb`), one clip per shot via the `with-timestamps` endpoint. The key is read from `/data/work/secrets/elevenlabs.key` inside the script and never printed. Clips are cached in `/data/work/video/audio/`, keyed by a hash of the text, voice and settings: re-renders spend no characters unless a paragraph changes.
+- **Timing:** each shot lasts a short lead-in + its clip + a short tail; clicks (Tamper, Recompute, sneak a bug in) are timed to the words that describe them using the character timestamps.
+- **Output:** `/data/work/video/countersign-demo.mp4` (H.264/AAC, yuv420p, faststart, -16 LUFS) and `contact-sheet.png`; the frames, captions and `timeline.json` (each shot's midpoint, for spot checks) are in `/data/work/video/build/`. Neither the video nor any audio is committed.
+- **Where the video departs from the table above** (the site was redesigned after this script was written; the facts are the same):
+  - 0:10: `index.html` has no pins any more; the shot shows its first screen ("It fixes the wrong bug." fades in), says "Countersign checks the evidence itself, and says no: it fixes the wrong bug." and clicks **Show me where**.
+  - 0:15: the single pin **Untouched by the fix** on line 1383 (`index.html#where`).
+  - 0:27: Key(null) is Claude's finding C2 in the evidence pack (`packs/2234/pack.html`, Evidence open), "reproduced by the pipeline (repro.claude.C2)".
+  - 0:38 and 0:47: `tour.html#2` (4 of 8 tests pass without the fix) and `tour.html#5` (the **ASK → Toivo** pill).
+  - 0:53: as scripted; the tamper edits the newest ledger line (line 14), so the banner names line 14.
+  - 1:08: **Try to sneak a bug in** → **Delete a guard** → "Caught by a reviewer (tests missed it)."
+  - 1:24: `overview.html` now leads with 11/11 later-reverted PRs sent to a human, then the 35/35 tile.
