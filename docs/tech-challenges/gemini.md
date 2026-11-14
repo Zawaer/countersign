@@ -24,12 +24,12 @@ the failure unanimity exists to prevent. So it audits evidence instead of voting
 claims for 'not met', 2 of 4 for 'met' (advisory)", then the unsupported claims and what would settle it.
 
 **Cost.** <!--n:gemini_calls-->6<!--/n--> calls: <!--n:gemini_tokens-->31,671<!--/n--> tokens, $<!--n:gemini_usd-->0.08<!--/n--> in total;
-<!--n:gemini_call_tokens_min-->3,234<!--/n--> to <!--n:gemini_call_tokens_max-->7,012<!--/n--> tokens and $<!--n:gemini_call_usd_min-->0.007<!--/n--> to $<!--n:gemini_call_usd_max-->0.018<!--/n--> per call. The team's shared key is a CI secret; each call
+<!--n:gemini_call_tokens_min-->3,234<!--/n--> to <!--n:gemini_call_tokens_max-->7,012<!--/n--> tokens and $<!--n:gemini_call_usd_min-->0.007<!--/n--> to $<!--n:gemini_call_usd_max-->0.018<!--/n--> per call. Each call
 appends a row to `measurement/costs.yaml` from the API's usage field, with the run URL.
 
-**Confidential code.** Gemini is hosted, so a repo marked confidential cannot send it code. There Gemma,
-open weights on our own A100, takes the role; it ran and agreed with Gemini on the shared disputes (see [gemma.md](gemma.md)).
+**Confidential code.** Gemini is hosted, so a repo marked confidential cannot send it code. Gemma (open weights, our
+A100) ran on the shared disputes and agreed; adopting it is a signed mandate change ([gemma.md](gemma.md)).
 
 Code: github.com/Zawaer/countersign (`countersign/decide.py`, `prompts/adjudicate-v1.md`)
 
-<sub>2,474 characters</sub>
+<sub>2,453 characters</sub>
