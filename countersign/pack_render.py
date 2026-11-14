@@ -9,10 +9,10 @@ the evidence (findings, code excerpts, test runs, checks); and, folded, the full
 from __future__ import annotations
 
 import html
+import json
 import re
 from pathlib import Path
 
-from .common import now_iso
 
 STATUS = {  # label -> (css class, glyph, what it means)
     "proven": ("proven", "\u2713", "every reviewer said met with verified evidence and the clause's checks pass"),
@@ -44,6 +44,51 @@ def _ruling_text(r: dict) -> str:
 
 def _rulings(p: dict) -> list[dict]:
     return [r for r in (p.get("adjudication") or {}).get("rulings", []) if not r.get("stale")]
+
+
+ADJ_PHRASE = "the adjudicator disputes it"  # pack.json's generic wording; the render says what the ruling found
+
+
+def _objection(p: dict, cid: str) -> str | None:
+    """What the adjudicator's ruling on a clause says about the 'not met' side, in words:
+    `Gemini: Claude's objection is supported` when it backs a claim by a reviewer who said not met."""
+    r = next((x for x in _rulings(p) if str(x.get("dispute")) == cid), None)
+    if not r:
+        return None
+    adj = _name(p["adjudication"]["reviewer"])
+    tr = next((x for x in p.get("trust", []) if x["id"] == cid), None)
+    no = [v["reviewer"] for v in (tr or {}).get("reviewers", []) if v["verdict"] != "met"]
+    if not no:
+        return f"{adj} ruled on it (advisory)"
+    backed = [n for n in no if any(x.get("reviewer") == n for x in r.get("supported", []))]
+    who = " and ".join(_name(n) for n in (backed or no))
+    return (f"{adj}: {who}'s objection is supported" if backed else f"{adj} does not back {who}'s objection")
+
+
+def view(p: dict) -> dict:
+    """The pack as rendered: a copy where the generic `the adjudicator disputes it` names the ruling's outcome.
+    Render only: pack.json (what the owner signs) is never changed."""
+    if not _rulings(p) or ADJ_PHRASE not in json.dumps(p):
+        return p
+
+    def fix(text: str, cid: str | None) -> str:
+        out, pos = "", 0
+        for m in re.finditer(re.escape(ADJ_PHRASE), text):
+            ids = re.findall(r"REQ-[A-Za-z0-9]+-[A-Za-z0-9]+", text[:m.start()])
+            said = _objection(p, ids[-1] if ids else cid or "")
+            out += text[pos:m.start()] + (said or ADJ_PHRASE)
+            pos = m.end()
+        return out + text[pos:]
+
+    def walk(o, cid):
+        if isinstance(o, dict):
+            here = o.get("id") if str(o.get("id", "")).startswith("REQ-") else cid
+            return {k: walk(v, here) for k, v in o.items()}
+        if isinstance(o, list):
+            return [walk(v, cid) for v in o]
+        return fix(o, cid) if isinstance(o, str) and ADJ_PHRASE in o else o
+
+    return walk(p, None)
 
 
 # --- first-screen shortening (render only: the full text is always one tap away, in a fold) -------------------------
@@ -125,7 +170,8 @@ def _trace_why(p: dict, t: dict) -> tuple[str, str]:
 
 def _ruling_line(p: dict, r: dict) -> str:
     """One plain line per adjudicated dispute, counted from the ruling's own supported/unsupported claims:
-    `Gemini on N1: backs 2 of 3 claims for Claude's 'not met', 2 of 4 for 'met'`. The full ruling is folded under it."""
+    `Gemini on N1: Claude's objection is supported; backs 2 of 3 claims for Claude's 'not met', 2 of 4 for 'met'`.
+    The full ruling is folded under it."""
     adj = _name(p["adjudication"]["reviewer"])
     claims = [(x.get("reviewer"), True) for x in r.get("supported", [])] + [(x.get("reviewer"), False) for x in r.get("unsupported", [])]
 
@@ -149,6 +195,9 @@ def _ruling_line(p: dict, r: dict) -> str:
     if yes:
         k, n = tally(yes)
         parts.append(f"{k} of {n} for 'met'")
+    said = _objection(p, dispute) if no else None
+    if said and parts:
+        return f"{adj} on {_short_id(dispute)}: {said.split(': ', 1)[-1] if said.startswith(adj + ':') else said}; backs " + ", ".join(parts)
     return f"{adj} on {_short_id(dispute)}: " + (("backs " + ", ".join(parts)) if parts else "see the full ruling")
 
 
@@ -178,6 +227,7 @@ def _more_risks(c: dict) -> str:
 # --- CLI ------------------------------------------------------------------------------
 
 def card(p: dict) -> str:
+    p = view(p)
     c, s = p["card"], p["story"]
     out = [f"Countersign evidence pack, change {p['change']} ({p['branch']} {p['base']}..{p['head']})" + (" [SIMULATED]" if _sim(p) else ""),
            s["headline"], "",
@@ -515,6 +565,7 @@ MD_LIMIT = 60000  # GitHub comments stop at 65536 characters
 
 def to_markdown(p: dict) -> str:
     """The card in plain GitHub Markdown, everything else in <details>. Shrinks to stay under a PR comment's limit."""
+    p = view(p)
     head = _md_card(p) + _md_supply(p)
     for parts in ((_md_trust(p), _md_panel(p), _md_evidence(p), _md_full(p)),
                   (_md_trust(p), _md_panel(p), _md_evidence(p, excerpts=False), _md_full(p)),
@@ -901,6 +952,7 @@ def _html_supply(p: dict) -> str:
 
 
 def _html_full(p: dict) -> str:
+    from .common import now_iso  # imported here so view() stays importable without PyYAML (site/build.py)
     ms = p["mandate"]["signature"]
     rp = p["reviewer_panel"]
     driver_rows = [[_tier(w["tier"], True), _e(w["source"]), f"<code>{_e(w['id'])}</code>", _e(w["why"])] for w in p["drivers"]]
@@ -944,6 +996,7 @@ reviews {_e(", ".join(f"{k} ({v['sha256'][:12]})" for k, v in p["inputs"]["revie
 
 
 def to_html(p: dict) -> str:
+    p = view(p)
     s = p["story"]
     ev = p["evidence_index"]
     findings = "".join(_html_finding(f, ev) for f in p["findings"]) or '<p class="sm mut">No verified findings.</p>'

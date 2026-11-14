@@ -19,10 +19,10 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 | **PROVEN** | [F1](#chain-REQ-2283-F1) | All 3 reviewers say met (12 verified citations); build, tests.targeted pass |
 | **REFUSED** | [F2](#chain-REQ-2283-F2) | Its tests kill none of the 2 planted mutants on its lines <details><summary>more</summary>The tests supporting REQ-2283-F2 (the new tests its reviewers cite: ClosedGenericRecordStruct_FromMetadataReference, ClosedGenericStruct_FromMetadataReference) kill no mutant on its lines (TypeCollector.cs:239, TypeCollector.cs:985) in tests.mutation; no test kills any of the 2 mutant(s) there. Whole change: tests kill 2 of 8 planted mutants; survivors at TypeCollector.cs:239, TypeCollector.cs:985, TypeCollector.cs:1429-1434.</details> |
 | **PROVEN** | [F3](#chain-REQ-2283-F3) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
-| **NOT MET** | [N1](#chain-REQ-2283-N1) | Claude says not met (Codex and Nemotron: met) <details><summary>more</summary>Codex said met without verified evidence; the adjudicator disputes it</details> |
+| **NOT MET** | [N1](#chain-REQ-2283-N1) | Claude says not met (Codex and Nemotron: met) <details><summary>more</summary>Codex said met without verified evidence; Gemini: Claude's objection is supported</details> |
 | **PROVEN** | [N2](#chain-REQ-2283-N2) | All 3 reviewers say met (8 verified citations); build, tests.fail_without_fix pass |
 
-<details><summary>Gemini on N1: backs 1 of 2 claims for Claude's 'not met', 2 of 4 for 'met' (advisory)</summary>
+<details><summary>Gemini on N1: Claude's objection is supported; backs 1 of 2 claims for Claude's 'not met', 2 of 4 for 'met' (advisory)</summary>
 
 The existing 170-test suite passes, but facts.json repro.claude.C1 confirms a regression on head when an in-compilation type is reached through a metadata generic member.
 

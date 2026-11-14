@@ -7,7 +7,7 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 **Why ask**
 
 1. Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a different crash ([evidence](#f-claude-C1))
-2. 2 of 4 requirement clauses not proven. ([evidence](#chain-REQ-2234-N1)) <details><summary>more</summary>REQ-2234-N1: Claude says not met (Codex and Nemotron: met); the adjudicator disputes it (+1 more)</details>
+2. 2 of 4 requirement clauses not proven. ([evidence](#chain-REQ-2234-N1)) <details><summary>more</summary>REQ-2234-N1: Claude says not met (Codex and Nemotron: met); Gemini: Claude's objection is supported (+1 more)</details>
 3. The AI declined to decide 3 questions ([evidence](#refused)) <details><summary>more</summary>e.g. Whether this change resolves issue #2234 for users of the released 3.1.x packages</details>
 
 <sub>All 19 tier drivers are under Full detail.</sub>
@@ -18,10 +18,10 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 |---|---|---|
 | **HELD BEFORE** | [F1](#chain-REQ-2234-F1) | Met, but already true before this change <details><summary>more</summary>all 3 of the clause's tests that were run without the fix pass there too: AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported, MemberWithoutKeyIsReported</details> |
 | **HELD BEFORE** | [F2](#chain-REQ-2234-F2) | Met, but already true before this change <details><summary>more</summary>all 1 of the clause's tests that were run without the fix pass there too: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed</details> |
-| **NOT MET** | [N1](#chain-REQ-2234-N1) | Claude says not met (Codex and Nemotron: met); the adjudicator disputes it |
+| **NOT MET** | [N1](#chain-REQ-2234-N1) | Claude says not met (Codex and Nemotron: met); Gemini: Claude's objection is supported |
 | **REFUSED** | [N2](#chain-REQ-2234-N2) | Codex said met without verified evidence |
 
-<details><summary>Gemini on N1: backs 2 of 3 claims for Claude's 'not met', 2 of 4 for 'met' (advisory)</summary>
+<details><summary>Gemini on N1: Claude's objection is supported; backs 2 of 3 claims for Claude's 'not met', 2 of 4 for 'met' (advisory)</summary>
 
 Duplicate-key analyzer tests pass on head, while repro.claude.C2 fails on both head and base and TypeCollector.cs:985 retains an unguarded PropertyDeclarationSyntax cast.
 

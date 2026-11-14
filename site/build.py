@@ -123,6 +123,16 @@ def table(head: list[str], rows: list[list[str]], num_cols: tuple[int, ...] = ()
     return f'<div class="scroll"><table class="{cls}"><thead><tr>{th}</tr></thead><tbody>{trs}</tbody></table></div>'
 
 
+def pack_view(p):
+    """The pack as its own renderer shows it (countersign.pack_render.view: the adjudicator's ruling in words)."""
+    if not p:
+        return p
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from countersign.pack_render import view
+    return view(p)
+
+
 def git(*args) -> str:
     try:
         return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, timeout=10).stdout.strip()
@@ -140,7 +150,7 @@ class Data:
         self.facts = {}
         for d in sorted((ROOT / "evidence").glob("*/facts.json")):
             self.facts[d.parent.name] = json.loads(d.read_text(encoding="utf-8"))
-        self.packs = {c: rj(f"packs/{c}/pack.json") for c in CHANGES}
+        self.packs = {c: pack_view(rj(f"packs/{c}/pack.json")) for c in CHANGES}
         self.history = rj("measurement/history/results.json")
         self.labels = parse_labels(rt("measurement/history/labels.yaml"))
         self.ledger = [json.loads(x) for x in rt("ledger/ledger.jsonl").splitlines() if x.strip()]
