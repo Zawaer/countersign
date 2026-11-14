@@ -53,6 +53,7 @@ def cmd_sign(a) -> int:
     print(pack_mod.card(p) + "\n")
     if a.signer != p["owner"]:
         raise SystemExit(f"{a.signer} is not the owner of this change; the mandate names {p['owner']}")
+    rated = pack_mod.rate_findings(p, a.finding)  # before any prompt, so a typo in a flag costs nothing
     decision = a.decision or input(f"{a.signer}, type your decision {p['signoff']['allowed_decisions']}: ").strip()
     if decision not in p["signoff"]["allowed_decisions"]:
         raise SystemExit(f"decision {decision!r} not allowed for tier {p['tier']}: {p['signoff']['allowed_decisions']}")
@@ -60,10 +61,13 @@ def cmd_sign(a) -> int:
     payload = {"change": p["change"], "pack_path": str(path.relative_to(ws.root)), "pack_sha256": sha256_hex(canonical(p)),
                "decision": decision, "note": note, "tier": p["tier"], "ai_cleared": p["tier"] not in HUMAN_TIERS,
                "areas": [x["name"] for x in p["areas"]], "mandate_sha256": p["mandate"]["sha256"],
-               "statement": p["signoff"]["statement"]}
+               "statement": p["signoff"]["statement"], "findings": rated, "simulated": bool(p.get("simulated"))}
     e = ledger.append(ws, "signoff", payload, a.signer)
     write_json(path.parent / "signoff.json", e)
     print(f"signed: ledger #{e['seq']} {decision} by {a.signer}, hash {e['hash'][:16]}")
+    if rated:
+        counts = {v: sum(r["verdict"] == v for r in rated) for v in (*pack_mod.FINDING_VERDICTS, "unrated")}
+        print("findings: " + ", ".join(f"{n} {v}" for v, n in counts.items() if n))
     return 0
 
 
@@ -270,6 +274,9 @@ def parser() -> argparse.ArgumentParser:
     sp.add_argument("--as", dest="signer", required=True)
     sp.add_argument("--decision", choices=["accept", "reject", "request-changes"])
     sp.add_argument("--note")
+    sp.add_argument("--finding", action="append", metavar="REVIEWER:ID=VERDICT[:REASON]",
+                    help="your verdict on one verified finding (repeatable): accepted (real), rejected (false positive) or unsure; "
+                         "findings without a flag are recorded as unrated")
     add("verify-ledger", cmd_verify_ledger, "re-check the hash chain and every signature")
     add("trust", cmd_trust, "the mandate's trust-stage table and each area's current stage, from the ledger")
     sp = add("spotcheck", cmd_spotcheck, "a human re-reviews an AI-cleared change")

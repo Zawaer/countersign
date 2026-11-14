@@ -98,7 +98,12 @@ def card(p: dict) -> str:
     out += ["", "Residual risk you accept by signing:"] + [f"  - {r['text']}" for r in c["residual"]]
     if c.get("residual_more"):
         out.append(f"  (+{len(c['residual_more'])} more in the pack)")
-    out += ["", f"{c['sign']['owner']} signs: {c['sign']['statement']}", f"  {c['sign']['command']}"]
+    sg = c["sign"]
+    out += ["", f"{sg['owner']} signs: {sg['statement']}"]
+    if sg.get("findings"):
+        out.append("Rate each verified finding (accepted = real; unrated if you leave a flag out):")
+        out += [f"  {r['ref']} ({r['severity']}): {r['title']}" for r in sg["findings"]]
+    out.append("  " + sg.get("command_with_findings", sg["command"]).replace("\n", "\n  "))
     return "\n".join(out)
 
 
@@ -161,7 +166,12 @@ def _md_card(p: dict) -> list[str]:
         out += ["", f"<details><summary>{_more_risks(c)}</summary>" + " · ".join(_html_inline(r["text"]) for r in c["residual_more"]) + "</details>"]
     sg = c["sign"]
     out += ["", f"**{sg['owner']} signs** ({'required' if sg['required'] else 'not required: AI-cleared, spot-checks apply'}; "
-                f"allowed: {', '.join(sg['decisions'])})", "", f"> {sg['statement']}", "", f"```\n{sg['command']}\n```", ""]
+                f"allowed: {', '.join(sg['decisions'])})", "", f"> {sg['statement']}", ""]
+    if sg.get("findings"):
+        out += ["Rate each verified finding with its `--finding` flag: `accepted` (real), `rejected` (a false positive) or "
+                "`unsure`, optionally `:reason`. A finding without a flag is recorded as `unrated`.", ""]
+        out += [f"- `{r['ref']}` ({r['severity']}): {_html_inline(r['title'])}" for r in sg["findings"]] + [""]
+    out += [f"```\n{sg.get('command_with_findings', sg['command'])}\n```", ""]
     return out
 
 
@@ -504,9 +514,18 @@ def _html_card(p: dict) -> str:
 <h3>Residual risk you accept by signing</h3><ul class="sm">{residual}</ul>
 <div class="sign"><p><b>{_e(sg["owner"])} signs</b> <span class="mut sm">({"required" if sg["required"] else "not required: spot-checks apply"};
 allowed: {_e(", ".join(sg["decisions"]))})</span></p><p><q>{_e(sg["statement"])}</q></p>
-<details class="mini"><summary>How to sign</summary><pre>{_e(sg["command"])}</pre>
-<p class="mut sm">The signature covers the sha256 of this pack's canonical JSON, the decision, the time and the signer, and is appended to the hash-chained ledger.</p></details></div>
+<details class="mini"><summary>How to sign</summary>{_sign_findings_html(sg)}<pre>{_e(sg.get("command_with_findings", sg["command"]))}</pre>
+<p class="mut sm">The signature covers the sha256 of this pack's canonical JSON, the decision, your verdict on each finding, the time and the signer, and is appended to the hash-chained ledger.</p></details></div>
 </section>"""
+
+
+def _sign_findings_html(sg: dict) -> str:
+    if not sg.get("findings"):
+        return ""
+    rows = "".join(f'<li><code>{_e(r["ref"])}</code> <span class="mut">({_e(r["severity"])})</span> {_e(r["title"])}</li>' for r in sg["findings"])
+    return (f'<p class="sm">Rate each verified finding: <code>accepted</code> (real), <code>rejected</code> (a false positive) or '
+            f'<code>unsure</code>, optionally <code>:reason</code>. A finding without a flag is recorded as <code>unrated</code>.</p>'
+            f'<ul class="sm">{rows}</ul>')
 
 
 def _ev_chips(refs: list[str], ev: dict) -> str:

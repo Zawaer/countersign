@@ -145,14 +145,7 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
         "carried_forward": d.get("carried_forward", []),
         "refuted_findings": d.get("refuted", []),
         "reproduced": d.get("reproduced", {}),
-        "signoff": {
-            "required": tier in HUMAN_TIERS,
-            "owner": d["owner"],
-            "allowed_decisions": ["reject", "request-changes"] if tier == "block" else ["accept", "reject", "request-changes"],
-            "command": f"countersign sign {change} --as {d['owner']} --decision <accept|reject|request-changes> --note \"...\"",
-            "statement": (f"I, {d['owner']}, have read what was checked and by whom, what was not checked and why, "
-                          "and the residual risk listed in this pack, and I own this decision."),
-        },
+        "signoff": _signoff(change, tier, d["owner"], verified),
     }
     # The reader's view (card, trust chains, panel, evidence with code excerpts). Deterministic, so it is hashed too.
     idx = _evidence_index(ws, facts, d, reqs, m["decision"]["code_line_tolerance"])
@@ -165,6 +158,55 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     p["evidence_index"] = idx
     p["supply_chain"] = _supply_chain(facts, d)
     return p
+
+
+# --- sign-off: decision plus a verdict per verified finding ---------------------------------------------------
+
+FINDING_VERDICTS = ("accepted", "rejected", "unsure")
+_RATE = "<" + "|".join(FINDING_VERDICTS) + ">"
+
+
+def _signoff(change: str, tier: str, owner: str, verified: list[dict]) -> dict:
+    allowed = ["reject", "request-changes"] if tier == "block" else ["accept", "reject", "request-changes"]
+    base = f"countersign sign {change} --as {owner} --decision <{'|'.join(allowed)}> --note \"...\""
+    rate = [{"ref": f"{f['reviewer']}:{f['id']}", "reviewer": f["reviewer"], "severity": f["severity"], "title": f["title"],
+             "flag": f"--finding {f['reviewer']}:{f['id']}={_RATE}"} for f in verified]
+    return {
+        "required": tier in HUMAN_TIERS,
+        "owner": owner,
+        "allowed_decisions": allowed,
+        "command": base,
+        # the same command with one --finding flag per verified finding, so the owner rates them in one go
+        "findings": rate,
+        "command_with_findings": " \\\n  ".join([base, *(r["flag"] for r in rate)]),
+        "statement": (f"I, {owner}, have read what was checked and by whom, what was not checked and why, "
+                      "and the residual risk listed in this pack, and I own this decision."),
+    }
+
+
+def rate_findings(p: dict, specs: list[str] | None) -> list[dict]:
+    """The owner's verdict on every verified finding of pack `p`, from `--finding <ref>=accepted|rejected|unsure[:reason]`
+    flags. Findings without a flag are recorded as `unrated`. Raises SystemExit on an unknown ref, a repeated ref or an
+    unknown verdict, so a typo never silently becomes `unrated`."""
+    listed = {f"{f['reviewer']}:{f['id']}": f for f in p["findings"]}
+    given: dict[str, tuple[str, str]] = {}
+    for spec in specs or []:
+        ref, eq, rest = spec.partition("=")
+        verdict, _, reason = rest.partition(":")
+        ref, verdict, reason = ref.strip(), verdict.strip(), reason.strip()
+        if not eq or not ref:
+            raise SystemExit(f"--finding {spec!r}: expected <reviewer:id>=<{'|'.join(FINDING_VERDICTS)}>[:reason]")
+        if ref not in listed:
+            raise SystemExit(f"--finding {spec!r}: {ref} is not a verified finding of {p['change']} "
+                             f"(verified: {', '.join(listed) or 'none'})")
+        if verdict not in FINDING_VERDICTS:
+            raise SystemExit(f"--finding {spec!r}: verdict must be one of {', '.join(FINDING_VERDICTS)}")
+        if ref in given:
+            raise SystemExit(f"--finding {ref} given twice")
+        given[ref] = (verdict, reason)
+    return [{"ref": ref, "reviewer": f["reviewer"], "severity": f["severity"],
+             "verdict": given.get(ref, ("unrated", ""))[0], "reason": given.get(ref, ("unrated", ""))[1]}
+            for ref, f in listed.items()]
 
 
 # --- supply chain (from the build) --------------------------------------------------------
@@ -744,6 +786,6 @@ def _card(p: dict, d: dict, trust_rows: list[dict], all_refusals: list[dict]) ->
         "not_checked": not_checked, "known_gaps": gaps,
         "residual": [r for r in residual if r["drives"]], "residual_more": [r for r in residual if not r["drives"]],
         "sign": {"owner": s["owner"], "required": s["required"], "decisions": s["allowed_decisions"], "statement": s["statement"],
-                 "command": s["command"]},
+                 "command": s["command"], "findings": s["findings"], "command_with_findings": s["command_with_findings"]},
         "reviewers": n_rev,
     }
