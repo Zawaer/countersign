@@ -78,8 +78,9 @@ def _comment(w, body, login):
     return gh_mod.cmd_command(SimpleNamespace(**w.args, event=str(event)))
 
 
-def _signed_comment(w, signer="Toivo", decision="accept", note="ok", key_of="toivo"):
-    entry = gh_mod.make_entry(w.snap, w.p, signer, decision, note, (w.ws.private_keys / f"{key_of}.key").read_text())
+def _signed_comment(w, signer="Toivo", decision="accept", note="ok", key_of="toivo", number=7, head=None):
+    binding = gh_mod.pr_binding("o/demo", number, head or w.pr["head_sha"])
+    entry = gh_mod.make_entry(w.snap, w.p, signer, decision, note, (w.ws.private_keys / f"{key_of}.key").read_text(), binding)
     return f"/countersign {decision} {note}\n\n```{gh_mod.FENCE}\n{json.dumps(entry)}\n```\n", entry
 
 
@@ -159,3 +160,29 @@ def test_new_commits_make_the_evidence_stale(pr_world):
     body, _ = _signed_comment(w)
     _comment(w, body, "toivo-gh")
     assert w.fake.comments[-1].startswith("Not recorded: evidence is for head")
+
+
+@pytest.mark.parametrize("kw,expect", [
+    (dict(number=8), "payload.pr"),                 # signed for PR #8, posted on PR #7
+    (dict(head="f" * 40), "payload.pr_head"),       # signed for another head commit
+])
+def test_signed_entry_for_another_pr_is_refused(pr_world, kw, expect):
+    w = pr_world
+    body, _ = _signed_comment(w, **kw)
+    _comment(w, body, "toivo-gh")
+    assert "does not verify" in w.fake.comments[-1] and expect in w.fake.comments[-1], w.fake.comments[-1]
+    assert not w.fake.statuses
+
+
+def test_signed_entry_without_pr_binding_is_refused(pr_world):
+    w = pr_world
+    entry = gh_mod.make_entry(w.snap, w.p, "Toivo", "accept", "ok", (w.ws.private_keys / "toivo.key").read_text())
+    _comment(w, f"/countersign accept ok\n\n```{gh_mod.FENCE}\n{json.dumps(entry)}\n```\n", "toivo-gh")
+    assert "payload.pr " in w.fake.comments[-1] and not w.fake.statuses
+
+
+@pytest.mark.parametrize("block", ["[]", '{"payload": 1}', '{"payload": {}, "sig": 5}'])
+def test_malformed_signed_blocks_are_refused_not_crashing(pr_world, block):
+    w = pr_world
+    _comment(w, f"/countersign accept ok\n\n```{gh_mod.FENCE}\n{block}\n```\n", "toivo-gh")
+    assert w.fake.comments[-1].startswith("Not recorded") and not w.fake.statuses

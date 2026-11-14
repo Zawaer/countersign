@@ -84,3 +84,27 @@ def test_only_the_named_owner_may_sign(ws, capsys):
         raise AssertionError("Rene should not be able to sign")
     except SystemExit as e:
         assert "not the owner" in str(e)
+
+
+def test_signer_name_cannot_leave_the_keys_folder(ws):
+    ok, why = keys.verify(ws, "../keys/toivo", b"x", "AAAA")
+    assert not ok and "invalid owner name" in why
+
+
+def test_non_object_lines_and_bad_signatures_are_problems_not_crashes(ws):
+    signed(ws)
+    ls = lines(ws)
+    e = json.loads(ls[1])
+    e["sig"] = 12345
+    write_lines(ws, [ls[0], json.dumps(e), "[1, 2]"])
+    problems, _ = ledger.verify(ws)
+    assert any("line 2: signature does not verify" in p for p in problems)
+    assert any("line 3: not a ledger entry" in p for p in problems)
+
+
+def test_pack_path_outside_the_workspace_is_a_problem(ws, tmp_path):
+    (tmp_path / "outside.json").write_text("{}")
+    ledger.append(ws, "signoff", {"change": "9001", "pack_path": "../" * 12 + str(tmp_path / "outside.json").lstrip("/"),
+                                  "pack_sha256": "0" * 64}, "Toivo")
+    problems, _ = ledger.verify(ws)
+    assert any("points outside the workspace" in p for p in problems)
