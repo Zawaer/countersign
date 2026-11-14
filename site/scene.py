@@ -38,10 +38,10 @@ TC = "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs"
 SCENES = {
     "2234": dict(
         title="The analyzer does not work if SuppressSourceGeneration = true",
-        verdict="pin:0",
+        verdict="",
         files=[TC, "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs"],
         pins=[
-            dict(kind="finding", ref="claude:C1", label="Fixes a different bug"),
+            dict(kind="finding", ref="claude:C1", label="Fixes a different crash"),
             dict(kind="finding", ref="claude:C2", label="Still crashes on Key(null)"),
             dict(kind="test_base_pass", ref="SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported", label="Passes without the fix"),
             dict(kind="test_base_fail", ref="SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure", label="Fails without the fix"),
@@ -51,7 +51,7 @@ SCENES = {
         verdict="pin:2",
         files=[TC, "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs"],
         pins=[
-            dict(kind="clause", ref="REQ-2283-F2", label="Proven: no analyzer crash", at=(TC, "head", 985)),
+            dict(kind="clause", ref="REQ-2283-F2", label="Proven: no analyzer crash"),
             dict(kind="finding", ref="claude:C2", label="Hides a null-key warning"),
             dict(kind="finding", ref="claude:C1", label="Drops a real warning"),
             dict(kind="test_base_fail", ref="GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference", label="Fails without the fix"),
@@ -64,10 +64,7 @@ SCENES = {
                "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs"],
         pins=[
             dict(kind="finding", ref="claude:C1", label="New public API, untracked"),
-            dict(kind="clause", ref="REQ-2129-F1", label="Proven: the feature works",
-                 at=("src/MessagePack.SourceGenerator/MessagePackGenerator.cs", "head", 30)),
-            dict(kind="check", ref="solution_membership", label="Project not in solution",
-                 at=("tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj", "head", 1)),
+            dict(kind="clause", ref="REQ-2129-F1", label="Proven: the feature works"),
             dict(kind="finding", ref="claude:C3", label="New StyleCop warning"),
         ]),
     "2297": dict(
@@ -77,18 +74,16 @@ SCENES = {
                "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs"],
         pins=[
             dict(kind="finding", ref="claude:C1", label="Older targets lose it"),
-            dict(kind="clause", ref="REQ-2297-F1", label="Reviewers disagree",
-                 at=("src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt", "head", 14)),
+            dict(kind="clause", ref="REQ-2297-F1", label="Reviewers disagree"),
             dict(kind="finding", ref="nemotron:N1", label="Unrelated formatting change"),
-            dict(kind="rule", ref="split-large-change", label="{files} files in one change", at=("+more",)),
+            dict(kind="finding", ref="claude:C2", label="Generated test resources"),
         ]),
     "up-1967": dict(
         title="Fix AOT README anchor",
         verdict="docs fix, link resolves",
         files=["README.md"],
         pins=[
-            dict(kind="check", ref="docs.anchors", label="Link now resolves", at=("README.md", "head", 60)),
-            dict(kind="refusal", ref="claude:0", label="Rendering not checked", at=("README.md", "head", 60)),
+            dict(kind="check", ref="docs.anchors", label="Link now resolves"),
             dict(kind="finding", ref="claude:C1", label="Next link still broken"),
         ]),
 }
@@ -265,11 +260,11 @@ def resolve(cx: Ctx, spec: dict, fmt: dict):
             good = v.get("verdict") == "met"
             who.append(chip("ok" if good else "bad", f"{NAMES.get(rv, rv)} {'met' if good else v.get('verdict', '').replace('_', ' ')}"))
         at, ev = spec.get("at"), []
-        if at:
-            for v in (r.get("verdicts") or {}).values():
-                for x in v.get("evidence", []):
-                    if x.get("kind") == "code" and x.get("file") == at[0] and x.get("line") == at[2] and not ev:
-                        ev.append(ev_code(x["file"], x["line"], x.get("rev", "head"), x.get("quote", "")))
+        for v in (r.get("verdicts") or {}).values():
+            for x in v.get("evidence", []):
+                if x.get("kind") == "code" and x.get("verified") and not ev:
+                    at = at or (x["file"], x.get("rev", "head"), x["line"])
+                    ev.append(ev_code(x["file"], x["line"], x.get("rev", "head"), x.get("quote", "")))
         for c in r.get("checks", []):
             if len(ev) < 3:
                 ev.append(f'<div class="evl"><span class="loc">check</span><code><b class="{"ok" if c["status"] == "pass" else "bad"}">'
@@ -298,7 +293,12 @@ def resolve(cx: Ctx, spec: dict, fmt: dict):
             return None
         ok = c["status"] == "pass"
         say = c.get("summary", "")
-        return dict(status="ok" if ok else "bad", label=label, at=spec.get("at"), say=say[:1].upper() + say[1:],
+        at = spec.get("at")
+        if ref == "docs.anchors":
+            links = c.get("links_on_touched_lines") or []
+            if links:
+                at = (links[0]["file"], "head", links[0]["line"])
+        return dict(status="ok" if ok else "bad", label=label, at=at, say=say[:1].upper() + say[1:],
                     who=[chip("", "deterministic check, no AI")],
                     ev=[f'<div class="evl"><span class="loc">check</span><code><b class="{"ok" if ok else "bad"}">{"✓" if ok else "✗"} {e(c["status"])}</b> {e(ref)}</code></div>'],
                     src=f"evidence/{cx.cid}/facts.json → checks {ref}", link=cx.pack_link("checks"))
@@ -455,7 +455,7 @@ def render_scene(code: Code, cid: str, pins_in: list, verdict: dict, title: str,
         out.append(f'<div class="r more"><span class="n"></span><span class="c">+{len(rest)} more file{"s" if len(rest) != 1 else ""}'
                    f'{": " + e(names) if names else ""}{pins_html}</span></div>{cards}')
     vcls = TIER_CLS.get(verdict["tier"], "")
-    owner = f" → {e(verdict['owner'])}" if verdict.get("owner") and verdict["tier"] in ("ask", "block", "notify") else ""
+    owner = f" → {e(verdict['owner'])}" if verdict.get("owner") and verdict["tier"] in ("ask", "block") else ""
     phrase_html = f'<span>&nbsp;· {e(verdict["phrase"])}</span>' if verdict["phrase"] else ""
     head_html = (f'<div class="title"><a href="{e(verdict.get("issue") or "#")}">#{e(verdict.get("num"))}</a> {"<span class=ag>agent-written</span> " if verdict.get("agent") else ""}{e(title)}</div>'
                  f'<button class="verdict {vcls}" type="button" aria-expanded="false" aria-controls="v-{sid}" data-card="v-{sid}">'
@@ -529,7 +529,9 @@ def build() -> str:
             phrase = src_pin["label"][:1].lower() + src_pin["label"][1:] if src_pin else ""
         verdict = dict(tier=p.get("tier", ""), owner=p.get("owner"), phrase=phrase, card=verdict_card(cx),
                        issue=(p.get("story") or {}).get("issue"), num=num.group(1) if num else cid, agent=p.get("agent_written"))
-        scenes.append(render_scene(code, cid, pins, verdict, spec["title"], spec["files"]))
+        headline = (p.get("story") or {}).get("headline", "")
+        title = re.sub(rf"^(?:Agent-written )?change for #{re.escape(cid)}:\s*", "", headline, flags=re.I) or spec["title"]
+        scenes.append(render_scene(code, cid, pins, verdict, title, spec["files"]))
         tabs.append(cid)
     # seeded bugs
     res = {r["change"]: r for r in (rj("measurement/results.json") or {}).get("mutants", [])}
@@ -570,9 +572,6 @@ PAGE_CSS = r"""
 :root[data-theme=dark]{--bg:#0d1117;--bg2:#151b23;--fg:#e6edf3;--muted:#9198a1;--border:#3d444d;--accent:#4493f8;
 --ok:#3fb950;--ok-bg:#12261e;--warn:#d29922;--warn-bg:#272115;--bad:#f85149;--bad-bg:#25171c;
 --add:#12261e;--del:#25171c;--k:#d2a8ff;--s:#a5d6ff;--cm:#8b949e;--num:#79c0ff;color-scheme:dark}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1117;--bg2:#151b23;--fg:#e6edf3;--muted:#9198a1;--border:#3d444d;--accent:#4493f8;
---ok:#3fb950;--ok-bg:#12261e;--warn:#d29922;--warn-bg:#272115;--bad:#f85149;--bad-bg:#25171c;
---add:#12261e;--del:#25171c;--k:#d2a8ff;--s:#a5d6ff;--cm:#8b949e;--num:#79c0ff;color-scheme:dark}}
 [hidden]{display:none!important}*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--sans)}
 a{color:var(--accent);text-underline-offset:2px}
@@ -594,7 +593,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .verdict.ok{border-color:var(--ok);background:var(--ok-bg)}.verdict.ok b{color:var(--ok)}
 .verdict b{font-weight:600;white-space:nowrap}
 .vcard{margin-top:10px}
-.code{font:13px/20px var(--mono);padding:8px 0 96px}
+.code{font:13px/20px var(--mono);padding:8px 0 96px;min-height:calc(100vh - 126px)}
 .file{font:12px/1.4 var(--mono);color:var(--fg);padding:16px 16px 6px;font-weight:600;overflow-wrap:anywhere}.file span{color:var(--muted);font-weight:400}
 .r{display:grid;grid-template-columns:52px 1fr;min-height:20px}
 .r .n{color:var(--muted);text-align:right;padding-right:12px;user-select:none;opacity:.7;position:relative}
@@ -635,9 +634,9 @@ i.tk{font-style:normal;color:var(--k)}i.ts,i.ta{font-style:normal;color:var(--s)
 .row button.sneak{border-style:dashed}
 .row button small{opacity:.7;font-family:var(--mono);margin-left:6px}
 .row .back{border:0;color:var(--muted)}
-@media (max-width:600px){.evl{grid-template-columns:1fr}.file span{display:none}.row{gap:4px}.row button{padding:4px 8px;font-size:12.5px}.bar{padding-left:8px;padding-right:8px}.r{grid-template-columns:40px 1fr}.r .n{padding-right:8px;font-size:11px}.code{font-size:12px;line-height:18px}
+@media (max-width:600px){.evl{grid-template-columns:1fr}.file span{display:none}.row{gap:4px}.row button{padding:4px 8px;font-size:12.5px}.bar{padding-left:8px;padding-right:8px}.r{grid-template-columns:40px 1fr}.r .n{padding-right:8px;font-size:11px}.code{font-size:12px;line-height:18px;min-height:calc(100vh - 136px)}
 .fold summary{grid-template-columns:40px 1fr}.card{margin-left:12px;margin-right:12px}.file{padding-left:12px}
-.verdict{font-size:14px;padding:3px 12px}.pin{margin-left:6px}.row{width:auto}.head{padding:6px 12px 8px}.top{padding:8px 12px 0}}
+.verdict{font-size:14px;padding:3px 12px}.pin{margin-left:6px}.row{width:auto}.head{padding:6px 12px 8px}.title{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.35}.top{padding:8px 12px 0}.links{gap:8px;font-size:12px}}
 """
 
 PAGE_JS = r"""
@@ -654,7 +653,7 @@ function show(id,push){
  window.scrollTo(0,0);
 }
 bar.addEventListener('click',function(ev){var b=ev.target.closest('[data-go]');if(!b)return;
- var g=b.dataset.go;if(g==='bugs')g=bugs.querySelector('[data-go]').dataset.go;if(g==='back')g=main.querySelector('[data-go]').dataset.go;show(g)});
+var g=b.dataset.go;if(g==='bugs')g=bugs.querySelector('[data-go]:not(.back)').dataset.go;if(g==='back')g=main.querySelector('[data-go]').dataset.go;show(g)});
 document.addEventListener('click',function(ev){var b=ev.target.closest('[data-card]');if(!b)return;
  var c=document.getElementById(b.dataset.card),open=b.getAttribute('aria-expanded')==='true';
  [].forEach.call(document.querySelectorAll('[data-card][aria-expanded=true]'),function(o){o.setAttribute('aria-expanded','false');document.getElementById(o.dataset.card).hidden=true});
@@ -682,7 +681,7 @@ def page(scenes, tabs, bugs) -> str:
 <style>{PAGE_CSS.strip()}</style>
 </head><body>
 <header class="top"><a class="mark" href="index.html"><i>✓</i>Countersign</a>
-<nav class="links" aria-label="More"><a href="tour.html">tour</a><a href="pitch.html">pitch</a><a href="overview.html">numbers</a>
+<nav class="links" aria-label="More"><a href="tour.html">Tour</a><a href="packs/2234/pack.html">Evidence pack</a><a href="attack.html">Measurement</a><a href="pitch.html">Pitch</a>
 <button type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav></header>
 <main>{"".join(scenes)}</main>
 <nav class="bar" id="bar" aria-label="Choose a change"><div class="row" id="row-main">{main}</div><div class="row" id="row-bugs" hidden>{brow}</div></nav>
