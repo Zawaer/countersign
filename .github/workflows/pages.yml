@@ -4,10 +4,9 @@
 # GitHub Pages needs the repository to be public (or a paid plan); until then this workflow fails at deploy.
 name: pages
 
+# Manual until the repo is public (Sunday). Then restore the push trigger:
+#   push: {branches: [main], paths: ["site/**", "packs/**", "measurement/**", "evidence/**", "reviews/**", "ledger/**", "mandate/**", "docs/pitch/**", ".github/workflows/pages.yml"]}
 on:
-  push:
-    branches: [main]
-    paths: ["site/**", "packs/**", "measurement/**", "evidence/**", "reviews/**", "ledger/**", "mandate/**", "docs/pitch/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
