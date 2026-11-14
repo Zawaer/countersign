@@ -59,7 +59,27 @@ def values() -> dict[str, str]:
         "share_routed_real_pct": round(100 * v("share_routed_to_humans")),
     }
     out.update(_more(r, v, ci))
+    out.update(_selfhost())
     return {k: str(x) for k, x in out.items()}
+
+
+def _selfhost() -> dict:
+    """Self-hosted 30B vs hosted 120B Nemotron (reviews-selfhost/ vs reviews/), as scripts/selfhost/compare.py counts them."""
+    agree = clauses = hosted_f = self_f = 0
+    for d in sorted((ROOT / "reviews-selfhost").iterdir()):
+        hp, sp = ROOT / "reviews" / d.name / "nemotron.json", d / "nemotron.json"
+        if not (hp.exists() and sp.exists()):
+            continue
+        h, s = json.loads(hp.read_text()), json.loads(sp.read_text())
+        hv = {x["req"]: x["verdict"] for x in h["requirement_verdicts"]}
+        sv = {x["req"]: x["verdict"] for x in s["requirement_verdicts"]}
+        reqs = set(hv) | set(sv)
+        clauses += len(reqs)
+        agree += sum(hv.get(q) == sv.get(q) for q in reqs)
+        hosted_f += len(h.get("findings", []))
+        self_f += len(s.get("findings", []))
+    return {"selfhost_clauses_agree": agree, "selfhost_clauses": clauses,
+            "selfhost_findings": self_f, "selfhost_hosted_findings": hosted_f}
 
 
 def _check(change: str, cid: str) -> dict:
