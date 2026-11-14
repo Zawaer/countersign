@@ -700,6 +700,7 @@ def build_tour(D: Data, n: dict) -> str:
     steps.append(("Trust is earned per area, and withdrawn", f"""
 <p class="lead">The mandate says, per area, the most lenient tier the AI may assign alone. Clearance is never global.</p>
 {table(['Area', 'Owner', 'Sensitivity', 'Most lenient tier the AI may give', 'What it is'], arow)}
+{tier_legend()}
 <div class="callout"><b>After an escape.</b> When a revert or incident is traced to an AI-cleared change, the mandate {trust_rule(D)}</div>
 <p class="prose">Escapes recorded in the ledger so far: <b>{len(escapes)}</b>. {'Not recorded yet: a simulated escape-and-recovery run (it will be labelled simulated).' if not escapes else ''}</p>
 <p class="foot-note">{src('mandate/messagepack.mandate.yaml')} (<code>areas</code>, <code>trust</code>) · {src('countersign/trust.py')} · offline: <code>countersign trust</code></p>"""))
