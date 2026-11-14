@@ -36,3 +36,17 @@ Every Codex (OpenAI) run made for this project, with how its output was used.
 
 ## 2026-11-14 03:10 (Europe/Helsinki): correction, two failed CLI runs
 Two `codex exec` runs (write mode, started from a script during Claude downtime) did nothing: Codex's sandbox (bubblewrap) can't create a namespace inside this container, so every shell command failed and Codex made no changes (15k and 4k tokens). The script still committed the working tree afterwards, so commits **5e366b5** ("Blind model review of seeded changes ... written with Codex") and **32eeaa0** ("Site: 'the code is the scene' demo screen (finished with Codex)") are mislabelled: their content is unfinished work by Claude agents that had stopped on a usage limit, not Codex's. Codex's real contributions are the logged review and security-review runs above and the runs below.
+
+## 2026-11-14 03:17 (Europe/Helsinki): blind review of seeded changes + `_code_excerpt` hardening, write mode
+
+- **Purpose:** complete blind model review for seeded changes and harden adjudicator code excerpts against model-supplied revisions and paths.
+- **Changes:** build the review context from the branch diff with its recorded edit applied; show the base change id and requirements; omit the recorded edit metadata and reject contexts containing forbidden terms. The planted edit is replayed correctly when `before` is empty. `_code_excerpt` accepts only `head`/`base`, confines paths to the change diff (or allowed base context), and uses `git show --end-of-options`.
+- **Files changed:** `countersign/llm.py`, `tests/test_llm.py`, `docs/CODEX_LOG.md`.
+- **Verification:** `.venv/bin/python -m pytest -q` — 139 passed.
+
+## 2026-11-14 03:21 (Europe/Helsinki): "the code is the scene" demo screen, write mode
+
+- **Purpose:** finish the Countersign judge-facing landing page as a focused code scene for the Junction 2026 demo.
+- **Changes:** build the landing scene from pack/facts/review evidence, attach compact status pins to cited diff/test lines, provide evidence cards and scene switching (including seeded bugs), and simplify the top navigation and mobile layout. Light is the default; the theme control supports dark mode.
+- **Files changed:** `site/scene.py`, generated site pages under `site/`, and this log entry.
+- **Visual review:** Playwright screenshots at 390px and 1280px; two removal passes removed mobile title truncation and a duplicate verdict phrase. Final screenshot paths: `/data/work/screenshots/countersign/scene-390-final.png` and `/data/work/screenshots/countersign/scene-1280-final.png`.
