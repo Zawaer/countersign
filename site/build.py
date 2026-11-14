@@ -292,7 +292,7 @@ def hero_line(n: dict) -> str:
     parts = [f'<b>{n["changes"]} agent-written changes: {n["cleared"]} cleared, {n["ask"]} routed to their owner, {n["block"]} blocked</b>; '
              "it caught one that passes CI and fixes the wrong bug."]
     if n.get("mut_checks") is not None:
-        parts.append(f' <b>{n["mut_checks"]} of {n["mut_total"]}</b> seeded one-line bugs failed a check.')
+        parts.append(f' <b>{n["mut_checks"]} of {n["mut_total"]}</b> seeded changes (one-line bugs and planted attacks) failed a check.')
     if n.get("h_esc") is not None:
         parts.append(f' Replayed on {n["h_n"]} real upstream PRs, it would have cleared <b>{n["h_esc_cleared"]} of the {n["h_esc"]}</b> that later had to be reverted or fixed.')
     return "".join(parts)
@@ -428,15 +428,27 @@ def seeded_rows(D: Data):
     return out
 
 
+def new_flags(D: Data, surv: list) -> int:
+    """Test survivors where a reviewer flagged the planted line and had not flagged that line on the unmutated
+    original (results.json seeded_reviewed): the conservative count, stated next to the by-location one."""
+    sr = {r["change"]: r for r in D.results.get("seeded_reviewed", [])}
+    def new(s):
+        r = sr.get(s["id"], {})
+        same = r.get("same_line_flagged_on_original") or {}
+        return any(v and not same.get(k) for k, v in (r.get("planted_line_flagged") or {}).items())
+    return sum(new(s) for s in surv)
+
+
 def build_index(D: Data, n: dict) -> str:
     rows = D.change_rows()
     seeded = seeded_rows(D)
     surv = [s for s in seeded if not s["failed"]]
     flagged = [s for s in surv if s["rname"]]
+    fresh = new_flags(D, surv)
     nums = []
     if n.get("mut_checks") is not None:
         nums.append((f'{n["mut_checks"]}<small>/{n["mut_total"]}</small>', "planted bugs and attacks failed a check"
-                     + (f'<i>{len(surv)} got past; a reviewer flagged {len(flagged)}</i>' if surv else ""), "#seeded"))
+                     + (f'<i>{len(surv)} got past; a reviewer flagged {fresh} with a new finding ({len(flagged)} by location)</i>' if surv else ""), "#seeded"))
     if n.get("h_esc") is not None:
         nums.append((f'{n["h_esc_cleared"]}<small>/{n["h_esc"]}</small>', "real escapes the AI would clear", "#history"))
     if rows:
@@ -455,7 +467,8 @@ def build_index(D: Data, n: dict) -> str:
     one = [s for s in seeded if "-mut" in s["id"]]
     other = sorted({s["kind"] for s in seeded if "-mut" not in s["id"]})
     what = f'{len(one)} one-line bugs' + (f' and {len(seeded) - len(one)} other attacks ({", ".join(other)})' if other else "")
-    surv_line = (f'{len(surv)} got past every check; a blind reviewer flagged the planted line in {len(flagged)} of them.' if surv else "")
+    surv_line = (f'{len(surv)} got past every check; a blind reviewer flagged the planted line in {fresh} of them with a finding '
+                 f'the unmutated original did not already have at that line ({len(flagged)} counting any finding there).' if surv else "")
 
     hist = build_history_section(D, n)
     ch_rows = [[f'<a href="packs/{r["change"]}/pack.html"><code>{r["change"]}</code></a>', tier(r["tier"], r["owner"]),
@@ -517,7 +530,7 @@ def build_history_section(D: Data, n: dict) -> str:
     hm = h["modes"]["ci-credited"]
     return f"""
 <section class="wrap" id="history" aria-labelledby="shist"><h2 id="shist">Real escapes from MessagePack's history</h2>
-<p class="prose">{hm['n']} merged upstream PRs replayed under the signed mandate, no AI reviews. {hm['escapes']} were later reverted or fixed; the AI would have cleared {hm['confusion']['escape_cleared']} of them and {hm['confusion']['clean_cleared'] + hm['confusion']['escape_cleared']} PRs in all.</p>
+<p class="prose">{hm['n']} merged upstream PRs replayed under the signed mandate (v{e(str((h.get('mandate') or {}).get('version', '?')))}, the version signed when the replay ran), no AI reviews. {hm['escapes']} were later reverted or fixed; the AI would have cleared {hm['confusion']['escape_cleared']} of them and {hm['confusion']['clean_cleared'] + hm['confusion']['escape_cleared']} PRs in all.</p>
 {table(['PR', 'Title', 'What happened later', 'Tier', 'Deciding rule'], rows, cls='dense stack')}
 <p class="foot-note">Limits: written by people, not agents; build and tests credited as passed; labels are our judgement by a fixed rule; {hm['confusion']['clean_cleared']} cleared PRs with 0 escapes still allows up to about 12% (rule of three). {src('measurement/history/README.md', 'method')} · {src('measurement/history/labels.yaml', 'labels')} · {src('measurement/history/results.md', 'all ' + str(hm['n']) + ' PRs')}</p>
 </section>"""
@@ -815,11 +828,11 @@ def build_pitch(D: Data, n: dict) -> str:
             '<div class="tiers">' + "".join(f'<span class="chg"><code>{e(r["change"])}</code>{tier(r.get("tier"))}</span>' for r in real) + "</div>")
     nums = []
     if n.get("mut_checks") is not None:
-        nums.append(tile("planted attacks caught", f'{n["mut_checks"]}/{n["mut_total"]}'))
+        nums.append(tile("seeded changes a check caught", f'{n["mut_checks"]}/{n["mut_total"]}'))
     if n.get("h_esc") is not None:
         nums.append(tile("real escapes cleared", f'{n["h_esc_cleared"]}/{n["h_esc"]}'))
     if surv:
-        nums.append(tile("survivors a reviewer flagged", f'{sum(bool(s["rname"]) for s in surv)}/{len(surv)}'))
+        nums.append(tile("test survivors a reviewer newly flagged", f'{new_flags(D, surv)}/{len(surv)}'))
     V[6] = ("Measured, not claimed.", '<div class="tiles3">' + "".join(nums) + "</div>")
     V[7] = ("One reviewer's “all good” clears nothing.",
             '<div class="tiles3">' + (tile("Codex", f'{v2["met"]}/{v2["of"]} met, {v2["findings"]} findings') if v2 else "")
