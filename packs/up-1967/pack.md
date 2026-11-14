@@ -52,6 +52,8 @@ Changes 1 doc file (+1 -1) on upstream PR #1967 by Ali Makki. Judged against 2 r
 countersign sign up-1967 --as Rene --decision <accept|reject|request-changes> --note "..."
 ```
 
+<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
+
 <details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
 
 <a id="chain-REQ-up-1967-F1"></a>
@@ -267,7 +269,7 @@ Tier effect: silent
 Branch `upstream PR #1967` (b9b65ddf..8683d1cd), 1 files, +1 -1. Author Ali Makki (agent-written: False). Commit: Fix AOT README anchor
  - fix anchor ref name to `aot`
 
-Mandate `messagepack-csharp` v3 sha256 `b1e5e40743632a3c`, signature: valid, Toivo
+Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -299,7 +301,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | analyzers | skipped |   | not run: docs-only change: no compiled or test file changed (only README.md), so nothing was built or run |
 | docs.anchors | pass | evidence/up-scripts/upfacts.py docs_anchors (GitHub heading slugs + <a name/id>)  | 1 intra-document link(s) on lines the change touched, 0 unresolved at head; README.md: base had 4 unresolved of 62, head has 3 unresolved on lines the change did not touch (#author-info, #migration-notes-from-v1x, #rpc) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
 
 #### Requirement trace (engine codes)
 

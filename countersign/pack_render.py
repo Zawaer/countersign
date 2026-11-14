@@ -72,6 +72,10 @@ def card(p: dict) -> str:
         out.append("  nothing")
     for r in _rulings(p):
         out.append(f"  adjudicator {_name(p['adjudication']['reviewer'])} on {r.get('dispute')}: {_ruling_text(r)}")
+    sc = p.get("supply_chain")
+    if sc:
+        out += ["", f"Supply chain (from the build): {sc['line']}"]
+        out += [f"  NEW ADVISORY {v['package']} {v['version']} {v['severity']} {v['id']}" for v in (sc.get("deps") or {}).get("vulnerabilities_new", [])]
     out += ["", "Not checked:"] + [f"  {x['id']}: {x['reason']}" for x in c["not_checked"]]
     if c["known_gaps"]:
         out.append(f"  standing gaps: {', '.join(c['known_gaps'])}")
@@ -271,12 +275,56 @@ def _md_full(p: dict) -> list[str]:
     return out
 
 
+def _md_supply(p: dict) -> list[str]:
+    """One line, new advisories in plain sight, everything else in a fold."""
+    sc = p.get("supply_chain")
+    if not sc:
+        return []
+    out = ["<a id=\"supply-chain\"></a>**Supply chain (from the build):** " + _cell(sc["line"]), ""]
+    deps = sc.get("deps") or {}
+    for v in deps.get("vulnerabilities_new", []):
+        out.append(f"- **New advisory** {v['package']} {v['version']} ({v['severity']}): [{v['id']}]({v['advisory']})")
+    out += [f"- **{r['tier']}** `{r['id']}`: {_cell(r['evidence'])}" for r in sc["rules"]]
+    if deps.get("vulnerabilities_new") or sc["rules"]:
+        out.append("")
+    body = []
+    if deps:
+        body += [f"`deps.delta` **{deps['status']}**: {_cell(deps['summary'])}", ""]
+        if deps["packages"]:
+            body += ["| Package | Base | Head | Direct | Via |", "|---|---|---|---|---|"]
+            body += [f"| {_cell(x['package'])} | {_cell(x['base'] or '-')} | {_cell(x['head'])} | {'direct' if x['direct'] else 'transitive'} | {_cell(x['via'])} |"
+                     for x in deps["packages"]]
+            body.append("")
+        body += [f"- New project: `{x}`" for x in deps["projects_added"]]
+        body += [f"- New project reference: `{x['project']}` -> `{x['references']}`" for x in deps["project_references_added"]]
+        body += [f"- Build inputs changed: {k}: {_cell(v.get('base'))} -> {_cell(v.get('head'))}" for k, v in deps["build_inputs_changed"].items()]
+        if deps["vulnerabilities_also_on_base"]:
+            body.append(f"- Already on base ({len(deps['vulnerabilities_also_on_base'])}): "
+                        + ", ".join(f"{v['package']} {v['version']} {v['severity']} {v['id']}" for v in deps["vulnerabilities_also_on_base"]))
+        if (deps.get("sbom") or {}).get("head"):
+            body.append(f"- SBOMs (CycloneDX): `{deps['sbom']['base']}`, `{deps['sbom']['head']}`")
+    eg = sc.get("egress")
+    if eg:
+        pol = eg["policy"]
+        body.append(f"- `build.egress` **{eg['status']}**: default {pol.get('default')}, presets {pol.get('presets')}, "
+                    f"{len(pol.get('tls_server_name_patterns') or [])} TLS host patterns"
+                    + (f"; run {eg['run']}" if eg.get("run") else "") + (f"; blocked: {', '.join(eg['blocked_hosts'])}" if eg["blocked_hosts"] else "")
+                    + (f"; policy sha256 `{eg['policy_sha256'][:12]}`" if eg.get("policy_sha256") else ""))
+    net = sc.get("craci_network")
+    if net:
+        body.append(f"- `craci.network` **{net['status']}**: {_cell(net['summary'])}")
+        body += [f"  - proxy violation: {_cell(v.get('host'))} ({_cell(v.get('reason'))})" for v in net["proxy_violations"]]
+    if body:
+        out += ["<details><summary>Supply-chain detail</summary>", "", *body, "", "</details>", ""]
+    return out
+
+
 MD_LIMIT = 60000  # GitHub comments stop at 65536 characters
 
 
 def to_markdown(p: dict) -> str:
     """The card in plain GitHub Markdown, everything else in <details>. Shrinks to stay under a PR comment's limit."""
-    head = _md_card(p)
+    head = _md_card(p) + _md_supply(p)
     for parts in ((_md_trust(p), _md_panel(p), _md_evidence(p), _md_full(p)),
                   (_md_trust(p), _md_panel(p), _md_evidence(p, excerpts=False), _md_full(p)),
                   (_md_trust(p), _md_panel(p), _md_full(p)),
@@ -548,6 +596,53 @@ def _html_ev(e: dict) -> str:
     return f'<article id="{_e(e["ref"])}">{head}{body}</article>'
 
 
+def _html_supply(p: dict) -> str:
+    """One summary line, new advisories and the supply-chain rules that fired in plain sight, the rest folded."""
+    sc = p.get("supply_chain")
+    if not sc:
+        return ""
+    cls = {"fail": "no", "pass": "ok"}.get(sc["status"], "mut")
+    deps = sc.get("deps") or {}
+    top = f'<p class="{cls}">{_e(sc["line"])}</p>'
+    vul = "".join(f'<li><span class="sev sev-{"major" if v["severity"] in ("high", "critical") else "minor"}">{_e(v["severity"])}</span> '
+                  f'<b>New advisory</b> {_e(v["package"])} {_e(v["version"])}: <a href="{_e(v["advisory"])}">{_e(v["id"])}</a></li>'
+                  for v in deps.get("vulnerabilities_new", []))
+    rules = "".join(f'<li>{_tier(r["tier"], True)} <code>{_e(r["id"])}</code> {_e(r["evidence"])}</li>' for r in sc["rules"])
+    if vul or rules:
+        top += f'<ul class="sm">{vul}{rules}</ul>'
+    body = ""
+    if deps:
+        body += f'<p class="sm"><code>deps.delta</code> <b class="{"ok" if deps["status"] == "pass" else "no"}">{_e(deps["status"])}</b>: {_e(deps["summary"])}</p>'
+        if deps["packages"]:
+            body += _table(["Package", "Base", "Head", "Direct", "Via"],
+                           [[_e(x["package"]), _e(x["base"] or "-"), _e(x["head"]), "direct" if x["direct"] else "transitive",
+                             f'<span class="mono sm">{_e(x["via"])}</span>'] for x in deps["packages"]], caption="Packages added or moved")
+        items = [f"New project <code>{_e(x)}</code>" for x in deps["projects_added"]]
+        items += [f"New project reference <code>{_e(x['project'])}</code> &rarr; <code>{_e(x['references'])}</code>" for x in deps["project_references_added"]]
+        items += [f"Build inputs changed: {_e(k)}: {_e(v.get('base'))} &rarr; {_e(v.get('head'))}" for k, v in deps["build_inputs_changed"].items()]
+        if (deps.get("sbom") or {}).get("head"):
+            items.append(f'SBOMs (CycloneDX): <span class="mono">{_e(deps["sbom"]["base"])}</span>, <span class="mono">{_e(deps["sbom"]["head"])}</span>')
+        body += f'<ul class="sm">{"".join(f"<li>{x}</li>" for x in items)}</ul>' if items else ""
+        if deps["vulnerabilities_also_on_base"]:
+            body += (f'<details class="mini"><summary>Already on base ({len(deps["vulnerabilities_also_on_base"])} advisories)</summary><ul class="sm">'
+                     + "".join(f'<li>{_e(v["package"])} {_e(v["version"])} {_e(v["severity"])} <a href="{_e(v["advisory"])}">{_e(v["id"])}</a></li>'
+                               for v in deps["vulnerabilities_also_on_base"]) + "</ul></details>")
+    eg = sc.get("egress")
+    if eg:
+        pol = eg["policy"]
+        body += (f'<p class="sm"><code>build.egress</code> <b class="{"ok" if eg["status"] == "pass" else "no"}">{_e(eg["status"])}</b>: '
+                 f'default {_e(pol.get("default"))}, presets {_e(pol.get("presets"))}, TLS hosts {_e(", ".join(pol.get("tls_server_name_patterns") or []))}'
+                 + (f'; <a href="{_e(eg["run"])}">provenance run</a>' if eg.get("run") else "")
+                 + (f'; <span class="no">blocked: {_e(", ".join(eg["blocked_hosts"]))}</span>' if eg["blocked_hosts"] else "")
+                 + (f' <span class="mono mut">policy {_e(eg["policy_sha256"][:12])}</span>' if eg.get("policy_sha256") else "") + "</p>")
+    net = sc.get("craci_network")
+    if net:
+        body += (f'<p class="sm"><code>craci.network</code> <b class="{"ok" if net["status"] == "pass" else "no" if net["status"] == "fail" else "mut"}">'
+                 f'{_e(net["status"])}</b>: {_e(net["summary"])}</p>'
+                 + "".join(f'<p class="sm no">proxy violation: {_e(v.get("host"))} ({_e(v.get("reason"))})</p>' for v in net["proxy_violations"]))
+    return top + (f'<details class="mini"><summary>Supply-chain detail</summary>{body}</details>' if body else "")
+
+
 def _html_full(p: dict) -> str:
     ms = p["mandate"]["signature"]
     rp = p["reviewer_panel"]
@@ -602,7 +697,9 @@ def to_html(p: dict) -> str:
 {'<p class="banner">Simulated inputs: fixture data, not a real run</p>' if _sim(p) else ""}
 {mut}
 {_html_card(p)}
-<nav class="jump" aria-label="Sections"><a href="#trust">Where the trust comes from</a><a href="#panel">Reviewer panel</a><a href="#evidence">Evidence</a><a href="#full">Full detail</a></nav>
+<nav class="jump" aria-label="Sections"><a href="#supply-chain">Supply chain</a><a href="#trust">Where the trust comes from</a><a href="#panel">Reviewer panel</a><a href="#evidence">Evidence</a><a href="#full">Full detail</a></nav>
+<h2 id="supply-chain">Supply chain (from the build)</h2>
+{_html_supply(p)}
 <h2 id="trust">Where the trust comes from</h2>
 <p class="sm mut">For each requirement clause: the checks that passed, the tests that fail without the fix, and the reviewers who agreed with verified citations; for refused clauses, who disagreed and what would settle it.</p>
 {_html_trust(p)}

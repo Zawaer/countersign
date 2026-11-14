@@ -163,7 +163,78 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     p["trust"] = trust_rows
     p["panel"] = _panel(p, d, reviews)
     p["evidence_index"] = idx
+    p["supply_chain"] = _supply_chain(facts, d)
     return p
+
+
+# --- supply chain (from the build) --------------------------------------------------------
+
+SUPPLY_RULES = {"deps_unallowed", "deps_new_vulnerability", "egress_violation"}
+
+
+def _vuln(v: dict) -> dict:
+    adv = str(v.get("advisory") or "")
+    return {"package": v.get("package"), "version": v.get("version"), "severity": v.get("severity"),
+            "advisory": adv, "id": adv.rstrip("/").rsplit("/", 1)[-1], "projects": v.get("projects", [])}
+
+
+def _supply_chain(facts: dict, d: dict) -> dict:
+    """What the build of this change touched, from deps.delta, build.egress and CRACI's own records (craci.*).
+    One line for the card; the rest is shown folded. Everything is copied from facts.json, so it is deterministic."""
+    deps, egress, net, csbom = (decide_mod.check(facts, x) for x in ("deps.delta", "build.egress", "craci.network", "craci.sbom"))
+    rules = [{"id": r["id"], "tier": r["tier"], "evidence": r["evidence"]} for r in d["rules_fired"] if r["when"] in SUPPLY_RULES]
+    out: dict = {"recorded": bool(deps or egress or net), "rules": rules}
+    line = []
+    if deps:
+        pk = ([{"change": "added", "package": x["package"], "base": None, "head": x.get("version"), "direct": bool(x.get("direct")),
+                "via": (x.get("via") or [None])[0]} for x in deps.get("packages_added") or []]
+              + [{"change": "version", "package": x["package"], "base": ", ".join(x.get("from") or []), "head": x.get("to"),
+                  "direct": bool(x.get("direct")), "via": (x.get("via") or [None])[0]} for x in deps.get("versions_changed") or []])
+        new_v = [_vuln(v) for v in deps.get("vulnerabilities_new") or []]
+        old_v = [_vuln(v) for v in deps.get("vulnerabilities_also_on_base") or []]
+        counts = deps.get("counts") or {}
+        out["deps"] = {"status": deps["status"], "summary": deps.get("summary"), "fail_reasons": deps.get("fail_reasons", []),
+                       "packages": pk, "packages_removed": deps.get("packages_removed", []),
+                       "projects_added": deps.get("projects_added", []), "project_references_added": deps.get("project_references_added", []),
+                       "direct_references_added": deps.get("direct_references_added", []),
+                       "build_inputs_changed": deps.get("build_inputs_changed") or {},
+                       "vulnerabilities_new": new_v, "vulnerabilities_also_on_base": old_v,
+                       "counts": counts, "sbom": deps.get("sbom")}
+        bits = [f"{len(pk)} package(s) added or moved" if pk else "no package added or moved"]
+        if deps.get("projects_added"):
+            bits.append(_plural(len(deps["projects_added"]), "new project"))
+        if deps.get("build_inputs_changed"):
+            bits.append("build inputs changed: " + ", ".join(deps["build_inputs_changed"]))
+        bits.append(f"{len(new_v)} new advisor{'y' if len(new_v) == 1 else 'ies'}" + (f" ({len(old_v)} already on base)" if old_v else ""))
+        line.append(f"deps.delta {deps['status']}: " + ", ".join(bits))
+    else:
+        line.append("deps.delta not run")
+    if egress:
+        pol = egress.get("policy") or {}
+        prov = egress.get("provenance") or {}
+        out["egress"] = {"status": egress["status"], "summary": egress.get("summary"), "reason": egress.get("reason"),
+                         "policy": {k: pol.get(k) for k in ("default", "presets", "tls_server_name_patterns", "ports")},
+                         "policy_sha256": egress.get("policy_sha256"), "run": prov.get("run"),
+                         "craci_job_ca_sha256": (prov.get("craci_job_ca") or {}).get("sha256"),
+                         "blocked_hosts": egress.get("blocked_hosts", []),
+                         "feeds_outside_policy": egress.get("nuget_feeds_outside_policy") or {}}
+        line.append(f"build.egress {egress['status']}" + (f" (blocked: {', '.join(egress.get('blocked_hosts') or [])})" if egress.get("blocked_hosts") else ""))
+    else:
+        out["egress"] = None
+        line.append("build egress not recorded (local run, not on CRACI)")
+    if net:
+        out["craci_network"] = {"status": net["status"], "summary": net.get("summary"), "reason": net.get("reason"),
+                                "proxy_violations": net.get("proxy_violations", []),
+                                "hosts": [{k: h.get(k) for k in ("host", "connections", "bytes_received", "denied")} for h in net.get("hosts", [])]}
+        if net["status"] != "skipped":
+            line.append(f"CRACI trace {net['status']}" + (f" ({_plural(len(net.get('proxy_violations') or []), 'proxy violation')})" if net.get("proxy_violations") else ""))
+    else:
+        out["craci_network"] = None
+    out["craci_sbom"] = {"status": csbom["status"], "summary": csbom.get("summary")} if csbom else None
+    worst = [c["status"] for c in (deps, egress, net) if c]
+    out["status"] = "fail" if "fail" in worst else "pass" if "pass" in worst else "not run"
+    out["line"] = "; ".join(line)
+    return out
 
 
 def _codes(c: dict) -> str:

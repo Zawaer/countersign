@@ -44,9 +44,9 @@ def write_json(path: Path, obj) -> None:
 
 
 def base_change(change: str) -> str:
-    """'2283-mut1' -> '2283', '2283-inject' -> '2283'. Seeded variants (one-line defects, planted reviewer
-    instructions) reuse the requirements of the change they were seeded into."""
-    return re.sub(r"-(mut\d+|inject\d*)$", "", change)
+    """'2283-mut1' -> '2283', '2283-inject' -> '2283', '2283-deps' -> '2283'. Seeded variants (one-line defects,
+    planted reviewer instructions, a supply-chain attack) reuse the requirements of the change they were seeded into."""
+    return re.sub(r"-(mut\d+|inject\d*|deps\d*)$", "", change)
 
 
 def is_mutant(change: str) -> bool:

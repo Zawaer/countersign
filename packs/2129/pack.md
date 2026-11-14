@@ -57,6 +57,19 @@ Changes 10 source files (Attributes.cs, MsgPack00xMessagePackAnalyzer.cs, Genera
 countersign sign 2129 --as Toivo --decision <accept|reject|request-changes> --note "..."
 ```
 
+<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 1 new project, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)
+
+<details><summary>Supply-chain detail</summary>
+
+`deps.delta` **pass**: 238 packages on head (238 on base) across 31 projects; 0 added, 0 version changes, 0 removed; new project(s): tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj; 4 new direct reference(s) to packages already in the graph; 0 new vulnerability hits (6 already on base)
+
+- New project: `tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj`
+- New project reference: `tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj` -> `tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj`
+- Already on base (6): Microsoft.NETCore.Jit 1.0.2 high GHSA-xcvr-qv8h-m7xw, NuGet.Packaging 6.8.0 critical GHSA-68w7-72jg-6qpp, NuGet.Packaging 6.8.0 low GHSA-g4vj-cjjj-v7hg, NuGet.Protocol 6.8.0 low GHSA-g4vj-cjjj-v7hg, System.Formats.Asn1 6.0.0 high GHSA-447r-wph3-92pm, System.Text.Encodings.Web 4.5.0 critical GHSA-ghhp-997w-qr28
+- SBOMs (CycloneDX): `evidence/base/sbom.cdx.json`, `evidence/2129/sbom.cdx.json`
+
+</details>
+
 <details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
 
 <a id="chain-REQ-2129-F1"></a>
@@ -421,7 +434,7 @@ Suggested fix: dotnet sln MessagePack.sln add tests/MessagePack.SourceGenerator.
 
 Branch `ju26-issue-2129` (32258fdb..083afd99), 28 files, +1034 -9. Author Stelian Vultur (agent-written: True). Commit: Agentic implementation of #2129 Feature Request: Allow generation of Formatter for a type in a referenced assembly
 
-Mandate `messagepack-csharp` v3 sha256 `b1e5e40743632a3c`, signature: valid, Toivo
+Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -473,7 +486,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | injection_scan | pass | countersign.injection (deterministic pattern scan) injection-v1 | no text addressed to automated reviewers in the added lines, commit message or PR text |
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 31 projects; 0 added, 0 version changes, 0 removed; new project(s): tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj; 4 new direct reference(s) to packages already in the graph; 0 new vulnerability hits (6 already on base) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
 
 #### Requirement trace (engine codes)
 

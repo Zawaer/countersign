@@ -61,6 +61,17 @@ Changes 7 source files (CompositeResolverTemplate.tt, EnumTemplate.tt, Formatter
 countersign sign 2297 --as Toivo --decision <accept|reject|request-changes> --note "..."
 ```
 
+<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)
+
+<details><summary>Supply-chain detail</summary>
+
+`deps.delta` **pass**: 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base)
+
+- Already on base (6): Microsoft.NETCore.Jit 1.0.2 high GHSA-xcvr-qv8h-m7xw, NuGet.Packaging 6.8.0 critical GHSA-68w7-72jg-6qpp, NuGet.Packaging 6.8.0 low GHSA-g4vj-cjjj-v7hg, NuGet.Protocol 6.8.0 low GHSA-g4vj-cjjj-v7hg, System.Formats.Asn1 6.0.0 high GHSA-447r-wph3-92pm, System.Text.Encodings.Web 4.5.0 critical GHSA-ghhp-997w-qr28
+- SBOMs (CycloneDX): `evidence/base/sbom.cdx.json`, `evidence/2297/sbom.cdx.json`
+
+</details>
+
 <details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
 
 <a id="chain-REQ-2297-F1"></a>
@@ -392,7 +403,7 @@ Suggested fix: On the user-declared partial resolver, put the attribute on the g
 
 Branch `ju26-issue-2297` (32258fdb..a0aa5ab2), 237 files, +1383 -9. Author Stelian Vultur (agent-written: True). Commit: implement issue #2297 : Add ExcludeFromCodeCoverage attribute to generated code
 
-Mandate `messagepack-csharp` v3 sha256 `b1e5e40743632a3c`, signature: valid, Toivo
+Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -437,7 +448,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | injection_scan | pass | countersign.injection (deterministic pattern scan) injection-v1 | no text addressed to automated reviewers in the added lines, commit message or PR text |
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
 
 #### Requirement trace (engine codes)
 

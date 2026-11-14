@@ -63,6 +63,52 @@ def public_api_changed(facts: dict) -> bool | None:
     return bool(c.get("changed")) or c["status"] == "fail"
 
 
+# --- supply chain (deps.delta, build.egress, craci.network: stage 1 treats the build as a witness) ----------
+
+DEPS_CHECK = "deps.delta"
+EGRESS_CHECKS = ("build.egress", "craci.network")
+
+
+def allowed_dependencies(m: Mandate) -> list[str]:
+    return [str(x) for x in (m.data.get("supply_chain") or {}).get("allowed_new_dependencies") or []]
+
+
+def dep_allowed(entry: str, allowed: list[str]) -> bool:
+    """`Name@1.2.3` is allowed if the mandate lists its name (any version) or name@version, case-insensitively."""
+    allow = {a.strip().lower() for a in allowed}
+    name = entry.rsplit("@", 1)[0]
+    return entry.lower() in allow or name.lower() in allow
+
+
+def deps_unallowed(facts: dict, allowed: list[str]) -> tuple[list[str], dict | None]:
+    """(packages added or moved that the mandate does not allow, the package-feed change or None)."""
+    c = check(facts, DEPS_CHECK) or {}
+    entries = [str(e) for e in c.get("new_or_changed") or []]
+    return [e for e in entries if not dep_allowed(e, allowed)], (c.get("build_inputs_changed") or {}).get("package_sources")
+
+
+def deps_new_vulnerabilities(facts: dict) -> list[str]:
+    """Advisories on head that base did not have, as `Package version severity GHSA-...`."""
+    c = check(facts, DEPS_CHECK) or {}
+    return [f"{v.get('package')} {v.get('version')} {v.get('severity')} {str(v.get('advisory', '')).rstrip('/').rsplit('/', 1)[-1]}"
+            for v in c.get("vulnerabilities_new") or []]
+
+
+def egress_violations(facts: dict) -> list[str]:
+    """build.egress or craci.network at `fail`: the build tried to reach a host outside its network policy."""
+    return [f"{cid}: {c.get('summary') or 'fail'}" for cid in EGRESS_CHECKS if (c := check(facts, cid)) and c.get("status") == "fail"]
+
+
+def _deps_unallowed_rule(ctx: dict) -> tuple[bool, str]:
+    pkgs, sources = deps_unallowed(ctx["facts"], ctx.get("allowed_deps", []))
+    parts = []
+    if pkgs:
+        parts.append(f"{', '.join(pkgs)} not in supply_chain.allowed_new_dependencies")
+    if sources:
+        parts.append(f"package feeds changed (base {sources.get('base')} -> head {sources.get('head')})")
+    return bool(parts), "; ".join(parts)
+
+
 def files(facts: dict) -> list[dict]:
     return facts.get("diff", {}).get("by_file", [])
 
@@ -398,6 +444,10 @@ RULES = {
                                               "; ".join(f"{c} ({a}): {s}" for c, a, s in dict.fromkeys(_mandated(ctx)) if s not in ("pass", "fail"))),
     "mandate_unsigned": lambda ctx, _: (not ctx["mandate_sig"]["valid"], ctx["mandate_sig"]["reason"]),
     "injection_found": lambda ctx, _: (injection_found(ctx["facts"]), "; ".join(injection_lines(ctx["facts"]))),
+    # supply chain: only stricter routing, never a pass (deps.delta stays out of the areas' mandated checks)
+    "deps_unallowed": lambda ctx, _: _deps_unallowed_rule(ctx),
+    "deps_new_vulnerability": lambda ctx, _: (bool(deps_new_vulnerabilities(ctx["facts"])), "; ".join(deps_new_vulnerabilities(ctx["facts"]))),
+    "egress_violation": lambda ctx, _: (bool(egress_violations(ctx["facts"])), "; ".join(egress_violations(ctx["facts"]))),
 }
 
 
@@ -469,7 +519,7 @@ def decide(facts: dict, reviews: dict, reqs: dict, m: Mandate, mandate_sig: dict
     panel = panel or m.panel([a["name"] for a in areas])
     reviews = {n: r for n, r in reviews.items() if n in panel["reviewers"]}
     by_kind = lambda k: [f["path"] for f in files(facts) if f.get("kind") == k]  # noqa: E731
-    ctx = {"facts": facts, "areas": areas, "mandate_sig": mandate_sig,
+    ctx = {"facts": facts, "areas": areas, "mandate_sig": mandate_sig, "allowed_deps": allowed_dependencies(m),
            "generated": by_kind("generated"), "source": by_kind("source"), "tests": by_kind("test")}
     untrusted = None
     if injection_found(facts):

@@ -54,7 +54,8 @@ Policy, not code; versioned and signed by its `owner` (`countersign sign-mandate
 - `areas`: name -> `owner`, `paths` (globs; `**` crosses folders, `*` does not; **first match wins**), `sensitivity` (low/medium/high/critical), `max_ai_tier` (the AI's clearance right: the most lenient tier it may assign alone), `checks` (deterministic checks any change in the area needs). Demo owners: Toivo (generator/analyzer core, runtime, annotations, tests), Rene (docs, build).
 - The change's **owner** is the owner of the most sensitive area it touches; other area owners are listed as FYI.
 - `requirement_checks`: deterministic checks a clause needs, by clause `type`. A clause in `requirements/<change>.yaml` may add `checks: [...]` (2283/2234: N1 -> `tests.full_suite`, N2 -> `tests.fail_without_fix`).
-- `decision`, `rules`, `risk`, `trust`, `known_gaps`, `measurement`: see the sections below. `rules[].when` names a predicate in `countersign/decide.py` (`RULES`): `files_changed_gt`, `generated_files_gt`, `public_api_changed`, `source_without_tests`, `mandated_check_failed`, `mandated_check_missing`, `mandate_unsigned`.
+- `decision`, `rules`, `risk`, `trust`, `known_gaps`, `measurement`: see the sections below. `rules[].when` names a predicate in `countersign/decide.py` (`RULES`): `files_changed_gt`, `generated_files_gt`, `public_api_changed`, `source_without_tests`, `mandated_check_failed`, `mandated_check_missing`, `mandate_unsigned`, `injection_found`, and the supply-chain predicates `deps_unallowed`, `deps_new_vulnerability`, `egress_violation` (below).
+- `supply_chain.allowed_new_dependencies` (v4): package names (any version) or `name@version` a change may add or move without a human, case-insensitive. Empty: every new or moved package asks.
 
 ## Tiers
 
@@ -113,6 +114,23 @@ not inspect for packages. That is why `deps.delta` builds the NuGet SBOM itself 
 outside observer can give: the policy, the connections and the violations. Seeded example:
 `evidence/scripts/deps-attack.sh` adds SharpZipLib 1.2.0 and bumps FluentAssertions on top of 2283; `deps.delta`
 fails with both packages and two advisories (`evidence/supply-chain/attack-2283/`).
+
+**Routing (mandate v4, D15).** `deps.delta` is not an area check (a dependency change is a question for the owner,
+not a failed mandated check); the mandate's rules read it instead, and each can only make routing stricter:
+
+| Rule | Predicate | Fires when | Tier |
+|---|---|---|---|
+| `dependency-change` | `deps_unallowed` | an entry of `deps.delta.new_or_changed` (`Name@version`) is not in `supply_chain.allowed_new_dependencies` (by name or name@version, case-insensitive), or `build_inputs_changed.package_sources` is present | `ask` |
+| `new-advisory` | `deps_new_vulnerability` | `deps.delta.vulnerabilities_new` is non-empty (the advisory ids are cited in the driver) | `block` |
+| `build-egress-violation` | `egress_violation` | `build.egress` or `craci.network` is `fail` | `block` |
+
+The seeded attack is also a routable change, `evidence/2283-deps/facts.json` (`evidence/scripts/deps-change.py`:
+2283's metadata and requirements, the two build files added to the diff, the attack's `deps.delta` as its only check;
+build and tests are `not_run`). It routes `block` (`new-advisory`, plus `dependency-change`) and appears in the replay's
+seeded table as kind `supply_chain`. The pack section **Supply chain (from the build)** (`pack.json` `supply_chain`)
+shows one line by default, new advisories and the fired rules in plain sight, and folds the rest: packages added or
+moved (base, head, direct/transitive, first `via`), new projects and project references, advisories already on base,
+the `build.egress` policy, provenance run and blocked hosts, and `craci.network` proxy violations or why it was skipped.
 
 ## reviews/<change>/<reviewer>.json (stage 2)
 

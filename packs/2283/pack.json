@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "3",
+    "version": "4",
     "owner": "Toivo",
-    "sha256": "b1e5e40743632a3c992c9028246411a26a4ad4f8b7ff6d00efd7fd625d4fa83b",
+    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T00:23:03+00:00",
+      "signed_at": "2026-11-14T03:40:18+00:00",
       "reason": "signature valid"
     }
   },
@@ -1170,7 +1170,7 @@
         "refusals": 2
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
   },
   "findings": [
     {
@@ -3342,5 +3342,101 @@
         "claude:C3"
       ]
     }
+  },
+  "supply_chain": {
+    "recorded": true,
+    "rules": [],
+    "deps": {
+      "status": "pass",
+      "summary": "238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base)",
+      "fail_reasons": [],
+      "packages": [],
+      "packages_removed": [],
+      "projects_added": [],
+      "project_references_added": [],
+      "direct_references_added": [],
+      "build_inputs_changed": {},
+      "vulnerabilities_new": [],
+      "vulnerabilities_also_on_base": [
+        {
+          "package": "Microsoft.NETCore.Jit",
+          "version": "1.0.2",
+          "severity": "high",
+          "advisory": "https://github.com/advisories/GHSA-xcvr-qv8h-m7xw",
+          "id": "GHSA-xcvr-qv8h-m7xw",
+          "projects": [
+            "sandbox/Sandbox/Sandbox.csproj",
+            "tests/MessagePack.GeneratedCode.Tests/MessagePack.GeneratedCode.Tests.csproj"
+          ]
+        },
+        {
+          "package": "NuGet.Packaging",
+          "version": "6.8.0",
+          "severity": "critical",
+          "advisory": "https://github.com/advisories/GHSA-68w7-72jg-6qpp",
+          "id": "GHSA-68w7-72jg-6qpp",
+          "projects": [
+            "tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj"
+          ]
+        },
+        {
+          "package": "NuGet.Packaging",
+          "version": "6.8.0",
+          "severity": "low",
+          "advisory": "https://github.com/advisories/GHSA-g4vj-cjjj-v7hg",
+          "id": "GHSA-g4vj-cjjj-v7hg",
+          "projects": [
+            "tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj"
+          ]
+        },
+        {
+          "package": "NuGet.Protocol",
+          "version": "6.8.0",
+          "severity": "low",
+          "advisory": "https://github.com/advisories/GHSA-g4vj-cjjj-v7hg",
+          "id": "GHSA-g4vj-cjjj-v7hg",
+          "projects": [
+            "tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj"
+          ]
+        },
+        {
+          "package": "System.Formats.Asn1",
+          "version": "6.0.0",
+          "severity": "high",
+          "advisory": "https://github.com/advisories/GHSA-447r-wph3-92pm",
+          "id": "GHSA-447r-wph3-92pm",
+          "projects": [
+            "tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj"
+          ]
+        },
+        {
+          "package": "System.Text.Encodings.Web",
+          "version": "4.5.0",
+          "severity": "critical",
+          "advisory": "https://github.com/advisories/GHSA-ghhp-997w-qr28",
+          "id": "GHSA-ghhp-997w-qr28",
+          "projects": [
+            "src/MessagePack.AspNetCoreMvcFormatter/MessagePack.AspNetCoreMvcFormatter.csproj"
+          ]
+        }
+      ],
+      "counts": {
+        "base_packages": 238,
+        "head_packages": 238,
+        "base_projects": 30,
+        "head_projects": 30
+      },
+      "sbom": {
+        "base": "evidence/base/sbom.cdx.json",
+        "head": "evidence/2283/sbom.cdx.json",
+        "base_serial": "urn:uuid:fb46c0d0-9d66-5c14-8bd5-bab30ed80b76",
+        "head_serial": "urn:uuid:1c584500-fc86-5ed2-8730-543a3706b0df"
+      }
+    },
+    "egress": null,
+    "craci_network": null,
+    "craci_sbom": null,
+    "status": "pass",
+    "line": "deps.delta pass: no package added or moved, 0 new advisories (6 already on base); build egress not recorded (local run, not on CRACI)"
   }
 }

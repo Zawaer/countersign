@@ -4,7 +4,7 @@
 # Any edit invalidates the signature; until the owner re-signs, nothing clears below `ask`.
 
 id: messagepack-csharp
-version: 3
+version: 4
 owner: Toivo
 repo: https://github.com/te-industry-tech-office/junction26-messagepack-csharp
 
@@ -117,6 +117,13 @@ decision:
   finding_tiers: {blocker: ask, major: ask, minor: notify, info: silent}
   blocker_confirmed_tier: block   # blocker verified by both reviewers, or backed by a failing check
 
+# Supply chain (v4). deps.delta (stage 1) diffs the restored NuGet graph of base and head. A package name or version
+# the change adds or moves goes to a human unless it is listed here (a name allows any version, name@version only
+# that one; case-insensitive). deps.delta is deliberately not an area check: a dependency change goes to the owner
+# as a supply-chain question (rule dependency-change), it is not a failed mandated check.
+supply_chain:
+  allowed_new_dependencies: []
+
 # Hard rules. `when` names a predicate in countersign/decide.py (RULES); `value` is its threshold.
 rules:
   - {id: split-large-change, when: files_changed_gt, value: 50, tier: block,
@@ -138,6 +145,13 @@ rules:
   # The reviewers read it, so the engine also marks their verdicts untrusted: no clause can be proven.
   - {id: R-INJECT, when: injection_found, tier: block,
      message: "Text addressed to automated reviewers found in the change: reviewers saw planted instructions, their verdicts don't count"}
+  # Supply chain (v4), from the build: what no code reviewer reads. Each only makes routing stricter.
+  - {id: dependency-change, when: deps_unallowed, tier: ask,
+     message: "The change adds or moves a package (or feed) the mandate does not allow: the owner reviews the supply chain"}
+  - {id: new-advisory, when: deps_new_vulnerability, tier: block,
+     message: "The change brings in a package version with a known advisory not on base"}
+  - {id: build-egress-violation, when: egress_violation, tier: block,
+     message: "The build tried to reach a host outside its network policy"}
 
 # Risk score: additive, every point has a printed reason. Bands map to tiers.
 risk:

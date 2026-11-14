@@ -53,6 +53,8 @@ Changes 6 test files (+26 -22) on upstream PR #1934 by Alan Liu. Judged against 
 countersign sign up-1934 --as Toivo --decision <accept|reject|request-changes> --note "..."
 ```
 
+<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
+
 <details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
 
 <a id="chain-REQ-up-1934-F1"></a>
@@ -453,7 +455,7 @@ Suggested fix: Rename the test, or change the properties to `init` accessors and
 
 Branch `upstream PR #1934` (7ef21d4b..2f9324f9), 6 files, +26 -22. Author Alan Liu (agent-written: False). Commit: Change default Language version of generated code to C# 7.3
 
-Mandate `messagepack-csharp` v3 sha256 `b1e5e40743632a3c`, signature: valid, Toivo
+Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -486,7 +488,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
 | tests.detects_original_regression | pass | dotnet test (full SourceGenerator.Tests) on source before the #1926 fix, old vs new test files 8.0.402 | with this PR's test changes, 61 tests fail on the pre-#1926 generator that pass with the old test files -> the new C# 7.3 default detects the #1925 regression (old tests: 0/123 failed; new tests: 63/123 failed; 0 fail either way) |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
 
 #### Requirement trace (engine codes)
 

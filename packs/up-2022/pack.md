@@ -53,6 +53,8 @@ Changes 1 source file (AnalyzerOptions.cs), 1 test file (+29 -0) on upstream PR 
 countersign sign up-2022 --as Toivo --decision <accept|reject|request-changes> --note "..."
 ```
 
+<a id="supply-chain"></a>**Supply chain (from the build):** deps.delta not run; build egress not recorded (local run, not on CRACI)
+
 <details><summary><b>Where the trust comes from</b> (per requirement clause)</summary>
 
 <a id="chain-REQ-up-2022-F1"></a>
@@ -367,7 +369,7 @@ Branch `upstream PR #2022` (f5e104ee..5f4b762a), 2 files, +29 -0. Author Andrew 
 
 Fixes #2017
 
-Mandate `messagepack-csharp` v3 sha256 `b1e5e40743632a3c`, signature: valid, Toivo
+Mandate `messagepack-csharp` v4 sha256 `4b247d4ec39413dd`, signature: valid, Toivo
 
 <a id="all-drivers"></a>
 #### All tier drivers (tier = strictest)
@@ -401,7 +403,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | public_api | pass | git diff of PublicAPI.*.txt + scan of added public/protected declarations in src/  | no public API changes: no PublicAPI.Shipped/Unshipped.txt changed, no public/protected declarations added or removed in src/ |
 | analyzers | pass | dotnet build warnings (Roslyn analyzers, StyleCop, PublicApiAnalyzers) vs base  | no new warnings |
 
-Decision engine: countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)
+Decision engine: countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)
 
 #### Requirement trace (engine codes)
 

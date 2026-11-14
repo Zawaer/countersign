@@ -21,13 +21,13 @@
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
     "id": "messagepack-csharp",
-    "version": "3",
+    "version": "4",
     "owner": "Toivo",
-    "sha256": "b1e5e40743632a3c992c9028246411a26a4ad4f8b7ff6d00efd7fd625d4fa83b",
+    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e",
     "signature": {
       "valid": true,
       "signed_by": "Toivo",
-      "signed_at": "2026-11-14T00:23:03+00:00",
+      "signed_at": "2026-11-14T03:40:18+00:00",
       "reason": "signature valid"
     }
   },
@@ -519,7 +519,7 @@
         "refusals": 1
       }
     ],
-    "engine": "countersign 0.1.0 under mandate messagepack-csharp v3 (b1e5e4074363)"
+    "engine": "countersign 0.1.0 under mandate messagepack-csharp v4 (4b247d4ec394)"
   },
   "findings": [
     {
@@ -1445,5 +1445,14 @@
         ]
       }
     }
+  },
+  "supply_chain": {
+    "recorded": false,
+    "rules": [],
+    "egress": null,
+    "craci_network": null,
+    "craci_sbom": null,
+    "status": "not run",
+    "line": "deps.delta not run; build egress not recorded (local run, not on CRACI)"
   }
 }
