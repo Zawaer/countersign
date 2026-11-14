@@ -51,13 +51,15 @@ def pr_world(ws, tmp_path, monkeypatch):
     git(repo, "branch", "ju26-issue-9001", ws.head)
     remote, ldir = tmp_path / "ledger.git", tmp_path / "ledger"
     subprocess.run(["git", "init", "-q", "--bare", str(remote)], check=True)
-    subprocess.run(["git", "clone", "-q", str(remote), str(ldir)], check=True, capture_output=True)
-    git(ldir, "config", "user.email", "t@example.com")
-    git(ldir, "config", "user.name", "t")
+    git(repo, "remote", "add", "origin", str(remote))
+    git(repo, "worktree", "add", "-q", "--detach", str(ldir))  # like CI: a worktree of the checkout
+    git(ldir, "checkout", "-q", "--orphan", "seed")
+    git(ldir, "rm", "-rq", "--cached", ".")
     (ldir / "ledger.jsonl").write_text(ws.ledger_path.read_text())
-    git(ldir, "add", ".")
+    git(ldir, "add", "ledger.jsonl")
     git(ldir, "commit", "-qm", "seed")
     git(ldir, "push", "-q", "origin", "HEAD:countersign-ledger")
+    git(ldir, "checkout", "-q", "--detach")
     cfg = tmp_path / "config.yaml"
     cfg.write_text("owners: {Toivo: toivo-gh, Rene: rene-gh}\nledger_branch: countersign-ledger\n")
     pr = {"number": 7, "head_ref": "ju26-issue-9001", "head_sha": ws.head, "base_sha": ws.base}
