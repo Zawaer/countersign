@@ -27,8 +27,8 @@ claims for 'not met', 2 of 4 for 'met' (advisory)", then the unsupported claims 
 <!--n:gemini_call_tokens_min-->3,234<!--/n--> to <!--n:gemini_call_tokens_max-->7,012<!--/n--> tokens and $<!--n:gemini_call_usd_min-->0.007<!--/n--> to $<!--n:gemini_call_usd_max-->0.018<!--/n--> per call. The team's shared key is a CI secret; each call
 appends a row to `measurement/costs.yaml` from the API's usage field, with the run URL.
 
-**Confidential code.** Gemini is hosted, so a repo marked confidential cannot send it code. There the adjudicator
-is Gemma, open weights on our own A100: see [gemma.md](gemma.md).
+**Confidential code.** Gemini is hosted, so a repo marked confidential cannot send it code. There Gemma,
+open weights on our own A100, takes the role; it ran and agreed with Gemini on the shared disputes (see [gemma.md](gemma.md)).
 
 Code: github.com/Zawaer/countersign (`countersign/decide.py`, `prompts/adjudicate-v1.md`)
 

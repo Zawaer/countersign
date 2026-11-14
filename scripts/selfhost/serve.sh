@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Stochastic rounding needs Hopper (sm_90+); the A100 (sm_80) lacks the instruction, so it is only enabled there.
+CC=$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader 2>/dev/null | head -1 | tr -d .)
+MAMBA_ROUNDING_FLAGS=""; [ "${CC:-0}" -ge 90 ] && MAMBA_ROUNDING_FLAGS="--enable-mamba-cache-stochastic-rounding --mamba-cache-philox-rounds 5"
 # ON THE GPU BOX. Starts vLLM's OpenAI-compatible server on 127.0.0.1:8000 ONLY (reach it through tunnel.sh; nothing
 # is exposed to the internet, so no API key is needed). Tries the largest context window that fits:
 # 131072 (the hosted run's 180k-char context plus a 32k answer, unchanged), then 65536, then 49152; the runner reads
@@ -25,7 +28,7 @@ for len in $LENS; do
     --gpu-memory-utilization "${GPU_MEM_UTIL:-0.92}" \
     --max-model-len "$len" --max-num-seqs 2 \
     --enable-prefix-caching \
-    --mamba-ssm-cache-dtype float16 --enable-mamba-cache-stochastic-rounding --mamba-cache-philox-rounds 5 \
+    --mamba-ssm-cache-dtype float16 ${MAMBA_ROUNDING_FLAGS} \
     ${MAMBA_BACKEND:+--mamba-backend "$MAMBA_BACKEND"} \
     --reasoning-parser nemotron_v3 \
     ${EXTRA_ARGS:-} >>"$LOG" 2>&1 &
