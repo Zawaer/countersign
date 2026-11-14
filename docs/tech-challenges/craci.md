@@ -2,7 +2,7 @@
 
 **Countersign** reviews agent-written changes under a mandate. Deterministic checks come first, then two AI
 reviewers, and a named human countersigns whatever the AI could not prove. Every job runs on CRACI with its size
-and a deny-by-default network policy. We use CRACI for three things:
+and a deny-by-default network policy. We use it for three things:
 
 **1. Supply-chain risk as review evidence.** An agent can slip in a new package, a moved version or a new NuGet
 feed, and no code reviewer reads `Directory.Packages.props`. The `facts` job restores every `*.csproj` of base and
