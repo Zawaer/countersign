@@ -187,6 +187,7 @@ def test_with_token_attaches_sbom_and_trace(tmp_path):
                  "/v1preview1/network-trace": (200, json.dumps(TRACE).encode())}, calls)
     checks = {c["id"]: c for c in craci.attach(f, "Zawaer/countersign", "1", env={"CRACI_API_TOKEN": "s3cret"}, get=get, sleep=lambda s: None)}
     assert checks["craci.sbom"]["status"] == "pass" and checks["craci.sbom"]["source"]["job_id"] == "77"
+    assert checks["craci.network"]["run_url"] == "https://github.com/Zawaer/countersign/actions/runs/1"
     assert checks["craci.sbom"]["nuget_seen_by_craci"] == 0 and "no NuGet source type" in checks["craci.sbom"]["summary"]
     net = checks["craci.network"]
     assert net["status"] == "pass" and net["dns_queries"] == 1
@@ -217,6 +218,15 @@ def test_rejected_token_is_an_error_not_a_crash(tmp_path):
     get = _stub({"/v1preview1/": (401, b'{"type":"about:blank","title":"Unauthorized","status":401,"detail":"revoked token"}')}, [])
     checks = craci.attach(f, "Zawaer/countersign", "1", env={"CRACI_API_TOKEN": "x", "CRACI_JOB_ID": "77"}, get=get)
     assert {c["status"] for c in checks} == {"error"} and "revoked token" in checks[0]["summary"]
+
+
+def test_plain_403_is_reported_as_blocked_egress_not_an_api_answer(tmp_path):
+    # What all four craci jobs got on 2026-11-14 (runs 43580280041..43580303397): no problem+json, so not the API.
+    f = _facts(tmp_path)
+    get = _stub({"/v1preview1/": (403, b"Access denied\r\n")}, [])
+    checks = craci.attach(f, "Zawaer/countersign", "1", env={"CRACI_API_TOKEN": "x", "CRACI_JOB_ID": "77"}, get=get)
+    assert {c["status"] for c in checks} == {"error"}
+    assert "never reached the CRACI API" in checks[0]["summary"] and "api.craci.com" in checks[0]["summary"]
 
 
 @pytest.mark.parametrize("argv", [[], ["nope"]])

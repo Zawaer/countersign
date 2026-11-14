@@ -66,7 +66,7 @@ class Client:
             if status in (409, 503) and attempt < self.retries_409:  # 409: job not terminal yet (CRACI is finalizing it)
                 self.sleep(self.wait_409)
                 continue
-            raise ApiError(status, _problem(body))
+            raise ApiError(status, _problem(body) if _is_problem(body) else _not_the_api(status, body))
         raise ApiError(409, "job never became terminal")
 
     def job(self, repo: str, job_id: str) -> dict:
@@ -77,6 +77,24 @@ class Client:
 
     def network_trace(self, repo: str, job_id: str) -> dict:
         return json.loads(self._call("/v1preview1/network-trace", self.job(repo, job_id)))
+
+
+def _is_problem(body: bytes) -> bool:
+    """The CRACI API answers every error with an RFC 9457 problem document (application/problem+json)."""
+    try:
+        return isinstance(json.loads(body), dict)
+    except ValueError:
+        return False
+
+
+def _not_the_api(status: int, body: bytes) -> str:
+    """A non-problem error body did not come from the CRACI API. Inside a CRACI job a plain-text 403 ("Access denied")
+    is the job's egress proxy refusing the connection (CRACI docs, network troubleshooting: blocked connections)."""
+    text = body[:200].decode(errors="replace").strip()
+    if status == 403:
+        return (f"'{text}' (plain text, not the API's problem+json): the request never reached the CRACI API; the job's "
+                f"egress to {urllib.parse.urlsplit(API).hostname} was refused (see the craci job's Proxy violations in CRACI)")
+    return f"{text} (not a CRACI API response)"
 
 
 def _problem(body: bytes) -> str:
@@ -202,7 +220,9 @@ def attach(facts_path: Path, repo: str, run_id: str | None, job: str = "facts", 
     facts = json.loads(facts_path.read_text())
     out_dir = out_dir or facts_path.parent / "craci"
     token = env.get("CRACI_API_TOKEN", "").strip()
-    base = {"tool": "CRACI API v1preview1 (https://api.craci.com)", "source": {"repo": repo, "run_id": run_id, "job": job}}
+    run_url = f"{env.get('GITHUB_SERVER_URL', 'https://github.com')}/{repo}/actions/runs/{run_id}" if repo and run_id else None
+    base = {"tool": "CRACI API v1preview1 (https://api.craci.com)", "source": {"repo": repo, "run_id": run_id, "job": job},
+            "run_url": run_url}
     if not token:
         checks = [{"id": i, **base, "status": "skipped", "reason": NO_TOKEN, "summary": f"not fetched: {NO_TOKEN} (the job's record is in the CRACI app: View trace / SBOM)"}
                   for i in ("craci.sbom", "craci.network")]
