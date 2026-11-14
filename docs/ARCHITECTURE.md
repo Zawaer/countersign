@@ -97,6 +97,23 @@ Optional fields the pipeline uses: `"simulated": true` (fixture data; propagates
 
 `status` meanings: `pass` (check ran and passed), `fail` (ran and failed), `skipped` (deliberately not run; must have a reason), `error` (could not run: the check itself broke). `error` and `skipped` are never treated as `pass`.
 
+### Supply chain (from the build)
+
+An agent-written change can bring in risk that no code reviewer reads: a new package, a moved version, a new NuGet
+feed, a build step that phones home. Stage 1 treats the build itself as a witness and records what it touched:
+
+| Check | Where it runs | What it records | `fail` when |
+|---|---|---|---|
+| `deps.delta` | `evidence/scripts/deps-delta.py` (locally and in the CI `facts` job), logic in `countersign/sbom.py` | Restores **every** `*.csproj` of base and head (not just the `.sln`, so a project the change adds but leaves out of the solution still counts) with NuGet Audit `mode=all`, reads NuGet's restore graph (`obj/**/project.assets.json`), writes a deterministic CycloneDX 1.6 SBOM per side (`evidence/base/sbom.cdx.json`, `evidence/<n>/sbom.cdx.json`: purls, SHA-512 hashes, dependency graph, advisories) and diffs them: packages added / removed / version-changed (direct or transitive, with the path that pulls each one in), new projects, new project and package references, changed SDK pin, dotnet tools, NuGet feeds, advisories not on base. | a package name or version not on base that the mandate does not allow (`allowed_new_dependencies`, passed as `CS_ALLOWED_DEPS`), a new feed, an advisory not on base, or a project that fails to restore on head only |
+| `build.egress` | CI `facts` job only (`evidence/scripts/build-egress.py`) | The CRACI network policy the job ran under, copied from the workflow (text, parsed allowlist, sha256), with the run URL and the fingerprint of the CRACI job CA that enforced it: "the build of this change reached only these hosts". Also checks that every NuGet feed the head declares is inside the policy. | a blocked connection in the build logs (403, reset, NU1301: a CRACI proxy violation), a feed outside the policy, or a policy that is not `default: deny`. `skipped` off CRACI. |
+| `craci.sbom`, `craci.network` | CI `craci` job (`countersign/craci.py`), only with `CRACI_API_TOKEN` | CRACI's own records of the `facts` job via its API: the job SBOM (compared with ours) and the network trace (hosts, bytes, matched rule, proxy violations). A third party's record, not ours. | a proxy violation in the trace; a NuGet package CRACI saw that is not in our restore graph. `skipped` ("no CRACI_API_TOKEN") without a token: never a failure. |
+
+CRACI has no NuGet source type, so NuGet traffic passes a TLS connection rule, which CRACI logs in the trace but does
+not inspect for packages. That is why `deps.delta` builds the NuGet SBOM itself and CRACI is used for what only an
+outside observer can give: the policy, the connections and the violations. Seeded example:
+`evidence/scripts/deps-attack.sh` adds SharpZipLib 1.2.0 and bumps FluentAssertions on top of 2283; `deps.delta`
+fails with both packages and two advisories (`evidence/supply-chain/attack-2283/`).
+
 ## reviews/<change>/<reviewer>.json (stage 2)
 
 ```json
