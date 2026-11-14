@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 87cffa28..81d3444b 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -1047,7 +1047,7 @@ public class TypeCollector
+ 
+             foreach (IFieldSymbol item in formattedType.GetAllMembers().OfType<IFieldSymbol>())
+             {
+-                if (item.IsImplicitlyDeclared || item.IsStatic || !item.CanBeReferencedByName)
++                if (item.IsImplicitlyDeclared && item.IsStatic || !item.CanBeReferencedByName)
+                 {
+                     // Compiler-generated fields (e.g. auto-property backing fields) are only flagged as implicitly declared
+                     // for source symbols. When the type comes from a referenced assembly, they show up as ordinary fields

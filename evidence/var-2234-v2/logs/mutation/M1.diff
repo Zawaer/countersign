@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 50ae42db..d8122d9e 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -639,7 +639,7 @@ public class TypeCollector
+ 
+         // A closed generic type whose definition opted out of source generation has no source generated formatter,
+         // so we must not register one with the generated resolver (it would reference a formatter type that does not exist).
+-        if (this.options.IsGeneratingSource && !type.IsDefinition && this.IsSourceGenerationSuppressed(type.OriginalDefinition))
++        if (!(this.options.IsGeneratingSource && !type.IsDefinition && this.IsSourceGenerationSuppressed(type.OriginalDefinition)))
+         {
+             return;
+         }

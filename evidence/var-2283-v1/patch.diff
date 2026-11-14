@@ -1,0 +1,333 @@
+From 60d651e8f7d049ab6ab078f98c578cd79fda4544 Mon Sep 17 00:00:00 2001
+From: Zawaer <79928133+Zawaer@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 09:36:35 +0000
+Subject: [PATCH] Fix generator/analyzer crash on closed generic value type
+ from a referenced assembly
+
+TypeCollector.GetObjectInfo runs against closed generic types defined in
+referenced assemblies, whose symbols have no syntax. For value types, the
+metadata import includes private compiler-generated backing fields, which
+hit the MemberNeedsKey diagnostic path that indexed
+DeclaringSyntaxReferences[0] and threw IndexOutOfRangeException.
+
+Use FirstOrDefault() for the location in the MemberNeedsKey and
+BothStringAndIntKeyAreNull diagnostics, as the neighbouring diagnostics do.
+
+Fixes #2283
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ .../CodeAnalysis/TypeCollector.cs             |  4 +-
+ .../GenericsFormatterTests.cs                 | 55 +++++++++++++
+ ...empProject.MyGenericStructFormatter`1.g.cs | 54 +++++++++++++
+ ...esolver.TempProject.MyObjectFormatter.g.cs | 60 +++++++++++++++
+ ...sagePack.GeneratedMessagePackResolver.g.cs | 77 +++++++++++++++++++
+ 5 files changed, 248 insertions(+), 2 deletions(-)
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericStructFormatter`1.g.cs
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/MessagePack.GeneratedMessagePackResolver.g.cs
+
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index e121773d..fba52be0 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -982,7 +982,7 @@ public class TypeCollector
+                     var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;
+                     if (intKey == null && stringKey == null)
+                     {
+-                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, ((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));
++                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, (item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));
+                     }
+ 
+                     // A property with an init accessor and an initializer has a default that will be discarded by the deserializer.
+@@ -1074,7 +1074,7 @@ public class TypeCollector
+                             {
+                                 Diagnostic diagnostic = derivedKeyAttribute is not null && suppressSourceGeneration is not true
+                                     ? Diagnostic.Create(MsgPack00xMessagePackAnalyzer.AOTDerivedKeyAttribute, derivedKeyAttribute.GetSyntax(this.cancellationToken).GetLocation())
+-                                    : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);
++                                    : Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name);
+                                 if (nonPublicMembersAreSerialized || (item.DeclaredAccessibility & Accessibility.Public) == Accessibility.Public)
+                                 {
+                                     this.reportDiagnostic?.Invoke(diagnostic);
+diff --git a/tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs b/tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs
+index 283622c5..093db49f 100644
+--- a/tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs
++++ b/tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs
+@@ -1,6 +1,7 @@
+ ﻿// Copyright (c) All contributors. All rights reserved.
+ // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+ 
++using Microsoft.CodeAnalysis;
+ using Microsoft.CodeAnalysis.CSharp;
+ using VerifyCS = CSharpSourceGeneratorVerifier<MessagePack.SourceGenerator.MessagePackGenerator>;
+ 
+@@ -494,6 +495,60 @@ namespace TempProject
+         }.RunAsync();
+     }
+ 
++    /// <summary>
++    /// Regression test for a closed generic value type defined in a referenced assembly,
++    /// whose compiler-generated backing fields have no syntax (https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283).
++    /// </summary>
++    [Fact]
++    public async Task Generics_ValueType_Defined_In_ReferencedProject()
++    {
++        string defineSource = """
++using MessagePack;
++
++namespace TempProject
++{
++    [MessagePackObject]
++    public struct MyGenericStruct<T>
++    {
++        [Key(0)]
++        public string Key { get; set; }
++    }
++}
++""";
++
++        string usageSource = """
++using MessagePack;
++
++namespace TempProject
++{
++    [MessagePackObject]
++    public class MyObject
++    {
++        [Key(0)]
++        public MyGenericStruct<int> Value { get; set; }
++    }
++}
++""";
++        // Reference the defining assembly as metadata (not as a project) so its symbols have no syntax.
++        CSharpCompilation definingCompilation = CSharpCompilation.Create(
++            "DefiningAssembly",
++            [CSharpSyntaxTree.ParseText(defineSource)],
++            (await ReferencesHelper.DefaultTargetFrameworkReferences.ResolveAsync(LanguageNames.CSharp, default)).AddRange(ReferencesHelper.GetReferences(ReferencesSet.MessagePack)),
++            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
++        using MemoryStream definingImage = new();
++        Microsoft.CodeAnalysis.Emit.EmitResult emitResult = definingCompilation.Emit(definingImage);
++        Assert.True(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics));
++
++        await new VerifyCS.Test
++        {
++            TestState =
++            {
++                Sources = { usageSource },
++                AdditionalReferences = { MetadataReference.CreateFromImage(definingImage.ToArray()) },
++            },
++        }.RunAsync();
++    }
++
+     /// <summary>
+     /// Asserts that the generator can handle directly recursive generic constraints.
+     /// </summary>
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericStructFormatter`1.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericStructFormatter`1.g.cs
+new file mode 100644
+index 00000000..1fdb185e
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericStructFormatter`1.g.cs
+@@ -0,0 +1,54 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++#pragma warning disable CS8669 // We may leak nullable annotations into generated code.
++
++using MsgPack = global::MessagePack;
++
++namespace MessagePack {
++partial class GeneratedMessagePackResolver {
++internal partial class TempProject {
++
++	internal sealed class MyGenericStructFormatter<T> : MsgPack::Formatters.IMessagePackFormatter<global::TempProject.MyGenericStruct<T>>
++	{
++
++		public void Serialize(ref MsgPack::MessagePackWriter writer, global::TempProject.MyGenericStruct<T> value, MsgPack::MessagePackSerializerOptions options)
++		{
++			MsgPack::IFormatterResolver formatterResolver = options.Resolver;
++			writer.WriteArrayHeader(1);
++			MsgPack::FormatterResolverExtensions.GetFormatterWithVerify<string>(formatterResolver).Serialize(ref writer, value.Key, options);
++		}
++
++		public global::TempProject.MyGenericStruct<T> Deserialize(ref MsgPack::MessagePackReader reader, MsgPack::MessagePackSerializerOptions options)
++		{
++			if (reader.TryReadNil())
++			{
++				throw new global::System.InvalidOperationException("typecode is null, struct not supported");
++			}
++
++			options.Security.DepthStep(ref reader);
++			MsgPack::IFormatterResolver formatterResolver = options.Resolver;
++			var length = reader.ReadArrayHeader();
++			var ____result = new global::TempProject.MyGenericStruct<T>();
++
++			for (int i = 0; i < length; i++)
++			{
++				switch (i)
++				{
++					case 0:
++						____result.Key = MsgPack::FormatterResolverExtensions.GetFormatterWithVerify<string>(formatterResolver).Deserialize(ref reader, options);
++						break;
++					default:
++						reader.Skip();
++						break;
++				}
++			}
++
++			reader.Depth--;
++			return ____result;
++		}
++	}
++}
++}
++}
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs
+new file mode 100644
+index 00000000..ebc271fb
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/Formatters.MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter.g.cs
+@@ -0,0 +1,60 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++#pragma warning disable CS8669 // We may leak nullable annotations into generated code.
++
++using MsgPack = global::MessagePack;
++
++namespace MessagePack {
++partial class GeneratedMessagePackResolver {
++internal partial class TempProject {
++
++	internal sealed class MyObjectFormatter : MsgPack::Formatters.IMessagePackFormatter<global::TempProject.MyObject>
++	{
++
++		public void Serialize(ref MsgPack::MessagePackWriter writer, global::TempProject.MyObject value, MsgPack::MessagePackSerializerOptions options)
++		{
++			if (value == null)
++			{
++				writer.WriteNil();
++				return;
++			}
++
++			MsgPack::IFormatterResolver formatterResolver = options.Resolver;
++			writer.WriteArrayHeader(1);
++			MsgPack::FormatterResolverExtensions.GetFormatterWithVerify<global::TempProject.MyGenericStruct<int>>(formatterResolver).Serialize(ref writer, value.Value, options);
++		}
++
++		public global::TempProject.MyObject Deserialize(ref MsgPack::MessagePackReader reader, MsgPack::MessagePackSerializerOptions options)
++		{
++			if (reader.TryReadNil())
++			{
++				return null;
++			}
++
++			options.Security.DepthStep(ref reader);
++			MsgPack::IFormatterResolver formatterResolver = options.Resolver;
++			var length = reader.ReadArrayHeader();
++			var ____result = new global::TempProject.MyObject();
++
++			for (int i = 0; i < length; i++)
++			{
++				switch (i)
++				{
++					case 0:
++						____result.Value = MsgPack::FormatterResolverExtensions.GetFormatterWithVerify<global::TempProject.MyGenericStruct<int>>(formatterResolver).Deserialize(ref reader, options);
++						break;
++					default:
++						reader.Skip();
++						break;
++				}
++			}
++
++			reader.Depth--;
++			return ____result;
++		}
++	}
++}
++}
++}
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/MessagePack.GeneratedMessagePackResolver.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/MessagePack.GeneratedMessagePackResolver.g.cs
+new file mode 100644
+index 00000000..9571f600
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/Generics_ValueType_Defined_In_ReferencedProject/MessagePack.GeneratedMessagePackResolver.g.cs
+@@ -0,0 +1,77 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++using MsgPack = global::MessagePack;
++
++[assembly: MsgPack::Internal.GeneratedAssemblyMessagePackResolverAttribute(typeof(MessagePack.GeneratedMessagePackResolver), 3, 0)]
++
++namespace MessagePack {
++
++/// <summary>A MessagePack resolver that uses generated formatters for types in this assembly.</summary>
++partial class GeneratedMessagePackResolver : MsgPack::IFormatterResolver
++{
++	/// <summary>An instance of this resolver that only returns formatters specifically generated for types in this assembly.</summary>
++	public static readonly MsgPack::IFormatterResolver Instance = new GeneratedMessagePackResolver();
++
++	private GeneratedMessagePackResolver()
++	{
++	}
++
++	public MsgPack::Formatters.IMessagePackFormatter<T> GetFormatter<T>()
++	{
++		return FormatterCache<T>.Formatter;
++	}
++
++	private static class FormatterCache<T>
++	{
++		internal static readonly MsgPack::Formatters.IMessagePackFormatter<T> Formatter;
++
++		static FormatterCache()
++		{
++			var f = GeneratedMessagePackResolverGetFormatterHelper.GetFormatter(typeof(T));
++			if (f != null)
++			{
++				Formatter = (MsgPack::Formatters.IMessagePackFormatter<T>)f;
++			}
++		}
++	}
++
++	private static class GeneratedMessagePackResolverGetFormatterHelper
++	{
++		private static readonly global::System.Collections.Generic.Dictionary<global::System.Type, int> closedTypeLookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(2)
++		{
++			{ typeof(global::TempProject.MyGenericStruct<int>), 0 },
++			{ typeof(global::TempProject.MyObject), 1 },
++		};
++		private static readonly global::System.Collections.Generic.Dictionary<global::System.Type, int> openTypeLookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(1)
++		{
++			{ typeof(global::TempProject.MyGenericStruct<>), 0 },
++		};
++
++		internal static object GetFormatter(global::System.Type t)
++		{
++			if (closedTypeLookup.TryGetValue(t, out int closedKey))
++			{
++				switch (closedKey)
++				{
++					case 0: return new global::MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericStructFormatter<int>();
++					case 1: return new global::MessagePack.GeneratedMessagePackResolver.TempProject.MyObjectFormatter();
++					default: return null; // unreachable
++				};
++			}
++			if (t.IsGenericType && openTypeLookup.TryGetValue(t.GetGenericTypeDefinition(), out int openKey))
++			{
++				switch (openKey)
++				{
++					case 0: return global::System.Activator.CreateInstance(typeof(global::MessagePack.GeneratedMessagePackResolver.TempProject.MyGenericStructFormatter<>).MakeGenericType(t.GenericTypeArguments));
++					default: return null; // unreachable
++				};
++			}
++
++			return null;
++		}
++	}
++}
++
++}

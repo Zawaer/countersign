@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 50ae42db..096be9cb 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -1043,7 +1043,7 @@ public class TypeCollector
+                             intMembers.Add(member.IntKey, (member, item.Type));
+                         }
+                     }
+-                    else if (!isIntKey && stringKey is not null)
++                    else if (!(!isIntKey && stringKey is not null))
+                     {
+                         if (stringMembers.ContainsKey(stringKey!))
+                         {

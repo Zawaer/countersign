@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 1a44cc8c..484eebc5 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -1452,7 +1452,7 @@ public class TypeCollector
+     /// except that their names are not valid C# identifiers.
+     /// They can never be serialized by generated code, nor be attributed by the user.
+     /// </remarks>
+-    private static bool IsCompilerGeneratedField(ISymbol member) => member is IFieldSymbol { CanBeReferencedByName: false };
++    private static bool IsCompilerGeneratedField(ISymbol member) => default;
+ 
+     private static Location? GetLocation(IParameterSymbol parameter) => parameter.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation();
+ 

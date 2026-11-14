@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 50ae42db..9ab2baf1 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -1027,7 +1027,7 @@ public class TypeCollector
+                     }
+ 
+                     // A member whose key is of the wrong kind (or null) has already been reported above and cannot be added to the member map.
+-                    if (isIntKey && intKey is not null)
++                    if (!(isIntKey && intKey is not null))
+                     {
+                         if (intMembers.ContainsKey(intKey!.Value))
+                         {

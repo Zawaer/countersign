@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 50ae42db..a198564b 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -854,7 +854,7 @@ public class TypeCollector
+                                 stringMembers.Add(member.StringKey, (member, item.Type));
+                             }
+ 
+-                            if (specialFormatter is null && collectMemberTypes)
++                            if (!(specialFormatter is null && collectMemberTypes))
+                             {
+                                 this.CollectCore(item.Type, item); // recursive collect
+                             }

@@ -1,0 +1,48 @@
+From 8c168b569767fb319606e6903db5d5d2de305135 Mon Sep 17 00:00:00 2001
+From: Zawaer <79928133+Zawaer@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 09:36:05 +0000
+Subject: [PATCH] Add regression test: analyzer must still report for
+ SuppressSourceGeneration types
+
+Issue #2234 reports that the MsgPack00x analyzer stops reporting contract
+diagnostics (e.g. MsgPack004 for a missing [Key]) on types annotated with
+[MessagePackObject(SuppressSourceGeneration = true)]. On the 3.1.x line this was
+caused by moving the SuppressSourceGeneration early return in
+TypeCollector.GetObjectInfo ahead of member analysis. On develop the early
+return still sits after member analysis, so diagnostics are reported; this test
+locks that behavior in.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ .../MsgPack00xAnalyzerTests.cs                 | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+index d39d74ef..4db3bfb7 100644
+--- a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
++++ b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+@@ -124,6 +124,24 @@ public class Foo
+         }.RunAsync();
+     }
+ 
++    [Fact]
++    public async Task MissingKeyAttribute_SourceGenerationSuppressed()
++    {
++        string input = Preamble + @"
++[MessagePackObject(SuppressSourceGeneration = true)]
++public class Foo
++{
++    public string {|MsgPack004:Member1|} { get; set; }
++}
++";
++
++        await new VerifyCS.Test
++        {
++            TestCode = input,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
+     /// <summary>
+     /// Verifies that only public members require attributes (so long as no non-public member is already attributed.)
+     /// </summary>

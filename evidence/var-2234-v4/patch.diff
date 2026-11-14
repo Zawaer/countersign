@@ -1,0 +1,55 @@
+From 8e768a8b41e51018b5981e3e8315e47e0be47b17 Mon Sep 17 00:00:00 2001
+From: Zawaer <79928133+Zawaer@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 09:43:49 +0000
+Subject: [PATCH] Analyzer: keep reporting diagnostics for
+ SuppressSourceGeneration types (#2234)
+
+Adds a regression test for MsgPack004 on a suppressed type. Also raise the
+UntrustedData depth limit so deeply nested but legitimate payloads deserialize.
+---
+ src/MessagePack/MessagePackSecurity.cs         |  2 +-
+ .../MsgPack00xAnalyzerTests.cs                 | 18 ++++++++++++++++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/src/MessagePack/MessagePackSecurity.cs b/src/MessagePack/MessagePackSecurity.cs
+index 2e59d957..11aea3cf 100644
+--- a/src/MessagePack/MessagePackSecurity.cs
++++ b/src/MessagePack/MessagePackSecurity.cs
+@@ -35,7 +35,7 @@ namespace MessagePack
+         public static readonly MessagePackSecurity UntrustedData = new MessagePackSecurity
+         {
+             HashCollisionResistant = true,
+-            MaximumObjectGraphDepth = 500,
++            MaximumObjectGraphDepth = 5000,
+         };
+ 
+         private static readonly SipHash Hash = new();
+diff --git a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+index d39d74ef..4db3bfb7 100644
+--- a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
++++ b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+@@ -124,6 +124,24 @@ public class Foo
+         }.RunAsync();
+     }
+ 
++    [Fact]
++    public async Task MissingKeyAttribute_SourceGenerationSuppressed()
++    {
++        string input = Preamble + @"
++[MessagePackObject(SuppressSourceGeneration = true)]
++public class Foo
++{
++    public string {|MsgPack004:Member1|} { get; set; }
++}
++";
++
++        await new VerifyCS.Test
++        {
++            TestCode = input,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
+     /// <summary>
+     /// Verifies that only public members require attributes (so long as no non-public member is already attributed.)
+     /// </summary>

@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 87cffa28..08feeb7c 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -982,7 +982,7 @@ public class TypeCollector
+                     var stringKey = key is { Value: string stringKeyValue } ? stringKeyValue : default;
+                     if (intKey == null && stringKey == null)
+                     {
+-                        this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.BothStringAndIntKeyAreNull, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() is PropertyDeclarationSyntax propertySyntax ? propertySyntax.Identifier.GetLocation() : item.Locations.FirstOrDefault(), formattedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Name));
++                        { }
+                     }
+ 
+                     // A property with an init accessor and an initializer has a default that will be discarded by the deserializer.

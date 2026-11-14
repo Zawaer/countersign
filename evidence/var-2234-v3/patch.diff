@@ -1,0 +1,111 @@
+From 4f1f99880396814d809c5ef373a9632e27ac01ee Mon Sep 17 00:00:00 2001
+From: Zawaer <79928133+Zawaer@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 09:37:01 +0000
+Subject: [PATCH] Add regression test: analyzer reports diagnostics for
+ SuppressSourceGeneration types (#2234)
+
+The analyzer must keep reporting contract diagnostics (MsgPack003/004, ...)
+for [MessagePackObject(SuppressSourceGeneration = true)] types. Document
+that the opt-out early return in TypeCollector.GetObjectInfo must remain
+after the analysis, and lock the behavior in with a test.
+---
+ .../CodeAnalysis/TypeCollector.cs             |  2 +
+ .../MsgPack00xAnalyzerTests.cs                | 72 +++++++++++++++++++
+ 2 files changed, 74 insertions(+)
+
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index e121773d..2bbc0dbf 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -1366,6 +1366,8 @@ public class TypeCollector
+         }
+ 
+         // Do not source generate the formatter for this type if the attribute opted out.
++        // This check must stay *after* all the analysis above, so that the analyzer keeps reporting
++        // diagnostics (e.g. missing [Key] attributes) for types that opt out of source generation (#2234).
+         if (suppressSourceGeneration is true)
+         {
+             // Skip any source generation
+diff --git a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+index d39d74ef..29acc6cc 100644
+--- a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
++++ b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+@@ -976,6 +976,78 @@ public class Bar : Foo
+         await VerifyCS.VerifyAnalyzerAsync(test);
+     }
+ 
++    /// <summary>
++    /// Verifies that the analyzer keeps reporting contract diagnostics for types that opt out of source generation.
++    /// See https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234.
++    /// </summary>
++    [Fact]
++    public async Task SourceGenerationDisabled_AnalyzerStillReportsDiagnostics()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class Foo
++            {
++                [Key(0)]
++                public string Member0 { get; set; }
++
++                public string {|MsgPack004:Member1|} { get; set; }
++            }
++
++            public class NotAttributed { }
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class Bar
++            {
++                [Key(0)]
++                public NotAttributed {|MsgPack003:Member0|} { get; set; }
++            }
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public struct Baz
++            {
++                [Key(0)]
++                public int A { get; set; }
++
++                public int {|MsgPack004:B|} { get; set; }
++            }
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class Generic<T>
++            {
++                [Key(0)]
++                public T A { get; set; }
++
++                public int {|MsgPack004:B|} { get; set; }
++            }
++
++            public class Outer
++            {
++                [MessagePackObject(SuppressSourceGeneration = true)]
++                public class Nested
++                {
++                    public int {|MsgPack004:B|} { get; set; }
++                }
++            }
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class Derived : {|MsgPack004:Foo|}
++            {
++                [Key(5)]
++                public int C { get; set; }
++
++                public int {|MsgPack004:D|} { get; set; }
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
+     [Fact]
+     public async Task InitPropertyInitializer()
+     {

@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 1a44cc8c..1bc12f24 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -1047,7 +1047,7 @@ public class TypeCollector
+ 
+             foreach (IFieldSymbol item in formattedType.GetAllMembers().OfType<IFieldSymbol>())
+             {
+-                if (item.IsImplicitlyDeclared || item.IsStatic || IsCompilerGeneratedField(item))
++                if (item.IsImplicitlyDeclared && item.IsStatic || IsCompilerGeneratedField(item))
+                 {
+                     continue;
+                 }

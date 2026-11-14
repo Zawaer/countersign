@@ -1,0 +1,986 @@
+### dotnet test tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj --no-build --filter "FullyQualifiedName~ReferencedAssemblyTypesTests.|FullyQualifiedName~MsgPack00xAnalyzerTests."
+
+Test run for /data/src/mp-var-2283-v2-fwf/bin/MessagePack.SourceGenerator.Tests/Debug/net8.0/MessagePack.SourceGenerator.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.84]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial record struct I"···) [FAIL]
+[xUnit.net 00:00:00.86]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:00.87]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public struct Item<T> { [Key(0"···) [FAIL]
+[xUnit.net 00:00:00.89]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:00.91]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:01.28]     ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic string key", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial record struct I"···) [711 ms]
+  Error Message:
+   Assert.DoesNotContain() Failure: Filter matched in collection
+             ↓ (pos 0)
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 985
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 146
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 985
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [26 ms]
+  Error Message:
+   Assert.DoesNotContain() Failure: Filter matched in collection
+             ↓ (pos 0)
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 146
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public struct Item<T> { [Key(0"···) [9 ms]
+  Error Message:
+   Assert.DoesNotContain() Failure: Filter matched in collection
+             ↓ (pos 0)
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 146
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [13 ms]
+  Error Message:
+   Assert.DoesNotContain() Failure: Filter matched in collection
+             ↓ (pos 0)
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 985
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 146
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 985
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [17 ms]
+  Error Message:
+   Assert.DoesNotContain() Failure: Filter matched in collection
+                                                                                                                                                                                     ↓ (pos 1)
+Collection: [error MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::Lib.Item<int>.Unattributed, warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrowOnInvalidReferencedType(String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 146
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ error MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::Lib.Item<int>.Unattributed
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic string key", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [17 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorProducesResolver(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 70
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic string key
+
+
+[xUnit.net 00:00:01.44]     ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:01.48]     ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "record struct generic", libraryDeclaration: "[MessagePackObject] public partial record struct I"···) [FAIL]
+[xUnit.net 00:00:01.50]     ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic explicit private field", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+  Failed ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [11 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorProducesResolver(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 70
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic
+
+
+  Failed ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "record struct generic", libraryDeclaration: "[MessagePackObject] public partial record struct I"···) [29 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorProducesResolver(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 70
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ record struct generic
+
+
+  Failed ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic explicit private field", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [13 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorProducesResolver(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 70
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic explicit private field
+
+
+[xUnit.net 00:00:01.53]     ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "readonly record struct generic", libraryDeclaration: "[MessagePackObject] public readonly partial record"···) [FAIL]
+[xUnit.net 00:00:01.56]     ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic T member", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:01.57]     ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic init", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+  Failed ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "readonly record struct generic", libraryDeclaration: "[MessagePackObject] public readonly partial record"···) [9 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorProducesResolver(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 70
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ readonly record struct generic
+
+
+  Failed ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic T member", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [9 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorProducesResolver(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 70
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic T member
+
+
+  Failed ReferencedAssemblyTypesTests.GeneratorProducesResolver(caseName: "struct generic init", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [9 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorProducesResolver(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 70
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic init
+
+
+[xUnit.net 00:00:01.60]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic init", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:01.65]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "record struct generic", libraryDeclaration: "[MessagePackObject] public partial record struct I"···) [FAIL]
+[xUnit.net 00:00:01.66]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "readonly record struct generic", libraryDeclaration: "[MessagePackObject] public readonly partial record"···) [FAIL]
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic init", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [14 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 100
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic init
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "record struct generic", libraryDeclaration: "[MessagePackObject] public partial record struct I"···) [10 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 100
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ record struct generic
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "readonly record struct generic", libraryDeclaration: "[MessagePackObject] public readonly partial record"···) [10 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 100
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ readonly record struct generic
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+[xUnit.net 00:00:01.69]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:01.72]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic explicit private field", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:01.73]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic T member", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [20 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 100
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic explicit private field", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [8 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 100
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic explicit private field
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic T member", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [14 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 100
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic T member
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+[xUnit.net 00:00:01.78]     ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic string key", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [FAIL]
+[xUnit.net 00:00:01.80]     ReferencedAssemblyTypesTests.AnalyzerStillReportsProblemsInReferencingProject [FAIL]
+[xUnit.net 00:00:01.82]     ReferencedAssemblyTypesTests.GeneratorCollectsTypeArgumentOfReferencedGenericValueType [FAIL]
+  Failed ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(caseName: "struct generic string key", libraryDeclaration: "[MessagePackObject] public partial struct Item<T> "···) [10 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+Exception occurred with following context:
+Compilation: App
+ISymbol: Cmd (NamedType)
+
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018]
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerDoesNotThrow(String caseName, String libraryDeclaration) in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 100
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ struct generic string key
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.AnalyzerStillReportsProblemsInReferencingProject [13 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "MsgPack004"
+Actual:   "AD0001"
+           ↑ (pos 0)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.AnalyzerStillReportsProblemsInReferencingProject() in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 122
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.
+ Exception occurred with following context:
+ Compilation: App
+ ISymbol: Cmd (NamedType)
+ 
+ System.IndexOutOfRangeException: Index was outside the bounds of the array.
+    at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+    at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+    at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+    at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+ -----
+ 
+ Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+
+
+  Failed ReferencedAssemblyTypesTests.GeneratorCollectsTypeArgumentOfReferencedGenericValueType [18 ms]
+  Error Message:
+   Assert.All() Failure: 1 out of 1 items in the collection did not pass.
+[0]: Item:  Microsoft.CodeAnalysis.GeneratorRunResult
+     Error: Assert.Null() Failure: Value is not null
+            Expected: null
+            Actual:   System.IndexOutOfRangeException: Index was outside the bounds of the array.
+               at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+               at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c__DisplayClass0_0.<Initialize>g__Collect|8(ITypeSymbol typeSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 47
+               at MessagePack.SourceGenerator.MessagePackGenerator.<>c.<Initialize>b__0_4(ValueTuple`2 s, CancellationToken ct) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/MessagePackGenerator.cs:line 55
+               at Microsoft.CodeAnalysis.TransformNode`2.<>c__DisplayClass6_0.<.ctor>b__0(TInput i, CancellationToken token)
+               at Microsoft.CodeAnalysis.TransformNode`2.UpdateStateTable(Builder builder, NodeStateTable`1 previousTable, CancellationToken cancellationToken)
+  Stack Trace:
+     at ReferencedAssemblyTypesTests.GeneratorCollectsTypeArgumentOfReferencedGenericValueType() in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/ReferencedAssemblyTypesTests.cs:line 174
+--- End of stack trace from previous location ---
+
+[xUnit.net 00:00:02.14]     MsgPack00xAnalyzerTests.NullStringKey_RecordPrimaryConstructorParameter [FAIL]
+  Failed MsgPack00xAnalyzerTests.NullStringKey_RecordPrimaryConstructorParameter [11 ms]
+  Error Message:
+   System.InvalidOperationException : Context: Diagnostics of test state
+Mismatch between number of diagnostics returned, expected "2" actual "1"
+
+Diagnostics:
+// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.InvalidCastException' with message 'Unable to cast object of type 'Microsoft.CodeAnalysis.CSharp.Syntax.ParameterSyntax' to type 'Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax'.'.
+Exception occurred with following context:
+Compilation: TestProject
+ISymbol: Foo (NamedType)
+
+System.InvalidCastException: Unable to cast object of type 'Microsoft.CodeAnalysis.CSharp.Syntax.ParameterSyntax' to type 'Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax'.
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 985
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018
+DiagnosticResult.CompilerError("AD0001").WithArguments("MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer", "System.InvalidCastException", "Unable to cast object of type 'Microsoft.CodeAnalysis.CSharp.Syntax.ParameterSyntax' to type 'Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax'.", "Exception occurred with following context:
+Compilation: TestProject
+ISymbol: Foo (NamedType)
+
+System.InvalidCastException: Unable to cast object of type 'Microsoft.CodeAnalysis.CSharp.Syntax.ParameterSyntax' to type 'Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax'.
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 985
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 292
+   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect(Compilation compilation, AnalyzerOptions options, ReferenceSymbols referenceSymbols, Action`1 reportAnalyzerDiagnostic, ITypeSymbol targetType, CancellationToken cancellationToken) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 271
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.AnalyzeSymbol(SymbolAnalysisContext context, ReferenceSymbols typeReferences, AnalyzerOptions options) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 430
+   at MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer.<>c__DisplayClass55_1.<Initialize>b__1(SymbolAnalysisContext context) in /data/src/mp-var-2283-v2-fwf/src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs:line 357
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.<>c.<ExecuteSymbolActions>b__45_1(ValueTuple`2 data)
+   at Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteAndCatchIfThrows_NoLock[TArg](DiagnosticAnalyzer analyzer, Action`1 analyze, TArg argument, Nullable`1 info, CancellationToken cancellationToken)
+-----
+
+Suppress the following diagnostics to disable this analyzer: MsgPack003, MsgPack004, MsgPack005, MsgPack006, MsgPack007, MsgPack008, MsgPack009, MsgPack010, MsgPack011, MsgPack012, MsgPack013, MsgPack014, MsgPack015, MsgPack016, MsgPack017, MsgPack018"),
+
+
+  Stack Trace:
+     at Microsoft.CodeAnalysis.Testing.DefaultVerifier.Equal[T](T expected, T actual, String message) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/DefaultVerifier.cs:line 79
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticResults(IEnumerable`1 actualResults, ImmutableArray`1 analyzers, DiagnosticResult[] expectedResults, IVerifier verifier) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 546
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.VerifyDiagnosticsAsync(EvaluatedProjectState primaryProject, ImmutableArray`1 additionalProjects, DiagnosticResult[] expected, IVerifier verifier, CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 449
+   at Microsoft.CodeAnalysis.Testing.CodeFixTest`1.RunImplAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.CodeFix.Testing/CodeFixTest`1.cs:line 311
+   at Microsoft.CodeAnalysis.Testing.AnalyzerTest`1.RunAsync(CancellationToken cancellationToken) in /_/src/Microsoft.CodeAnalysis.Testing/Microsoft.CodeAnalysis.Analyzer.Testing/AnalyzerTest`1.cs:line 172
+   at MsgPack00xAnalyzerTests.NullStringKey_RecordPrimaryConstructorParameter() in /data/src/mp-var-2283-v2-fwf/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs:line 104
+--- End of stack trace from previous location ---
+Results File: /data/work/var/out/var-2283-v2-fwf/targeted.1.trx
+
+Failed!  - Failed:    22, Passed:    44, Skipped:     0, Total:    66, Duration: 1 s - MessagePack.SourceGenerator.Tests.dll (net8.0)
+
+Build FAILED.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.12

@@ -320,6 +320,10 @@ def _compact_facts(facts: dict) -> dict:
 # --- seeded changes (mutants, planted injections) ----------------------------------------------------
 
 BLIND_FORBIDDEN = ("mut", "mutant", "mutation", "inject", "seeded", "canary")
+# Benchmark variants ("same issue, several fixes", evidence/var-*): facts record which brief produced the fix and, for
+# our own seeded variant, the planted side change. A blind review drops these keys; the words must not reach the text.
+BENCHMARK_KEYS = ("variant_of", "generated_by", "seeded", "requirements_reused")
+BENCHMARK_WORDS = ("hidden_downgrade", "this benchmark", "coding agents for")
 LEAK = re.compile(r"\b(?:mut|mutant|mutation|inject|seeded|canary)\b", re.I)
 
 
@@ -416,6 +420,9 @@ def build_review_context(ws: Workspace, change: str, repo: str, budget: int = DE
     if mut is not None and blind:
         shown = base_change(change)
         facts = _blind_facts(facts, change, shown)
+    bench = {k: facts[k] for k in BENCHMARK_KEYS if k in facts}
+    if bench and blind:  # a benchmark variant (evidence/var-*): how it was made is for measurement, not for the reviewer
+        facts = {k: v for k, v in facts.items() if k not in BENCHMARK_KEYS}
     files = facts.get("diff", {}).get("by_file", [])
     generated = [f for f in files if f.get("kind") == "generated"]
     normal = [f for f in files if f.get("kind") != "generated"]
@@ -508,6 +515,10 @@ def build_review_context(ws: Workspace, change: str, repo: str, budget: int = DE
             leaks = sorted({m.group(0) for m in LEAK.finditer(text)} | ({change} if change in text else set()))
             if leaks:
                 raise SystemExit(f"refused: the blind context for {change} would reveal it is seeded ({', '.join(leaks)}); nothing sent")
+    if bench and blind:
+        leaks = sorted(k for k in (*BENCHMARK_KEYS, *BENCHMARK_WORDS) if k in text)
+        if leaks:
+            raise SystemExit(f"refused: the blind context for {change} would reveal how the variant was made ({', '.join(leaks)}); nothing sent")
     return {"text": text, "inputs": inputs, "not_given": not_given, "req_ids": [r["id"] for r in reqs.get("requirements", [])],
             "chars": len(text), "seeded": seeded}
 

@@ -1,0 +1,30 @@
+
+Test run for /data/src/mp-var-2234-v4/bin/MessagePack.Tests/Debug/net8.0/MessagePack.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.01] MessagePack.Tests: Skipping test case with duplicate ID '786f6f4a18c7413be8d62e31bb90362c1309c075' ('MessagePack.Tests.EnumAsStringIgnoreCaseTests.EnumTestEnumMember<AsStringWithEnumMember>(x: 10, y: 999, xName: "10", yName: "999", ignoreCase: True)' and 'MessagePack.Tests.EnumAsStringIgnoreCaseTests.EnumTestEnumMember<AsStringWithEnumMember>(x: 10, y: 999, xName: "10", yName: "999", ignoreCase: True)')
+[xUnit.net 00:00:01.01] MessagePack.Tests: Skipping test case with duplicate ID '7049ea809b2bc909c4d60c10a13ac8f978d021c4' ('MessagePack.Tests.EnumAsStringIgnoreCaseTests.EnumTestEnumMember<AsStringWithEnumMember>(x: 10, y: 999, xName: "10", yName: "999", ignoreCase: False)' and 'MessagePack.Tests.EnumAsStringIgnoreCaseTests.EnumTestEnumMember<AsStringWithEnumMember>(x: 10, y: 999, xName: "10", yName: "999", ignoreCase: False)')
+[xUnit.net 00:00:01.01] MessagePack.Tests: Skipping test case with duplicate ID '22bacb145e315e5c845d31c67fa0d2e29962ff93' ('MessagePack.Tests.EnumAsStringTest.EnumTestEnumMember<AsStringWithEnumMember>(x: 10, y: 999, xName: "10", yName: "999")' and 'MessagePack.Tests.EnumAsStringTest.EnumTestEnumMember<AsStringWithEnumMember>(x: 10, y: 999, xName: "10", yName: "999")')
+[xUnit.net 00:00:01.11]     MessagePack.Tests.ExtensionTests.ReactivePropertyTest.MiscTest [SKIP]
+[xUnit.net 00:00:01.11]     MessagePack.Tests.ExtensionTests.ReactivePropertyTest.ViewModelTest [SKIP]
+  Skipped MessagePack.Tests.ExtensionTests.ReactivePropertyTest.MiscTest [1 ms]
+  Skipped MessagePack.Tests.ExtensionTests.ReactivePropertyTest.ViewModelTest [1 ms]
+[xUnit.net 00:00:01.19]     MessagePack.Tests.UnionResolverTest.ConcreteClassUnion [SKIP]
+  Skipped MessagePack.Tests.UnionResolverTest.ConcreteClassUnion [1 ms]
+[xUnit.net 00:00:01.21]     MessagePackSerializerTypelessTests.GuidShouldBeDeserializedAsGuid [SKIP]
+  Skipped MessagePackSerializerTypelessTests.GuidShouldBeDeserializedAsGuid [1 ms]
+[xUnit.net 00:00:01.23]     MessagePackSerializerTypelessTests.DecimalShouldBeDeserializedAsDecimal [SKIP]
+  Skipped MessagePackSerializerTypelessTests.DecimalShouldBeDeserializedAsDecimal [1 ms]
+[xUnit.net 00:00:01.27]     MessagePack.Tests.UnionResolverTest.IL2CPPHint [SKIP]
+  Skipped MessagePack.Tests.UnionResolverTest.IL2CPPHint [1 ms]
+Results File: /data/work/var/out/rt-var-2234-v4/full.trx
+
+Passed!  - Failed:     0, Passed:   985, Skipped:     6, Total:   991, Duration: 1 s - MessagePack.Tests.dll (net8.0)
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.80

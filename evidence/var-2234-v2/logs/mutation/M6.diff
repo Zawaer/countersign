@@ -1,0 +1,13 @@
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index 50ae42db..2f6a6225 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -1062,7 +1062,7 @@ public class TypeCollector
+ 
+                     var messagePackFormatter = item.GetAttributes().FirstOrDefault(x => x.AttributeClass.ApproximatelyEqual(this.typeReferences.FormatterAttribute))?.ConstructorArguments[0];
+ 
+-                    if (messagePackFormatter == null && collectMemberTypes)
++                    if (!(messagePackFormatter == null && collectMemberTypes))
+                     {
+                         // recursive collect
+                         this.CollectCore(item.Type, item);

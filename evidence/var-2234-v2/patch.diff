@@ -1,0 +1,1055 @@
+From 6a3d2cb02e208e17287142c06a064ffcaa0ff615 Mon Sep 17 00:00:00 2001
+From: Zawaer <79928133+Zawaer@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 09:41:46 +0000
+Subject: [PATCH] Keep analyzing SuppressSourceGeneration types; only skip
+ source generation
+
+Types attributed with [MessagePackObject(SuppressSourceGeneration = true)]
+must still be validated by the MsgPack00x analyzer (#2234). Returning early
+from TypeCollector.GetObjectInfo for such types (as done in 3.1.1 to stop
+collecting their member types) silences every member diagnostic, because the
+analyzer and the generator share that code path.
+
+Instead, the type's members are always validated, and suppression only affects
+what the generator collects:
+- member types of a suppressed type are no longer recursively collected when
+  generating source, so no formatters (e.g. an empty union formatter for a
+  non-[Union] interface member) are emitted just because a suppressed type
+  references them;
+- a closed generic type whose definition is suppressed is no longer registered
+  in the generated resolver, which referenced a formatter that was never
+  generated (CS0426).
+
+Also stop the analyzer from crashing (AD0001) on duplicate keys and on mixed
+int/string keys: the colliding member is reported with MsgPack005 and skipped
+instead of being added to the member map.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ .../CodeAnalysis/TypeCollector.cs             |  88 +++--
+ .../GenerationTests.cs                        |  97 ++++++
+ .../MsgPack00xAnalyzerTests.cs                | 319 ++++++++++++++++++
+ ...edMessagePackResolver.HolderFormatter.g.cs |  58 ++++
+ ...sagePack.GeneratedMessagePackResolver.g.cs |  63 ++++
+ ...neratedMessagePackResolver.BFormatter.g.cs |  56 +++
+ ...sagePack.GeneratedMessagePackResolver.g.cs |  63 ++++
+ ...neratedMessagePackResolver.BFormatter.g.cs |  62 ++++
+ ...sagePack.GeneratedMessagePackResolver.g.cs |  63 ++++
+ 9 files changed, 841 insertions(+), 28 deletions(-)
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/Formatters.MessagePack.GeneratedMessagePackResolver.HolderFormatter.g.cs
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/MessagePack.GeneratedMessagePackResolver.g.cs
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/MessagePack.GeneratedMessagePackResolver.g.cs
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs
+ create mode 100644 tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/MessagePack.GeneratedMessagePackResolver.g.cs
+
+diff --git a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+index e121773d..50ae42db 100644
+--- a/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
++++ b/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs
+@@ -637,6 +637,13 @@ public class TypeCollector
+             }
+         }
+ 
++        // A closed generic type whose definition opted out of source generation has no source generated formatter,
++        // so we must not register one with the generated resolver (it would reference a formatter type that does not exist).
++        if (this.options.IsGeneratingSource && !type.IsDefinition && this.IsSourceGenerationSuppressed(type.OriginalDefinition))
++        {
++            return;
++        }
++
+         // Generic types
+         if (type.IsDefinition)
+         {
+@@ -682,6 +689,12 @@ public class TypeCollector
+         }
+     }
+ 
++    private bool IsSourceGenerationSuppressed(INamedTypeSymbol type)
++    {
++        AttributeData? contractAttr = type.GetAttributes().FirstOrDefault(x => x.AttributeClass.ApproximatelyEqual(this.typeReferences.MessagePackObjectAttribute));
++        return contractAttr?.NamedArguments.FirstOrDefault(kvp => kvp.Key == Constants.SuppressSourceGenerationPropertyName).Value.Value is true;
++    }
++
+     private void CheckValidMessagePackFormatterAttribute(AttributeData formatterAttribute)
+     {
+         if (formatterAttribute.ConstructorArguments[0].Value is ITypeSymbol formatterType)
+@@ -710,6 +723,11 @@ public class TypeCollector
+         bool? suppressSourceGeneration = (bool?)contractAttr?.NamedArguments.FirstOrDefault(kvp => kvp.Key == Constants.SuppressSourceGenerationPropertyName).Value.Value;
+         bool? allowPrivateAttribute = (bool?)contractAttr?.NamedArguments.FirstOrDefault(kvp => kvp.Key == Constants.AllowPrivatePropertyName).Value.Value;
+ 
++        // When the type opted out of source generation, we still validate its members so the analyzer can report diagnostics (e.g. a missing [Key]),
++        // but when generating source we must not collect the types of its members: no formatter will be generated for this type,
++        // so any formatter generated (or registered with the resolver) only because this type references it is at best unused and at worst invalid.
++        bool collectMemberTypes = suppressSourceGeneration is not true || !this.options.IsGeneratingSource;
++
+         if (contractAttr is null)
+         {
+             ////this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.TypeMustBeMessagePackObject, ((BaseTypeDeclarationSyntax)type.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation(), type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)));
+@@ -836,7 +854,7 @@ public class TypeCollector
+                                 stringMembers.Add(member.StringKey, (member, item.Type));
+                             }
+ 
+-                            if (specialFormatter is null)
++                            if (specialFormatter is null && collectMemberTypes)
+                             {
+                                 this.CollectCore(item.Type, item); // recursive collect
+                             }
+@@ -867,7 +885,7 @@ public class TypeCollector
+                                 stringMembers.Add(member.StringKey, (member, item.Type));
+                             }
+ 
+-                            if (specialFormatter is null)
++                            if (specialFormatter is null && collectMemberTypes)
+                             {
+                                 this.CollectCore(item.Type, item); // recursive collect
+                             }
+@@ -1008,36 +1026,43 @@ public class TypeCollector
+                         }
+                     }
+ 
+-                    if (isIntKey)
++                    // A member whose key is of the wrong kind (or null) has already been reported above and cannot be added to the member map.
++                    if (isIntKey && intKey is not null)
+                     {
+                         if (intMembers.ContainsKey(intKey!.Value))
+                         {
++                            // Report the collision and keep the first member, rather than throwing (which would crash the analyzer with AD0001).
+                             this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));
+                         }
+-
+-                        var member = new MemberSerializationInfo(true, isWritable, isReadable, isInitOnly, item.IsRequired, intKey!.Value, item.Name, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                        else
+                         {
+-                            DeclaringType = GetDeclaringTypeIfColliding(item),
+-                        };
+-                        intMembers.Add(member.IntKey, (member, item.Type));
++                            var member = new MemberSerializationInfo(true, isWritable, isReadable, isInitOnly, item.IsRequired, intKey!.Value, item.Name, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                            {
++                                DeclaringType = GetDeclaringTypeIfColliding(item),
++                            };
++                            intMembers.Add(member.IntKey, (member, item.Type));
++                        }
+                     }
+-                    else if (stringKey is not null)
++                    else if (!isIntKey && stringKey is not null)
+                     {
+                         if (stringMembers.ContainsKey(stringKey!))
+                         {
++                            // Report the collision and keep the first member, rather than throwing (which would crash the analyzer with AD0001).
+                             this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));
+                         }
+-
+-                        var member = new MemberSerializationInfo(true, isWritable, isReadable, isInitOnly, item.IsRequired, hiddenIntKey++, stringKey!, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                        else
+                         {
+-                            DeclaringType = GetDeclaringTypeIfColliding(item),
+-                        };
+-                        stringMembers.Add(member.StringKey, (member, item.Type));
++                            var member = new MemberSerializationInfo(true, isWritable, isReadable, isInitOnly, item.IsRequired, hiddenIntKey++, stringKey!, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                            {
++                                DeclaringType = GetDeclaringTypeIfColliding(item),
++                            };
++                            stringMembers.Add(member.StringKey, (member, item.Type));
++                        }
+                     }
+ 
+                     var messagePackFormatter = item.GetAttributes().FirstOrDefault(x => x.AttributeClass.ApproximatelyEqual(this.typeReferences.FormatterAttribute))?.ConstructorArguments[0];
+ 
+-                    if (messagePackFormatter == null)
++                    if (messagePackFormatter == null && collectMemberTypes)
+                     {
+                         // recursive collect
+                         this.CollectCore(item.Type, item);
+@@ -1141,36 +1166,43 @@ public class TypeCollector
+                         }
+                     }
+ 
+-                    if (isIntKey)
++                    // A member whose key is of the wrong kind (or null) has already been reported above and cannot be added to the member map.
++                    if (isIntKey && intKey is not null)
+                     {
+                         if (intMembers.ContainsKey(intKey!.Value))
+                         {
++                            // Report the collision and keep the first member, rather than throwing (which would crash the analyzer with AD0001).
+                             this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));
+                         }
+-
+-                        var member = new MemberSerializationInfo(true, IsWritable: !item.IsReadOnly, IsReadable: true, IsInitOnly: false, item.IsRequired, intKey!.Value, item.Name, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                        else
+                         {
+-                            DeclaringType = GetDeclaringTypeIfColliding(item),
+-                        };
+-                        intMembers.Add(member.IntKey, (member, item.Type));
++                            var member = new MemberSerializationInfo(true, IsWritable: !item.IsReadOnly, IsReadable: true, IsInitOnly: false, item.IsRequired, intKey!.Value, item.Name, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                            {
++                                DeclaringType = GetDeclaringTypeIfColliding(item),
++                            };
++                            intMembers.Add(member.IntKey, (member, item.Type));
++                        }
+                     }
+-                    else
++                    else if (!isIntKey && stringKey is not null)
+                     {
+                         if (stringMembers.ContainsKey(stringKey!))
+                         {
++                            // Report the collision and keep the first member, rather than throwing (which would crash the analyzer with AD0001).
+                             this.reportDiagnostic?.Invoke(Diagnostic.Create(MsgPack00xMessagePackAnalyzer.KeysMustBeUnique, item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()));
+                         }
+-
+-                        var member = new MemberSerializationInfo(true, IsWritable: !item.IsReadOnly, IsReadable: true, IsInitOnly: false, item.IsRequired, hiddenIntKey++, stringKey!, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                        else
+                         {
+-                            DeclaringType = GetDeclaringTypeIfColliding(item),
+-                        };
+-                        stringMembers.Add(member.StringKey, (member, item.Type));
++                            var member = new MemberSerializationInfo(true, IsWritable: !item.IsReadOnly, IsReadable: true, IsInitOnly: false, item.IsRequired, hiddenIntKey++, stringKey!, item.Name, item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), item.Type.ToDisplayString(BinaryWriteFormat), specialFormatter)
++                            {
++                                DeclaringType = GetDeclaringTypeIfColliding(item),
++                            };
++                            stringMembers.Add(member.StringKey, (member, item.Type));
++                        }
+                     }
+ 
+                     var messagePackFormatter = item.GetAttributes().FirstOrDefault(x => x.AttributeClass.ApproximatelyEqual(this.typeReferences.FormatterAttribute))?.ConstructorArguments[0];
+ 
+-                    if (messagePackFormatter == null)
++                    if (messagePackFormatter == null && collectMemberTypes)
+                     {
+                         // recursive collect
+                         this.CollectCore(item.Type, item);
+diff --git a/tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs b/tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs
+index e390a39e..67d01cd5 100644
+--- a/tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs
++++ b/tests/MessagePack.SourceGenerator.Tests/GenerationTests.cs
+@@ -1144,4 +1144,101 @@ public class MyGenericType<T>
+ 
+         await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);
+     }
++
++    /// <summary>
++    /// A type that opts out of source generation must not cause formatters to be generated for the types of its members,
++    /// since it gets no source generated formatter that would use them.
++    /// </summary>
++    [Fact]
++    public async Task SuppressSourceGeneration_MemberTypesAreNotCollected()
++    {
++        string testSource = /* lang=c#-test */ """
++            using System.Collections.Generic;
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public Dictionary<string, IItem> Items { get; set; }
++
++                [Key(1)]
++                public MyEnum Enum { get; set; }
++
++                [Key(2)]
++                public IItem Item;
++            }
++
++            public interface IItem
++            {
++                object Value { get; }
++            }
++
++            public enum MyEnum { A, B }
++            """;
++
++        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);
++    }
++
++    /// <summary>
++    /// Types that are themselves attributed still get a formatter, even when only a suppressed type references them.
++    /// </summary>
++    [Theory, PairwiseData]
++    public async Task SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(bool usesMapMode)
++    {
++        string testSource = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public B Value { get; set; }
++
++                [Key(1)]
++                public MyEnum Enum;
++            }
++
++            [MessagePackObject]
++            public class B
++            {
++                [Key(0)]
++                public int Value { get; set; }
++            }
++
++            public enum MyEnum { A, B }
++            """;
++
++        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource, options: new() { Generator = new() { Formatters = new() { UsesMapMode = usesMapMode } } }, testMethod: $"{nameof(SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated)}({usesMapMode})");
++    }
++
++    /// <summary>
++    /// A closed generic type whose definition opted out of source generation must not be registered with the generated resolver,
++    /// since its formatter is never generated.
++    /// </summary>
++    [Fact]
++    public async Task SuppressSourceGeneration_ClosedGenericIsNotRegistered()
++    {
++        string testSource = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject]
++            public class Holder
++            {
++                [Key(0)]
++                public Wrapper<MyEnum> Value { get; set; }
++            }
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class Wrapper<T>
++            {
++                [Key(0)]
++                public T Value { get; set; }
++            }
++
++            public enum MyEnum { A, B }
++            """;
++
++        await VerifyCS.Test.RunDefaultAsync(this.testOutputHelper, testSource);
++    }
+ }
+diff --git a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+index d39d74ef..74f52448 100644
+--- a/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
++++ b/tests/MessagePack.SourceGenerator.Tests/MsgPack00xAnalyzerTests.cs
+@@ -1087,4 +1087,323 @@ public class Bar : Foo
+ 
+         await VerifyCS.VerifyAnalyzerAsync(test);
+     }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_MissingKeyOnProperty()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public int Prop1 { get; set; }
++
++                public int {|MsgPack004:Prop2|} { get; set; }
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_MissingKeyOnField()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public int Field1;
++
++                public int {|MsgPack004:Field2|};
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_MissingKeyInBaseType()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            public class Base
++            {
++                public int BaseProp { get; set; }
++            }
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class Derived : {|MsgPack004:Base|}
++            {
++                [Key(0)]
++                public int Prop1 { get; set; }
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_KeyValidation()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public int Prop1 { get; set; }
++
++                {|MsgPack005:[Key(0)]
++                public int Prop2 { get; set; }|}
++
++                {|MsgPack005:[Key("x")]
++                public int Prop3 { get; set; }|}
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_AllowPrivateRequired()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [{|MsgPack015:MessagePackObject(SuppressSourceGeneration = true)|}]
++            internal class A
++            {
++                [Key(0)]
++                public int Prop1 { get; set; }
++            }
++            """;
++
++        await VerifyCS.VerifyAnalyzerAsync(test);
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_MemberTypeNotSerializable()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            public class NotAttributed
++            {
++            }
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public NotAttributed {|MsgPack003:Prop1|} { get; set; }
++            }
++            """;
++
++        await VerifyCS.VerifyAnalyzerAsync(test);
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_ValidTypeHasNoDiagnostics()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public int Prop1 { get; set; }
++
++                [Key(1)]
++                public string Field1;
++
++                [IgnoreMember]
++                public int Ignored { get; set; }
++            }
++            """;
++
++        await VerifyCS.VerifyAnalyzerAsync(test);
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_KeyValidationOnFields()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class A
++            {
++                [Key(0)]
++                public int Field1;
++
++                [Key(0)]
++                public int {|MsgPack005:Field2|};
++
++                [Key("x")]
++                public int {|MsgPack005:Field3|};
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_GenericTypeWithoutIssues()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(SuppressSourceGeneration = true)]
++            public class Wrapper<T>
++            {
++                [Key(0)]
++                public T Value { get; set; }
++            }
++
++            [MessagePackObject]
++            public class Holder
++            {
++                [Key(0)]
++                public Wrapper<int> Value { get; set; }
++            }
++            """;
++
++        await VerifyCS.VerifyAnalyzerAsync(test);
++    }
++
++    [Fact]
++    public async Task SuppressSourceGeneration_MapMode()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject(true, SuppressSourceGeneration = true)]
++            public class Base
++            {
++                public string Prop { get; set; }
++            }
++
++            [MessagePackObject(true, SuppressSourceGeneration = true)]
++            public class Derived : Base
++            {
++                public new string {|MsgPack018:Prop|} { get; set; }
++            }
++            """;
++
++        await VerifyCS.VerifyAnalyzerAsync(test);
++    }
++
++    [Fact]
++    public async Task DuplicateKeysAreReportedWithoutCrashing()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject]
++            public class IntKeys
++            {
++                [Key(0)]
++                public int Prop1 { get; set; }
++
++                {|MsgPack005:[Key(0)]
++                public int Prop2 { get; set; }|}
++
++                [Key(1)]
++                public int Field1;
++
++                [Key(1)]
++                public int {|MsgPack005:Field2|};
++            }
++
++            [MessagePackObject]
++            public class StringKeys
++            {
++                [Key("a")]
++                public int Prop1 { get; set; }
++
++                {|MsgPack005:[Key("a")]
++                public int Prop2 { get; set; }|}
++
++                [Key("b")]
++                public int Field1;
++
++                [Key("b")]
++                public int {|MsgPack005:Field2|};
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
++
++    [Fact]
++    public async Task MixedKeysAreReportedWithoutCrashing()
++    {
++        string test = /* lang=c#-test */ """
++            using MessagePack;
++
++            [MessagePackObject]
++            public class IntFirst
++            {
++                [Key(0)]
++                public int Prop1 { get; set; }
++
++                {|MsgPack005:[Key("a")]
++                public int Prop2 { get; set; }|}
++
++                [Key("b")]
++                public int {|MsgPack005:Field1|};
++            }
++
++            [MessagePackObject]
++            public class StringFirst
++            {
++                [Key("a")]
++                public int Prop1 { get; set; }
++
++                {|MsgPack005:[Key(1)]
++                public int Prop2 { get; set; }|}
++
++                [Key(2)]
++                public int {|MsgPack005:Field1|};
++            }
++            """;
++
++        await new VerifyCS.Test
++        {
++            TestCode = test,
++            MarkupOptions = MarkupOptions.UseFirstDescriptor,
++        }.RunAsync();
++    }
+ }
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/Formatters.MessagePack.GeneratedMessagePackResolver.HolderFormatter.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/Formatters.MessagePack.GeneratedMessagePackResolver.HolderFormatter.g.cs
+new file mode 100644
+index 00000000..3a182e4b
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/Formatters.MessagePack.GeneratedMessagePackResolver.HolderFormatter.g.cs
+@@ -0,0 +1,58 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++#pragma warning disable CS8669 // We may leak nullable annotations into generated code.
++
++using MsgPack = global::MessagePack;
++
++namespace MessagePack {
++partial class GeneratedMessagePackResolver {
++
++	internal sealed class HolderFormatter : MsgPack::Formatters.IMessagePackFormatter<global::Holder>
++	{
++
++		public void Serialize(ref MsgPack::MessagePackWriter writer, global::Holder value, MsgPack::MessagePackSerializerOptions options)
++		{
++			if (value == null)
++			{
++				writer.WriteNil();
++				return;
++			}
++
++			MsgPack::IFormatterResolver formatterResolver = options.Resolver;
++			writer.WriteArrayHeader(1);
++			MsgPack::FormatterResolverExtensions.GetFormatterWithVerify<global::Wrapper<global::MyEnum>>(formatterResolver).Serialize(ref writer, value.Value, options);
++		}
++
++		public global::Holder Deserialize(ref MsgPack::MessagePackReader reader, MsgPack::MessagePackSerializerOptions options)
++		{
++			if (reader.TryReadNil())
++			{
++				return null;
++			}
++
++			options.Security.DepthStep(ref reader);
++			MsgPack::IFormatterResolver formatterResolver = options.Resolver;
++			var length = reader.ReadArrayHeader();
++			var ____result = new global::Holder();
++
++			for (int i = 0; i < length; i++)
++			{
++				switch (i)
++				{
++					case 0:
++						____result.Value = MsgPack::FormatterResolverExtensions.GetFormatterWithVerify<global::Wrapper<global::MyEnum>>(formatterResolver).Deserialize(ref reader, options);
++						break;
++					default:
++						reader.Skip();
++						break;
++				}
++			}
++
++			reader.Depth--;
++			return ____result;
++		}
++	}
++}
++}
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/MessagePack.GeneratedMessagePackResolver.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/MessagePack.GeneratedMessagePackResolver.g.cs
+new file mode 100644
+index 00000000..b8cccb87
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ClosedGenericIsNotRegistered/MessagePack.GeneratedMessagePackResolver.g.cs
+@@ -0,0 +1,63 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++using MsgPack = global::MessagePack;
++
++[assembly: MsgPack::Internal.GeneratedAssemblyMessagePackResolverAttribute(typeof(MessagePack.GeneratedMessagePackResolver), 3, 0)]
++
++namespace MessagePack {
++
++/// <summary>A MessagePack resolver that uses generated formatters for types in this assembly.</summary>
++partial class GeneratedMessagePackResolver : MsgPack::IFormatterResolver
++{
++	/// <summary>An instance of this resolver that only returns formatters specifically generated for types in this assembly.</summary>
++	public static readonly MsgPack::IFormatterResolver Instance = new GeneratedMessagePackResolver();
++
++	private GeneratedMessagePackResolver()
++	{
++	}
++
++	public MsgPack::Formatters.IMessagePackFormatter<T> GetFormatter<T>()
++	{
++		return FormatterCache<T>.Formatter;
++	}
++
++	private static class FormatterCache<T>
++	{
++		internal static readonly MsgPack::Formatters.IMessagePackFormatter<T> Formatter;
++
++		static FormatterCache()
++		{
++			var f = GeneratedMessagePackResolverGetFormatterHelper.GetFormatter(typeof(T));
++			if (f != null)
++			{
++				Formatter = (MsgPack::Formatters.IMessagePackFormatter<T>)f;
++			}
++		}
++	}
++
++	private static class GeneratedMessagePackResolverGetFormatterHelper
++	{
++		private static readonly global::System.Collections.Generic.Dictionary<global::System.Type, int> closedTypeLookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(1)
++		{
++			{ typeof(global::Holder), 0 },
++		};
++
++		internal static object GetFormatter(global::System.Type t)
++		{
++			if (closedTypeLookup.TryGetValue(t, out int closedKey))
++			{
++				switch (closedKey)
++				{
++					case 0: return new global::MessagePack.GeneratedMessagePackResolver.HolderFormatter();
++					default: return null; // unreachable
++				};
++			}
++
++			return null;
++		}
++	}
++}
++
++}
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs
+new file mode 100644
+index 00000000..69277fcf
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs
+@@ -0,0 +1,56 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++#pragma warning disable CS8669 // We may leak nullable annotations into generated code.
++
++using MsgPack = global::MessagePack;
++
++namespace MessagePack {
++partial class GeneratedMessagePackResolver {
++
++	internal sealed class BFormatter : MsgPack::Formatters.IMessagePackFormatter<global::B>
++	{
++
++		public void Serialize(ref MsgPack::MessagePackWriter writer, global::B value, MsgPack::MessagePackSerializerOptions options)
++		{
++			if (value == null)
++			{
++				writer.WriteNil();
++				return;
++			}
++
++			writer.WriteArrayHeader(1);
++			writer.Write(value.Value);
++		}
++
++		public global::B Deserialize(ref MsgPack::MessagePackReader reader, MsgPack::MessagePackSerializerOptions options)
++		{
++			if (reader.TryReadNil())
++			{
++				return null;
++			}
++
++			options.Security.DepthStep(ref reader);
++			var length = reader.ReadArrayHeader();
++			var ____result = new global::B();
++
++			for (int i = 0; i < length; i++)
++			{
++				switch (i)
++				{
++					case 0:
++						____result.Value = reader.ReadInt32();
++						break;
++					default:
++						reader.Skip();
++						break;
++				}
++			}
++
++			reader.Depth--;
++			return ____result;
++		}
++	}
++}
++}
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/MessagePack.GeneratedMessagePackResolver.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/MessagePack.GeneratedMessagePackResolver.g.cs
+new file mode 100644
+index 00000000..088e6bfa
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(False)/MessagePack.GeneratedMessagePackResolver.g.cs
+@@ -0,0 +1,63 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++using MsgPack = global::MessagePack;
++
++[assembly: MsgPack::Internal.GeneratedAssemblyMessagePackResolverAttribute(typeof(MessagePack.GeneratedMessagePackResolver), 3, 0)]
++
++namespace MessagePack {
++
++/// <summary>A MessagePack resolver that uses generated formatters for types in this assembly.</summary>
++partial class GeneratedMessagePackResolver : MsgPack::IFormatterResolver
++{
++	/// <summary>An instance of this resolver that only returns formatters specifically generated for types in this assembly.</summary>
++	public static readonly MsgPack::IFormatterResolver Instance = new GeneratedMessagePackResolver();
++
++	private GeneratedMessagePackResolver()
++	{
++	}
++
++	public MsgPack::Formatters.IMessagePackFormatter<T> GetFormatter<T>()
++	{
++		return FormatterCache<T>.Formatter;
++	}
++
++	private static class FormatterCache<T>
++	{
++		internal static readonly MsgPack::Formatters.IMessagePackFormatter<T> Formatter;
++
++		static FormatterCache()
++		{
++			var f = GeneratedMessagePackResolverGetFormatterHelper.GetFormatter(typeof(T));
++			if (f != null)
++			{
++				Formatter = (MsgPack::Formatters.IMessagePackFormatter<T>)f;
++			}
++		}
++	}
++
++	private static class GeneratedMessagePackResolverGetFormatterHelper
++	{
++		private static readonly global::System.Collections.Generic.Dictionary<global::System.Type, int> closedTypeLookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(1)
++		{
++			{ typeof(global::B), 0 },
++		};
++
++		internal static object GetFormatter(global::System.Type t)
++		{
++			if (closedTypeLookup.TryGetValue(t, out int closedKey))
++			{
++				switch (closedKey)
++				{
++					case 0: return new global::MessagePack.GeneratedMessagePackResolver.BFormatter();
++					default: return null; // unreachable
++				};
++			}
++
++			return null;
++		}
++	}
++}
++
++}
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs
+new file mode 100644
+index 00000000..c358b1b5
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/Formatters.MessagePack.GeneratedMessagePackResolver.BFormatter.g.cs
+@@ -0,0 +1,62 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++using MsgPack = global::MessagePack;
++
++namespace MessagePack {
++partial class GeneratedMessagePackResolver {
++	internal sealed class BFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::B>
++	{
++		// Value
++		private static global::System.ReadOnlySpan<byte> GetSpan_Value() => new byte[1 + 5] { 165, 86, 97, 108, 117, 101 };
++
++		public void Serialize(ref global::MessagePack.MessagePackWriter writer, global::B value, global::MessagePack.MessagePackSerializerOptions options)
++		{
++			if (value is null)
++			{
++				writer.WriteNil();
++				return;
++			}
++
++			writer.WriteMapHeader(1);
++			writer.WriteRaw(GetSpan_Value());
++			writer.Write(value.Value);
++		}
++
++		public global::B Deserialize(ref global::MessagePack.MessagePackReader reader, global::MessagePack.MessagePackSerializerOptions options)
++		{
++			if (reader.TryReadNil())
++			{
++				return null;
++			}
++
++			options.Security.DepthStep(ref reader);
++			var length = reader.ReadMapHeader();
++			var ____result = new global::B();
++
++			for (int i = 0; i < length; i++)
++			{
++				var stringKey = global::MessagePack.Internal.CodeGenHelpers.ReadStringSpan(ref reader);
++				switch (stringKey.Length)
++				{
++					default:
++					FAIL:
++					  reader.Skip();
++					  continue;
++					case 5:
++					    if (global::MessagePack.Internal.AutomataKeyGen.GetKey(ref stringKey) != 435761733974UL) { goto FAIL; }
++
++					    ____result.Value = reader.ReadInt32();
++					    continue;
++
++				}
++			}
++
++			reader.Depth--;
++			return ____result;
++		}
++	}
++
++}
++}
+diff --git a/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/MessagePack.GeneratedMessagePackResolver.g.cs b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/MessagePack.GeneratedMessagePackResolver.g.cs
+new file mode 100644
+index 00000000..088e6bfa
+--- /dev/null
++++ b/tests/MessagePack.SourceGenerator.Tests/Resources/SuppressSourceGeneration_ReferencedMessagePackObjectStillGenerated(True)/MessagePack.GeneratedMessagePackResolver.g.cs
+@@ -0,0 +1,63 @@
++﻿// <auto-generated />
++
++#pragma warning disable 618, 612, 414, 168, CS1591, SA1129, SA1309, SA1312, SA1403, SA1649
++
++using MsgPack = global::MessagePack;
++
++[assembly: MsgPack::Internal.GeneratedAssemblyMessagePackResolverAttribute(typeof(MessagePack.GeneratedMessagePackResolver), 3, 0)]
++
++namespace MessagePack {
++
++/// <summary>A MessagePack resolver that uses generated formatters for types in this assembly.</summary>
++partial class GeneratedMessagePackResolver : MsgPack::IFormatterResolver
++{
++	/// <summary>An instance of this resolver that only returns formatters specifically generated for types in this assembly.</summary>
++	public static readonly MsgPack::IFormatterResolver Instance = new GeneratedMessagePackResolver();
++
++	private GeneratedMessagePackResolver()
++	{
++	}
++
++	public MsgPack::Formatters.IMessagePackFormatter<T> GetFormatter<T>()
++	{
++		return FormatterCache<T>.Formatter;
++	}
++
++	private static class FormatterCache<T>
++	{
++		internal static readonly MsgPack::Formatters.IMessagePackFormatter<T> Formatter;
++
++		static FormatterCache()
++		{
++			var f = GeneratedMessagePackResolverGetFormatterHelper.GetFormatter(typeof(T));
++			if (f != null)
++			{
++				Formatter = (MsgPack::Formatters.IMessagePackFormatter<T>)f;
++			}
++		}
++	}
++
++	private static class GeneratedMessagePackResolverGetFormatterHelper
++	{
++		private static readonly global::System.Collections.Generic.Dictionary<global::System.Type, int> closedTypeLookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(1)
++		{
++			{ typeof(global::B), 0 },
++		};
++
++		internal static object GetFormatter(global::System.Type t)
++		{
++			if (closedTypeLookup.TryGetValue(t, out int closedKey))
++			{
++				switch (closedKey)
++				{
++					case 0: return new global::MessagePack.GeneratedMessagePackResolver.BFormatter();
++					default: return null; // unreachable
++				};
++			}
++
++			return null;
++		}
++	}
++}
++
++}
