@@ -53,4 +53,4 @@ More refusals for fewer escapes (a refusal costs minutes, an escape an incident)
 
 - **What would make us distrust our output?** Citations that stop verifying, reviewers that always agree, missed canaries, any escape in an AI-cleared area. Each is measured; the last two drop trust automatically.
 - **Who owns the decision?** The owner of the most sensitive area touched, named in the signed mandate. Only a signature merges.
-- **How does it scale?** Humans see only what can't be proven; areas earn clearance from their record. Plain files plus CI jobs. Confidential code goes only to self-hostable reviewers (Nemotron).
+- **How does it scale?** Not by saving reading time on small changes. Machine cost is bounded (38k to 68k tokens, about 2 CI minutes per review, any size); proven changes cost no human time; every decision has a name ([SCALING.md](SCALING.md)).
