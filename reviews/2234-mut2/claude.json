@@ -1,0 +1,297 @@
+{
+  "reviewer": "claude",
+  "model": "claude-opus-5-5",
+  "vendor": "Anthropic",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T05:43:43+02:00",
+  "inputs": [
+    "requirements: requirements/2234.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "facts: evidence/2234-mut2/facts.json",
+    "diff 32258fdb..9007cee1 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1148 (tree 08a8c06f)",
+    "file contents: 4 blocks",
+    "context: 140823 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "Claude Code subagent (fresh context, no repository access beyond the two files below)",
+    "context_built_with": "countersign.llm.build_review_context(ws, \"2234-mut2\", \"/data/src/mp\") [\"text\"], written to /tmp",
+    "context_sha256": "d30cb986651b32f7d4277f8c689d1eeca40ac052abf6d3c8bd5507f7a3bd2a3d",
+    "context_chars": 140823,
+    "brief": "prompts/review-v1.md",
+    "blindness": "the reviewing agent read only the brief and the blind context (no mutation record, mutants.json, evidence/<id>/README, Nemotron's review or anything naming the seeded line); the agent that stamped this file had seen them and did not edit the review",
+    "seeded": {
+      "change": "2234-mut2",
+      "shown_as": "2234",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1148,
+      "mutated_tree": "08a8c06f23d43c04834bb95c962eb8daa0ee61a9",
+      "seeding_note_removed_from_line": true
+    }
+  },
+  "summary": "The change makes TypeCollector tolerate invalid key contracts: it guards the intMembers/stringMembers Add calls with ContainsKey and, in the property loop only, skips a member after reporting DoNotMixStringAndIntKeys; it also adds README text, analyzer tests and execution tests. The contract diagnostics for SuppressSourceGeneration types (F1) and the suppression of generation-only diagnostics (F2) were already produced on base (their tests pass in the source-reverted run), so the real fix is the crash hardening (N1), and that is incomplete: the field loop got a blank line where the property loop got `continue;`, so a mixed-key-kind field still dereferences a null key and crashes the analyzer. Not ready to merge until the field path matches the property path and has a test.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2234-F1",
+      "verdict": "met",
+      "confidence_basis": "The F1 tests pass at head, but they also passed with the source reverted, so the requirement was already met on base and this change adds no F1 behaviour. Duplicate and mixed keys are reported for property members (the *WithoutAnalyzerFailure tests pass at head).",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-F2",
+      "verdict": "met",
+      "confidence_basis": "The suppressed type returns from GetObjectInfo before the partial-type check, and the F2 test passes at head. It also passed on base, so this was already met before the change.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1383,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is true)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 989,
+          "rev": "head",
+          "quote": "if (suppressSourceGeneration is not true && isInitOnly)"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N1",
+      "verdict": "not_met",
+      "confidence_basis": "The property loop now skips a mixed-kind member (line 1008), but the field loop still falls through after reporting DoNotMixStringAndIntKeys (line 1147, blank line 1148). A field whose key kind differs from the first key reaches `intKey!.Value` on a null int key (line 1154) or `stringMembers.ContainsKey(stringKey!)` with a null string key (line 1170), and either one throws inside the analyzer. The full suite passes only because no test has mixed-kind fields.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members; the diagnostic is reported, so skip this member."
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1147,
+          "rev": "head",
+          "quote": "MsgPack00xMessagePackAnalyzer.DoNotMixStringAndIntKeys"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1154,
+          "rev": "head",
+          "quote": "if (intMembers.ContainsKey(intKey!.Value))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1170,
+          "rev": "head",
+          "quote": "if (stringMembers.ContainsKey(stringKey!))"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2234-N2",
+      "verdict": "met",
+      "confidence_basis": "4 of the 8 new analyzer tests fail with the source reverted (each fails on the AD0001 crash), and the full suite passes at head (175/175) with no regressions. The field-loop path in N1 is not covered by any test.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Field loop still crashes on mixed int/string keys (missing continue)",
+      "severity": "blocker",
+      "category": "correctness",
+      "claim": "In the field loop, the DoNotMixStringAndIntKeys branch now ends in a blank line (1148) instead of the `continue;` added to the property loop at 1008, so execution falls through. If the first key is an int and a later field has a string key, `isIntKey` is true and `intKey` is null, so `intKey!.Value` at 1154 throws InvalidOperationException. In the reverse case, the else branch at 1168 has no `stringKey is not null` guard, so `stringMembers.ContainsKey(stringKey!)` at 1170 throws ArgumentNullException. `searchFirst`/`isIntKey` carry over from the property loop, so an int-keyed property followed by a string-keyed field also crashes. The result is an AD0001 analyzer crash or a generator failure on an invalid contract, which REQ-2234-N1 forbids, and this library's analyzer runs on user code.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1008,
+          "rev": "head",
+          "quote": "continue; // The key kind does not match the other members"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1145,
+          "rev": "head",
+          "quote": "if ((isIntKey && intKey == null) || (!isIntKey && stringKey == null))"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1154,
+          "rev": "head",
+          "quote": "intKey!.Value"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1170,
+          "rev": "head",
+          "quote": "if (stringMembers.ContainsKey(stringKey!))"
+        }
+      ],
+      "suggested_fix": "Replace the blank line at 1148 with `continue;`, matching line 1008. Add analyzer tests with mixed key kinds on fields (int then string, string then int, and an int-keyed property followed by a string-keyed field)."
+    },
+    {
+      "id": "N2",
+      "title": "Crash tests cover only properties; the field path is untested",
+      "severity": "major",
+      "category": "tests",
+      "claim": "Every new *WithoutAnalyzerFailure test declares its members as properties (e.g. `public string Member2 { get; set; }`), so the separate field loop (lines 1124-1192), which has its own duplicate and mixed-key handling, is never exercised. That is how the defect in N1 gets through a full suite that passes.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+          "line": 135,
+          "rev": "head",
+          "quote": "public string Member2 { get; set; }|}"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1055,
+          "rev": "head",
+          "quote": "foreach (IFieldSymbol item in formattedType.GetAllMembers().OfType<IFieldSymbol>())"
+        }
+      ],
+      "suggested_fix": "Add field-based duplicate-key and mixed-key tests for both suppressed and generated types."
+    },
+    {
+      "id": "N3",
+      "title": "F1/F2 tests already pass on base; the change only fixes the crash",
+      "severity": "info",
+      "category": "tests",
+      "claim": "The three F1 tests and the F2 test pass with the source reverted, so they do not demonstrate this change. The only behaviour the change adds is not crashing on duplicate or mixed keys, which the commit message ('The analyzer does not work') and the README section do not make clear.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Whether diagnostics now match version 3.1.0 behaviour exactly, as REQ-2234-F1 says",
+      "reason": "I was not given 3.1.0 code or the upstream issue page, only the tests at head and base.",
+      "who_should_decide": "area owner (analyzer)",
+      "req": "REQ-2234-F1",
+      "blocking": false
+    },
+    {
+      "topic": "Accuracy of the README section (the MsgPack012 claim, and the doc links to analyzer pages)",
+      "reason": "I saw the README only as a diff, without the analyzer docs or the code paths behind MsgPack012.",
+      "who_should_decide": "docs owner",
+      "blocking": false
+    },
+    {
+      "topic": "Generator output for types with duplicate keys now that the first duplicate silently wins",
+      "reason": "Generated code and the generator-side behaviour for non-suppressed invalid types were not provided; the KeysMustBeUnique error should block the build anyway.",
+      "who_should_decide": "area owner (source generator)",
+      "blocking": false
+    }
+  ]
+}

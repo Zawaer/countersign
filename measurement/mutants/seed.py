@@ -93,6 +93,7 @@ def write_facts(m: dict, F) -> None:
                         {"id": "analyzers", "reason": "mutant run"},
                         *([] if Path(F.OUT, f"exec9-{m['id']}").exists() else [{"id": "tests.execution", "reason": "mutant run: SDK 9 ExecutionTests not run for this mutant"}]),
                         {"id": "tests.fail_without_fix", "reason": "mutant run: the mutant keeps the branch's tests, so this is the original's result"}]
+    F.put_inherited_fwf(facts)  # same tree as the original's fail-without-fix run (src/ reverted), so its result
     facts["environment"] = {"sdk": F.SDK, "os": "linux-x64 (container)", "configuration": "Debug", "max_cpu": 8}
     Path(cd, "facts.json").write_text(json.dumps(facts, indent=2) + "\n")
     print(m["id"], [(c["id"], c["status"]) for c in checks], "caught" if facts["mutation"]["caught_by_any_deterministic_check"] else "SURVIVED")

@@ -288,6 +288,73 @@
       "project": "tests/MessagePack.SourceGenerator.Tests"
     },
     {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "new tests fail on base source: 6/6 failed -> tests do cover the change",
+      "tests": [
+        {
+          "name": "GeneratedMessagePackFormatterTests.FormattedTypeMustNotBeAbstract",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Source generator application\nContext: Verifying source generated files\nExpected source file list to match\n+MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs\n"
+        },
+        {
+          "name": "GeneratedMessagePackFormatterTests.FormatterMustBePartial",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Source generator application\nContext: Verifying source generated files\nExpected source file list to match\n+MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs\n"
+        },
+        {
+          "name": "GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"1\" actual \"2\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(3,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatter' could not be found (are you missing a using directive or an assembly reference?)\nDiagnosticResult.CompilerError(\"CS0246\").WithSpan(3, 2, 3, 31).WithArguments(\"GeneratedMessagePackFormatter\"),\n// /0/Test0.cs(3,2): error CS0246: The type or namespace name 'GeneratedMessagePackFormatterAttribute' could not be found (are you missing a using directive or an assembly reference?)\nDiagnosticResult.CompilerError(\"CS0246\").WithSpan(3, 2, 3, 31).WithArguments(\"GeneratedMessagePackFormatterAttribute\"),\n\r\n"
+        },
+        {
+          "name": "GeneratedMessagePackFormatterTests.SurrogateKeysMustNotMixStringAndInt",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Source generator application\nContext: Verifying source generated files\nExpected source file list to match\n+MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs\n"
+        },
+        {
+          "name": "GeneratedMessagePackFormatterTests.SurrogateMemberMustHaveMatchingType",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Source generator application\nContext: Verifying source generated files\nExpected source file list to match\n+MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs\n"
+        },
+        {
+          "name": "GeneratedMessagePackFormatterTests.SurrogateMemberMustMatchFormattedType",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Source generator application\nContext: Verifying source generated files\nExpected source file list to match\n+MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MessagePack.GeneratedMessagePackResolver.g.cs\n"
+        }
+      ],
+      "log": "evidence/2129/logs/tests_fail_without_fix.1.log",
+      "duration_s": 2.0,
+      "reverted_files": [
+        "all 13 files under src/ changed by the branch (2 added files deleted, 11 restored to base), including src/MessagePack.Annotations/Attributes.cs"
+      ],
+      "full_suite_with_source_reverted": {
+        "total": 173,
+        "failed": 6,
+        "failed_tests": [
+          "GeneratedMessagePackFormatterTests.FormattedTypeMustNotBeAbstract",
+          "GeneratedMessagePackFormatterTests.FormatterMustBePartial",
+          "GeneratedMessagePackFormatterTests.FormatterMustImplementFormatterOfT",
+          "GeneratedMessagePackFormatterTests.SurrogateKeysMustNotMixStringAndInt",
+          "GeneratedMessagePackFormatterTests.SurrogateMemberMustHaveMatchingType",
+          "GeneratedMessagePackFormatterTests.SurrogateMemberMustMatchFormattedType"
+        ],
+        "log": "evidence/2129/logs/fail_without_fix.full_suite.log"
+      },
+      "new_failed": 6,
+      "new_total": 6,
+      "inherited_from": "2129",
+      "note": "inherited, not re-run: fail-without-fix reverts src/ to base and keeps the branch tests. A seeded variant (one-line mutant or planted injection text) changes only its own edit, which the revert removes, so the tree under test is byte-identical to the original's and the result is the same computation. It says whether the tests demonstrate the original change; it says nothing about the seeded edit."
+    },
+    {
       "id": "tests.full_suite",
       "tool": "dotnet test",
       "tool_version": "8.0.402",
@@ -554,10 +621,6 @@
     {
       "id": "analyzers",
       "reason": "mutant run"
-    },
-    {
-      "id": "tests.fail_without_fix",
-      "reason": "mutant run: the mutant keeps the branch's tests, so this is the original's result"
     }
   ],
   "environment": {

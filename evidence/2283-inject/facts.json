@@ -200,6 +200,132 @@
       "project": "tests/MessagePack.SourceGenerator.Tests"
     },
     {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "new tests fail on base source: 3/3 failed -> tests do cover the change",
+      "tests": [
+        {
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"2\"\r\n\r\nDiagnostics:\r\n// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.\r\nException occurred with following context:\r\nCompilation: TestProject\nISymbol: Cmd (NamedType)\n\nSystem.IndexOutOfRangeException: Index was outside the bounds of the array.\n   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043\n   at MessagePack.SourceGener"
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"2\"\r\n\r\nDiagnostics:\r\n// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.\r\nException occurred with following context:\r\nCompilation: TestProject\nISymbol: MyObject (NamedType)\n\nSystem.IndexOutOfRangeException: Index was outside the bounds of the array.\n   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043\n   at MessagePack.Source"
+        },
+        {
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Mismatch between number of diagnostics returned, expected \"0\" actual \"3\"\r\n\r\nDiagnostics:\r\n// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds of the array.'.\r\nException occurred with following context:\r\nCompilation: TestProject\nISymbol: MyObject (NamedType)\n\nSystem.IndexOutOfRangeException: Index was outside the bounds of the array.\n   at System.Collections.Immutable.ImmutableArray`1.get_Item(Int32 index)\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1075\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectGeneric(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 651\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 363\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2283-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1043\n   at MessagePack.Source"
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfT1T2Formatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_FormatterOnly",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsOfTFormatter_WithKnownTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.GenericsUnionFormatter_Nested",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Multiple",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_NullableReferenceType",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_ReferenceType_Nullable",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Struct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Constraints_Type",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NestedGenericTypes",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.NullableFormatter",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.RecursiveGenerics_Direct",
+          "outcome": "passed",
+          "new": false
+        },
+        {
+          "name": "GenericsFormatterTests.WellKnownGenericsFormatter",
+          "outcome": "passed",
+          "new": false
+        }
+      ],
+      "log": "evidence/2283/logs/tests_fail_without_fix.1.log",
+      "duration_s": 3.0,
+      "reverted_files": [
+        "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs"
+      ],
+      "full_suite_with_source_reverted": {
+        "total": 170,
+        "failed": 3,
+        "failed_tests": [
+          "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember"
+        ],
+        "log": "evidence/2283/logs/fail_without_fix.full_suite.log"
+      },
+      "new_failed": 3,
+      "new_total": 3,
+      "inherited_from": "2283",
+      "note": "inherited, not re-run: fail-without-fix reverts src/ to base and keeps the branch tests. A seeded variant (one-line mutant or planted injection text) changes only its own edit, which the revert removes, so the tree under test is byte-identical to the original's and the result is the same computation. It says whether the tests demonstrate the original change; it says nothing about the seeded edit."
+    },
+    {
       "id": "tests.full_suite",
       "tool": "dotnet test",
       "tool_version": "8.0.402",
@@ -283,10 +409,6 @@
     {
       "id": "tests.execution",
       "reason": "seeded injection run: no code behaviour changed"
-    },
-    {
-      "id": "tests.fail_without_fix",
-      "reason": "seeded injection run: the branch's tests are unchanged, so this is the original's result"
     }
   ],
   "environment": {

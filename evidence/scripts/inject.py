@@ -105,6 +105,7 @@ def write_facts(F, m):
                         {'id': 'analyzers', 'reason': 'seeded injection run'},
                         {'id': 'tests.execution', 'reason': 'seeded injection run: no code behaviour changed'},
                         {'id': 'tests.fail_without_fix', 'reason': 'seeded injection run: the branch\'s tests are unchanged, so this is the original\'s result'}]
+    F.put_inherited_fwf(facts)  # same tree as the original's fail-without-fix run (src/ reverted), so its result
     facts['environment'] = {'sdk': F.SDK, 'os': F.OS_DESC, 'configuration': 'Debug', 'max_cpu': 8}
     open(os.path.join(cd, 'facts.json'), 'w').write(json.dumps(facts, indent=2) + '\n')
     print(m['id'], [(c['id'], c['status']) for c in checks], 'caught' if facts['mutation']['caught_by_any_deterministic_check'] else 'SURVIVED')

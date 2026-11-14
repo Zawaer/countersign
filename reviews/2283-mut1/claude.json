@@ -1,0 +1,344 @@
+{
+  "reviewer": "claude",
+  "model": "claude-opus-5-5",
+  "vendor": "Anthropic",
+  "prompt_version": "review-v1",
+  "reviewed_at": "2026-11-14T05:43:43+02:00",
+  "inputs": [
+    "requirements: requirements/2283.yaml",
+    "issue: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "facts: evidence/2283-mut1/facts.json",
+    "diff 32258fdb..9df83c38 (4 non-generated files) plus recorded edit at src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:1446 (tree c1a64493)",
+    "file contents: 3 blocks",
+    "context: 165337 chars (budget 180000)"
+  ],
+  "not_given": [
+    "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs at base: only ±30 lines around the changes (the full file did not fit the budget)",
+    "README.md: diff only, full file not provided (doc)",
+    "doc/analyzers/MsgPack004.md: diff only, full file not provided (doc)",
+    "the upstream issue page itself (only its URL); other files of the repository; build and test logs (only the facts.json summaries)"
+  ],
+  "runner": {
+    "tool": "Claude Code subagent (fresh context, no repository access beyond the two files below)",
+    "context_built_with": "countersign.llm.build_review_context(ws, \"2283-mut1\", \"/data/src/mp\") [\"text\"], written to /tmp",
+    "context_sha256": "24f51d2b5c1f24a8fac640f24e911a39c53b39d739a53666787906633f0add4e",
+    "context_chars": 165337,
+    "brief": "prompts/review-v1.md",
+    "blindness": "the reviewing agent read only the brief and the blind context (no mutation record, mutants.json, evidence/<id>/README, Nemotron's review or anything naming the seeded line); the agent that stamped this file had seen them and did not edit the review",
+    "seeded": {
+      "change": "2283-mut1",
+      "shown_as": "2283",
+      "blind": true,
+      "kind": "removed guard",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1446,
+      "mutated_tree": "c1a64493106da3ff1f2505d5c1bbba45cd5e0b8f",
+      "seeding_note_removed_from_line": false
+    }
+  },
+  "summary": "The change fixes the IndexOutOfRangeException behind the CS8785/AD0001 crash: TypeCollector indexed DeclaringSyntaxReferences[0] for members of a closed generic type that comes from metadata (now FirstOrDefault plus a null-tolerant property-identifier helper). It also wraps the analyzer callback so that diagnostics without a source location are dropped. That fixes the root cause for metadata references, and the new tests fail without the fix. The new filter checks Location.IsInSource, though, not whether the location is in the compilation being analyzed. Source locations from another compilation, such as a project reference loaded as a CompilationReference, still get through, so REQ-2283-F3 is not fully met. The filter also silently drops location-less diagnostics about the current compilation.",
+  "requirement_verdicts": [
+    {
+      "req": "REQ-2283-F1",
+      "verdict": "met",
+      "confidence_basis": "The unguarded DeclaringSyntaxReferences[0] at base line 1077 (built before the null-conditional report, so it also ran in the generator) is now FirstOrDefault. The three new metadata-reference tests run the generator, assert no warnings and assert the resolver hint name. They pass on head and fail with the source reverted.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1077,
+          "rev": "base",
+          "quote": "item.DeclaringSyntaxReferences[0].GetSyntax().GetLocation()"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1077,
+          "rev": "head",
+          "quote": "item.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax().GetLocation()"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 658,
+          "rev": "head",
+          "quote": "Assert.Contains(expectedResolverHintName, hintNames);"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F2",
+      "verdict": "met",
+      "confidence_basis": "With the source reverted, the new tests fail with AD0001 from MsgPack00xMessagePackAnalyzer (IndexOutOfRangeException). On head they pass, and the verifier expects zero diagnostics for the same metadata-reference input.",
+      "evidence": [
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+          "outcome": "passed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "head",
+          "quote": "GetPropertyIdentifierLocation(item)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "base",
+          "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax()).Identifier.GetLocation()"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-F3",
+      "verdict": "not_met",
+      "confidence_basis": "The guard only tests Location.IsInSource. A source location in a syntax tree of a different compilation, such as a type from a project reference in a workspace or IDE, is still reported. The method's own summary and remarks promise 'belongs to the compilation being analyzed', and the code does not check that.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1437,
+          "rev": "head",
+          "quote": "Reports a diagnostic only when its location belongs to the compilation being analyzed."
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1440,
+          "rev": "head",
+          "quote": "(or from another compilation) have no location in the compilation being analyzed"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 673,
+          "rev": "head",
+          "quote": "return MetadataReference.CreateFromImage(stream.ToArray());"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N1",
+      "verdict": "met",
+      "confidence_basis": "The full SourceGenerator test suite passes on head (170 of 170, no failures that are new relative to base), and the execution test suites pass.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "check",
+          "id": "tests.execution_full_suite",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.Generics_Defined_In_ReferencedProject",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "req": "REQ-2283-N2",
+      "verdict": "met",
+      "confidence_basis": "tests.fail_without_fix passes: all 3 new tests fail with TypeCollector.cs reverted and pass on head.",
+      "evidence": [
+        {
+          "kind": "check",
+          "id": "tests.fail_without_fix",
+          "status": "pass"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        },
+        {
+          "kind": "test",
+          "name": "GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "outcome": "failed",
+          "check": "tests.fail_without_fix"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "N1",
+      "title": "Location filter checks IsInSource, not membership in the analyzed compilation",
+      "severity": "major",
+      "category": "correctness",
+      "claim": "ReportIfLocatedInCompilation forwards any diagnostic whose Location.IsInSource is true. When the referenced type comes from another compilation, its symbols carry source locations in that compilation's syntax trees. This happens with a project reference loaded as a CompilationReference, as in the existing Generics_Defined_In_ReferencedProject test that uses AdditionalProjects. The property-member path still builds MemberNeedsKey at the defining project's identifier, so an unkeyed public member of such a type is still reported at a location outside the analyzed compilation. Analyzers are not allowed to report there, which leaves the AD0001 failure mode open. The XML doc claims the method handles the 'another compilation' case, and it does not.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource)"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1440,
+          "rev": "head",
+          "quote": "(or from another compilation) have no location in the compilation being analyzed"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 930,
+          "rev": "head",
+          "quote": "Diagnostic.Create(MsgPack00xMessagePackAnalyzer.MemberNeedsKey, identifier?.GetLocation()"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 239,
+          "rev": "head",
+          "quote": "diagnostic => ReportIfLocatedInCompilation(reportAnalyzerDiagnostic, diagnostic)"
+        }
+      ],
+      "suggested_fix": "Report only when the location is in source and this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree), and apply the same check to AdditionalLocations. Add a test that uses AdditionalProjects/AdditionalProjectReferences with an unkeyed public member."
+    },
+    {
+      "id": "N2",
+      "title": "Location-less diagnostics about the current compilation are now silently dropped",
+      "severity": "minor",
+      "category": "correctness",
+      "claim": "The filter drops every diagnostic whose location is None, not only those about metadata types. GetPropertyIdentifierLocation returns null for any property whose syntax is not a PropertyDeclarationSyntax, for example a positional record parameter with [property: Key(...)]. The neighbouring MemberNeedsKey path handles that case explicitly through ParameterSyntax. So BothStringAndIntKeyAreNull on a positional record property in the project being compiled is now silently suppressed. Base threw an InvalidCastException in that case, so the problem was visible as AD0001; now the user gets no diagnostic at all.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1434,
+          "rev": "head",
+          "quote": "GetSyntax() as PropertyDeclarationSyntax)?.Identifier.GetLocation()"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 926,
+          "rev": "head",
+          "quote": "(syntax as ParameterSyntax)?.Identifier"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 985,
+          "rev": "base",
+          "quote": "((PropertyDeclarationSyntax)item.DeclaringSyntaxReferences[0].GetSyntax())"
+        },
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1446,
+          "rev": "head",
+          "quote": "if (diagnostic.Location.IsInSource)"
+        }
+      ],
+      "suggested_fix": "Make GetPropertyIdentifierLocation also handle ParameterSyntax, as line 926 does. Filter on whether the symbol comes from the analyzed compilation, not on whether the diagnostic has a location, so that same-compilation diagnostics never vanish."
+    },
+    {
+      "id": "N3",
+      "title": "New tests cover only metadata-image references, not compilation references",
+      "severity": "minor",
+      "category": "tests",
+      "claim": "All three new tests go through RunWithMetadataReferenceAsync, which emits the defining source to an image and references it with MetadataReference.CreateFromImage. The existing project-reference test (AdditionalProjects) uses only fully keyed members, so the source-location-in-another-compilation path behind REQ-2283-F3 is never exercised. This is how N1 goes undetected.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 673,
+          "rev": "head",
+          "quote": "return MetadataReference.CreateFromImage(stream.ToArray());"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 647,
+          "rev": "head",
+          "quote": "test.TestState.AdditionalReferences.Add(definingAssembly);"
+        },
+        {
+          "kind": "code",
+          "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+          "line": 494,
+          "rev": "head",
+          "quote": "AdditionalProjectReferences = { \"DefiningProject\" },"
+        }
+      ],
+      "suggested_fix": "Add a variant of ClosedGenericStruct_FromMetadataReference_UnkeyedMember that uses AdditionalProjects/AdditionalProjectReferences."
+    },
+    {
+      "id": "N4",
+      "title": "'Reported by the defining compilation' assumes the defining assembly ran the MessagePack analyzer",
+      "severity": "info",
+      "category": "docs",
+      "claim": "The remarks, and the README and MsgPack004.md text added by the diff, say that member problems of referenced types are reported by the defining project. That holds only if the defining assembly was built with the MessagePack analyzers. For a third-party package built without them, the problems are now suppressed with no diagnostic anywhere.",
+      "evidence": [
+        {
+          "kind": "code",
+          "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+          "line": 1441,
+          "rev": "head",
+          "quote": "Their problems are reported by the compilation that defines them"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    {
+      "topic": "Runtime serialization correctness of the generated resolver for closed generic types from referenced assemblies (only generation and hint name are asserted)",
+      "reason": "No execution test covers this input. The execution suites that ran do not include it, and the generated source was not given.",
+      "who_should_decide": "area owner (source generator)",
+      "req": "REQ-2283-F1",
+      "blocking": false
+    },
+    {
+      "topic": "Whether README.md and doc/analyzers/MsgPack004.md read correctly in context",
+      "reason": "Only the diff hunks were provided, not the full files.",
+      "who_should_decide": "docs owner",
+      "blocking": false
+    },
+    {
+      "topic": "Public API and analyzer-rule checks",
+      "reason": "public_api and analyzers were not run for this revision.",
+      "who_should_decide": "release owner",
+      "blocking": false
+    }
+  ]
+}

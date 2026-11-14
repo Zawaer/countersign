@@ -458,6 +458,58 @@ def update_injection(ids):
         print(n, chk['status'], chk['summary'])
 
 
+# ---- tests.fail_without_fix for seeded variants: inherited from the unmutated original ----
+
+FWF_INHERIT_NOTE = ('inherited, not re-run: fail-without-fix reverts src/ to base and keeps the branch tests. A seeded variant '
+                    '(one-line mutant or planted injection text) changes only its own edit, which the revert removes, so the '
+                    'tree under test is byte-identical to the original\'s and the result is the same computation. It says '
+                    'whether the tests demonstrate the original change; it says nothing about the seeded edit.')
+
+
+def inherited_fwf(change):
+    """The original's tests.fail_without_fix check for a seeded variant <orig>-mutK / <orig>-inject, marked
+    inherited_from, or None if the original has none."""
+    orig = re.sub(r'-(mut\d+|inject\d*)$', '', change)
+    if orig == change:
+        return None
+    p = os.path.join(EVID, orig, 'facts.json')
+    if not os.path.exists(p):
+        return None
+    c = next((c for c in json.load(open(p, encoding='utf-8')).get('checks', []) if c['id'] == 'tests.fail_without_fix'), None)
+    return c and {**c, 'inherited_from': orig, 'note': FWF_INHERIT_NOTE}
+
+
+def put_inherited_fwf(facts):
+    """Insert the inherited tests.fail_without_fix after tests.targeted (the original's order) and drop it from not_run."""
+    c = inherited_fwf(facts['change'])
+    if c is None:
+        return None
+    cs = [x for x in facts['checks'] if x['id'] != 'tests.fail_without_fix']
+    i = next((k + 1 for k, x in enumerate(cs) if x['id'] == 'tests.targeted'), len(cs))
+    facts['checks'] = cs[:i] + [c] + cs[i:]
+    facts['not_run'] = [x for x in facts.get('not_run', []) if x['id'] != 'tests.fail_without_fix']
+    return c
+
+
+def update_inherited_fwf(ids):
+    """--inherit-fwf: add the original's tests.fail_without_fix to existing seeded-variant facts.json files, leaving
+    every other check byte-identical."""
+    for n in ids:
+        p = os.path.join(EVID, n, 'facts.json')
+        raw = open(p, encoding='utf-8').read()
+        facts = json.loads(raw)
+        nl = raw.endswith('\n')
+        if json.dumps(facts, indent=2) + ('\n' if nl else '') != raw:
+            print(n, 'SKIPPED: facts.json is not in json.dumps(indent=2) form, so it cannot be rewritten byte-for-byte')
+            continue
+        c = put_inherited_fwf(facts)
+        if c is None:
+            print(n, 'SKIPPED: the original has no tests.fail_without_fix')
+            continue
+        open(p, 'w', encoding='utf-8').write(json.dumps(facts, indent=2) + ('\n' if nl else ''))
+        print(n, 'tests.fail_without_fix', c['status'], 'inherited from', c['inherited_from'])
+
+
 def main():
     os.makedirs(EVID, exist_ok=True)
     base_meta = read_meta('base')
@@ -579,6 +631,8 @@ def main():
         facts['checks'] = checks
         checks.append(injection_check(facts))
         facts['not_run'] = ch.get('not_run', [])
+        if 'mutation' in ch:
+            put_inherited_fwf(facts)
         facts['environment'] = {'sdk': SDK, **({'sdk_execution_tests': SDK9, 'sdk_note': SDK9_NOTE} if 'execution' in ch else {}), 'os': OS_DESC, 'configuration': 'Debug', 'max_cpu': 8}
         json.dump(facts, open(os.path.join(cd, 'facts.json'), 'w'), indent=2)
         print(n, [(c['id'], c['status']) for c in checks])
@@ -587,5 +641,7 @@ def main():
 if __name__ == '__main__':
     if '--injection-only' in sys.argv:
         update_injection(sys.argv[sys.argv.index('--injection-only') + 1:])
+    elif '--inherit-fwf' in sys.argv:
+        update_inherited_fwf(sys.argv[sys.argv.index('--inherit-fwf') + 1:])
     else:
         main()

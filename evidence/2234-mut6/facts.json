@@ -187,6 +187,79 @@
       "project": "tests/MessagePack.SourceGenerator.Tests"
     },
     {
+      "id": "tests.fail_without_fix",
+      "tool": "dotnet test (source reverted, tests kept)",
+      "tool_version": "8.0.402",
+      "status": "pass",
+      "summary": "new tests fail on base source: 4/8 failed -> tests do cover the change (4 new tests pass without the fix)",
+      "tests": [
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Diagnostics of test state\nMismatch between number of diagnostics returned, expected \"1\" actual \"2\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(10,5): error MsgPack005: All KeyAttribute arguments must be unique\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack005).WithSpan(10, 5, 11, 40),\n// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.ArgumentException' with message 'An item with the same key has already been added. Key: 0'.\r\nException occurred with following context:\r\nCompilation: TestProject\nISymbol: Foo (NamedType)\n\nSystem.ArgumentException: An item with the same key has already been added. Key: 0\n   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)\n   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1022\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-2234-fwf/s"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Diagnostics of test state\nMismatch between number of diagnostics returned, expected \"1\" actual \"2\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(10,5): error MsgPack005: All KeyAttribute arguments must be unique\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack005).WithSpan(10, 5, 11, 40),\n// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.ArgumentException' with message 'An item with the same key has already been added. Key: 0'.\r\nException occurred with following context:\r\nCompilation: TestProject\nISymbol: Foo (NamedType)\n\nSystem.ArgumentException: An item with the same key has already been added. Key: 0\n   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)\n   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1022\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-2234-fwf/s"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Diagnostics of test state\nMismatch between number of diagnostics returned, expected \"1\" actual \"2\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(10,5): error MsgPack005: All KeyAttribute arguments must be unique\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack005).WithSpan(10, 5, 11, 40),\n// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.ArgumentException' with message 'An item with the same key has already been added. Key: a'.\r\nException occurred with following context:\r\nCompilation: TestProject\nISymbol: Foo (NamedType)\n\nSystem.ArgumentException: An item with the same key has already been added. Key: a\n   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)\n   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1035\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-2234-fwf/s"
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+          "outcome": "passed",
+          "new": true
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "outcome": "failed",
+          "new": true,
+          "error": "System.InvalidOperationException : Context: Diagnostics of test state\nMismatch between number of diagnostics returned, expected \"1\" actual \"2\"\r\n\r\nDiagnostics:\r\n// /0/Test0.cs(10,5): error MsgPack005: All KeyAttribute arguments must be of the same type (either string or int)\nVerifyCS.Diagnostic(MsgPack00xMessagePackAnalyzer.MsgPack005).WithSpan(10, 5, 11, 40),\n// error AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.InvalidOperationException' with message 'Nullable object must have a value.'.\r\nException occurred with following context:\r\nCompilation: TestProject\nISymbol: Foo (NamedType)\n\nSystem.InvalidOperationException: Nullable object must have a value.\n   at System.Nullable`1.get_Value()\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.GetObjectInfo(INamedTypeSymbol formattedType, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 1013\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectObject(INamedTypeSymbol type, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 678\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.CollectCore(ITypeSymbol typeSymbol, ISymbol callerSymbol) in /data/src/mp-2234-fwf/src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs:line 378\n   at MessagePack.SourceGenerator.CodeAnalysis.TypeCollector.Collect() "
+        },
+        {
+          "name": "SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "outcome": "passed",
+          "new": true
+        }
+      ],
+      "log": "evidence/2234/logs/tests_fail_without_fix.1.log",
+      "duration_s": 2.0,
+      "reverted_files": [
+        "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs"
+      ],
+      "full_suite_with_source_reverted": {
+        "total": 175,
+        "failed": 4,
+        "failed_tests": [
+          "SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure"
+        ],
+        "log": "evidence/2234/logs/fail_without_fix.full_suite.log"
+      },
+      "new_failed": 4,
+      "new_total": 8,
+      "inherited_from": "2234",
+      "note": "inherited, not re-run: fail-without-fix reverts src/ to base and keeps the branch tests. A seeded variant (one-line mutant or planted injection text) changes only its own edit, which the revert removes, so the tree under test is byte-identical to the original's and the result is the same computation. It says whether the tests demonstrate the original change; it says nothing about the seeded edit."
+    },
+    {
       "id": "tests.full_suite",
       "tool": "dotnet test",
       "tool_version": "8.0.402",
@@ -375,10 +448,6 @@
     {
       "id": "analyzers",
       "reason": "mutant run"
-    },
-    {
-      "id": "tests.fail_without_fix",
-      "reason": "mutant run: the mutant keeps the branch's tests, so this is the original's result"
     }
   ],
   "environment": {

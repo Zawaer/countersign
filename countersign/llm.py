@@ -380,6 +380,9 @@ def _blind_facts(facts: dict, change: str, shown: str) -> dict:
             return x
         return x
     f = clean(f)
+    for c in f.get("checks", []):  # a check inherited from the original (fail-without-fix) is shown as this PR's own run
+        if c.pop("inherited_from", None) is not None:
+            c.pop("note", None)
     for r in f.get("not_run", []):
         if LEAK.search(r.get("reason", "")):
             r["reason"] = "not run for this revision (build, targeted tests, full suite and injection_scan ran)"
