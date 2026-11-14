@@ -343,8 +343,31 @@ def mutant_pin(mid: str, res: dict):
     say = (m.get("description") or "").rstrip(".") + "."
     pin = dict(status="bad" if caught else "weak", label=label, at=(m["file"], "head", m["line"]), say=say[:1].upper() + say[1:], who=who, ev=ev,
                src=f"evidence/{mid}/facts.json → mutation; measurement/results.json → mutants {mid}",
-               link=f"attack.html#{mid}")
+               link=f"overview.html#{mid}")
     return pin, m
+
+
+NEAR = 3  # a finding "points at" the seeded bug when one of its code citations is within this many lines of it
+
+
+def reviewer_pin(mid: str, m: dict, why: list):
+    """A blind reviewer finding that cites the planted line (reviews/<mid>/*.json), or None."""
+    for rp in sorted((ROOT / "reviews" / mid).glob("*.json")):
+        r = rj(str(rp.relative_to(ROOT))) or {}
+        rv = rp.stem
+        for f in r.get("findings", []):
+            hits = [x for x in f.get("evidence", []) if x.get("kind") == "code" and x.get("file") == m["file"] and abs(int(x.get("line") or 0) - m["line"]) <= NEAR]
+            if not hits:
+                continue
+            routed = f"verified finding {rv}:{f['id']}" in why
+            name = NAMES.get(rv, rv)
+            sev = f.get("severity", "")
+            ev = [ev_code(x["file"], x["line"], x.get("rev", "head"), x.get("quote", "")) for x in sorted(hits, key=lambda x: abs(int(x["line"]) - m["line"]))[:1]]
+            who = [chip("bad" if routed else "warn", f"{name} flagged it, {sev}"),
+                   chip("", "verified, in the routing reasons" if routed else "not in the routing reasons")]
+            return dict(status="bad" if routed else "weak", label=f"{name} flagged it", say=f.get("title", ""), who=who, ev=ev,
+                        src=f"reviews/{mid}/{rp.name} → findings {f['id']}", link=f"{BLOB}reviews/{mid}/{rp.stem}.md"), f"{name}"
+    return None, None
 
 
 # ---------------------------------------------------------------- scene rendering
@@ -534,7 +557,9 @@ def build() -> str:
         scenes.append(render_scene(code, cid, pins, verdict, title, spec["files"]))
         tabs.append(cid)
     # seeded bugs
-    res = {r["change"]: r for r in (rj("measurement/results.json") or {}).get("mutants", [])}
+    R = rj("measurement/results.json") or {}
+    res = {r["change"]: r for r in R.get("mutants", [])}
+    final = {r["change"]: r for r in R.get("changes", [])}  # routed with the reviews
     bugs = []
     for mid in sorted((x for x in res if "-mut" in x), key=lambda x: (ORDER.index(x.split("-mut")[0]) if x.split("-mut")[0] in ORDER else 9, int(x.split("-mut")[1]))):
         of = mid.split("-mut")[0]
@@ -543,21 +568,26 @@ def build() -> str:
         pin, m = mutant_pin(mid, res[mid])
         if not pin:
             continue
-        r = res[mid]
+        r = {**res[mid], **{k: v for k, v in final.get(mid, {}).items() if k in ("tier", "routed_to_human", "why")}}
         cx = Ctx(of)
         tier = r.get("tier") or ""
+        was = (final.get(of) or {}).get("tier") or r.get("original_tier") or ""
         caught = pin["status"] == "bad"
         routed = bool(r.get("routed_to_human"))
-        phrase = "caught by the checks" if caught else ("checks missed it, a human reads it" if routed else "got through")
-        vcard = card_html(dict(say=(f"With this bug the change goes to {tier.upper()}; without it, {str(r.get('original_tier', '')).upper()}."),
-                               who=[chip("bad" if caught else "warn", "caught" if caught else "not caught by checks"),
+        rpin, rname = reviewer_pin(mid, m, r.get("why") or [])
+        phrase = ("caught by the checks" if caught else f"checks missed it; {rname} flagged it" if rname
+                  else "got past checks and review")
+        vcard = card_html(dict(say=(f"With this bug the change goes to {tier.upper()}; without it, {was.upper()}."
+                                    + ("" if caught or rname or tier != was else " Nothing new fired: a human sees the change, not this bug.")),
+                               who=[chip("bad" if caught else "warn", "a check failed" if caught else "no check failed"),
+                                    chip("bad" if rname else "", f"{rname} flagged the line" if rname else "no reviewer flagged the line"),
                                     chip("", "reaches a human" if routed else "no human sees it")],
-                               ev=[], link=f"attack.html#{mid}", src=f"measurement/results.json → mutants {mid}"), "x")[len('<div class="card" id="x" hidden>'):-len("</div>")]
+                               ev=[], link=f"overview.html#{mid}", src=f"measurement/results.json → changes {mid}, mutants {mid}"), "x")[len('<div class="card" id="x" hidden>'):-len("</div>")]
         num = re.search(r"(\d+)$", (cx.pack.get("story") or {}).get("issue", ""))
         verdict = dict(tier=tier, owner=cx.pack.get("owner") if routed else None, phrase=phrase, card=vcard,
                        issue=(cx.pack.get("story") or {}).get("issue"), num=num.group(1) if num else of, agent=cx.pack.get("agent_written"))
         file_ = m["file"]
-        scenes.append(render_scene(code, of, [pin], verdict, SCENES[of]["title"], [file_], mutation=m, sid=mid))
+        scenes.append(render_scene(code, of, [pin] + ([rpin] if rpin else []), verdict, SCENES[of]["title"], [file_], mutation=m, sid=mid))
         bugs.append((mid, r.get("kind") or m.get("kind") or "seeded bug", caught))
     code.save()
     return page(scenes, tabs, bugs)
@@ -681,7 +711,7 @@ def page(scenes, tabs, bugs) -> str:
 <style>{PAGE_CSS.strip()}</style>
 </head><body>
 <header class="top"><a class="mark" href="index.html"><i>✓</i>Countersign</a>
-<nav class="links" aria-label="More"><a href="tour.html">Tour</a><a href="packs/2234/pack.html">Evidence pack</a><a href="attack.html">Measurement</a><a href="pitch.html">Pitch</a>
+<nav class="links" aria-label="More"><a href="tour.html">Tour</a><a href="packs/2234/pack.html">Evidence pack</a><a href="overview.html">Numbers</a><a href="pitch.html">Pitch</a>
 <button type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button></nav></header>
 <main>{"".join(scenes)}</main>
 <nav class="bar" id="bar" aria-label="Choose a change"><div class="row" id="row-main">{main}</div><div class="row" id="row-bugs" hidden>{brow}</div></nav>
