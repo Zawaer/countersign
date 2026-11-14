@@ -32,32 +32,32 @@ The short version: **the AI gathers and checks evidence, the mandate says how fa
 ## 4. Facts before opinions
 
 - **Why.** Tool output can't hallucinate; model output can. Running checks first lets the models argue about evidence instead of inventing it.
-- **How it's enforced.** Stage 1 writes `evidence/<change>/facts.json`: diff (source / test / generated split), build, targeted tests, fail-without-fix, full suite, public-API and analyzer checks, with tool versions and logs. Reviewers get the facts and must cite them. A check that errored or was skipped is never treated as a pass.
+- **How it's enforced.** Stage 1 writes `evidence/<change>/facts.json`: diff (source / test / generated split), build, targeted tests, fail-without-fix, full suite, public-API and analyzer checks, `deps.delta` (SBOM diff of the NuGet graph, base vs head) and `injection_scan` (text planted for AI reviewers, including invisible Unicode), with tool versions and logs. If `injection_scan` fails, the R-INJECT rule blocks the change and no reviewer verdict counts: the reviewers read the planted text. Both seeded injection changes (2283-inject, 2234-inject) are blocked this way. Reviewers get the facts and must cite them. A check that errored or was skipped is never treated as a pass.
 - **What it costs.** Builds and test runs take minutes per change, and some areas (UI, performance, other target frameworks) have no check yet.
 
 ## 5. New tests must fail without the fix
 
 - **Why.** A test that passes on the old code doesn't test the change. This was the single most informative check we ran (see [LESSONS.md](LESSONS.md)).
-- **How it's enforced.** `tests.fail_without_fix`: revert the source files to base, keep the new tests, run them, and report per test. It is a mandated check in the generator/analyzer area. On 2234 it showed 4 of 8 new analyzer tests and 4 of 4 new runtime tests pass without the change ([facts.json](../evidence/2234/facts.json)).
+- **How it's enforced.** `tests.fail_without_fix`: revert the source files to base, keep the new tests, run them, and report per test. It is a mandated check in the generator/analyzer area. On 2234 it showed 4 of 8 new analyzer tests and 4 of 4 new runtime tests pass without the change ([facts.json](../evidence/2234/facts.json)). A clause that is met but whose tests already pass without the fix is `held_before`: met, but not achieved by this change. It is not proven, routes at least `notify` and appears in residual risk (2234 F1 and F2).
 - **What it costs.** A second build and test run per change; for changes that add files (2129), reverting needs care.
 
 ## 6. No evidence, no finding
 
 - **Why.** Tieto does not accept "confidence without evidence". A claim a machine can't check is a claim nobody can own.
-- **How it's enforced.** Every reviewer claim carries evidence items: `code` (file, line, exact quote at head or base), `test` (name and outcome, matched against facts.json), `check` (id), `requirement` (quote from the clause). The engine re-checks each one (`countersign/verify.py`). A finding with zero verified items is rejected, kept in the pack under "Rejected: unsupported claims", and counted against that reviewer. An issue-page quote is never counted, because the pipeline runs offline and can't confirm it.
+- **How it's enforced.** Every reviewer claim carries evidence items: `code` (file, line, exact quote at head or base), `test` (name and outcome, matched against facts.json), `check` (id), `requirement` (quote from the clause). The engine re-checks each one (`countersign/verify.py`). A finding with zero verified items is rejected, kept in the pack under "Rejected: unsupported claims", and counted against that reviewer. An issue-page quote is never counted, because the pipeline runs offline and can't confirm it. Review JSON is treated as untrusted input: only substantive evidence counts (code at head or base in a file the change touches, a test or check with a matching outcome), so a reviewer can't prove a clause by quoting the clause. A bug a reviewer claims to have reproduced becomes an executable repro, `repro.<reviewer>.<finding>`, run by the pipeline on head and base (2283 C1 and 2234 C2 are both reproduced). Verified major findings carry forward to the next review pass unless re-raised or refuted with verified evidence.
 - **What it costs.** A true finding with a sloppy citation is lost from the verdict. It stays visible as rejected so the owner can still read it.
 
 ## 7. A clause is proven only when every reviewer agrees with verified evidence; anything else is a refusal with a reason
 
 - **Why.** Self-reported confidence is worthless; independent agreement plus passing checks is a signal. With unanimity, every reviewer we add can only make the AI more cautious. A majority vote would let two reviewers outvote a third reviewer's verified objection.
-- **How it's enforced.** Per requirement clause: `proven` only if every participating reviewer says `met` with at least one verified item and the clause's checks pass. Otherwise `refused`, with every reason that applies: `not_met`, `reviewers_disagree`, `cannot_determine`, `thin_evidence`, `check_failed`, `check_not_run`, `missing_review`, `adjudicator_dispute`. A reviewer that didn't run is `missing_review`; it can't silently drop out. Any refused clause routes to at least `ask`.
+- **How it's enforced.** Per requirement clause: `proven` only if every participating reviewer says `met` with at least one verified item and the clause's checks pass. Otherwise `refused`, with every reason that applies: `not_met`, `reviewers_disagree`, `cannot_determine`, `thin_evidence`, `check_failed`, `check_not_run`, `missing_review`, `adjudicator_dispute`. A reviewer that didn't run is `missing_review`; it can't silently drop out. Any refused clause routes to at least `ask`. A reviewer refusal (a question it declined to decide) routes `ask` if it names a clause, is marked blocking, or touches a mandated check or a sensitive term such as security or runtime; otherwise it routes `notify`, so the owner is still told. Without that split, every change would ask, because every reviewer declines something peripheral.
 - **What it costs.** More refusals, so more human routing, especially early. One failed API call refuses every clause of that change until it is re-run.
 
 ## 8. A second opinion can explain a dispute, never settle it in favour of clearing
 
 - **Why.** A tie-breaker that can clear is a single model approving the change.
 - **How it's enforced.** The adjudicator (Gemini in the mandate's reviewer registry) reads only disputed items, with both sides' cited evidence and the engine's verification results, and says which claims the evidence supports. `decide.apply_adjudication` can only add reasons and `ask` drivers; it asserts that no refused clause becomes proven.
-- **What it costs.** A third vendor's cost and latency on disputed changes, for advice that never lowers a tier.
+- **What it costs.** A third vendor's cost and latency on disputed changes, for advice that never lowers a tier. Status: wired, runs when the key is set; not yet run, so packs say "not adjudicated".
 
 ## 9. Review depth follows risk, and the risk can be explained line by line
 
@@ -74,8 +74,8 @@ The short version: **the AI gathers and checks evidence, the mandate says how fa
 ## 11. Trust is earned per area and withdrawn after an escape
 
 - **Why.** Tieto: humans spot-check the AI reviewer, track what it misses, and trust is earned per area and withdrawn after escapes.
-- **How it's enforced.** `countersign spotcheck` records a human re-review of an AI-cleared change (agree / disagree). `countersign escape` records a revert or incident; if the AI had cleared that change, the area drops to `ask` at once and starts probation. Three agreeing spot-checks in a row restore the mandate's cap. `countersign trust` shows each area's cap and the ledger entries that set it.
-- **What it costs.** Someone has to spot-check changes nobody would otherwise look at, and an escape has to be traced back to a change. In this demo the spot-checks and escapes are simulated and labelled.
+- **How it's enforced.** Trust stages in the signed mandate (v3): ask -> notify -> silent, never above the area's cap. Climbing to `notify` takes 20 agreeing spot-checks in a row, 95% agreement over the last 40 and no escape in the last 50 changes; `silent` takes 40, 98% of 80 and 100. One stage is lost on an escape on an AI-cleared change (`countersign escape`), a disagreeing spot-check (`countersign spotcheck`) or a canary run where the reviewers missed a seeded bug. A reviewer model or prompt version that is not released holds every area at `ask`. `countersign trust` shows each area's stage and why. We moved from 3 to 20 checks because a simulation showed 3 restored clearance within days after reviewers degraded ([MEASUREMENT.md](MEASUREMENT.md), decision D13).
+- **What it costs.** Someone has to spot-check changes nobody would otherwise look at, an escape has to be traced back to a change, and canaries cost model calls every week. Clearance comes back slowly. In this demo the spot-checks, escapes and canaries over time are simulated and labelled.
 
 ## 12. Every signature is bound to the exact evidence it covers
 
@@ -87,7 +87,7 @@ The short version: **the AI gathers and checks evidence, the mandate says how fa
 
 ## Two policies that sit next to the rules
 
-- **Measure outcomes, not activity.** The replay (`countersign replay`) reports the share routed to humans, findings verified and rejected per reviewer, seeded defects caught, escapes and spot-check agreement. Review-time savings come from a reading model in the mandate and are always marked `simulated`. TODO(numbers): link the replay results (`measurement/results.md`) once they are committed.
+- **Measure outcomes, not activity.** The replay (`countersign replay`) reports the share routed to humans, findings verified and rejected per reviewer, seeded defects caught, escapes and spot-check agreement. Review-time savings come from a reading model in the mandate and are always marked `simulated`. Results: [measurement/results.md](../measurement/results.md) and [MEASUREMENT.md](MEASUREMENT.md).
 - **Code only goes where the mandate allows.** `confidential: true` (repo or area) admits only `self_hostable` reviewers (Nemotron, open weights) and the runner refuses to send code to a vendor-hosted endpoint. MessagePack-CSharp is open source, so it is not confidential here.
 
 ---
@@ -103,7 +103,7 @@ The short version: **the AI gathers and checks evidence, the mandate says how fa
 | Evidence is traceable to a requirement, so the owner can check it quickly. | Requirement trace table per clause (`REQ-2234-F1`...), with each reviewer's verdict, how many of its citations verified, the clause's checks, and the refusal reasons. | 6, 7 |
 | Depth of human review follows risk. | Explainable additive score + hard rules + area caps; four tiers from `silent` (logged) to `block` (split or fix first). | 9 |
 | Humans spot-check the AI reviewer, and track what it misses. | `spotcheck` events grade the AI's own recommendation; rejected claims and refusals are counted per reviewer; seeded defects measure what checks and reviewers miss. | 6, 11 |
-| Trust is earned per area, from track record, and withdrawn after escapes. | `max_ai_tier` per area in the mandate; `escape` drops the area to `ask` and starts probation; three agreeing spot-checks restore it. | 11 |
+| Trust is earned per area, from track record, and withdrawn after escapes. | `max_ai_tier` per area in the mandate; an escape, a disagreeing spot-check or a missed canary drops one stage; 20 agreeing spot-checks in a row climb back to `notify`. | 11 |
 
 ### "What the owner signs"
 
