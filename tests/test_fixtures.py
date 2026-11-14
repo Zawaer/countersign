@@ -33,7 +33,9 @@ def fws(tmp_path):
 def test_fixture_routing(fws):
     tiers = {c: pack.build(fws, c)["tier"] for c in fws.changes()}
     assert tiers == {"2129": "ask", "2234": "notify", "2234-mut1": "ask", "2283": "ask",
-                     "2283-mut1": "block", "2283-mut2": "notify", "2297": "block"}
+                     "2283-mut1": "block", "2283-mut2": "ask", "2297": "block"}
+    # 2283-mut2 used to be cleared at notify: Claude's `met` on F3 cited only the requirement's own text. Since T2
+    # (docs/security/TRIAGE.md) a requirement quote never counts as evidence, so F3 is refused for thin evidence.
 
 
 def test_illustrated_change_refuses_f2_and_rejects_the_invented_claim(fws):
@@ -45,6 +47,6 @@ def test_illustrated_change_refuses_f2_and_rejects_the_invented_claim(fws):
 
 def test_replay_marks_simulated_numbers(fws):
     r = measure.replay(fws)
-    assert r["metrics"]["catch_rate"]["value"] == 0.67
-    assert r["metrics"]["missed_defects"]["value"] == ["2283-mut2"]
+    assert r["metrics"]["catch_rate"]["value"] == 1.0  # 0.67 before T2: see test_fixture_routing
+    assert r["metrics"]["missed_defects"]["value"] == []
     assert all(m["simulated"] for k, m in r["metrics"].items() if k.startswith("human_minutes"))

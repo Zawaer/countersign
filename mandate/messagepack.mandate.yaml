@@ -103,6 +103,9 @@ decision:
   reviewers_required: all_participating
   min_verified_evidence: 1        # per reviewer verdict; fewer -> thin_evidence
   code_line_tolerance: 3          # a code quote may sit up to N lines from the cited line
+  # Code evidence must cite head or base in a file the change touches; base may also cite these context files.
+  # Only substantive items count: code quotes, tests with a claimed outcome, checks with a claimed status (R7).
+  base_context_files: []
   refused_clause_tier: ask        # any clause the AI could not prove
   # A reviewer refusal routes `ask` if it names a clause (`req`), is marked `blocking: true`, or its topic names a
   # mandated check or one of refusal_ask_terms. Any other refusal is out of scope: shown, in residual risk, and

@@ -18,7 +18,8 @@
       "evidence": [
         {
           "kind": "check",
-          "id": "tests.targeted"
+          "id": "tests.targeted",
+          "status": "pass"
         },
         {
           "kind": "requirement",

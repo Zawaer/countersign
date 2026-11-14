@@ -23,7 +23,8 @@
         },
         {
           "kind": "check",
-          "id": "tests.fail_without_fix"
+          "id": "tests.fail_without_fix",
+          "status": "pass"
         },
         {
           "kind": "code",
@@ -81,7 +82,8 @@
       "evidence": [
         {
           "kind": "check",
-          "id": "tests.full_suite"
+          "id": "tests.full_suite",
+          "status": "pass"
         },
         {
           "kind": "test",
@@ -97,7 +99,8 @@
       "evidence": [
         {
           "kind": "check",
-          "id": "tests.fail_without_fix"
+          "id": "tests.fail_without_fix",
+          "status": "pass"
         }
       ]
     }

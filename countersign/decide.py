@@ -110,12 +110,19 @@ def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate, required:
                 reasons.append({"code": "check_not_run", "detail": f"{c['id']} is {c['status']}", "check": c["id"], "status": c["status"]})
         verdicts = {}
         for name in required:
-            v = next((v for v in reviews.get(name, {}).get("requirement_verdicts", []) if v["req"] == r["id"]), None)
+            given = [v for v in reviews.get(name, {}).get("requirement_verdicts", []) if v.get("req") == r["id"]]
+            if len(given) > 1:  # first-wins would let a model put `met` first and `not_met` later: none of them counts
+                reasons.append({"code": "missing_review", "detail": f"{name} gave {len(given)} verdicts for this clause; none counted",
+                                "reviewer": name, "verdict": None, "duplicate": len(given)})
+                continue
+            v = given[0] if given else None
             if v is None:
                 reasons.append({"code": "missing_review", "detail": f"{name} gave no verdict", "reviewer": name, "verdict": None})
                 continue
-            verdicts[name] = {"verdict": v["verdict"], "basis": v.get("confidence_basis", ""),
-                              "verified": v["verified_count"], "cited": len(v["evidence"]), "evidence": v["evidence"]}
+            verdict = v.get("verdict") if v.get("verdict") in ("met", "not_met", "cannot_determine") else "cannot_determine"
+            verdicts[name] = {"verdict": verdict, "basis": str(v.get("confidence_basis", "")),
+                              "verified": v.get("substantive_count", 0), "verified_any": v.get("verified_count", 0),
+                              "cited": len(v["evidence"]), "evidence": v["evidence"]}
         said = {n: v["verdict"] for n, v in verdicts.items()}
         for n, v in said.items():
             if v == "not_met":
@@ -126,7 +133,8 @@ def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate, required:
             if v == "cannot_determine":
                 reasons.append({"code": "cannot_determine", "detail": f"{n}: {verdicts[n]['basis']}", "reviewer": n, "verdict": v})
             if v == "met" and verdicts[n]["verified"] < d["min_verified_evidence"]:
-                reasons.append({"code": "thin_evidence", "detail": f"{n} says met with {verdicts[n]['verified']} verified of {verdicts[n]['cited']} cited evidence items",
+                reasons.append({"code": "thin_evidence", "detail": f"{n} says met with {verdicts[n]['verified']} verified evidence items about the change "
+                                f"(of {verdicts[n]['cited']} cited; requirement quotes and unclaimed outcomes don't count)",
                                 "reviewer": n, "verdict": v})
         if untrusted:
             reasons.append({"code": "reviewers_untrusted", "detail": untrusted})

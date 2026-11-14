@@ -34,7 +34,7 @@ def build(ws: Workspace, change: str, use_trust: bool = True) -> dict:
     m = mandate_mod.load(ws)
     msig = mandate_mod.signature_status(ws, m)
 
-    v = verify.Verifier(ws.repo, facts, reqs, m["decision"]["code_line_tolerance"])
+    v = verify.Verifier(ws.repo, facts, reqs, m["decision"]["code_line_tolerance"], m["decision"].get("base_context_files", []))
     # Who may read this change (reviewer registry + confidentiality). Reviews by anyone else are not used.
     panel = m.panel([a["name"] for a in decide_mod.touched_areas(facts, m)])
     all_reviews = ws.reviews(change)
@@ -255,7 +255,7 @@ class _Git:
     def lines(self, rev_name: str, path: str) -> tuple[str, list[str] | None]:
         rev = self.facts.get(rev_name, rev_name) if rev_name in ("head", "base") else rev_name
         if (rev, path) not in self.cache:
-            r = subprocess.run(["git", "-C", self.repo, "show", f"{rev}:{path}"], capture_output=True)
+            r = subprocess.run(["git", "-C", self.repo, "show", "--end-of-options", f"{rev}:{path}"], capture_output=True)
             lines = r.stdout.decode("utf-8", "replace").splitlines() if r.returncode == 0 else None
             mut = self.facts.get("mutation") or {}
             if lines and rev_name == "head" and mut.get("file") == path and mut.get("line") and mut.get("before") is not None:
@@ -267,7 +267,11 @@ class _Git:
 
 
 def _excerpt(git: _Git, e: dict, tolerance: int) -> dict | None:
-    rev, lines = git.lines(e.get("rev", "head"), str(e.get("file", "")))
+    path = str(e.get("file", ""))
+    # model output (R7): only head/base, only relative paths, the same limits as verify.Verifier.code
+    if e.get("rev", "head") not in ("head", "base") or not path or path.startswith(("-", "/")) or ".." in path.split("/"):
+        return None
+    rev, lines = git.lines(e.get("rev", "head"), path)
     if not lines:
         return None
     try:
