@@ -9,14 +9,14 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap bar">
 <a class="mark" href="index.html"><span class="sig">✓</span>Countersign</a>
-<nav aria-label="Site"><a href="index.html">Overview</a><a href="attack.html">Sneak a bug past it</a><a href="tour.html">Guided tour</a><a href="pitch.html" aria-current=page>Pitch</a><a href="packs/2234/pack.html">Evidence pack</a></nav>
+<nav aria-label="Site"><a href="index.html">Demo</a><a href="overview.html">Overview</a><a href="attack.html">Sneak a bug past it</a><a href="tour.html">Guided tour</a><a href="pitch.html" aria-current=page>Pitch</a><a href="packs/2234/pack.html">Evidence pack</a></nav>
 <button class="theme" type="button" aria-label="Switch light or dark theme" onclick="csTheme()">◐</button>
 </div></header>
 <main id="main"><div class="deck" id="deck"><section class="slide title-slide" data-i="0"><div class="sl">
 <p class="eyebrow">Junction 2026 · Tieto: Earned Trust in AI Code</p>
 <h1><span class="sig">✓</span>Countersign</h1>
 <p class="punch">AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can&#x27;t, and a named human countersigns the rest.</p>
-<p class="lead"><b>4 agent-written changes: 0 cleared, 2 routed to their owner, 2 blocked</b>; it caught one that passes CI and fixes the wrong bug. <b>11 of 14</b> seeded one-line bugs failed a check. Replayed on 109 real upstream PRs, it would have cleared <b>0 of the 11</b> that later had to be reverted or fixed.</p>
+<p class="lead"><b>4 agent-written changes: 0 cleared, 2 routed to their owner, 2 blocked</b>; it caught one that passes CI and fixes the wrong bug. <b>13 of 16</b> seeded one-line bugs failed a check. Replayed on 109 real upstream PRs, it would have cleared <b>0 of the 11</b> that later had to be reverted or fixed.</p>
 <p class="muted">github.com/Zawaer/countersign</p>
 </div><aside class="note">We are not proposing a better AI reviewer. We are proposing a way to delegate review authority to AI that a named person can still sign for.</aside></section><section class="slide" data-i="1"><div class="sl">
 <p class="eyebrow">2 · The question is wrong</p>
@@ -65,7 +65,7 @@
 </div><aside class="note">A new repo has no track record, so the mandate starts strict and most changes go to humans. That is a trade-off we chose: a refusal costs minutes, an escape costs an incident.</aside></section><section class="slide" data-i="5"><div class="sl">
 <p class="eyebrow">6 · Trust is earned per area, and measured</p>
 <h2>The AI earns clearance per area from spot-checks and loses it after one escape; we measure outcomes, not activity.</h2>
-<div class="vis"><ul class='mlist'><li>Real changes routed to a human: <b>4 of 4</b></li><li>Seeded one-line bugs that failed a check: <b>11 of 14</b>; reaching a human before any AI review: <b>12 of 14</b></li><li>Real upstream escapes the AI would have cleared: <b>0 of 11</b> (109 PRs replayed)</li><li>Findings verified per reviewer: claude 13 (rejected 0), codex 0 (rejected 0), nemotron 10 (rejected 0)</li><li>Review time with the pack vs reading every line: 140 vs 424.3 min (estimate from a reading-speed model, simulated)</li></ul><p class='foot-note'><a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/results.json">measurement/results.json</a> · <a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/history/results.md">measurement/history/results.md</a></p></div>
+<div class="vis"><ul class='mlist'><li>Real changes routed to a human: <b>4 of 4</b></li><li>Seeded one-line bugs that failed a check: <b>13 of 16</b>; reaching a human before any AI review: <b>14 of 16</b></li><li>Real upstream escapes the AI would have cleared: <b>0 of 11</b> (109 PRs replayed)</li><li>Findings verified per reviewer: claude 16 (rejected 2), codex 0 (rejected 0), nemotron 13 (rejected 0)</li><li>Review time with the pack vs reading every line: 185 vs 439.9 min (estimate from a reading-speed model, simulated)</li></ul><p class='foot-note'><a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/results.json">measurement/results.json</a> · <a class="src" href="https://github.com/Zawaer/countersign/blob/main/measurement/history/results.md">measurement/history/results.md</a></p></div>
 </div><aside class="note">Spot-checks grade the AI&#x27;s own recommendation; three agreeing in a row restore an area&#x27;s clearance. Seeded defects tell us what the checks miss: two of the first four we planted survived the whole test suite, and both reviewers had read one of those lines as correct.</aside></section><section class="slide" data-i="6"><div class="sl">
 <p class="eyebrow">7 · What we saw go wrong</p>
 <h2>Evidence made one reviewer agree with everything; the rules are built so one reviewer&#x27;s &quot;all good&quot; can&#x27;t clear anything.</h2>
@@ -80,7 +80,7 @@
 <button class="btn" id="dnext" type="button" aria-label="Next slide">→</button></div></main>
 <footer class="foot"><div class="wrap">
 <p>Junction 2026 · Tieto: Earned Trust in AI Code · <a href="https://github.com/Zawaer/countersign">github.com/Zawaer/countersign</a></p>
-<p>Generated by <a class="src" href="https://github.com/Zawaer/countersign/blob/main/site/build.py">site/build.py</a> from the repo's own files at commit <code>6b2ea41</code>, 2026-11-14 00:17 UTC. Every number links to the file it was read from.</p>
+<p>Generated by <a class="src" href="https://github.com/Zawaer/countersign/blob/main/site/build.py">site/build.py</a> from the repo's own files at commit <code>a64cf64</code>, 2026-11-14 01:10 UTC. Every number links to the file it was read from.</p>
 </div></footer>
 <script>function csTheme(){var d=document.documentElement,c=d.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),n=c==="dark"?"light":"dark";d.dataset.theme=n;try{localStorage.setItem("cs-theme",n)}catch(_){}}</script>
 <script>

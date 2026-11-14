@@ -1,4 +1,18 @@
-# Site design rules
+# v2: the code is the scene
+
+1. The landing page is one scene: the real diff of the agent-written change, full viewport, calm monospace, subtle syntax colour. No hero, no paragraphs, no tables, no number tiles, no side panels.
+2. On it, 3 to 5 pins sit at the end of the exact lines they are about (error-lens style): a status glyph and 2-5 words. `✗` problem, `◐` weak evidence, `✓` proven, `?` refused / not checked.
+3. One verdict pill on top: tier → named owner, plus 3-6 words. One muted line above it: the issue title.
+4. Tap a pin (or the pill): a small card under the line with one sentence, who agreed or disagreed (tiny chips), the evidence (cited line, test and run), the source file, and a link into the full evidence pack. Nothing else.
+5. One bar at the bottom switches the scene: 2234 · 2283 · 2129 · 2297 · up-1967 · sneak a bug in (pick a seeded bug; its pin says whether the checks caught it).
+6. Unpinned code folds into one-line `⋯ +12 −4` rows that open on tap; files without pins collapse into one "+N files" row.
+7. Under 40 words of prose on the first screen. Depth (tour, pitch, attack, overview numbers, packs) is one tap away, small, top right.
+8. Every pin, sentence and verdict is resolved by `site/scene.py` from pack.json / facts.json / results.json at build time; the short labels are the only editorial text and each names the record it summarises. A pin whose source record is missing is dropped, not invented.
+9. Same tokens as v1 (Primer neutrals, one blue accent, green/amber/red for status only, glyph + word, 4.5:1 contrast), light default, dark supported. 390 px phone and projector both first-class.
+10. Before shipping any change to the scene, ask "what can I remove?".
+
+# v1 rules (secondary pages; v2 wins where they conflict)
+
 
 Audience: engineers and engineering leads (Tieto, Junction peer reviewers, jurors). It should read like a developer tool's own docs (GitHub's Primer, Stripe docs, Sigstore provenance pages): calm, dense, real data. Sources: Primer color and typography foundations (semantic roles, ~80ch lines, left-aligned text, never colour alone), WCAG 2.2 SC 1.4.3 / 1.4.11 (contrast).
 

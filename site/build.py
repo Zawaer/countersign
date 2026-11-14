@@ -312,7 +312,7 @@ def hero_text(n: dict) -> str:
 
 # ---------------------------------------------------------------- shared page shell
 
-NAV = [("index.html", "Overview"), ("attack.html", "Sneak a bug past it"), ("tour.html", "Guided tour"),
+NAV = [("index.html", "Demo"), ("overview.html", "Overview"), ("attack.html", "Sneak a bug past it"), ("tour.html", "Guided tour"),
        ("pitch.html", "Pitch"), ("packs/2234/pack.html", "Evidence pack")]
 
 
@@ -486,7 +486,7 @@ def build_index(D: Data, n: dict) -> str:
 <li>Spot-checks, escapes and review minutes in the trust demo are simulated, and labelled so.</li>
 </ul></section>
 """
-    return page("index.html", "Countersign: earned trust in AI code review", body, desc=hero_text(n))
+    return page("overview.html", "Countersign: earned trust in AI code review", body, desc=hero_text(n))
 
 
 # ---------------------------------------------------------------- attack.html
@@ -1086,7 +1086,7 @@ def copy_packs():
     dst = SITE / "packs"
     if dst.exists():
         shutil.rmtree(dst)
-    for c in CHANGES:
+    for c in CHANGES + ["up-1967"]:
         s = ROOT / "packs" / c / "pack.html"
         if s.exists():
             (dst / c).mkdir(parents=True, exist_ok=True)
@@ -1098,10 +1098,12 @@ def main() -> None:
     n = numbers(D)
     copy_packs()
     (SITE / "style.css").write_text(CSS.strip() + "\n", encoding="utf-8")
-    pages = {"index.html": build_index(D, n), "attack.html": build_attack(D, n), "tour.html": build_tour(D, n), "pitch.html": build_pitch(D, n)}
+    pages = {"overview.html": build_index(D, n), "attack.html": build_attack(D, n), "tour.html": build_tour(D, n), "pitch.html": build_pitch(D, n)}
     for name, htm in pages.items():
         (SITE / name).write_text(htm, encoding="utf-8")
     (SITE / ".nojekyll").write_text("", encoding="utf-8")
+    import scene  # site/scene.py: the landing page, the code is the scene
+    scene.main()
     print("hero:", hero_text(n))
     print("wrote", ", ".join(pages), "+ style.css + packs/")
 
