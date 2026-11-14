@@ -6,7 +6,7 @@
 
 - ✓ All 6 checks pass
 - ? Reviewers left 1 question open
-- … Awaiting Toivo
+- … Awaiting Toivo's countersignature
 
 <details><summary><b>Evidence</b>: requirements, findings, refusals, checks, risk, how to sign</summary>
 

@@ -4,7 +4,7 @@
 
 **Why:** The change fixes a different crash
 
-- ! Builds, tests pass; 2 other checks fail
+- ! Builds, tests pass; but the new runtime tests pass without the fix and 3 of 8 planted mutants survive
 - ✕ Reviewers found a major issue
 - ✕ Signed by Toivo: request changes
 
@@ -33,7 +33,7 @@ Changes 1 source file (TypeCollector.cs), 2 test files, 1 doc file (+262 -4) on 
 | **NOT MET** | [N1](#chain-REQ-2234-N1) | Claude says not met (Codex and Nemotron: met); Gemini: Claude's objection is supported |
 | **REFUSED** | [N2](#chain-REQ-2234-N2) | Codex said met without verified evidence |
 
-<details><summary>Gemini on N1: Claude's objection is supported; backs 2 of 3 claims for Claude's 'not met', 2 of 4 for 'met' (advisory)</summary>
+<details><summary>Gemini on N1: Claude's objection is supported (advisory)</summary>
 
 Duplicate-key analyzer tests pass on head, while repro.claude.C2 fails on both head and base and TypeCollector.cs:985 retains an unguarded PropertyDeclarationSyntax cast.
 
@@ -152,9 +152,10 @@ It covers the sha256 of this pack's canonical JSON, the decision, your verdict o
 
 > The analyzer must report contract diagnostics (e.g. missing [Key], duplicate keys, mixed key kinds) for [MessagePackObject(SuppressSourceGeneration = true)] types, as it did in version 3.1.0.
 
+- **Held before:** Met, but already true before this change: all 3 of the clause's tests that were run without the fix pass there too: AllowPrivateRequiredIsReported, MemberTypeMustBeMessagePackObjectIsReported, MemberWithoutKeyIsReported
 - **Checks passed:** `build` pass, `tests.targeted` pass
-- **Fails without the fix:** [`DuplicateIntKeysAreReportedWithoutAnalyzerFailure`](#ev-283a17c90c), [`MixedKeyKindsAreReportedWithoutAnalyzerFailure`](#ev-25ded34e20), [`DuplicateStringKeysAreReportedWithoutAnalyzerFailure`](#ev-bb565b0d63)
-- **Passes without the fix too:** [`MemberWithoutKeyIsReported`](#ev-7f46834b36), [`MemberTypeMustBeMessagePackObjectIsReported`](#ev-ab5dfeec65), [`AllowPrivateRequiredIsReported`](#ev-0cdf78bf54)
+- **The clause's own tests pass without the fix:** [`MemberWithoutKeyIsReported`](#ev-7f46834b36), [`MemberTypeMustBeMessagePackObjectIsReported`](#ev-ab5dfeec65), [`AllowPrivateRequiredIsReported`](#ev-0cdf78bf54)
+- **Other cited tests fail without the fix** (not this clause's own tests): [`DuplicateIntKeysAreReportedWithoutAnalyzerFailure`](#ev-283a17c90c), [`MixedKeyKindsAreReportedWithoutAnalyzerFailure`](#ev-25ded34e20), [`DuplicateStringKeysAreReportedWithoutAnalyzerFailure`](#ev-bb565b0d63)
 - **Claude** says met (8/9 citations verified): [`test MemberWithoutKeyIsReported passed`](#ev-7f46834b36) [`test MemberTypeMustBeMessagePackObjectIsReported passed`](#ev-ab5dfeec65) [`test AllowPrivateRequiredIsReported passed`](#ev-0cdf78bf54) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed`](#ev-283a17c90c) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa) [`TypeCollector.cs:1008 @head`](#ev-a0957ebdbe) [`check tests.fail_without_fix`](#ev-d78b746a74)
 - **Codex** says met (3/4 citations verified): [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`check tests.fail_without_fix`](#ev-d78b746a74) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa)
 - **Nemotron** says met (12/13 citations verified): [`REQ-2234-F1 text`](#ev-dffe050cec) [`TypeCollector.cs:1008 @head`](#ev-eeb0b47f0a) [`TypeCollector.cs:1023 @head`](#ev-bc6b3dd3fa) [`TypeCollector.cs:1039 @head`](#ev-1d23e816db) [`test MemberWithoutKeyIsReported passed`](#ev-02bb823660) [`test AllowPrivateRequiredIsReported passed`](#ev-d0aaf0ddcf) [`test MemberTypeMustBeMessagePackObjectIsReported passed`](#ev-0fc5c1ea52) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure passed`](#ev-8fd1a8fc46) [`test DuplicateStringKeysAreReportedWithoutAnalyzerFailure passed`](#ev-bb565b0d63) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure passed`](#ev-25ded34e20) [`check tests.fail_without_fix pass`](#ev-62faeb2508) [`test DuplicateIntKeysAreReportedWithoutAnalyzerFailure failed`](#ev-283a17c90c) [`test MixedKeyKindsAreReportedWithoutAnalyzerFailure failed`](#ev-99a149a316)
@@ -164,9 +165,9 @@ It covers the sha256 of this pack's canonical JSON, the decision, your verdict o
 
 > Diagnostics that only apply when a formatter is generated (partial-class requirement, AOT-only checks) must not be reported for types with SuppressSourceGeneration = true.
 
+- **Held before:** Met, but already true before this change: all 1 of the clause's tests that were run without the fix pass there too: SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed
 - **Checks passed:** `build` pass, `tests.targeted` pass
-- **Fails without the fix:** no cited test does
-- **Passes without the fix too:** [`SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed`](#ev-165dc4a6ea)
+- **The clause's own tests pass without the fix:** [`SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed`](#ev-165dc4a6ea)
 - **Claude** says met (2/5 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1407 @head`](#ev-337b4ac064) [`TypeCollector.cs:989 @head`](#ev-e5721f8767)
 - **Codex** says met (1/2 citations verified): [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`check tests.fail_without_fix`](#ev-d78b746a74)
 - **Nemotron** says met (2/5 citations verified): [`REQ-2234-F2 text`](#ev-d3c4dd6a49) [`TypeCollector.cs:1383 @head`](#ev-6768fd1ae3) [`TypeCollector.cs:1386 @head`](#ev-76656896d1) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-097f9caee8) [`test SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed passed`](#ev-165dc4a6ea)

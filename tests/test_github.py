@@ -186,3 +186,24 @@ def test_malformed_signed_blocks_are_refused_not_crashing(pr_world, block):
     w = pr_world
     _comment(w, f"/countersign accept ok\n\n```{gh_mod.FENCE}\n{block}\n```\n", "toivo-gh")
     assert w.fake.comments[-1].startswith("Not recorded") and not w.fake.statuses
+
+
+def test_comment_opens_with_the_card_and_its_signoff_line_reads_the_ledger_branch(pr_world, tmp_path, monkeypatch):
+    """PR #2, mock judging 4: the card read another ledger (the snapshot's) and said "Signed" under an "awaiting" status."""
+    from countersign import pack_render
+    w = pr_world
+    other = tmp_path / "other-ledger.jsonl"  # a sign-off in some other ledger (the main repo's) must not leak in
+    other.write_text(json.dumps({"type": "signoff", "signer": w.p["owner"], "ts": "t", "seq": 1, "payload": {
+        "change": "9001", "pack_sha256": sha256_hex(canonical(w.p)), "decision": "request-changes"}}) + "\n")
+    monkeypatch.setattr(pack_render, "_ledger_paths", lambda: [other])
+    gh_mod.cmd_check(SimpleNamespace(**w.args, pr=7))
+    body = w.fake.sticky
+    assert w.p["tier"] == "ask" and "awaiting countersignature" in w.fake.statuses[-1][2]
+    assert "Signed by" not in body and f"Awaiting {w.p['owner']}'s countersignature" in body
+    card_at = body.index("**Why:**")
+    assert card_at < body.index("Recorded reviews") < body.index("| Tier |") and body.count("<details") >= 2
+    # once the owner signs on the ledger branch, the card and the status say the same thing
+    sent, _ = _signed_comment(w)
+    _comment(w, sent, "toivo-gh")
+    gh_mod.cmd_check(SimpleNamespace(**w.args, pr=7))
+    assert "Signed by Toivo: accept" in w.fake.sticky and "countersigned by Toivo" in w.fake.statuses[-1][2]

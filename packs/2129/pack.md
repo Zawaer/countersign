@@ -4,7 +4,7 @@
 
 **Why:** Risk score 175.2 reaches the block band
 
-- ! Builds, tests pass; 4 other checks fail
+- ! Builds, tests pass; but it adds public API, 1 new analyzer warning and 2 more checks fail
 - ✕ Reviewers found 2 major issues
 - ✕ Signed by Toivo: request changes
 

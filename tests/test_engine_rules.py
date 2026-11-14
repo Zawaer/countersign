@@ -315,3 +315,20 @@ def test_kill_gap_names_the_other_tests_that_kill_mutants_on_the_clauses_lines(w
     assert r["code"] == "tests_kill_no_mutant"
     assert "supporting REQ-9001-F1" in r["detail"] and "DuplicateKeys" in r["detail"]
     assert "killed by other tests (Guard)" in r["detail"]
+
+
+def test_first_screen_names_the_failing_checks_and_the_ruling_line_has_no_split_counts(monkeypatch):
+    """Mock judging 4: "2 other checks fail" said nothing; "backs 2 of 3 ... 2 of 4" read as a split."""
+    from countersign import pack_render
+    tools = [{"id": "build", "status": "pass"}, {"id": "tests.full_suite", "status": "pass"},
+             {"id": "tests.execution_fail_without_fix", "status": "fail", "summary": "new runtime tests pass on base"},
+             {"id": "tests.mutation", "status": "fail", "summary": "8 mutants of the changed source lines: 5 killed, 3 survived; x"}]
+    p = {"checked_by": {"tools": tools}, "findings": [], "card": {}, "owner": "Toivo", "signoff": {"required": True}}
+    first, *_, sig = pack_render._marks(p, None)
+    assert first[2] == "Builds, tests pass; but the new runtime tests pass without the fix and 3 of 8 planted mutants survive"
+    assert sig[2] == "Awaiting Toivo's countersignature"
+    ruling = {"dispute": "REQ-1-N1", "supported": [{"reviewer": "claude"}, {"reviewer": "codex"}], "unsupported": [{"reviewer": "codex"}]}
+    p.update(adjudication={"reviewer": "gemini", "rulings": [ruling]},
+             trust=[{"id": "REQ-1-N1", "reviewers": [{"reviewer": "claude", "verdict": "not_met"}, {"reviewer": "codex", "verdict": "met"}]}])
+    monkeypatch.setattr(pack_render, "_objection", lambda _p, _c: "Gemini: Claude's objection is supported")
+    assert pack_render._ruling_line(p, ruling) == "Gemini on N1: Claude's objection is supported"
