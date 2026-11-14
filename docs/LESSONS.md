@@ -146,7 +146,7 @@ The trust simulation showed that "3 agreeing spot-checks restore clearance" bare
 
 ### L19. Sat 14 Nov 01:56 (4120318): History is the strongest evidence we have
 
-We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed mandate (v2, the version signed then; upstream CI credited as passed; not re-run under v3 or v4). 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and none of the 11 ([measurement/history/results.md](../measurement/history/results.md)).
+We routed 109 merged MessagePack-CSharp PRs from their diffs under the signed mandate (v4; re-run Sat 06:05, same result as under v2; upstream CI credited as passed). 11 were later reverted or needed a follow-up fix. The AI would have cleared 24 PRs, and none of the 11 ([measurement/history/results.md](../measurement/history/results.md)).
 
 **Lesson:** replaying real history needs no models and no builds, and it answers "would this have let real bugs through?" better than any demo. Its limits: our labels are judgement calls, and 0 of 24 is a small sample.
 
