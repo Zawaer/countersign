@@ -16,7 +16,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ["README.md", "docs/CONCEPT_CARD.md", "docs/pitch/submission.md", "docs/pitch/qa-prep.md",
         "docs/pitch/deck.md", "docs/SCALING.md", "docs/MEASUREMENT.md", "docs/BENCHMARK.md", "docs/LESSONS.md",
-        "docs/security/REDTEAM.md", "docs/PR_FLOW.md", "docs/pitch/video-script.md", "docs/pitch/live.md"]
+        "docs/security/REDTEAM.md", "docs/PR_FLOW.md", "docs/pitch/video-script.md", "docs/pitch/live.md",
+        "docs/tech-challenges/codex.md", "docs/tech-challenges/gemini.md", "docs/tech-challenges/nemotron.md"]
 SPAN = re.compile(r"<!--n:([a-z0-9_]+)-->(.*?)<!--/n-->", re.S)
 
 
@@ -111,6 +112,9 @@ def _more(r: dict, v, ci: dict) -> dict:
     fpr = v("findings_per_reviewer")
     for rv in ("claude", "nemotron", "codex"):
         out[f"{rv}_verified"] = fpr[rv]["verified"]
+    out["nemotron_rejected"], out["nemotron_refusals"] = fpr["nemotron"]["rejected"], fpr["nemotron"]["refusals"]
+    nem_plf = v("planted_line_flagged")["per_reviewer"]["nemotron"]
+    out["nemotron_seeded_flagged"], out["nemotron_seeded_of"] = nem_plf["flagged"], nem_plf["of_reviewed"]
     out["codex_missed_majors"] = v("reviewer_cross_check")["codex"]["missed_others_verified_major"]
     far = v("findings_accepted_rate")
     for rv in ("claude", "nemotron"):
@@ -145,6 +149,15 @@ def _more(r: dict, v, ci: dict) -> dict:
     out["gemini_variants"] = len({x["change"] for x in gem if x["change"].startswith("var-")})
     out["gemini_tokens"] = f'{sum(x["tokens_in"] + x["tokens_out"] for x in gem):,}'
     out["gemini_usd"] = f'{sum(x["usd"] for x in gem):.2f}'
+    out["gemini_calls"] = len(gem)
+    gtok = [x["tokens_in"] + x["tokens_out"] for x in gem]
+    out["gemini_call_tokens_min"], out["gemini_call_tokens_max"] = f"{min(gtok):,}", f"{max(gtok):,}"
+    out["gemini_call_usd_min"] = f'{min(x["usd"] for x in gem):.3f}'
+    out["gemini_call_usd_max"] = f'{max(x["usd"] for x in gem):.3f}'
+    # Codex: the logged runs (docs/CODEX_LOG.md token counts, copied into costs.yaml)
+    cdx = [x for x in runs if x["provider"] == "openai"]
+    out["codex_runs"] = len(cdx)
+    out["codex_tokens_k"] = f'{_k(sum(x["tokens_in"] + x["tokens_out"] for x in cdx)):,}'
     files = {}
     for x in runs:
         ch = x.get("change")
