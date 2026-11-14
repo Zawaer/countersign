@@ -1,5 +1,5 @@
 {
-  "inputs": "/data/tmp-cs-clean",
+  "inputs": ".",
   "changes": [
     {
       "change": "2129",
@@ -116,6 +116,7 @@
         "verified finding claude:C1",
         "refused clause REQ-2234-N1",
         "refused clause REQ-2234-N2",
+        "reviewer refusal claude",
         "reviewer refusal nemotron",
         "reviewer refusal nemotron",
         "risk score risk"
@@ -562,6 +563,7 @@
       "why": [
         "verified finding claude:C1",
         "refused clause REQ-2283-N1",
+        "reviewer refusal nemotron",
         "risk score risk"
       ],
       "caught_by": null,
@@ -2224,6 +2226,31 @@
       "simulated": false,
       "how": "agreeing spot-checks / all spot-checks in the ledger"
     },
+    "signoffs": {
+      "value": 0,
+      "simulated": false,
+      "how": "changes with a signoff in the ledger"
+    },
+    "findings_rated": {
+      "value": null,
+      "simulated": false,
+      "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. verified findings the owner rated accepted/rejected/unsure, of all listed in signed packs"
+    },
+    "findings_accepted_rate": {
+      "value": null,
+      "simulated": false,
+      "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. per reviewer: accepted / rated (unsure counts as rated, unrated does not); AI findings the owner judged real"
+    },
+    "findings_rejected": {
+      "value": null,
+      "simulated": false,
+      "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. verified findings the owner judged false positives, with the owner's reason"
+    },
+    "tier_overrides": {
+      "value": null,
+      "simulated": false,
+      "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. decision by tier; overrode = accepted a change routed to a human (ask), or rejected / requested changes on one the AI cleared (notify/silent)"
+    },
     "catch_by_signal": {
       "value": {
         "of": 16,
@@ -2411,15 +2438,15 @@
     },
     "reviewer_cross_check": {
       "value": {
-        "claude": {
-          "major_raised_verified": 9,
-          "confirmed_by_another": 1,
-          "missed_others_verified_major": 1
-        },
         "nemotron": {
           "major_raised_verified": 20,
           "confirmed_by_another": 1,
           "missed_others_verified_major": 8
+        },
+        "claude": {
+          "major_raised_verified": 9,
+          "confirmed_by_another": 1,
+          "missed_others_verified_major": 1
         },
         "codex": {
           "major_raised_verified": 0,

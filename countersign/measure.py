@@ -6,6 +6,7 @@ Every number carries `simulated: true|false`:
 """
 
 from __future__ import annotations
+import os
 
 from copy import deepcopy
 
@@ -433,7 +434,7 @@ def replay(ws: Workspace) -> dict:
                                                        "saved_min": round(r["full_read_min"] - r["guided_min"], 1)} for r in real}, True,
                                         "reading model; negative = the pack costs more than reading the diff (small changes)")
     metrics["model_tokens_per_change"] = metric(_tokens_per_change(ws), False, "measurement/costs.yaml; estimates where the row says so")
-    out = {"inputs": str(ws.inputs), "changes": rows, "skipped": skipped, "mutants": mt, "seeded_reviewed": seeded, "metrics": metrics}
+    out = {"inputs": (os.path.relpath(ws.inputs, ws.root) if str(ws.inputs).startswith(str(ws.root)) else str(ws.inputs)), "changes": rows, "skipped": skipped, "mutants": mt, "seeded_reviewed": seeded, "metrics": metrics}
     hist = ws.root / "measurement" / "history" / "results.json"
     if hist.exists():
         h = read_json(hist)

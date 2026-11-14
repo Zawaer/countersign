@@ -38,7 +38,7 @@ Every number below says whether it is **real** (measured on code and history) or
 | Escape rate, routed vs cleared bucket | 0.129 vs 0.0 | same |
 | Upstream median days from PR opened to merged | cleared bucket 0.24, routed bucket 0.85 | GitHub `createdAt` / `mergedAt` |
 | Findings per reviewer (verified / rejected as unsupported) | claude: 26 / 2; codex: 0 / 0; nemotron: 41 / 1 | `measurement/results.json` |
-| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | claude: 9, 1, 1; nemotron: 20, 1, 8; codex: 0, 0, 6 | same |
+| Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | nemotron: 20, 1, 8; claude: 9, 1, 1; codex: 0, 0, 6 | same |
 | Owner's verdict on the AI's verified findings: accepted (real) / rated, per reviewer | no sign-offs yet (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |
 | Owner overrode the routing | no sign-offs yet | same |
 | Real changes routed to a human | 86% of 7 | same |
