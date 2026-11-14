@@ -1,0 +1,79 @@
+{
+  "seq": 9,
+  "ts": "2026-11-14T09:05:05+00:00",
+  "type": "signoff",
+  "payload": {
+    "change": "2129",
+    "pack_path": "packs/2129/pack.json",
+    "pack_sha256": "b7880487224f59abde3ac554165160c5ae60618dadcf1aa8d26f8def32830e74",
+    "decision": "request-changes",
+    "note": "New public API in MessagePack.Annotations is untracked; the new test project is missing from the solution.",
+    "tier": "block",
+    "ai_cleared": false,
+    "areas": [
+      "annotations-api",
+      "generator-analyzer-core",
+      "build",
+      "docs",
+      "tests"
+    ],
+    "mandate_sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C3",
+        "reviewer": "claude",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C4",
+        "reviewer": "claude",
+        "severity": "info",
+        "verdict": "unsure",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N1",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N2",
+        "reviewer": "nemotron",
+        "severity": "major",
+        "verdict": "rejected",
+        "reason": "the SDK 9 requirement is pre-existing on base, not caused by this change"
+      },
+      {
+        "ref": "nemotron:N3",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N4",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      }
+    ],
+    "simulated": false
+  },
+  "prev": "4637b8f940e9f5295c094277e35f58e7190c41a889efe2103e7b4e00046becff",
+  "signer": "Toivo",
+  "hash": "703cd1e4e3a268475ad8d4977968ce1f7d13aa7ecf76efe136daac7e2952e229",
+  "sig": "JJq11yOx4zQe7k2Zl6jXhZ5dGOf5lbFhROkg7ezTf1m7AKvwL5aPrIGdJbg/VLh9zXJHW3V5E220KKm+MOXWDw=="
+}

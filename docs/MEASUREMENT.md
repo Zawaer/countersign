@@ -39,8 +39,8 @@ Every number below says whether it is **real** (measured on code and history) or
 | Upstream median days from PR opened to merged | cleared bucket 0.24, routed bucket 0.85 | GitHub `createdAt` / `mergedAt` |
 | Findings per reviewer (verified / rejected as unsupported) | claude: 26 / 2; codex: 0 / 0; nemotron: 42 / 1 | `measurement/results.json` |
 | Blocker/major findings: raised and verified, confirmed by another reviewer, others' verified ones it did not raise | claude: 9, 1, 1; codex: 0, 0, 6; nemotron: 20, 1, 8 | same |
-| Owner's verdict on the AI's verified findings: accepted (real) / rated, per reviewer | no sign-offs yet (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |
-| Owner overrode the routing | no sign-offs yet | same |
+| Owner's verdict on the AI's verified findings: accepted (real) / rated, per reviewer | claude: 9 of 13 accepted (69%), 0 rejected, 4 unsure; nemotron: 8 of 10 accepted (80%), 1 rejected, 1 unsure; rated 23 of 23 rated (0 unrated); rejected as false positives: 2129 nemotron:N2 (the SDK 9 requirement is pre-existing on base, not caused by this change) (filled in when the owner signs) | `ledger/ledger.jsonl` signoffs |
+| Owner overrode the routing | 0 of 4 (accepted when routed to a human: none; held back when AI-cleared: none); by tier: ask: request-changes 2; block: request-changes 2 | same |
 | Real changes routed to a human | 86% of 7 | same |
 | Model tokens per change (estimates, see docs/COSTS.md) | 2129: 295,729, 2129-mut1: 64,570, 2129-mut2: 64,537, 2234: 275,180, 2234-inject: 52,139, 2234-mut1: 53,920, 2234-mut2: 57,510, 2234-mut3: 51,111, 2234-mut4: 51,730, 2234-mut5: 66,760, 2234-mut6: 69,520, 2234-mut7: 52,962, 2283: 233,512, 2283-inject: 55,323, 2283-mut1: 64,464, 2283-mut2: 60,159, 2283-mut3: 64,814, 2283-mut4: 65,247, 2283-mut5: 65,026, 2283-sec1: 64,204, 2297: 239,227, up-1934: 141,147, up-1967: 98,593, up-2022: 127,795 | `measurement/costs.yaml` |
 

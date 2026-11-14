@@ -1,0 +1,56 @@
+{
+  "seq": 10,
+  "ts": "2026-11-14T09:05:06+00:00",
+  "type": "signoff",
+  "payload": {
+    "change": "2297",
+    "pack_path": "packs/2297/pack.json",
+    "pack_sha256": "4ae1c9eea9d6e339b77b2fb04f69cd26fc9534307b1acf383e913566830fbd39",
+    "decision": "request-changes",
+    "note": "Split the change; the #if premise is wrong (the attribute exists on netstandard2.0 and .NET Framework).",
+    "tier": "block",
+    "ai_cleared": false,
+    "areas": [
+      "generator-analyzer-core",
+      "docs",
+      "tests"
+    ],
+    "mandate_sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C2",
+        "reviewer": "claude",
+        "severity": "info",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N1",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:v1.C2",
+        "reviewer": "claude",
+        "severity": "major",
+        "verdict": "unsure",
+        "reason": ""
+      }
+    ],
+    "simulated": false
+  },
+  "prev": "703cd1e4e3a268475ad8d4977968ce1f7d13aa7ecf76efe136daac7e2952e229",
+  "signer": "Toivo",
+  "hash": "48498e3bfa77b0ff4f25689b8c4c62cabec3657246e1ab869333507ec4e322ef",
+  "sig": "uoiE1TC/4a8uUUC5qj9xfOqa7bewAQYw6/SR36l08B4x4pQXmEBihIqHiKn/snTfEjQ7NMWX2h3aG4z4BUfSDA=="
+}

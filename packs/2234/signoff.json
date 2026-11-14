@@ -1,0 +1,91 @@
+{
+  "seq": 7,
+  "ts": "2026-11-14T09:05:05+00:00",
+  "type": "signoff",
+  "payload": {
+    "change": "2234",
+    "pack_path": "packs/2234/pack.json",
+    "pack_sha256": "f4aa850921d60877816f5b3cf225280db7ffa93da153e8a061631ec0ccb21bde",
+    "decision": "request-changes",
+    "note": "Fixes a different bug than #2234 (the 3.1.1 regression isn't on this base); Key(null) still crashes the analyzer (reproduced).",
+    "tier": "ask",
+    "ai_cleared": false,
+    "areas": [
+      "generator-analyzer-core",
+      "docs",
+      "tests"
+    ],
+    "mandate_sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C2",
+        "reviewer": "claude",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C3",
+        "reviewer": "claude",
+        "severity": "info",
+        "verdict": "unsure",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C4",
+        "reviewer": "claude",
+        "severity": "info",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N1",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "verdict": "unsure",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N2",
+        "reviewer": "nemotron",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N3",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N4",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "nemotron:N5",
+        "reviewer": "nemotron",
+        "severity": "info",
+        "verdict": "accepted",
+        "reason": ""
+      }
+    ],
+    "simulated": false
+  },
+  "prev": "2a8d54b42cab7c9e305c3e6d71498bbc1cc31329e4564eb417784600dbe3725c",
+  "signer": "Toivo",
+  "hash": "4f1b465c34d58b5729c8be568c44c40891aef753ef520f4c12353e8e7a5f09fe",
+  "sig": "DBBrWjOlvVFtrCv6XwUL9m3GO1CGJh8Ltvjx8AuA/w9TK92XA5m6ZB3T3tiNgGVb7hpTnrwVE2N6ounHLYaTAg=="
+}

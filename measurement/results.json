@@ -2332,27 +2332,69 @@
       "how": "agreeing spot-checks / all spot-checks in the ledger"
     },
     "signoffs": {
-      "value": 0,
+      "value": 4,
       "simulated": false,
       "how": "changes with a signoff in the ledger"
     },
     "findings_rated": {
-      "value": null,
+      "value": {
+        "rated": 23,
+        "of": 23,
+        "unrated": 0,
+        "signoffs_before_finding_verdicts": []
+      },
       "simulated": false,
       "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. verified findings the owner rated accepted/rejected/unsure, of all listed in signed packs"
     },
     "findings_accepted_rate": {
-      "value": null,
+      "value": {
+        "claude": {
+          "accepted": 9,
+          "rejected": 0,
+          "unsure": 4,
+          "unrated": 0,
+          "rated": 13,
+          "accepted_rate": 0.69
+        },
+        "nemotron": {
+          "accepted": 8,
+          "rejected": 1,
+          "unsure": 1,
+          "unrated": 0,
+          "rated": 10,
+          "accepted_rate": 0.8
+        }
+      },
       "simulated": false,
       "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. per reviewer: accepted / rated (unsure counts as rated, unrated does not); AI findings the owner judged real"
     },
     "findings_rejected": {
-      "value": null,
+      "value": [
+        {
+          "change": "2129",
+          "ref": "nemotron:N2",
+          "severity": "major",
+          "reason": "the SDK 9 requirement is pre-existing on base, not caused by this change"
+        }
+      ],
       "simulated": false,
       "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. verified findings the owner judged false positives, with the owner's reason"
     },
     "tier_overrides": {
-      "value": null,
+      "value": {
+        "by_tier": {
+          "ask": {
+            "request-changes": 2
+          },
+          "block": {
+            "request-changes": 2
+          }
+        },
+        "accepted_when_routed_to_human": [],
+        "held_back_when_ai_cleared": [],
+        "overrode": 0,
+        "of": 4
+      },
       "simulated": false,
       "how": "filled in when the owner signs (`countersign sign --finding`); newest signoff per change; no sign-offs yet until then. decision by tier; overrode = accepted a change routed to a human (ask), or rejected / requested changes on one the AI cleared (notify/silent)"
     },

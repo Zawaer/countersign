@@ -1,0 +1,49 @@
+{
+  "seq": 8,
+  "ts": "2026-11-14T09:05:05+00:00",
+  "type": "signoff",
+  "payload": {
+    "change": "2283",
+    "pack_path": "packs/2283/pack.json",
+    "pack_sha256": "c46fa2579947bae4adaf2ea616348c68e446d9d9996020acf25f3c252a8ea375",
+    "decision": "request-changes",
+    "note": "The fix silences MsgPack003 for in-compilation types reached through a metadata generic (reproduced regression).",
+    "tier": "ask",
+    "ai_cleared": false,
+    "areas": [
+      "generator-analyzer-core",
+      "docs",
+      "tests"
+    ],
+    "mandate_sha256": "71386aa55974f675c15c1adce46ae992fed2c8cb52d65ff8682e81d1df4065b4",
+    "statement": "I, Toivo, have read what was checked and by whom, what was not checked and why, and the residual risk listed in this pack, and I own this decision.",
+    "findings": [
+      {
+        "ref": "claude:C1",
+        "reviewer": "claude",
+        "severity": "major",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C2",
+        "reviewer": "claude",
+        "severity": "minor",
+        "verdict": "accepted",
+        "reason": ""
+      },
+      {
+        "ref": "claude:C3",
+        "reviewer": "claude",
+        "severity": "info",
+        "verdict": "unsure",
+        "reason": ""
+      }
+    ],
+    "simulated": false
+  },
+  "prev": "4f1b465c34d58b5729c8be568c44c40891aef753ef520f4c12353e8e7a5f09fe",
+  "signer": "Toivo",
+  "hash": "4637b8f940e9f5295c094277e35f58e7190c41a889efe2103e7b4e00046becff",
+  "sig": "LXCNXMPw/Qt6hxYsccoBlRjotyE+mTCfBDO0gw2Jm2MrD4Xu99OY+7bpQLQzfgY15aCjr0lEgqV2KCRqCCvbAA=="
+}
