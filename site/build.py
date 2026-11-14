@@ -85,6 +85,27 @@ def tier(t: str | None, owner: str | None = None) -> str:
     return f'<span class="badge {TIER_CLASS.get(t, "")}">{TIER_GLYPH.get(t, "")} {e(t.upper())}{o}</span>'
 
 
+def trust_rule(D: "Data") -> str:
+    """How clearance is withdrawn and earned back, read from the mandate's trust block (old or staged form)."""
+    tc = D.trust_cfg
+    if tc.get("restore_after_agreeing_spotchecks"):
+        return (f"drops that area to <code>{e(tc.get('escape_cap', 'ask'))}</code> at once: the AI may clear nothing there. "
+                f"It earns the right back after {e(tc['restore_after_agreeing_spotchecks'])} human spot-checks of AI-cleared changes in a row agree with the AI.")
+    m = re.search(r"^\s+notify:\s*\{agreeing_spotchecks:\s*(\d+)", rt("mandate/messagepack.mandate.yaml"), re.M)
+    if m:
+        return (f"drops that area one stage (<code>silent</code> → <code>notify</code> → <code>ask</code>), as does a human spot-check that disagrees with the AI. "
+                f"Climbing back to <code>notify</code> takes {m.group(1)} agreeing spot-checks in a row.")
+    return "drops that area's clearance; see the trust block in the mandate."
+
+
+def tier_legend() -> str:
+    """What the four tiers mean (README.md, docs/PRINCIPLES.md); shown wherever tier badges appear."""
+    return (f'<dl class="legend" aria-label="What the tiers mean">'
+            f'<div><dt>{tier("silent")} {tier("notify")}</dt><dd>the AI may clear it alone, if the mandate allows (notify also tells the owner)</dd></div>'
+            f'<div><dt>{tier("ask")}</dt><dd>the named owner must read the evidence pack and sign</dd></div>'
+            f'<div><dt>{tier("block")}</dt><dd>refused, citing the rule; the owner can only reject or request changes</dd></div></dl>')
+
+
 def status(s: str | None, word: str | None = None) -> str:
     s = s or "not run"
     cls = {"pass": "ok", "passed": "ok", "met": "ok", "fail": "bad", "failed": "bad", "not_met": "bad",
@@ -277,6 +298,14 @@ def hero_line(n: dict) -> str:
     return "".join(parts)
 
 
+def whoa_line(D: "Data") -> str:
+    """The landing page's first claim: change 2234, read from its facts and pack."""
+    p = D.packs.get("2234") or {}
+    owner = p.get("owner")
+    return ("<b>Change 2234 passes its build, its new tests, the full suite and an AI review. It fixes the wrong bug.</b> "
+            f"Countersign sent it to its owner{f', {e(owner)},' if owner else ''} with the reason and the evidence.")
+
+
 def hero_text(n: dict) -> str:
     return re.sub(r"<[^>]+>", "", hero_line(n))
 
@@ -394,7 +423,7 @@ def build_index(D: Data, n: dict) -> str:
     v1, v2, cl = n.get("codex_v1"), n.get("codex_v2"), n.get("claude_v2")
     diffs = [
         ("It caught a change that is green everywhere and fixes the wrong bug.",
-         "Change 2234 passes its build, its new tests and the full suite, and a reviewer says every requirement is met. "
+         "Change 2234 passes its build, its new tests and the full suite, and an AI reviewer says every requirement is met. "
          "Countersign routes it to its owner with the reason: the reported regression isn't on this base.",
          '<a href="tour.html">Walk through it</a>'),
         ("Tests have to prove they test something.",
@@ -412,13 +441,13 @@ def build_index(D: Data, n: dict) -> str:
          + (f"{n['h_n']} real upstream PRs replayed: {n['h_esc_cleared']} of {n['h_esc']} later escapes would have been cleared." if n.get("h_n") else ""),
          '<a href="attack.html">Try it yourself</a>'),
         ("Trust is withdrawn automatically after an escape.",
-         f"Each area's clearance right lives in the signed mandate. An escape traced to an AI-cleared change drops the area to "
-         f"<code>{e(D.trust_cfg.get('escape_cap', 'ask'))}</code> until {e(D.trust_cfg.get('restore_after_agreeing_spotchecks', '?'))} spot-checks in a row agree.",
+         "Each area's clearance right lives in the signed mandate. An escape (a defect found after merge) traced to an AI-cleared change "
+         + trust_rule(D),
          src("mandate/messagepack.mandate.yaml", "mandate")),
     ]
     diff_html = "".join(f'<li><h3>{t}</h3><p>{b}</p><p class="more">{l}</p></li>' for t, b, l in diffs)
     stats = []
-    stats.append((f'{n["cleared"]} of {n["changes"]}', "agent-written changes cleared by the AI. "
+    stats.append((f'{n["cleared"]} of {n["changes"]}', "agent-written changes cleared by the AI alone: a repo with no track record starts strict. "
                   f'{n["ask"]} went to their owner, {n["block"]} were blocked, each with the rule that decided it.', "measurement/results.json"))
     if n.get("mut_checks") is not None:
         stats.append((f'{n["mut_checks"]} of {n["mut_total"]}', "seeded one-line bugs failed a build or test check. "
@@ -432,12 +461,14 @@ def build_index(D: Data, n: dict) -> str:
     body = f"""
 <section class="wrap hero">
 <p class="eyebrow">Junction 2026 · Tieto: Earned Trust in AI Code</p>
-<h1>AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.</h1>
-<p class="lead">{hero_line(n)}</p>
+<h1>AI review that clears only what it can prove. A named human signs for the rest.</h1>
+<p class="lead">{whoa_line(D)}</p>
+<p class="prose muted">What the AI may clear alone is set by a <b>mandate</b>: a signed file per repo that lists each code area, its owner, and the most the AI may decide there without a human.</p>
 </section>
 <section class="wrap" aria-labelledby="s2234">
 <h2 id="s2234" class="h-sm">Change 2234: green everywhere, wrong bug</h2>
 {story_2234(D)}
+{tier_legend()}
 <p class="ctas"><a class="btn primary" href="attack.html">Try to sneak a bug past it</a><a class="btn" href="tour.html">Guided tour, 8 steps</a><a class="btn" href="pitch.html">Pitch deck</a></p>
 </section>
 <section class="wrap" aria-labelledby="snum"><h2 id="snum">The numbers</h2><div class="stats">{stats_html}</div></section>
@@ -491,17 +522,18 @@ def build_attack(D: Data, n: dict) -> str:
 <section class="wrap hero small">
 <p class="eyebrow">Attack 1 of 2</p>
 <h1>Try to sneak a bug past it</h1>
-<p class="lead prose">We planted {len(muts)} one-line bugs into the agents' own branches, the kind a careless or hostile agent could slip in: a removed guard, an inverted condition, a swallowed warning, a wrong key kind, an off-by-one. Pick one. You see the line you "sneaked in", then what the pipeline did with it. {cba_line}{src('measurement/mutants/mutants.json', 'catalogue')}</p>
+<p class="lead prose">We planted {len(muts)} one-line bugs into the agents' own branches, the kind a careless or hostile agent could slip in: a removed guard, an inverted condition, a swallowed warning, a wrong key kind, an off-by-one. Pick one (<code>2234-mut2</code> = change 2234, seeded bug 2). You see the line you "sneaked in", then what the pipeline did with it. {cba_line}{src('measurement/mutants/mutants.json', 'catalogue')}</p>
 </section>
 <section class="wrap attack">
 <div class="picker" role="group" aria-label="Seeded defects">{picks}</div>
 <div id="verdict" class="verdict" aria-live="polite"><p class="muted">Pick a seeded bug above.</p></div>
 </section>
 <section class="wrap" aria-labelledby="sall"><h2 id="sall">All {len(muts)} at a glance</h2>
-{table(['Seeded bug', 'Kind', 'Failed check', 'Tier before AI review', 'Original'],
+{tier_legend()}
+{table(['Seeded bug', 'Kind', 'Failed check', 'Tier before AI review', 'Tier without the bug'],
        [[f'<code>{e(m["id"])}</code>', e(m["kind"]), (", ".join(code(c) for c in d["failed"]) or '<span class="st warn">– none failed</span>'),
          tier(m["tier"], m["owner"]), tier(m["original_tier"])] for m, d in zip(muts, data)], cls='stack')}
-<p class="foot-note">Tier before AI review = facts only, no reviewers, from {src('measurement/results.json')} (<code>mutants</code>). "Original" is the unmutated change routed the same way. AI reviews of the seeded bugs: {e(muts[0]["reviews"] if muts and isinstance(muts[0]["reviews"], str) else "see results.json")}.</p>
+<p class="foot-note">Tier before AI review = facts only, no reviewers, from {src('measurement/results.json')} (<code>mutants</code>). "Tier without the bug" is the unmodified change routed the same way. AI reviews of the seeded bugs: {e(muts[0]["reviews"] if muts and isinstance(muts[0]["reviews"], str) else "see results.json")}.</p>
 </section>
 {hist}
 <section class="wrap"><h2>Attack 2: forge the record</h2><p class="prose">Every sign-off is an Ed25519 signature in a hash-chained ledger. <a href="tour.html#6">Edit a ledger line in your browser and watch the check fail.</a></p></section>
@@ -668,7 +700,7 @@ def build_tour(D: Data, n: dict) -> str:
     steps.append(("Trust is earned per area, and withdrawn", f"""
 <p class="lead">The mandate says, per area, the most lenient tier the AI may assign alone. Clearance is never global.</p>
 {table(['Area', 'Owner', 'Sensitivity', 'Most lenient tier the AI may give', 'What it is'], arow)}
-<div class="callout"><b>After an escape.</b> When a revert or incident is traced to an AI-cleared change, that area drops to <code>{e(tc.get('escape_cap', 'ask'))}</code> at once: the AI may clear nothing there. It earns the right back after {e(tc.get('restore_after_agreeing_spotchecks', '?'))} spot-checks in a row agree with the AI; a disagreeing spot-check tightens the cap by {e(tc.get('disagree_tightens_by', '?'))} step.</div>
+<div class="callout"><b>After an escape.</b> When a revert or incident is traced to an AI-cleared change, the mandate {trust_rule(D)}</div>
 <p class="prose">Escapes recorded in the ledger so far: <b>{len(escapes)}</b>. {'Not recorded yet: a simulated escape-and-recovery run (it will be labelled simulated).' if not escapes else ''}</p>
 <p class="foot-note">{src('mandate/messagepack.mandate.yaml')} (<code>areas</code>, <code>trust</code>) · {src('countersign/trust.py')} · offline: <code>countersign trust</code></p>"""))
 
@@ -901,7 +933,7 @@ CSS = r"""
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--sans);font-variant-numeric:tabular-nums}
 a{color:var(--accent);text-underline-offset:2px}a:hover{text-decoration-thickness:2px}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}.top nav a:focus-visible{outline-offset:-2px}
 code,pre,.mono{font-family:var(--mono);font-size:.875em}
 code{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:0 4px;word-break:break-word}
 pre{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;overflow-x:auto;margin:8px 0}
@@ -923,7 +955,8 @@ section.wrap{padding-top:40px}
 .top nav a{color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:6px;font-size:14px;white-space:nowrap}
 .top nav a:hover{color:var(--fg);background:var(--bg2)}.top nav a[aria-current]{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px 0 var(--accent);border-radius:0}
 .theme{background:none;border:1px solid var(--border);color:var(--fg);border-radius:6px;width:32px;height:32px;cursor:pointer}
-.hero{padding-top:48px}.hero h1{max-width:34ch}.hero.small h1{max-width:none}
+.hero{padding-top:48px}.hero h1{max-width:44ch}.hero .muted{font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 24px;margin:8px 0 16px;font-size:14px;color:var(--muted)}.legend div{display:flex;gap:8px;align-items:baseline}.legend dt{white-space:nowrap}.legend dd{margin:0}.hero.small h1{max-width:none}
 .h-sm{font-size:20px}
 .foot{border-top:1px solid var(--border);margin-top:64px;padding:24px 0;color:var(--muted);font-size:14px}.foot p{margin:0 0 8px}
 .foot-note{font-size:12px;color:var(--muted);margin-top:8px}
@@ -972,7 +1005,7 @@ table.dense td{padding:6px 10px}
 .callout{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:12px 16px;margin:16px 0;max-width:80ch;background:var(--bg2)}
 /* attack */
 .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:16px}
-.pick{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer;font:14px var(--sans)}
+.pick{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer;font:14px var(--sans)}
 .pick span{font-size:12px;color:var(--muted)}.pick code{border:0;background:none;padding:0;font-weight:600}
 .pick:hover{border-color:var(--muted)}.pick[aria-pressed=true]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-bg)}
 .verdict{border:1px solid var(--border);border-radius:6px;padding:16px;min-height:200px}
@@ -1039,7 +1072,7 @@ ul.cols>li{border:1px solid var(--border);border-radius:6px;padding:16px;margin:
 h1{font-size:22px}.hero h1{font-size:22px}.lead{font-size:15px}.h-sm{font-size:18px}
 table.stack thead{display:none}table.stack tr{display:block;border-bottom:1px solid var(--border);padding:8px 0}table.stack tr:last-child{border-bottom:0}
 table.stack td{display:grid;grid-template-columns:96px 1fr;gap:8px;border:0;padding:2px 12px}table.stack td::before{content:attr(data-label);padding-top:2px;font:600 11px/1.5 var(--sans);text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
-.card{padding:12px}.rows li{padding:4px 0}.picker{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr;gap:16px}.pick span{display:none}.pick{padding:8px}.verdict{padding:12px}
+.card{padding:12px}.rows li{padding:4px 0}.picker{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr;gap:16px}.pick{padding:8px}.top nav{flex-wrap:wrap;overflow:visible}table.stack td.n{text-align:left}.verdict{padding:12px}
 .big{font-size:24px}.tstep h1{font-size:22px}.dot span{display:none}.slide{padding:24px 16px}.diffs li{padding-left:40px}
 th,td{padding:6px 8px}}
 @media print{.top,.deckbar,.tnav{display:none}.slide{display:block!important;page-break-after:always;min-height:auto}}
