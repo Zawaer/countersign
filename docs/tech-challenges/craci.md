@@ -27,5 +27,5 @@ connections but does not inspect them for packages. Our SBOM therefore covers th
 the policy, the connections and the violations. We also found that leaving out `presets:` turns on every built-in
 preset, and fixed our own policy.
 
-Run (2129 on CRACI, 13 of 13 statuses as committed): RUN_2129
+Runs: github.com/Zawaer/countersign/actions/runs/43537739301 (2129), /43537742003 (2283)
 Code: github.com/Zawaer/countersign (`countersign/sbom.py`, `countersign/craci.py`, `docs/CI.md`)
