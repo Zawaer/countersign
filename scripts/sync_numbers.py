@@ -14,9 +14,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DOCS = ["README.md", "docs/CONCEPT_CARD.md", "docs/pitch/submission.md", "docs/pitch/qa-prep.md",
+DOCS = ["README.md", "docs/CONCEPT_CARD.md", "docs/pitch/submission.md",
         "docs/pitch/deck.md", "docs/SCALING.md", "docs/MEASUREMENT.md", "docs/BENCHMARK.md", "docs/LESSONS.md",
-        "docs/security/REDTEAM.md", "docs/PR_FLOW.md", "docs/pitch/video-script.md", "docs/pitch/live.md",
+        "docs/security/REDTEAM.md", "docs/PR_FLOW.md", "docs/pitch/video-script.md",
         "docs/tech-challenges/codex.md", "docs/tech-challenges/gemini.md", "docs/tech-challenges/nemotron.md"]
 SPAN = re.compile(r"<!--n:([a-z0-9_]+)-->(.*?)<!--/n-->", re.S)
 
