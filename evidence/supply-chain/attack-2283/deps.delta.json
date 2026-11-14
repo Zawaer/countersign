@@ -177,8 +177,8 @@
   "base": "evidence/base/sbom.cdx.json",
   "head": "evidence/supply-chain/attack-2283/sbom.cdx.json",
   "base_serial": "urn:uuid:fb46c0d0-9d66-5c14-8bd5-bab30ed80b76",
-  "head_serial": "urn:uuid:bd0a794a-d3ca-5182-a456-4d8541d0f026"
+  "head_serial": "urn:uuid:df65469c-aa32-5f53-8a3e-ea84e67a1849"
  },
  "scope": "all 30 *.csproj in the tree (src, tests, sandbox, benchmark), restored as one throwaway solution; the graph is NuGet's restore output (obj/**/project.assets.json)",
- "head": "95cc7ade2618bc466a10da2b87bc76e08749a98a"
+ "head": "cd7c3f7e99592cb78db2d6fca8aff13287c52d66"
 }

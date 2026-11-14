@@ -18,7 +18,7 @@ sed -i 's|^\(\s*\)<PackageVersion Include="FluentAssertions"|\1<PackageVersion I
 p=tests/MessagePack.SourceGenerator.Tests/MessagePack.SourceGenerator.Tests.csproj
 sed -i '0,/<PackageReference /s|^\(\s*\)<PackageReference |\1<PackageReference Include="SharpZipLib" />\n&|' "$p"
 git diff --stat
-git -c user.name=countersign-demo -c user.email=demo@invalid commit --quiet -am "2283 + a dependency nobody reviews (seeded attack, never pushed)"
+GIT_AUTHOR_DATE=2026-11-14T00:00:00Z GIT_COMMITTER_DATE=2026-11-14T00:00:00Z git -c user.name=countersign-demo -c user.email=demo@invalid commit --quiet -am "2283 + a dependency nobody reviews (seeded attack, never pushed)"
 sha=$(git rev-parse HEAD)
 CS_REPO="$tmp/mp" python3 "$here/deps-delta.py" 2283 --head "$sha" --standalone "$out"
 git diff HEAD~1 > "$out/attack.diff"
