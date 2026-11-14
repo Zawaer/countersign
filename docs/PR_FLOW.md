@@ -97,7 +97,7 @@ come from Zawaer/countersign at the pinned commit (`.countersign/snapshot/PINNED
 `countersign review-llm` per reviewer (API keys as CI secrets, as in Zawaer/countersign's own CI) and the dotnet
 facts job before the pack step. The green AI-cleared path is exercised once for real, on PR #11 (below), and otherwise by tests.
 
-Why vendored: Zawaer/countersign is private, and we did not want to add a cross-repo secret for a demo. The pipeline
+Why vendored: Zawaer/countersign was private during the event, and we did not want to add a cross-repo secret for a demo. The pipeline
 code and recorded inputs are copied into `.countersign/snapshot/` with the source commit in `PINNED`
 (`.countersign/vendor.sh` refreshes it). To check out the pinned commit instead, add one repo secret: a fine-grained
 token with *Contents: read-only* on Zawaer/countersign only, used by `actions/checkout` with `repository:` and `ref:`.
