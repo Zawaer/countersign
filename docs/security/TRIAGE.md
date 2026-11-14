@@ -11,12 +11,12 @@ Verdicts: **confirmed** (real, fixed or fix described), **not a real issue as st
 | # | Finding | Codex severity | Verdict | Status |
 |---|---|---|---|---|
 | C1 | Signed entry replayable onto another PR | High | Exploit as stated doesn't work; binding gap confirmed (Low) | Fixed in github.py |
-| C2 | Code evidence may cite any path at any revision | Medium | Confirmed, and worse than stated (see T2) | Fix described for the verify.py owner |
-| C3 | Loose review-schema validation (duplicates, types) | Low | Confirmed (Low) | Fix described for the llm.py/verify.py owners |
+| C2 | Code evidence may cite any path at any revision | Medium | Confirmed, and worse than stated (see T2) | **Fixed** (D11, verify.py: rev in {head, base}, path inside the diff) |
+| C3 | Loose review-schema validation (duplicates, types) | Low | Confirmed (Low) | **Fixed** (D11: duplicate verdicts count as none, malformed items rejected) |
 | C4 | Prompt injection from diff content | Low | Confirmed (Low; partly addressed since) | Fix described for the llm.py owner |
 | T1 | Any workflow in the demo repo can forge `countersign/tier` | (missed) | **Confirmed, High** | **Needs a decision** (GitHub App) |
-| T2 | `requirement`/`check` evidence verifies trivially and satisfies `min_verified_evidence` | (missed) | **Confirmed, High for live reviews** | Fix described for the verify.py/decide.py owners |
-| T3 | Model-supplied `rev` is passed to `git show` as an option | (missed) | Confirmed, Medium | Fix described for the verify.py owner |
+| T2 | `requirement`/`check` evidence verifies trivially and satisfies `min_verified_evidence` | (missed) | **Confirmed, High for live reviews** | **Fixed** (D11: only substantive evidence counts; requirement items never count alone) |
+| T3 | Model-supplied `rev` is passed to `git show` as an option | (missed) | Confirmed, Medium | **Fixed** (D11, verify.py and pack.py: `--end-of-options`; llm.py `_code_excerpt` too) |
 | T4 | Ledger/key code trusted the shape of ledger lines and signer names | (missed) | Confirmed, Low | Fixed in ledger.py, keys.py |
 
 ## C1: signoff replay onto another PR (Codex: High)

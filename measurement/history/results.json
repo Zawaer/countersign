@@ -2,8 +2,8 @@
   "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp (clone at /data/src/mp)",
   "mandate": {
     "path": "mandate/messagepack.mandate.yaml",
-    "version": "2",
-    "sha256": "39cc2060685638e17d2ec6f88dac3ae55ad06a1c2c04534e37d57bc27aefbf81"
+    "version": "4",
+    "sha256": "4b247d4ec39413ddaa14bd2d73e7c55963b36a9526f70da5e2786e37b0ebff9e"
   },
   "simulated": false,
   "labels": "measurement/history/labels.yaml",

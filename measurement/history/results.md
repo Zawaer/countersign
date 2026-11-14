@@ -1,6 +1,6 @@
 # Historical replay: real MessagePack-CSharp PRs routed by Countersign's deterministic stage
 
-**Real data** (`simulated: false`): 109 merged upstream PRs, their real diffs, and escapes labelled by the rule in [README.md](README.md) (every label and its link: [labels.yaml](labels.yaml)). Mandate `mandate/messagepack.mandate.yaml` v2 as signed, sha256 `39cc20606856`; no reviews, no models, no builds.
+**Real data** (`simulated: false`): 109 merged upstream PRs, their real diffs, and escapes labelled by the rule in [README.md](README.md) (every label and its link: [labels.yaml](labels.yaml)). Mandate `mandate/messagepack.mandate.yaml` v4 as signed, sha256 `4b247d4ec394`; no reviews, no models, no builds.
 
 Reviewers can only add reasons to route to a human, never remove one, so these tiers are the most lenient Countersign could give: escapes in the cleared bucket are an upper bound on what the AI would have let through.
 

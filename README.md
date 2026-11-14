@@ -4,7 +4,7 @@
 
 > **AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.**
 
-**In numbers:** replayed on 109 real merged MessagePack-CSharp PRs (signed mandate v2, upstream CI credited as passed), the AI would have cleared 24 of them, and none of the 11 that later needed a revert or a follow-up fix. On Tieto's four agent-written changes it sent all four to a named owner, each with its reason.
+**In numbers:** replayed on 109 real merged MessagePack-CSharp PRs (signed mandate v4, upstream CI credited as passed), the AI would have cleared 24 of them, and none of the 11 that later needed a revert or a follow-up fix. On Tieto's four agent-written changes it sent all four to a named owner, each with its reason.
 
 **Three words used throughout:**
 - **Mandate:** a signed, versioned file per repo that says, area by area, how far the AI may go alone and who owns each area.

@@ -34,7 +34,7 @@ Stop asking *"did a human read every line?"* Ask *"did a named human sign for wh
 
 ## Evidence it works
 
-- **History:** of 109 real merged PRs (mandate v2, upstream CI credited as passed), the AI would clear 24, and none of the 11 escapes.
+- **History:** of 109 real merged PRs (mandate v4, upstream CI credited as passed), the AI would clear 24, and none of the 11 escapes.
 - **Seeded:** 17 seeded changes (14 one-line bugs, 2 prompt injections, 1 supply-chain attack); checks alone catch 14 of 17. Of the 3 bugs tests missed, a reviewer flagged the planted line in 2 of 3 with a finding the original did not already have (3 of 3 by location); Nemotron alone in 2 of 3.
 - **Simulated:** with 20-check restore and weekly canaries, escapes stay at the full-review level when reviewers degrade. This changed the mandate (v3; now v4).
 
