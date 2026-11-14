@@ -12,8 +12,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from attacks import ATTACKS, run  # noqa: E402
 
-# Known misses as of 2026-11-14 (REDTEAM.md, "Misses and fixes").
-KNOWN_MISSES = {"T1"}  # still open after the Sat 07:00-07:40 fixes (G4, S6 closed in mandate v6); see REDTEAM.md
+# Known misses as of 2026-11-14 (REDTEAM.md, "Misses and fixes"): none left.
+KNOWN_MISSES: set[str] = set()  # TT1 (test theater) closed by tests.mutation (G4, S6 in mandate v6); see REDTEAM.md
 
 
 @pytest.mark.parametrize("aid", [pytest.param(a[0], marks=pytest.mark.xfail(strict=True, reason="known miss, see REDTEAM.md"))

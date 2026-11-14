@@ -34,7 +34,7 @@
   "inputs": {
     "facts": {
       "path": "evidence/2234/facts.json",
-      "sha256": "7e8a21026403756b0fbbaf2126d14ada3115673cca8b801d7697629cf0fc5746"
+      "sha256": "a82731a44ec33e038567cced4392b11e22807b114aa6b4a34c6e4dca1d2fc9f5"
     },
     "requirements": {
       "path": "requirements/2234.yaml",
@@ -120,7 +120,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
-      "why": "score 67.4 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.1"
+      "why": "score 92.4 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 20 + lines_changed 10.1"
     }
   ],
   "drivers": [
@@ -178,7 +178,7 @@
       "source": "risk score",
       "id": "risk",
       "tier": "ask",
-      "why": "score 67.4 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.1"
+      "why": "score 92.4 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 20 + lines_changed 10.1"
     },
     {
       "source": "verified finding",
@@ -1435,6 +1435,15 @@
         "summary": "built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 40 logs; every NuGet feed the head declares is inside the policy",
         "duration_s": null,
         "log": null
+      },
+      {
+        "id": "tests.mutation",
+        "tool": "evidence/scripts/mutation.py + dotnet test (one mutant at a time, the targeted filter)",
+        "tool_version": "8.0.402",
+        "status": "fail",
+        "summary": "8 mutants of the changed source lines: 5 killed, 3 survived; 3 of 6 mutated hunks have a killed mutant; surviving hunks: TypeCollector.cs:1148, TypeCollector.cs:1163-1166, TypeCollector.cs:1179-1182",
+        "duration_s": null,
+        "log": "evidence/2234/logs/mutation/"
       }
     ],
     "reviewers": [
@@ -2393,7 +2402,7 @@
     "Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)"
   ],
   "risk": {
-    "score": 67.4,
+    "score": 92.4,
     "tier": "ask",
     "thresholds": {
       "notify": 15,
@@ -2448,8 +2457,8 @@
       },
       {
         "factor": "failed_checks",
-        "points": 25,
-        "reason": "1 failed check(s) x 25: tests.execution_fail_without_fix"
+        "points": 50,
+        "reason": "2 failed check(s) x 25: tests.execution_fail_without_fix, tests.mutation"
       }
     ]
   },
@@ -2569,7 +2578,7 @@
     "fyi": [
       "Rene"
     ],
-    "risk_score": 67.4,
+    "risk_score": 92.4,
     "reasons": [
       {
         "text": "Claude found a verified major issue: The issue's 3.1.1 regression is not on this base; the change fixes a different crash",
@@ -3553,7 +3562,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-ab5dfeec65": {
       "kind": "test",
@@ -3589,7 +3599,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-0cdf78bf54": {
       "kind": "test",
@@ -3625,7 +3636,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-283a17c90c": {
       "kind": "test",
@@ -3663,7 +3675,11 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M2 (TypeCollector.cs:1023 negate_condition)",
+        "M7 (TypeCollector.cs:1023 drop_guard)"
+      ]
     },
     "ev-8fd1a8fc46": {
       "kind": "test",
@@ -3702,7 +3718,11 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M2 (TypeCollector.cs:1023 negate_condition)",
+        "M7 (TypeCollector.cs:1023 drop_guard)"
+      ]
     },
     "ev-25ded34e20": {
       "kind": "test",
@@ -3740,7 +3760,10 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M1 (TypeCollector.cs:1008 drop_statement)"
+      ]
     },
     "ev-bc6b3dd3fa": {
       "kind": "code",
@@ -3928,7 +3951,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-d0aaf0ddcf": {
       "kind": "test",
@@ -3963,7 +3987,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-0fc5c1ea52": {
       "kind": "test",
@@ -3998,7 +4023,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-bb565b0d63": {
       "kind": "test",
@@ -4036,7 +4062,11 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M3 (TypeCollector.cs:1039 negate_condition)",
+        "M8 (TypeCollector.cs:1039 drop_guard)"
+      ]
     },
     "ev-62faeb2508": {
       "kind": "check",
@@ -4096,7 +4126,10 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M1 (TypeCollector.cs:1008 drop_statement)"
+      ]
     },
     "ev-165dc4a6ea": {
       "kind": "test",
@@ -4133,7 +4166,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-097f9caee8": {
       "kind": "test",
@@ -4170,7 +4204,8 @@
           ]
         }
       ],
-      "without_fix": "passed"
+      "without_fix": "passed",
+      "mutants_killed": []
     },
     "ev-6768fd1ae3": {
       "kind": "code",
@@ -4478,7 +4513,11 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M3 (TypeCollector.cs:1039 negate_condition)",
+        "M8 (TypeCollector.cs:1039 drop_guard)"
+      ]
     },
     "ev-f7ce6ac392": {
       "kind": "test",
@@ -4604,7 +4643,11 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M2 (TypeCollector.cs:1023 negate_condition)",
+        "M7 (TypeCollector.cs:1023 drop_guard)"
+      ]
     },
     "ev-1f3bd1cf2e": {
       "kind": "code",
@@ -4722,7 +4765,11 @@
           ]
         }
       ],
-      "without_fix": "failed"
+      "without_fix": "failed",
+      "mutants_killed": [
+        "M2 (TypeCollector.cs:1023 negate_condition)",
+        "M7 (TypeCollector.cs:1023 drop_guard)"
+      ]
     },
     "ev-16adc56b18": {
       "kind": "code",

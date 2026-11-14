@@ -7,17 +7,17 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 **Why ask**
 
 1. Claude found a verified major issue: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic ([evidence](#f-claude-C1))
-2. 1 of 5 requirement clauses not proven. Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence; the adjudicator disputes it ([evidence](#chain-REQ-2283-N1))
+2. 2 of 5 requirement clauses not proven. REQ-2283-F2: The tests supporting REQ-2283-F2 (the new tests its reviewers cite: ClosedGenericRecordStruct_FromMetadataReference, ClosedGenericStruct_FromMetadataReference) kill no mutant on its lines (TypeCollector.cs:239, TypeCollector.cs:985) in tests.mutation; no test kills any of the 2 mutant(s) there (+1 more) ([evidence](#chain-REQ-2283-F2))
 3. The adjudicator (Gemini) found the evidence on REQ-2283-N1, finding:claude:C1 disputed ([evidence](#panel))
 
-<sub>All 14 tier drivers are under Full detail.</sub>
+<sub>All 15 tier drivers are under Full detail.</sub>
 
 **Requirement trace**
 
 | Status | Clause | Why |
 |---|---|---|
 | **PROVEN** | [REQ-2283-F1](#chain-REQ-2283-F1) | All 3 reviewers say met (12 verified citations); build, tests.targeted pass |
-| **PROVEN** | [REQ-2283-F2](#chain-REQ-2283-F2) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
+| **REFUSED** | [REQ-2283-F2](#chain-REQ-2283-F2) | The tests supporting REQ-2283-F2 (the new tests its reviewers cite: ClosedGenericRecordStruct_FromMetadataReference, ClosedGenericStruct_FromMetadataReference) kill no mutant on its lines (TypeCollector.cs:239, TypeCollector.cs:985) in tests.mutation; no test kills any of the 2 mutant(s) there |
 | **PROVEN** | [REQ-2283-F3](#chain-REQ-2283-F3) | All 3 reviewers say met (10 verified citations); build, tests.targeted pass |
 | **NOT MET** | [REQ-2283-N1](#chain-REQ-2283-N1) | Claude says not met (Codex and Nemotron: met); Codex said met without verified evidence; the adjudicator disputes it |
 | **PROVEN** | [REQ-2283-N2](#chain-REQ-2283-N2) | All 3 reviewers say met (8 verified citations); build, tests.fail_without_fix pass |
@@ -31,7 +31,7 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 <a id="refused"></a>**What the AI refused to decide, and who should**
 
 - <a id="refusal-5"></a>Whether the placeholder requirement set matches the upstream issue #2283 intent. *Why:* The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully. *Who:* area owner or maintainer (raised by Nemotron)
-- Whether [REQ-2283-N1](#chain-REQ-2283-N1) is met: see the trace. *Who:* Toivo
+- Whether [REQ-2283-F2](#chain-REQ-2283-F2), [REQ-2283-N1](#chain-REQ-2283-N1) are met: see the trace. *Who:* Toivo
 
 <details id="refused-peripheral"><summary>4 peripheral refusals (out of scope for this change)</summary><a id="refusal-1"></a>Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (Claude) · <a id="refusal-2"></a>Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (Claude) · <a id="refusal-3"></a>Execution-test behavior under a compiler that loads the generator (Codex) · <a id="refusal-4"></a>End-to-end execution of the generator in consumer projects (tests.execution: MessagePack.SourceGenerator.ExecutionTests, MapModeExecutionTests) (Nemotron)</details>
 
@@ -46,7 +46,7 @@ Changes 1 source file (TypeCollector.cs), 1 test file, 2 doc files (+225 -3) on 
 **Residual risk you accept by signing**
 
 - Open major finding: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic
-- Not proven by the AI: REQ-2283-N1. Signing means you judge them yourself.
+- Not proven by the AI: REQ-2283-F2, REQ-2283-N1. Signing means you judge them yourself.
 - 1 question the AI declined to decide (listed above) are yours.
 
 <details><summary>3 more risks that do not set the tier</summary>4 peripheral refusals (out of scope for this change) are yours too. · Not run: tests.execution, tests.MessagePack.Tests, build.net472/netstandard, benchmarks · Standing pipeline gaps: other-targets, runtime-perf, semantic-intent, provenance</details>
@@ -94,15 +94,15 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 - **Nemotron** says met (5/5 citations verified): [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`test ClosedGenericStruct_FromMetadataReference_UnkeyedMember passed`](#ev-72235a3098) [`TypeCollector.cs:1077 @head`](#ev-463700b774) [`check tests.fail_without_fix pass`](#ev-62faeb2508)
 
 <a id="chain-REQ-2283-F2"></a>
-#### REQ-2283-F2: **PROVEN**
+#### REQ-2283-F2: **REFUSED**
 
 > The MsgPack00x analyzer must not throw (no AD0001) for the same input.
 
-- **Checks passed:** `build` pass, `tests.targeted` pass
-- **Fails without the fix:** [`ClosedGenericStruct_FromMetadataReference`](#ev-cb2de557cf), [`ClosedGenericRecordStruct_FromMetadataReference`](#ev-751fd9609c)
-- **Claude** says met (4/5 citations verified): [`test ClosedGenericStruct_FromMetadataReference failed`](#ev-cb2de557cf) [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`TypeCollector.cs:985 @head`](#ev-46dc7a6309) [`TypeCollector.cs:985 @base`](#ev-73cd23393f) [`check tests.fail_without_fix`](#ev-d78b746a74)
-- **Codex** says met (2/3 citations verified): [`test ClosedGenericRecordStruct_FromMetadataReference passed`](#ev-751fd9609c) [`check tests.fail_without_fix`](#ev-d78b746a74) [`TypeCollector.cs:239 @head`](#ev-ce1eecc974)
-- **Nemotron** says met (4/4 citations verified): [`test ClosedGenericStruct_FromMetadataReference failed`](#ev-cb2de557cf) [`test ClosedGenericStruct_FromMetadataReference passed`](#ev-f073740910) [`TypeCollector.cs:239 @head`](#ev-ce1eecc974) [`check tests.fail_without_fix pass`](#ev-62faeb2508)
+- **Claude: met** (4/5 verified). The new tests run MsgPack00xMessagePackAnalyzer through VerifyCS expecting zero diagnostics; on base all three fail with AD0001 IndexOutOfRangeException at TypeCollector.GetObjectInfo (facts fail_without_fix errors), at head they pass. The other hard index the issue names (BothStringAndIntKeyAreNull cast) is also replaced by a null-safe helper.
+- **Codex: met** (2/3 verified). The failing-without-fix evidence records AD0001 for the new metadata-reference cases on base source, while all three cases pass with the fix.
+- **Nemotron: met** (4/4 verified). On base the same three tests failed with AD0001 (analyzer threw IndexOutOfRangeException); on head they pass with zero diagnostics because member-location access is now null-safe and diagnostics are filtered before reporting.
+- **Checks:** `build` pass, `tests.targeted` pass
+- **What would settle it:** A test that fails on a mutant of the lines this clause depends on (tests.mutation)
 
 <a id="chain-REQ-2283-F3"></a>
 #### REQ-2283-F3: **PROVEN**
@@ -149,7 +149,7 @@ countersign sign 2283 --as Toivo --decision <accept|reject|request-changes> --no
 | Clause | Claude | Codex | Nemotron | Result |
 |---|---|---|---|---|
 | REQ-2283-F1 | met | met | met | **proven** |
-| REQ-2283-F2 | met | met | met | **proven** |
+| REQ-2283-F2 | met | met | met | **refused** |
 | REQ-2283-F3 | met | met | met | **proven** |
 | REQ-2283-N1 | not met | met | met | **not met** |
 | REQ-2283-N2 | met | met | met | **proven** |
@@ -383,11 +383,12 @@ Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toi
 #### All tier drivers (tier = strictest)
 
 - ask: verified finding `claude:C1`: major: Location filter silently drops MsgPack003 about an in-compilation type reached through a metadata generic (reproduced by the pipeline (repro.claude.C1))
+- ask: refused clause `REQ-2283-F2`: tests_kill_no_mutant: the tests supporting REQ-2283-F2 (the new tests its reviewers cite: ClosedGenericRecordStruct_FromMetadataReference, ClosedGenericStruct_FromMetadataReference) kill no mutant on its lines (TypeCollector.cs:239, TypeCollector.cs:985) in tests.mutation; no test kills any of the 2 mutant(s) there
 - ask: refused clause `REQ-2283-N1`: not_met: claude: The existing suite passes (170/170, no new failures), so the parenthetical part holds, but the clause's main statement does not: the location filter also drops diagnostics about types declared in the current compilation when the reporting location is a metadata member. My probe (scratch worktree, SDK 8, not in facts.json): metadata generic class Lib.Item<T> with [Key(0)] T Content, used as Item<Foo> where App.Foo lacks [MessagePackObject]; base reports MsgPack003 'Type must be marked with MessagePackObjectAttribute: Item.Content', head reports nothing. Item<T> as a class did not crash on base (issue table: 'class Item<T> | ok'), so this is a regression in a configuration that worked before. The existing suite does not cover it.; reviewers_disagree: claude says not_met, codex says met, nemotron says met; thin_evidence: codex says met with 0 verified evidence items about the change (of 1 cited; requirement quotes and unclaimed outcomes don't count); adjudicator_dispute: gemini: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject].
 - ask: adjudicator `REQ-2283-N1`: supported by cited evidence: codex, nemotron, claude; not supported: codex, nemotron, claude; would settle it: Area owner ruling on whether REQ-2283-N1 covers uncovered cross-assembly generic scenarios (repro.claude.C1) or is scoped to the existing test suite.; An automated test asserting whether MsgPack003 is reported when a metadata generic member (Lib.Item<T>.Content) is instantiated with an in-compilation type lacking [MessagePackObject].
 - ask: adjudicator `finding:claude:C1`: supported by cited evidence: claude; not supported: claude; would settle it: An automated test in MessagePack.SourceGenerator.Tests matching repro.claude.C1 (metadata generic class Lib.Item<T> with an in-compilation type Foo lacking [MessagePackObject]) asserting that MsgPack003 is reported at Foo's source location or Location.None rather than dropped.; Confirmation of whether Roslyn analyzer rules in this repo permit reporting MsgPack003 at formattedType.Locations[0] (when in source) or Location.None when callerSymbol is from metadata.
 - ask: reviewer refusal `nemotron`: Whether the placeholder requirement set matches the upstream issue #2283 intent (The requirement set is marked official: false and derived from the issue; the issue body itself was not provided, so I cannot verify the requirements capture the issue fully.)
-- ask: risk score `risk`: score 41.0 (notify>=15, ask>=40, block>=130); largest: area_sensitivity 20 + lines_changed 8.7 + reviewer_disagreement 8
+- ask: risk score `risk`: score 66.0 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 8.7
 - notify: verified finding `claude:C2`: minor: BothStringAndIntKeyAreNull is now silently suppressed for positional record properties in source
 - notify: reviewer refusal `claude`: Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (tests.execution was not run for this change (SDK 8.0.402 cannot load the Roslyn 4.12 generator); the new tests skip the generated-sources check and only assert the resolver's hint name exists. I saw the generator emit Formatters.App.R.Lib.ItemFormatter`1.g.cs in my probe but did not execute it.) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
 - notify: reviewer refusal `claude`: Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (It is a policy choice for the maintainers, and it is incomplete when the defining project does not run the analyzer (e.g. a NuGet package built without it).) [out of scope: names no clause, not marked blocking, touches no mandated check or sensitive term]
@@ -421,6 +422,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | injection_scan | pass | countersign.injection (deterministic pattern scan) injection-v1 | no text addressed to automated reviewers in the added lines, commit message or PR text |
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 19 logs; every NuGet feed the head declares is inside the policy |
+| tests.mutation | fail | evidence/scripts/mutation.py + dotnet test (one mutant at a time, the targeted filter) 8.0.402 | 8 mutants of the changed source lines: 2 killed, 6 survived; 1 of 4 mutated hunks have a killed mutant; surviving hunks: TypeCollector.cs:239, TypeCollector.cs:985, TypeCollector.cs:1429-1434; 1 hunks not mutated |
 
 Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
@@ -429,7 +431,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | Clause | Status | Verdicts | Checks | Reasons |
 |---|---|---|---|---|
 | REQ-2283-F1 | proven | claude: met (5/8), codex: met (2/3), nemotron: met (5/5) | build: pass, tests.targeted: pass | - |
-| REQ-2283-F2 | proven | claude: met (4/5), codex: met (2/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
+| REQ-2283-F2 | refused | claude: met (4/5), codex: met (2/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | tests_kill_no_mutant |
 | REQ-2283-F3 | proven | claude: met (4/4), codex: met (2/3), nemotron: met (4/4) | build: pass, tests.targeted: pass | - |
 | REQ-2283-N1 | refused | claude: not_met (1/5), codex: met (0/1), nemotron: met (1/1) | build: pass, tests.full_suite: pass | not_met, reviewers_disagree, thin_evidence, adjudicator_dispute |
 | REQ-2283-N2 | proven | claude: met (3/4), codex: met (1/2), nemotron: met (4/4) | build: pass, tests.fail_without_fix: pass | - |
@@ -465,6 +467,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 
 #### Residual risk (every item)
 
+- REQ-2283-F2 not proven: tests_kill_no_mutant
 - REQ-2283-N1 not proven: not_met; reviewers_disagree; thin_evidence; adjudicator_dispute
 - Reviewer refusal (claude): Whether the resolver generated for a project consuming a closed generic struct from a referenced assembly serializes it correctly at run time (and whether emitting a second formatter for Lib.Item`1 in the consuming assembly is intended) (out of scope: notify)
 - Reviewer refusal (claude): Whether the documented behaviour change (diagnostics for referenced types are reported only by the defining project) is acceptable product behaviour (out of scope: notify)
@@ -479,7 +482,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>
-#### Risk score: 41.0 -> ask
+#### Risk score: 66.0 -> ask
 
 | Factor | Points | Reason |
 |---|---:|---|
@@ -492,8 +495,8 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | security_sensitive_paths | 0 | none touched |
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: pass |
 | reviewer_disagreement | 8 | 1 clause(s) x 8: REQ-2283-N1 |
-| failed_checks | 0 | 0 failed check(s) x 25 |
-| **total** | **41.0** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| failed_checks | 25 | 1 failed check(s) x 25: tests.mutation |
+| **total** | **66.0** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2283/facts.json`, requirements `requirements/2283.yaml`, reviews `reviews/2283/claude.json`, `reviews/2283/codex.json`, `reviews/2283/nemotron.json`
 

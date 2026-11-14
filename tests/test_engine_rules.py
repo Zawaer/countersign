@@ -261,3 +261,57 @@ def test_refusal_about_resolving_the_changes_own_issue_routes_ask():
     r = {"topic": "Whether this change resolves issue #2234 for users of the released 3.1.x packages"}
     assert classify_refusal(r, reqs, [], [], m)[0] == "ask"
     assert classify_refusal({"topic": "Rendering on GitHub's markdown viewer"}, reqs, [], [], m)[0] == "notify"
+
+
+# --- tests.mutation: a cited test must kill a mutant (red team TT1) -------------------------------------------
+
+def _mutation(killed_by_test: list[str], survived_line: int | None = None) -> dict:
+    """tests.mutation for the conftest change: one hunk (Collector.cs:5-8), mutant M1 on line 5, M2 on line 7."""
+    m1 = {"id": "M1", "hunk": "H1", "file": "src/MessagePack.SourceGenerator/Collector.cs", "line": 5, "operator": "negate_condition",
+          "outcome": "killed" if killed_by_test else "survived", "killed_by": killed_by_test}
+    m2 = {"id": "M2", "hunk": "H1", "file": m1["file"], "line": 7, "operator": "remove_call", "outcome": "survived", "killed_by": []}
+    return {"id": "tests.mutation", "status": "pass" if killed_by_test else "fail", "summary": "2 mutants",
+            "hunks": [{"id": "H1", "file": m1["file"], "lines": [5, 8], "status": "killed" if killed_by_test else "survived", "mutants": ["M1", "M2"]}],
+            "mutants": [m1, m2], "kills_by_test": [{"name": "CollectorTests.DuplicateKeys", "killed": ["M1"] if killed_by_test else []}]}
+
+
+def test_clause_whose_cited_test_kills_a_mutant_stays_proven(ws):
+    with_check(ws, _mutation(["CollectorTests.DuplicateKeys"]))
+    c = pack.build(ws, "9001")["requirements"][0]
+    assert c["status"] == "proven", c["reasons"]
+
+
+def test_clause_whose_cited_test_kills_no_mutant_is_refused(ws):
+    with_check(ws, _mutation([]))
+    p = pack.build(ws, "9001")
+    c = p["requirements"][0]
+    assert c["status"] == "refused" and [r["code"] for r in c["reasons"]] == ["tests_kill_no_mutant"]
+    assert c["reasons"][0]["hunks"] == ["H1"] and c["reasons"][0]["tests"] == ["CollectorTests.DuplicateKeys"]
+    assert p["tier"] in ("ask", "block")
+
+
+def test_functional_clause_citing_no_test_is_judged_on_all_new_tests(ws):
+    with_check(ws, _mutation([]))
+    for n in ("claude", "codex", "nemotron"):
+        review(ws, n, make_review(n, evidence=[GOOD_CODE]))
+    c = pack.build(ws, "9001")["requirements"][0]
+    assert "tests_kill_no_mutant" in [r["code"] for r in c["reasons"]]
+    assert "reviewers cite none" in c["reasons"][-1]["detail"]
+
+
+def test_no_mutation_check_no_judgement(ws):
+    c = pack.build(ws, "9001")["requirements"][0]
+    assert c["status"] == "proven"
+    with_check(ws, {**_mutation([]), "status": "error"})
+    assert pack.build(ws, "9001")["requirements"][0]["status"] == "proven"
+
+
+def test_kill_gap_names_the_other_tests_that_kill_mutants_on_the_clauses_lines(ws):
+    m = _mutation([])
+    m["mutants"][0].update(outcome="killed", killed_by=["OtherTests.Guard"])
+    m["kills_by_test"].append({"name": "OtherTests.Guard", "killed": ["M1"]})
+    with_check(ws, m)
+    r = pack.build(ws, "9001")["requirements"][0]["reasons"][-1]
+    assert r["code"] == "tests_kill_no_mutant"
+    assert "supporting REQ-9001-F1" in r["detail"] and "DuplicateKeys" in r["detail"]
+    assert "killed by other tests (Guard)" in r["detail"]

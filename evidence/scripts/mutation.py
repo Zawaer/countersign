@@ -2,7 +2,7 @@
 """tests.mutation: do the change's new tests kill small mutants of the change's own source lines?
 
 fail-without-fix shows that a new test fails when the whole fix is reverted. It does not show that the test checks
-what the fix does: a test that fails on base only because it looks for a method the fix renamed (red team T1) passes
+what the fix does: a test that fails on base only because it looks for a method the fix renamed (red team TT1) passes
 that check. Mutation testing asks the narrower question per changed line: if this line were subtly wrong, would a new
 test notice?
 

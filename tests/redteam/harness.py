@@ -10,6 +10,7 @@ Stage 3/4/7 (verify, decide, trust) are `countersign.pack.build` itself. Nothing
 from __future__ import annotations
 
 import importlib.util
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -60,6 +61,58 @@ def stage1():
 
 
 F = stage1()
+
+
+def _mutation_module():
+    """evidence/scripts/mutation.py (its operators: `candidates`, `is_code`), loaded like stage1()."""
+    spec = importlib.util.spec_from_file_location("cs_mutation", ROOT / "evidence" / "scripts" / "mutation.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def simulated_mutation(repo, base: str, head: str, outcome, tests=(NEW_TEST,)) -> dict:
+    """A `tests.mutation` check for a synthetic change. The mutants are the real ones: stage 1's operators
+    (mutation.py `candidates`) on the lines the commit adds to source files, split into hunks the same way, at most
+    MAX_MUTANTS. Nothing is built or run (there is no .NET project here): `outcome(mutant) -> list of killing tests`
+    says what the run would record, and the check is marked `simulated`. Status and summary follow mutation.judge."""
+    M = _mutation_module()
+    diff = git(repo, "diff", "-U0", "--no-color", base, head)
+    hunks, cands, path = [], [], None
+    for line in diff.splitlines():
+        if line.startswith("+++ "):
+            path = line[6:] if line.startswith("+++ b/") else None
+            continue
+        h = re.match(r"@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@", line)
+        if h and path and F.kind(path) == "source" and path.endswith(".cs"):
+            start, cnt = int(h.group(1)), int(h.group(2) if h.group(2) is not None else 1)
+            body = git(repo, "show", f"{head}:{path}").split("\n")[start - 1:start - 1 + cnt]
+            code = [(start + i, t) for i, t in enumerate(body) if M.is_code(t)]
+            if code:
+                hid = f"H{len(hunks) + 1}"
+                hunks.append({"id": hid, "file": path, "lines": [start, start + cnt - 1], "code_lines": [n for n, _ in code]})
+                cands.append([{"hunk": hid, "file": path, "line": n, "operator": op, "before": t.rstrip(), "after": new.rstrip()}
+                              for n, t in code for op, new in M.candidates(t)])
+    mutants, r = [], 0
+    while len(mutants) < M.MAX_MUTANTS and any(len(c) > r for c in cands):
+        mutants += [c[r] for c in cands if len(c) > r][:M.MAX_MUTANTS - len(mutants)]
+        r += 1
+    for k, m in enumerate(mutants, 1):
+        m["id"] = f"M{k}"
+        m["killed_by"] = list(outcome(m))
+        m["outcome"] = "killed" if m["killed_by"] else "survived"
+    for h in hunks:
+        ms = [m for m in mutants if m["hunk"] == h["id"]]
+        h["mutants"] = [m["id"] for m in ms]
+        h["status"] = "killed" if any(m["outcome"] == "killed" for m in ms) else "survived" if ms else "not_mutated"
+    surv = [h for h in hunks if h["status"] == "survived"]
+    k = sum(m["outcome"] == "killed" for m in mutants)
+    return {"id": "tests.mutation", "tool": "evidence/scripts/mutation.py (simulated by tests/redteam/harness.py: mutants generated, not run)",
+            "status": ("fail" if surv else "pass") if mutants else "error", "simulated": True,
+            "summary": f"{len(mutants)} mutants of the changed source lines: {k} killed, {len(mutants) - k} survived"
+                       + (f"; surviving hunks: {', '.join(h['file'].rsplit('/', 1)[-1] + ':' + str(h['lines'][0]) for h in surv)}" if surv else ""),
+            "hunks": hunks, "surviving_hunks": [h["id"] for h in surv], "mutants": mutants,
+            "kills_by_test": [{"name": t, "killed": [m["id"] for m in mutants if t in m["killed_by"]]} for t in tests]}
 
 
 def passing_checks(tests=None, fwf_tests=None):

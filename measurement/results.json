@@ -7,7 +7,7 @@
       "of": null,
       "mutation": null,
       "tier": "block",
-      "score": 150.2,
+      "score": 175.2,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -109,7 +109,7 @@
       "of": null,
       "mutation": null,
       "tier": "ask",
-      "score": 67.4,
+      "score": 92.4,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
@@ -559,11 +559,12 @@
       "of": null,
       "mutation": null,
       "tier": "ask",
-      "score": 41.0,
+      "score": 66.0,
       "owner": "Toivo",
       "routed_to_human": true,
       "why": [
         "verified finding claude:C1",
+        "refused clause REQ-2283-F2",
         "refused clause REQ-2283-N1",
         "adjudicator REQ-2283-N1",
         "adjudicator finding:claude:C1",
@@ -571,10 +572,10 @@
         "risk score risk"
       ],
       "caught_by": null,
-      "proven": 4,
-      "refused": 1,
+      "proven": 3,
+      "refused": 2,
       "full_read_min": 23.0,
-      "guided_min": 29,
+      "guided_min": 32,
       "simulated": false
     },
     {
@@ -1235,7 +1236,7 @@
         "deps.delta"
       ],
       "tier": "block",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": true,
       "attributable": [
         "dependency-change",
@@ -1256,7 +1257,7 @@
         "injection_scan"
       ],
       "tier": "block",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": true,
       "attributable": [
         "R-INJECT"
@@ -1274,7 +1275,7 @@
       "caught_by_checks": false,
       "failed_checks": [],
       "tier": "notify",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": false,
       "attributable": [],
       "reviews": [
@@ -1294,7 +1295,7 @@
         "tests.full_suite"
       ],
       "tier": "block",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": true,
       "attributable": [
         "mandated-check-failed"
@@ -1314,7 +1315,7 @@
         "tests.full_suite"
       ],
       "tier": "block",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": true,
       "attributable": [
         "mandated-check-failed"
@@ -1334,7 +1335,7 @@
         "tests.full_suite"
       ],
       "tier": "block",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": true,
       "attributable": [
         "mandated-check-failed"
@@ -1352,7 +1353,7 @@
       "caught_by_checks": false,
       "failed_checks": [],
       "tier": "notify",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": false,
       "attributable": [],
       "reviews": [
@@ -1369,11 +1370,9 @@
       "caught_by_checks": false,
       "failed_checks": [],
       "tier": "ask",
-      "original_tier": "notify",
+      "original_tier": "ask",
       "routed_to_human": true,
-      "attributable": [
-        "risk 33.0 -> 74.1 (failed: )"
-      ],
+      "attributable": [],
       "reviews": [
         "nemotron"
       ],
@@ -2317,12 +2316,12 @@
       "how": "reading-speed model in the mandate: lines/min + minutes per file"
     },
     "human_minutes_with_pack": {
-      "value": 185,
+      "value": 188,
       "simulated": true,
       "how": "pack reading time by tier + per refused item + per verified finding"
     },
     "review_time_saved_share": {
-      "value": 0.58,
+      "value": 0.57,
       "simulated": true,
       "how": "1 - with_pack / full_read"
     },
@@ -2592,7 +2591,7 @@
     "seeded_routed_to_human_before_review": {
       "value": {
         "routed": 16,
-        "attributable": 14,
+        "attributable": 13,
         "of": 18
       },
       "simulated": false,
@@ -2600,11 +2599,6 @@
     },
     "reviewer_cross_check": {
       "value": {
-        "claude": {
-          "major_raised_verified": 9,
-          "confirmed_by_another": 1,
-          "missed_others_verified_major": 1
-        },
         "nemotron": {
           "major_raised_verified": 20,
           "confirmed_by_another": 1,
@@ -2614,6 +2608,11 @@
           "major_raised_verified": 0,
           "confirmed_by_another": 0,
           "missed_others_verified_major": 6
+        },
+        "claude": {
+          "major_raised_verified": 9,
+          "confirmed_by_another": 1,
+          "missed_others_verified_major": 1
         }
       },
       "simulated": false,
@@ -2633,8 +2632,8 @@
         },
         "2283": {
           "full_read_min": 23.0,
-          "with_pack_min": 29,
-          "saved_min": -6.0
+          "with_pack_min": 32,
+          "saved_min": -9.0
         },
         "2297": {
           "full_read_min": 260.8,

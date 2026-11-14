@@ -35,7 +35,7 @@ Stop asking *"did a human read every line?"* Ask *"did a named human sign for wh
 - **History:** of 109 real merged PRs (mandate v6, upstream CI credited as passed), the AI would clear 24, and none of the 11 escapes.
 - **Seeded:** 17 seeded changes (14 bugs, 2 prompt injections, 1 supply-chain attack); checks alone catch 14. Of the 3 bugs tests missed, a reviewer flagged the planted line in 2 with a finding the original didn't already have (3 by location).
 - **Simulated:** with 20-check restore and weekly canaries, escapes stay at the full-review level when reviewers degrade. This changed the mandate (v3; now v6).
-- **Red team:** we attacked our own pipeline 35 ways; it now stops 34 (7 before the fixes). The 1 open is listed with its fix.
+- **Red team:** we attacked our own pipeline 35 ways; it now stops all 35 (7 before the fixes).
 
 ## Trade-offs we chose
 

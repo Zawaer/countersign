@@ -18,7 +18,7 @@ from .mandate import SENSITIVITY, Mandate, matches
 SOURCE_ORDER = ["mandate rule", "failing check", "verified finding", "refused clause", "adjudicator", "reviewer refusal", "held before",
                 "trust cap", "risk score"]
 REFUSAL_REASONS = ["check_failed", "check_not_run", "missing_review", "not_met", "reviewers_disagree", "cannot_determine", "thin_evidence",
-                   "adjudicator_dispute", "reviewers_untrusted"]
+                   "adjudicator_dispute", "reviewers_untrusted", "tests_kill_no_mutant"]
 # Principle 0: a mandated check in one of these states can't be argued away by verdicts, adjudication or trust.
 NOT_PASSING = ("fail", "error")
 INJECTION_CHECK = "injection_scan"
@@ -202,7 +202,7 @@ def required_reviewers(m: Mandate, panel: dict) -> list[str]:
 
 
 def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate, required: list[str], untrusted: str | None = None) -> list[dict]:
-    """Per clause: proven, held_before or refused. `untrusted` (set when injection_scan failed) is why no reviewer
+    """Per clause: proven, held_before or refused (a would-be-proven clause whose tests kill no mutant: kill_gap). `untrusted` (set when injection_scan failed) is why no reviewer
     verdict counts on this change: every clause is then refused with `reviewers_untrusted`."""
     d = m["decision"]
     out = []
@@ -251,6 +251,12 @@ def decide_clauses(reqs: dict, reviews: dict, facts: dict, m: Mandate, required:
         if held:
             status = "held_before"
             reasons.append({"code": "held_before", "detail": held["detail"], "tests": held["tests"]})
+        # Proven also needs its tests to kill a mutant of the change (red team TT1). A clause already held_before is
+        # not proven either: its tests pass without the fix, which says more than "they kill no mutant".
+        gap = kill_gap(r, verdicts, facts) if status == "proven" else None
+        if gap:
+            status = "refused"
+            reasons.append(gap)
         out.append({"id": r["id"], "type": r.get("type", ""), "text": r["text"], "checks": checks, "verdicts": verdicts,
                     "status": status, "reasons": reasons, **({"untrusted": True} if untrusted else {})})
     return out
@@ -311,6 +317,60 @@ def held_before(req: dict, verdicts: dict, facts: dict) -> dict | None:
     else:
         detail = f"{len(held)} of the {len(without)} new test(s) every reviewer cited that were run without the fix pass there too: "
     return {"tests": held, "detail": detail + ", ".join(t.rsplit(".", 1)[-1] for t in held)}
+
+
+MUTATION_CHECK = "tests.mutation"
+
+
+def kill_gap(req: dict, verdicts: dict, facts: dict) -> dict | None:
+    """Red team TT1 (test theater): a test can fail without the fix for a reason unrelated to the clause (it reflects
+    on a method the fix renamed), so fail-without-fix alone does not show the test checks what the clause asks.
+    Stage 1's `tests.mutation` mutates the change's own source lines and records which new test killed which mutant.
+
+    A clause whose support includes tests needs at least one of them to have killed a mutant, on the hunks the clause
+    depends on: those holding a changed line its reviewers cite as verified code evidence, or any hunk of the change
+    when they cite none that was mutated. Its tests are the clause's `tests:` if listed (owner-authored), else the new
+    tests its reviewers cite with substantive evidence; a functional clause citing no new test is judged on all of
+    the change's new tests (a behaviour change has to be shown by some test). Otherwise: `tests_kill_no_mutant`.
+    No judgement (None) when the check did not run (absent, skipped, error) or a non-functional clause cites no test."""
+    mc = check(facts, MUTATION_CHECK)
+    if mc is None or mc.get("status") not in ("pass", "fail") or not mc.get("mutants"):
+        return None
+    judged = [t["name"] for t in mc.get("kills_by_test", [])]
+    listed = list(req.get("tests") or [])
+    if listed:
+        support, basis = listed, "the clause's tests"
+    else:
+        cited = {e["name"] for v in verdicts.values() for e in v["evidence"] if e.get("kind") == "test" and e.get("substantive", e.get("verified"))}
+        support, basis = [t for t in judged if t in cited], "the new tests its reviewers cite"
+        if not support:
+            if req.get("type") != "functional" or not judged:
+                return None
+            support, basis = judged, "the change's new tests (the reviewers cite none)"
+    hunks = {h["id"]: h for h in mc.get("hunks", [])}
+    lines = {(e.get("file"), e.get("line")) for v in verdicts.values() for e in v["evidence"]
+             if e.get("kind") == "code" and e.get("verified") and e.get("rev", "head") == "head"}
+    near = sorted(h["id"] for h in hunks.values() if h.get("status") != "not_mutated"
+                  and any(f == h["file"] and isinstance(n, int) and h["lines"][0] <= n <= h["lines"][1] for f, n in lines))
+    killed = {t["name"]: set(t.get("killed", [])) for t in mc.get("kills_by_test", [])}
+    mutants = {m["id"]: m for m in mc["mutants"]}
+    scope = set(near) or set(hunks)
+    kills = sorted({m for t in support for m in killed.get(t, set()) if mutants.get(m, {}).get("hunk") in scope})
+    if kills:
+        return None
+    loc = lambda h: f"{h['file'].rsplit('/', 1)[-1]}:{h['lines'][0]}" + (f"-{h['lines'][1]}" if h["lines"][1] != h["lines"][0] else "")  # noqa: E731
+    where = f"its lines ({', '.join(loc(hunks[i]) for i in near)})" if near else "any changed line"
+    short = lambda ts: ", ".join(t.rsplit(".", 1)[-1] for t in ts)  # noqa: E731
+    ran = [t for t in support if t in killed]
+    if not ran:
+        detail = f"the tests supporting {req['id']} ({short(support)}) were not run against the mutants in {MUTATION_CHECK}"
+    else:
+        others = sorted({t for t, ms in killed.items() if t not in support and any(mutants.get(m, {}).get("hunk") in scope for m in ms)})
+        n_scope = sum(m.get("hunk") in scope for m in mc["mutants"])
+        detail = (f"the tests supporting {req['id']} ({basis}: {short(support)}) kill no mutant on {where} in {MUTATION_CHECK}; "
+                  + (f"the mutants there are killed by other tests ({short(others)})" if others else
+                     f"no test kills any of the {n_scope} mutant(s) there"))
+    return {"code": "tests_kill_no_mutant", "detail": detail, "check": MUTATION_CHECK, "tests": sorted(support), "hunks": near}
 
 
 # --- reviewer refusals ---------------------------------------------------------------

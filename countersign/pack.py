@@ -415,6 +415,17 @@ def _test_runs(facts: dict, name: str) -> list[dict]:
     return runs
 
 
+def _mutants_killed(facts: dict, name: str) -> list[str] | None:
+    """The tests.mutation mutants this test killed, as `M3 (TypeCollector.cs:1446 drop_guard)`; None if the test was
+    not run against the mutants."""
+    c = next((c for c in facts.get("checks", []) if c["id"] == "tests.mutation"), None)
+    t = next((t for t in (c or {}).get("kills_by_test", []) if t.get("name") == name), None)
+    if t is None:
+        return None
+    ms = {m["id"]: m for m in c.get("mutants", [])}
+    return [f"{k} ({ms[k]['file'].rsplit('/', 1)[-1]}:{ms[k]['line']} {ms[k]['operator']})" if k in ms else k for k in t.get("killed", [])]
+
+
 def _without_fix(runs: list[dict]) -> str | None:
     """failed: the test fails without the fix (it tests the change). passed: it passes anyway (held before)."""
     outs = {r["outcome"] for r in runs if r["without_fix"]}
@@ -438,6 +449,9 @@ def _evidence_index(ws: Workspace, facts: dict, d: dict, reqs: dict, tolerance: 
             elif kind == "test":
                 rec["runs"] = _test_runs(facts, str(e.get("name")))
                 rec["without_fix"] = _without_fix(rec["runs"])
+                kills = _mutants_killed(facts, str(e.get("name")))
+                if kills is not None:
+                    rec["mutants_killed"] = kills
             elif kind == "check" and e.get("id") in checks:
                 c = checks[e["id"]]
                 rec["check_result"] = {"status": c["status"], "summary": c.get("summary"), "tool": c.get("tool"),
@@ -507,6 +521,8 @@ def clause_why(c: dict, n_reviewers: int) -> str:
         parts.append(f"no verdict from {_names(missing)}" + (f" ({len(v)} of {n_reviewers} reviewers answered)" if v else ""))
     if "adjudicator_dispute" in codes:
         parts.append("the adjudicator disputes it")
+    if "tests_kill_no_mutant" in codes:
+        parts.append(codes["tests_kill_no_mutant"]["detail"])
     return (parts[0][:1].upper() + parts[0][1:] + "".join("; " + p for p in parts[1:])) if parts else "Refused"
 
 
@@ -521,6 +537,7 @@ def _settle(c: dict, chain_adj: dict | None) -> list[str]:
                     "not_met": f"A fix, or evidence that refutes {_name(name)}'s objection",
                     "cannot_determine": f"The evidence {_name(name)} says it lacked (see its basis above)",
                     "thin_evidence": f"{_name(name)} citing evidence the engine can verify",
+                    "tests_kill_no_mutant": "A test that fails on a mutant of the lines this clause depends on (tests.mutation)",
                     }.get(code, ""))
     return [x for x in dict.fromkeys(out) if x]
 

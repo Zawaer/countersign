@@ -182,7 +182,7 @@ Mandate `messagepack-csharp` v6 sha256 `71386aa55974f675`, signature: valid, Toi
 - ask: reviewer refusal `claude`: Whether this change resolves issue #2234 for users of the released 3.1.x packages (The facts and tests were produced against base 32258fdb (develop line), which does not contain the 3.1.1 regression. Nothing was built or tested against master/v3.1.x, so whether the change applies there and fixes the reported symptom is not established (and C1 suggests it would not on its own).)
 - ask: reviewer refusal `nemotron`: Runtime library behavior (src/MessagePack) and net472/netstandard builds (Not run; the runtime library was not modified and only net8.0 was built.)
 - ask: reviewer refusal `nemotron`: Security review of analyzer deserializing untrusted input (No security-specific evidence was provided and no security analysis was performed.)
-- ask: risk score `risk`: score 67.4 (notify>=15, ask>=40, block>=130); largest: failed_checks 25 + area_sensitivity 20 + lines_changed 10.1
+- ask: risk score `risk`: score 92.4 (notify>=15, ask>=40, block>=130); largest: failed_checks 50 + area_sensitivity 20 + lines_changed 10.1
 - notify: verified finding `claude:C2`: minor: Positional-record Key(null) still crashes the analyzer for suppressed (and other) types (reproduced by the pipeline (repro.claude.C2))
 - notify: verified finding `nemotron:N1`: minor: Duplicate-key diagnostic reports only one diagnostic although two members share the key
 - notify: verified finding `nemotron:N2`: minor: New test file triggers StyleCop SA1649 warning
@@ -222,6 +222,7 @@ Participating reviewers: claude, codex, nemotron. Adjudicator: gemini. Confident
 | injection_scan | pass | countersign.injection (deterministic pattern scan) injection-v1 | no text addressed to automated reviewers in the added lines, commit message or PR text |
 | deps.delta | pass | dotnet restore (every *.csproj, NuGet Audit mode=all) -> CycloneDX 1.6, base vs head 8.0.402 | 238 packages on head (238 on base) across 30 projects; 0 added, 0 version changes, 0 removed; 0 new vulnerability hits (6 already on base) |
 | build.egress | pass | CRACI network policy (cracicorp/setup@v1) + job log scan  | built on CRACI under a deny-by-default policy: only 13 TLS host patterns on ports 443 (github.com, codeload.github.com, objects.githubusercontent.com, api.nuget.org, *.nuget.org, pkgs.dev.azure.com, ...); presets ['github']; no blocked connection in 40 logs; every NuGet feed the head declares is inside the policy |
+| tests.mutation | fail | evidence/scripts/mutation.py + dotnet test (one mutant at a time, the targeted filter) 8.0.402 | 8 mutants of the changed source lines: 5 killed, 3 survived; 3 of 6 mutated hunks have a killed mutant; surviving hunks: TypeCollector.cs:1148, TypeCollector.cs:1163-1166, TypeCollector.cs:1179-1182 |
 
 Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa55974)
 
@@ -282,7 +283,7 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 - Standing gaps of this pipeline: other-targets, runtime-perf, semantic-intent, provenance (see not checked)
 
 <a id="risk"></a>
-#### Risk score: 67.4 -> ask
+#### Risk score: 92.4 -> ask
 
 | Factor | Points | Reason |
 |---|---:|---|
@@ -295,8 +296,8 @@ Decision engine: countersign 0.1.0 under mandate messagepack-csharp v6 (71386aa5
 | security_sensitive_paths | 0 | none touched |
 | fail_without_fix_not_shown | 0 | tests.fail_without_fix: pass |
 | reviewer_disagreement | 8 | 1 clause(s) x 8: REQ-2234-N1 |
-| failed_checks | 25 | 1 failed check(s) x 25: tests.execution_fail_without_fix |
-| **total** | **67.4** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
+| failed_checks | 50 | 2 failed check(s) x 25: tests.execution_fail_without_fix, tests.mutation |
+| **total** | **92.4** | bands: {'notify': 15, 'ask': 40, 'block': 130} |
 
 Inputs: facts `evidence/2234/facts.json`, requirements `requirements/2234.yaml`, reviews `reviews/2234/claude.json`, `reviews/2234/codex.json`, `reviews/2234/nemotron.json`
 
