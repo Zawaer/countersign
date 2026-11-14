@@ -4,6 +4,7 @@ import hashlib, json, os, re, shutil, subprocess, sys, xml.etree.ElementTree as 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, '..', '..'))  # the countersign package (injection scanner) lives at the repo root
+sys.path.insert(1, HERE)  # sibling modules (mutation.py); `python3 -I` leaves the script's own folder off sys.path
 
 # Paths default to the original local run; CI (evidence/scripts/ci-facts.sh) overrides them with env vars.
 SRC = os.environ.get('CS_SRC', '/data/src')
@@ -155,7 +156,13 @@ def new_tests(head):
 
 
 def method_of(test_name):
-    return test_name.split('(')[0]
+    """Class.Method of a TRX test name, the form new_tests() records. TRX names are fully qualified when the test class
+    is declared in a namespace (file-scoped `namespace X;` or a `namespace X { }` block): Ns.Sub.Class.Method(args).
+    Keeping the namespace meant such a class's tests never matched new_tests() and counted as old (0/0 in
+    tests.fail_without_fix). Drops the arguments, then everything before the last two dotted parts (dots inside
+    generic arguments <...> do not split)."""
+    parts = re.split(r'\.(?![^<]*>)', test_name.split('(')[0])
+    return '.'.join(parts[-2:])
 
 
 def copy_log(src, dst):

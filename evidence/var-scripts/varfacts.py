@@ -33,16 +33,6 @@ F = importlib.util.module_from_spec(spec)
 sys.modules['facts'] = F
 spec.loader.exec_module(F)
 F.OUT = os.path.join(os.environ['WORK'], 'out')
-
-
-def _method_of(test_name):
-    """Class.Method of a TRX test name. facts.py's method_of keeps the namespace, so a new test class declared in a
-    namespace (MessagePack.SourceGenerator.Tests.X.M(...)) never matches new_tests() (X.M) and its tests count as old;
-    var-2283-v2/v3/v4 add such classes. Only this script uses the namespace-free form."""
-    return '.'.join(test_name.split('(')[0].split('.')[-2:])
-
-
-F.method_of = _method_of
 import mutation as M  # noqa: E402  (imports the same `facts` module object)
 
 BASE = F.BASE
