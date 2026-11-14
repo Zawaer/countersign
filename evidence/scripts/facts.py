@@ -69,6 +69,12 @@ def git_has_tt(p):
     return _tt_cache.get(p[:-3] + '.tt', False)
 
 
+def looks_generated(p):
+    """Named like generated output (`*.g.cs`, or a .cs next to a same-named .tt). When kind() still says it isn't
+    generated (its input didn't change), the engine's rule generated-file-hand-edited routes it to a human (G2)."""
+    return p.endswith('.g.cs') or (p.endswith('.cs') and (os.path.exists(os.path.join(REPO, p[:-3] + '.tt')) or git_has_tt(p)))
+
+
 def diff_facts(head):
     """Per-file insertions/deletions and kind. Binary files (numstat `-\t-`) are kind `binary` with 0/0 lines: git shows
     no lines for them, so nothing downstream (injection scan, reviewers) can read them."""
@@ -85,7 +91,8 @@ def diff_facts(head):
             continue
         a, d = int(a), int(d)
         ins += a; dele += d
-        by.append({'path': p, 'ins': a, 'del': d, 'kind': kind(p, changed)})
+        k = kind(p, changed)
+        by.append({'path': p, 'ins': a, 'del': d, 'kind': k, **({'looks_generated': True} if k != 'generated' and looks_generated(p) else {})})
     counts = {}
     for f in by:
         counts[f['kind']] = counts.get(f['kind'], 0) + 1
