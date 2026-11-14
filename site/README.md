@@ -1,6 +1,6 @@
 # site/: the judge-facing pages
 
-Static, self-contained (no CDN, no build tools): `index.html` (overview and the 2234 story), `attack.html` (pick a seeded bug and see what caught it; real escapes from MessagePack's history), `tour.html` (8-step walkthrough, with an in-browser ledger tamper check), `pitch.html` (the deck from `docs/pitch/deck.md`, arrow keys or swipe; N for notes, F for full screen), and `packs/` (copies of `packs/*/pack.html`).
+Static, self-contained (no CDN, no build tools): `index.html` (the main screen: the real diff with a few pins; its "sneak a bug in" mode shows each seeded bug, whether a check caught it and whether a reviewer flagged the line), `overview.html` (the numbers: three on the first screen, the rows below), `tour.html` (8 steps, one visual each, with an in-browser ledger tamper check), `pitch.html` (8 slides, one message each; arrow keys or swipe, N for speaker notes, F for full screen), `attack.html` (a redirect into the main screen's sneak-a-bug mode, kept for old links) and `packs/` (copies of `packs/*/pack.html`).
 
 Every page is generated, so numbers stay in sync with the repo:
 
