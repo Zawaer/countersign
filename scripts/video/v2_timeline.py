@@ -14,7 +14,7 @@ LEAD = {"cold": 0.7, "whip": 0.55, "type": 1.25}
 TYPE_LEAD = 1.0          # page of a `type` shot is shown from this shot time on
 URLBAR_X = 420           # CSS x of the cursor's click in the URL bar (the bar is above the viewport, y<0)
 GAP = 0.35               # pause between two lines in one shot
-TAIL = 0.45
+TAIL = 0.40
 SHOTS = [
     # id,   entry,  url (relative to site/ unless it starts with '/'), display URL, extra lead, extra tail
     ("s01", "cold", "index.html",            "zawaer.github.io/countersign/",                     0.0, 0.35),
@@ -28,7 +28,7 @@ SHOTS = [
     ("s09", "type", "pitch.html#5",          "zawaer.github.io/countersign/pitch.html#5",        0.0, 0.6),
     ("s10", "type", "tour.html#6",           "zawaer.github.io/countersign/tour.html#6",         0.0, 0.5),
     ("s11", "whip", "overview.html",         "zawaer.github.io/countersign/overview.html",       0.0, 0.3),
-    ("s12", "whip", "pitch.html#1",          "zawaer.github.io/countersign/pitch.html#1",        0.0, 3.2),
+    ("s12", "whip", "pitch.html#1",          "zawaer.github.io/countersign/pitch.html#1",        0.0, 2.2),
 ]
 
 

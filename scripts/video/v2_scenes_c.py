@@ -130,7 +130,7 @@ async def s08(r, s):
     await r.move(toivo[0] + toivo[2] * 0.85, toivo[1] + toivo[3] * 1.12, dur=0.7)
     await r.at(r.cue("signed") - 0.1)
     await r.highlight(h3, until=round(r.cue("changes") + 0.35, 3))
-    await r.at(r.cue("toivo") + 0.6)
+    await r.at(r.cue("blocked", end=True) + 0.3)
     await r.drift(-12, 6, dur=0.5)
 
     # "The required check fails": scroll a little (inertia), then the status row

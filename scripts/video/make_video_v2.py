@@ -102,15 +102,20 @@ def main():
     ap.add_argument("--out", default=str(WORK / "countersign-demo-v2.mp4"))
     ap.add_argument("--form-copy", default="/data/work/form/countersign-demo-v2.mp4")
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--reuse-voice", action="store_true",
+                    help="use voice/lines.json as generated earlier (no ElevenLabs key file needed)")
     args = ap.parse_args()
     V2.mkdir(parents=True, exist_ok=True)
     ensure_fonts()
 
     print("voice:")
     stats = {"chars": 0}
-    lines = v2_voice.build(stats)
-    (V2 / "voice").mkdir(exist_ok=True)
-    (V2 / "voice" / "lines.json").write_text(json.dumps(lines, indent=1))
+    if args.reuse_voice:
+        lines = json.loads((V2 / "voice" / "lines.json").read_text())
+    else:
+        lines = v2_voice.build(stats)
+        (V2 / "voice").mkdir(exist_ok=True)
+        (V2 / "voice" / "lines.json").write_text(json.dumps(lines, indent=1))
     tl = v2_timeline.build(lines)
     (V2 / "timeline.json").write_text(json.dumps(tl, indent=1))
     print(f"  {len(lines)} lines, timeline {tl['total']:.2f}s, ElevenLabs characters this run: {stats['chars']}")

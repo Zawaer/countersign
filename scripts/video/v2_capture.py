@@ -127,8 +127,12 @@ class Rec:
         self.pos = (x, y)
         self._log(x, y)
 
-    async def move(self, x, y, dur=None, overshoot=None):
-        """Human-like move: minimum-jerk speed, a slight arc, a small overshoot on long moves."""
+    async def move(self, x, y, dur=None, overshoot=False):
+        """Human-like move: minimum-jerk speed along a slight arc. No overshoot by default (it read as a
+        wobble on video); overshoot=True adds a tiny one (<= 4 CSS px) that blends into the landing.
+
+        The real mouse is driven in real time (hovers), but the logged path is the analytic curve sampled
+        at 120 Hz on the shot clock, so the compositor's cursor carries no event-loop timing jitter."""
         x0, y0 = self.pos
         dx, dy = x - x0, y - y0
         dist = math.hypot(dx, dy)
@@ -136,30 +140,32 @@ class Rec:
             return
         if dur is None:
             dur = 0.32 + 0.22 * math.log2(1 + dist / 80)
-        if overshoot is None:
-            overshoot = dist > 220
         bend = self.rng.choice([-1, 1]) * min(40.0, dist * 0.07)
         nx, ny = (-dy / dist, dx / dist)
-        ox, oy = (x + dx / dist * min(14, dist * 0.04), y + dy / dist * min(14, dist * 0.04)) if overshoot else (x, y)
-        main = dur * (0.86 if overshoot else 1.0)
-        start = time.time()
-        while True:
-            u = min(1.0, (time.time() - start) / main)
+        over = min(4.0, dist * 0.015) if overshoot else 0.0
+
+        def path(u):
             e = min_jerk(u)
-            arc = math.sin(math.pi * u) * bend
-            await self._put(x0 + (ox - x0) * e + nx * arc, y0 + (oy - y0) * e + ny * arc)
+            # overshoot: a bump of the along-path progress that peaks late and returns smoothly to 0 at u=1
+            e += over / dist * (math.sin(math.pi * u) ** 2) * u ** 3 * 4
+            arc = math.sin(math.pi * min(1.0, e)) * bend
+            return x0 + dx * e + nx * arc, y0 + dy * e + ny * arc
+
+        t_start, start = self.now(), time.time()
+        while True:
+            u = min(1.0, (time.time() - start) / dur)
+            px, py = path(u)
+            self.pos = (px, py)
+            if py >= 0:
+                await self.page.mouse.move(px, py)
             if u >= 1:
                 break
             await asyncio.sleep(1 / 90)
-        if overshoot:
-            settle, s0 = dur - main, time.time()
-            while True:
-                u = min(1.0, (time.time() - s0) / settle)
-                e = min_jerk(u)
-                await self._put(ox + (x - ox) * e, oy + (y - oy) * e)
-                if u >= 1:
-                    break
-                await asyncio.sleep(1 / 90)
+        n = max(2, int(math.ceil(dur * 120)))
+        for i in range(n + 1):
+            px, py = path(i / n)
+            self.cursor.append([round(t_start + dur * i / n, 4), round(px, 2), round(py, 2)])
+        self.pos = (x, y)
 
     async def move_to(self, sel, nth=0, fx=0.5, fy=0.5, dur=None):
         await self.move(*(await self.point(sel, nth, fx, fy)), dur=dur)

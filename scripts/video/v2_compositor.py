@@ -5,7 +5,7 @@
 
 Reads WORK/v2/timeline.json and WORK/v2/capture/<shot>/{track.json,frames/} (see WORK/v2/SPEC.md) and
 writes a silent H.264 video. Everything lives in one "desktop" coordinate system (1920x1080 at zoom 1):
-wallpaper, menu bar, browser window (chrome + page viewport), cursor, highlights, notes. The camera maps a
+wallpaper, browser window (chrome + page viewport), cursor, highlights, notes. The camera maps a
 rectangle of the desktop onto the output frame; static layers are kept at 2x and the page is sampled from
 the capture frame directly (one resize with a float box per layer), so text stays sharp up to zoom 2.
 Captions are drawn afterwards in output space (not affected by the camera).
@@ -122,7 +122,7 @@ def css_to_desk(x, y):
 
 # ----------------------------------------------------------------------------------- static layers
 def make_background():
-    """Wallpaper + shadow + menu bar + window body at S x; plus the window coverage mask at S x."""
+    """Wallpaper + shadow + window body at S x (no menu bar: it is not trying to be a full screen grab); plus the window coverage mask at S x."""
     w1, h1 = W, H
     ys, xs = np.mgrid[0:h1, 0:w1].astype(np.float32)
     u = (xs / w1 * 0.6 + ys / h1 * 0.4)[..., None]
@@ -151,40 +151,7 @@ def make_background():
     arr = arr * (1 - body[..., None]) + 255 * body[..., None]
     bg = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB")
 
-    # menu bar
-    mb = menubar()
-    bg.paste(mb, (0, 0), mb)
     return bg, L(body)
-
-
-def menubar():
-    D = 4
-    h = 28
-    im = Image.new("RGBA", (W * D, h * D), (255, 255, 255, 140))
-    dr = ImageDraw.Draw(im)
-    x = 22
-    for i, item in enumerate(["Chrome", "File", "Edit", "View", "History", "Bookmarks", "Window", "Help"]):
-        f = font(13.5 * D, 650 if i == 0 else 450)
-        dr.text((x * D, 14 * D), item, font=f, fill=FG + (255,), anchor="lm")
-        x += f.getlength(item) / D + 21
-    clock = "Sat 14 Nov  14:05"
-    f = font(13.5 * D, 450)
-    cw = f.getlength(clock) / D
-    xr = W - 18 - cw
-    dr.text((xr * D, 14 * D), clock, font=f, fill=FG + (255,), anchor="lm")
-    # status icons: search, wifi, battery (generic glyphs)
-    x = xr - 28
-    dr.ellipse([(x - 5) * D, (9) * D, (x + 3) * D, (17) * D], outline=FG, width=int(1.6 * D))
-    dr.line([(x + 2) * D, 16 * D, (x + 6) * D, 20 * D], fill=FG, width=int(1.8 * D))
-    x -= 34
-    for r in (9, 6, 3):
-        dr.arc([(x - r) * D, (19 - r) * D, (x + r) * D, (19 + r) * D], 225, 315, fill=FG, width=int(1.8 * D))
-    dr.ellipse([(x - 1.3) * D, (17.7) * D, (x + 1.3) * D, (20.3) * D], fill=FG)
-    x -= 46
-    dr.rounded_rectangle([x * D, 9 * D, (x + 24) * D, 19.5 * D], radius=3 * D, outline=FG, width=int(1.3 * D))
-    dr.rounded_rectangle([(x + 2) * D, 11 * D, (x + 17) * D, 17.5 * D], radius=1.5 * D, fill=FG)
-    dr.rounded_rectangle([(x + 25) * D, 12.5 * D, (x + 26.6) * D, 16 * D], radius=0.8 * D, fill=FG)
-    return im.resize((W * S, h * S), Image.LANCZOS)
 
 
 def favicon(dr, D, x, y, spin=None):
@@ -416,15 +383,8 @@ def load(timeline_path, capture_dir):
         sh.t_enter = L_ - 0.2
         sh.type_from = p0
         sh.clicks = [[sh.t_click, URL_CSS[0], URL_CSS[1]]] + sh.clicks
-        full = [640.0, (540 - VP[1]) / VPS]
-        pz = cam_state(prev, prev.dur)
-        kfs = [[0.0, pz[0], pz[1], pz[2], "io"], [0.34, 1.0, full[0], full[1], "io"], [L_, 1.0, full[0], full[1], "lin"]]
-        rest = [k for k in sh.camera if k[0] > L_ + 1e-3]
-        z, cx, cy = interp_cam(sh.camera, L_ + 0.5)
-        if (abs(z - 1.0) > 1e-3) and not (rest and rest[0][0] < L_ + 0.5):
-            kfs.append([L_ + 0.5, z, cx, cy, "io"])
-            rest = [k for k in rest if k[0] > L_ + 0.5]
-        sh.camera = kfs + rest
+
+    plan_camera(shots)
 
     # caption chunks on the global clock
     chunks = []
@@ -448,19 +408,142 @@ def load(timeline_path, capture_dir):
     return tl, shots, chunks
 
 
-def interp_cam(kfs, t):
-    if t <= kfs[0][0]:
-        return kfs[0][1:4]
-    for a, b in zip(kfs, kfs[1:]):
-        if t < b[0]:
-            u = (t - a[0]) / max(1e-6, b[0] - a[0])
-            e = ease_io(u) if b[4] == "io" else u
-            return [a[k] + (b[k] - a[k]) * e for k in (1, 2, 3)]
-    return kfs[-1][1:4]
+# ----------------------------------------------------------------------------------------- camera
+# The captures log camera keyframes; the compositor turns them into a short list of calm moves:
+#  - "lin" keyframes (slow drifts after a zoom) are dropped: the camera holds still while the voice talks.
+#    Drifts started at zero speed right after an ease-out, and some reversed the zoom (a visible bounce).
+#  - every move is one ease-in-out between two framed rectangles, 0.6-1.0 s long, never overlapping
+#    another move. Long segments (slow push-ins) become a 0.9 s move placed where it overlaps the voice
+#    least, i.e. between phrases.
+#  - targets are clamped to the window first, and the move interpolates the clamped rectangles as a
+#    similarity (scale exponentially about the fixed point), so no coordinate changes direction mid-move
+#    and no clamp engages mid-move (that was an abrupt stop of the pan).
+#  - a `type` entry zooms out to the whole window across the cut (from the end of the previous shot).
+MOVE_MIN, MOVE_MAX, MOVE_LONG, MOVE_GAP = 0.6, 1.0, 0.9, 0.15
+MERGE_GAP = 0.6                         # moves closer than this are merged into one
+STILL_PX = 6.0                          # target changes below this (output px) are not worth a move
+EXIT_DUR, EXIT_INTO = 0.8, 0.3          # type entry: zoom-out length, and how far it runs into the new shot
 
 
-def cam_state(sh, t):
-    return interp_cam(sh.camera, t)
+def rect_of(z, cx, cy):
+    x, y, w, _ = view_rect(clamp(z, 1.0, 2.0), cx, cy)
+    return (x, y, w)
+
+
+FULL = None
+
+
+def rect_lerp(A, B, e):
+    xa, ya, wa = A
+    xb, yb, wb = B
+    if abs(wb - wa) < 1e-6 * wa:
+        return xa + (xb - xa) * e, ya + (yb - ya) * e, wa
+    s = (wb / wa) ** e
+    px = (xa * wb - xb * wa) / (wb - wa)
+    py = (ya * wb - yb * wa) / (wb - wa)
+    return px - (px - xa) * s, py - (py - ya) * s, wa * s
+
+
+def rect_diff(A, B):
+    """Largest on-screen displacement (output px) between two framings."""
+    k = W / min(A[2], B[2])
+    return max(abs(A[0] - B[0]), abs(A[1] - B[1]), abs(A[2] - B[2]), abs(A[0] + A[2] - B[0] - B[2]),
+               abs(A[1] + A[2] * H / W - B[1] - B[2] * H / W)) * k
+
+
+def speech_spans(sh):
+    sp = sorted((w[1], w[2]) for ln in sh.lines for w in ln["words"])
+    out = []
+    for a, b in sp:
+        if out and a - out[-1][1] < 0.15:
+            out[-1][1] = max(out[-1][1], b)
+        else:
+            out.append([a, b])
+    return out
+
+
+def overlap(spans, a, b):
+    return sum(max(0.0, min(b, y) - max(a, x)) for x, y in spans)
+
+
+def plan_camera(shots):
+    global FULL
+    FULL = rect_of(1.0, 640.0, (540 - VP[1]) / VPS)
+    for sh in shots:
+        nxt = shots[sh.i + 1] if sh.i + 1 < len(shots) else None
+        kfs = [k for k in sh.camera if k[4] != "lin"]
+        if sh.entry == "type" and sh.i > 0:
+            cur, t_prev, free = FULL, sh.lead, sh.lead + 0.15
+            kfs = [k for k in kfs if k[0] > sh.lead + 1e-3]
+        else:
+            cur, t_prev = rect_of(*kfs[0][1:4]), kfs[0][0]
+            free = 0.4 if sh.entry == "cold" else WHIP / 2 + 0.1
+            kfs = kfs[1:]
+        latest = sh.dur - (WHIP / 2 + 0.05 if nxt is not None and nxt.entry == "whip" else 0.1)
+        sh.cam0, sh.moves, flex = cur, [], []
+        spans = speech_spans(sh)
+        for k in kfs:
+            tgt = rect_of(*k[1:4])
+            if rect_diff(cur, tgt) < STILL_PX:
+                t_prev = max(t_prev, k[0])
+                continue
+            a, b = max(t_prev, free), k[0]
+            if b - a <= MOVE_MAX:
+                d = max(MOVE_MIN, b - a)
+                start = max(free, b - d)
+            else:
+                d = MOVE_LONG
+                n = int((b - a - d) * 30)
+                ends = [a + d + i / 30 for i in range(n + 1)]
+                end = min(ends, key=lambda e: (round(overlap(spans, e - d, e), 2), -e))
+                start = end - d
+            end = min(start + d, latest)
+            if end - start < 0.45:
+                continue
+            flexible = b - a > MOVE_MAX
+            if sh.moves and start - sh.moves[-1][1] < MERGE_GAP:
+                # two moves nearly back to back read as stop-and-go: make them one move, timed like the
+                # word-timed one of the two (the second, unless only the first was word-timed)
+                p, p_flex = sh.moves.pop(), flex.pop()
+                if p_flex:
+                    start = max(p[0], end - MOVE_MAX)
+                else:
+                    start, end = p[0], min(end, p[0] + MOVE_MAX)
+                if rect_diff(p[2], tgt) >= STILL_PX:
+                    sh.moves.append((start, end, p[2], tgt))
+                    flex.append(False)
+            else:
+                sh.moves.append((start, end, cur, tgt))
+                flex.append(flexible)
+            cur, t_prev, free = tgt, max(k[0], end), end + MOVE_GAP
+    # type entries: zoom out to the whole window across the cut, as one move shared by both shots
+    for sh in shots:
+        if sh.entry != "type" or sh.i == 0:
+            continue
+        prev = shots[sh.i - 1]
+        end_state = prev.moves[-1][3] if prev.moves else prev.cam0
+        if rect_diff(end_state, FULL) < STILL_PX:
+            sh.cam0 = FULL
+            continue
+        start = prev.dur + EXIT_INTO - EXIT_DUR
+        if prev.moves and prev.moves[-1][1] + MOVE_GAP > start:
+            start = prev.moves[-1][1] + MOVE_GAP
+        prev.moves.append((start, start + EXIT_DUR, end_state, FULL))
+        sh.cam0 = end_state
+        sh.moves.insert(0, (start - prev.dur, start + EXIT_DUR - prev.dur, end_state, FULL))
+
+
+def view_at(sh, t):
+    """Desktop rectangle (x, y, w, h) the camera shows at shot time t."""
+    cur = sh.cam0
+    for t0, t1, A, B in sh.moves:
+        if t < t0:
+            break
+        if t < t1:
+            cur = rect_lerp(A, B, ease_io((t - t0) / (t1 - t0)))
+            break
+        cur = B
+    return cur[0], cur[1], cur[2], cur[2] * H / W
 
 
 def view_rect(z, cx, cy):
@@ -511,7 +594,7 @@ class Renderer:
         self.total = self.tl["total"]
         self.bg, self.winmask = make_background()
         self.cur_master, self.cur_hot, self.cur_h = make_cursor_master()
-        self._chrome, self._frames, self._cursors, self._caps = {}, {}, {}, {}
+        self._chrome, self._frames, self._caps = {}, {}, {}
         self.chunk_starts = [c[0] for c in self.chunks]
 
     # ---- sources
@@ -568,21 +651,9 @@ class Renderer:
             im = self._chrome[key] = pad(draw_chrome(**st), 2)
         return im
 
-    def cursor_sprite(self, h):
-        key = round(h * 2) / 2
-        sp = self._cursors.get(key)
-        if sp is None:
-            k = key / self.cur_h
-            m = self.cur_master
-            sp = m.resize((max(1, round(m.size[0] * k)), max(1, round(m.size[1] * k))), Image.LANCZOS)
-            sp = self._cursors[key] = (sp, (self.cur_hot[0] * k, self.cur_hot[1] * k))
-        return sp
-
     # ---- one shot at shot time t (no captions)
     def compose(self, sh, t):
-        z, cx, cy = cam_state(sh, t)
-        z = clamp(z, 1.0, 2.0)
-        vx, vy, vw, vh = view_rect(z, cx, cy)
+        vx, vy, vw, vh = view_at(sh, t)
         k = W / vw                                    # output px per desktop px
 
         def to_out(x, y):
@@ -642,8 +713,9 @@ class Renderer:
         t0, t1 = nt["t"], nt.get("until", nt["t"] + 4)
         if t < t0 or t > t1 + 0.25:
             return
-        zref = clamp(cam_state(sh, t0)[0], 1.0, 2.0)
-        s = k / zref                                  # output px per "note px" (26 px text at zref)
+        zref = W / view_at(sh, min(t1, t0 + 0.5))[2]
+        s_out = k / zref                              # output px per "note px" (26 px text at zref)
+        s = 2.0                                       # drawn at 2x, then placed with float precision
         a_in = clamp((t - t0) / 0.15, 0, 1)
         a = a_in * (1 - clamp((t - t1) / 0.25, 0, 1))
         text = nt["text"]
@@ -655,12 +727,15 @@ class Renderer:
         cw = f.getlength(text[:n]) + 2 * padx + 3 * s     # the card grows as the text is typed
         ch = th + 2 * pady
         ax, ay = to_out(*css_to_desk(*nt["anchor"]))
+        ax, ay = ax * s / s_out, ay * s / s_out        # layout in the 2x card space
         gap = 14 * s
-        if ax + gap + full_cw <= min(W - 16, to_out(VP[2], 0)[0] - 8 * s):
-            x0 = clamp(ax + gap, 16, W - 16 - full_cw)
+        q = s / s_out                                 # card px per output px
+        Wq = W * q
+        if ax + gap + full_cw <= min(Wq - 16 * q, to_out(VP[2], 0)[0] * q - 8 * s):
+            x0 = clamp(ax + gap, 16 * q, Wq - 16 * q - full_cw)
         else:
-            x0 = clamp(ax - gap - full_cw, 16, W - 16 - full_cw) + full_cw - cw
-        y0 = clamp(ay - ch / 2, 16, 1000 - ch)
+            x0 = clamp(ax - gap - full_cw, 16 * q, Wq - 16 * q - full_cw) + full_cw - cw
+        y0 = clamp(ay - ch / 2, 16 * q, 1000 * q - ch)
         sc = 0.96 + 0.04 * ease_io(a_in)
         sh_pad = int(24 * s)
         cwi, chi = int(math.ceil(cw)) + 2 * sh_pad, int(math.ceil(ch)) + 2 * sh_pad
@@ -682,13 +757,12 @@ class Renderer:
         if n < len(text) or (t * 2) % 1 < 0.5:
             cx = tx + f.getlength(text[:n]) + 1 * s
             dr.rectangle([cx, ty - 13 * s, cx + max(1.5, 2 * s), ty + 13 * s], fill=ACCENT + (255,))
-        if sc < 0.999:
-            card = card.resize((max(1, round(cwi * sc)), max(1, round(chi * sc))), Image.LANCZOS)
         if a < 0.999:
             card.putalpha(card.getchannel("A").point(lambda v: int(v * a)))
-        cxo = x0 + cw / 2 - card.size[0] / 2
-        cyo = y0 + ch / 2 - card.size[1] / 2
-        img.paste(card, (round(cxo), round(cyo)), card)
+        f_ = sc / q                                   # card px -> output px, with the pop-in scale
+        cxo = (x0 - sh_pad + cwi / 2) / q - cwi * f_ / 2
+        cyo = (y0 - sh_pad + chi / 2) / q - chi * f_ / 2
+        paste_scaled(img, card, cxo, cyo, f_)
 
     def cursor(self, img, sh, t, to_out, k):
         p = cursor_at(sh, t)
@@ -706,8 +780,8 @@ class Renderer:
                 if dt < 0.35:
                     rx, ry = to_out(*css_to_desk(c[1], c[2]))
                     ripple(img, rx, ry, dt / 0.35, size / 30)
-        sp, (hx, hy) = self.cursor_sprite(size * scale)
-        img.paste(sp, (round(ox - hx), round(oy - hy)), sp)
+        kk = size * scale / self.cur_h      # sub-pixel position and continuous size: no stepping
+        paste_scaled(img, self.cur_master, ox - self.cur_hot[0] * kk, oy - self.cur_hot[1] * kk, kk)
 
     def caption_text(self, text):
         sp = self._caps.get(text)
@@ -829,6 +903,18 @@ def place(dst, src, rect, padpx=None):
     by0 = clamp((Y0 - y0) * sy + p, 0, src.size[1])
     by1 = clamp((Y1 - y0) * sy + p, 0, src.size[1])
     dst.paste(src.resize((X1 - X0, Y1 - Y0), Image.LANCZOS, box=(bx0, by0, bx1, by1)), (X0, Y0))
+
+
+def paste_scaled(dst, src, x, y, scale):
+    """Alpha-composite RGBA `src` so its pixel (u, v) lands on output (x + u*scale, y + v*scale), sampled
+    once with float precision. `src` must have a transparent border (its outermost fraction is cropped)."""
+    x1, y1 = x + src.size[0] * scale, y + src.size[1] * scale
+    X0, Y0, X1, Y1 = math.ceil(x), math.ceil(y), math.floor(x1), math.floor(y1)
+    if X1 <= X0 or Y1 <= Y0:
+        return
+    box = ((X0 - x) / scale, (Y0 - y) / scale, (X1 - x) / scale, (Y1 - y) / scale)
+    sp = src.resize((X1 - X0, Y1 - Y0), Image.LANCZOS, box=box)
+    dst.paste(sp, (X0, Y0), sp)
 
 
 def ripple(img, x, y, u, s):
