@@ -140,6 +140,9 @@ def _more(r: dict, v, ci: dict) -> dict:
     runs = [json.loads(m) for m in re.findall(r"^\s*-\s*(\{.*\})\s*$", (ROOT / "measurement/costs.yaml").read_text(), re.M)]
     gem = [x for x in runs if x["provider"] == "google"]
     out["gemini_adjudicated"] = len({x["change"] for x in gem})
+    gem_real = sorted({x["change"] for x in gem if not x["change"].startswith("var-")})
+    out["gemini_real_changes"] = " and ".join([", ".join(gem_real[:-1]), gem_real[-1]] if len(gem_real) > 1 else gem_real)
+    out["gemini_variants"] = len({x["change"] for x in gem if x["change"].startswith("var-")})
     out["gemini_tokens"] = f'{sum(x["tokens_in"] + x["tokens_out"] for x in gem):,}'
     out["gemini_usd"] = f'{sum(x["usd"] for x in gem):.2f}'
     files = {}
