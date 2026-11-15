@@ -903,7 +903,13 @@ def build_pitch(D: Data, n: dict) -> str:
                 f'{pr_merge_box(pr, app.get("name") or "GitHub App")}</div>')
     # 7 the ledger
     nled = len(D.ledger or [])
-    V[7] = ("Every sign-off is signed and chained.",
+    # 7 the read check
+    V[7] = ("You read it, then you sign.",
+            '<ol class="chain">'
+            f'<li class="ok">{icon("pass", "g")}<b>Which requirement was refused?</b><span>the no-crash clause</span></li>'
+            f'<li class="ok">{icon("pass", "g")}<b>Why can\'t the tests prove the fix?</b><span>4 of 8 pass without it</span></li>'
+            f'<li class="ok">{icon("pass", "g")}<b>Sign unlocks</b><span>read check 2 of 2, in the ledger</span></li></ol>')
+    V[8] = ("Every sign-off is signed and chained.",
             '<ol class="chain">'
             f'<li class="ok">{icon("pass", "g")}<b>Ledger OK</b><span>{nled} entries, every signature verifies</span></li>'
             f'<li class="bad">{icon("fail", "g")}<b>Edit one line</b><span>invalid: hash mismatch</span></li>'
@@ -916,13 +922,20 @@ def build_pitch(D: Data, n: dict) -> str:
         big.append((n["mut_checks"], n["mut_total"], "planted bugs caught by tests and checks"))
     if n.get("rt_total"):
         big.append((n["rt_stopped"], n["rt_total"], "attacks on its own pipeline stopped"))
-    V[8] = ("Measured, not claimed.",
+    V[9] = ("Measured, not claimed.",
             '<div class="bigs">' + "".join(f'<div><b>{a}<small>/{b}</small></b><span>{e(c)}</span></div>' for a, b, c in big) + "</div>")
     # 9 limits
-    V[9] = ("It says where it stops.",
+    # 10 who it's for
+    V[10] = ("Who it's for.",
+             '<ol class="chain who" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:none">'
+             '<li><b>Who</b><span>teams whose coding agents out-write their reviewers, where a named person answers for every merge</span></li>'
+             '<li><b>What they get</b><span>every merge signed: proven, refused, risk left</span></li>'
+             f'<li><b>What it costs</b><span>{n.get("tok_min", 297)}k to {n.get("tok_max", 484)}k reviewer tokens per change; about 21 s from push to pack</span></li>'
+             '<li><b>How it starts</b><span>one repo at <i>ask</i>; the AI earns clearance</span></li></ol>')
+    V[11] = ("It says where it stops.",
             '<div class="tiers lim">' + "".join(f"<span>{x}</span>" for x in ["can't judge intent", "only as good as the requirement", "net8.0 / Linux only", "trust over time is simulated"]) + "</div>")
     # 10 try it
-    V[10] = ("Try it on one repo.",
+    V[12] = ("Try it on one repo.",
              '<p class="sub">One area, one owner, one signed mandate.</p>'
              f'<p class="urls stack"><span>Demo {link(DEMO_URL, demo)}</span><span>Code {link(REPO_URL, repo)}</span></p>'
              '<p class="urls"><span>Run <code>scripts/demo.sh</code></span><span>Team <b>Toivo · Rene</b></span></p>')

@@ -40,25 +40,37 @@ One idea per slide: one scene, a few labels. The slides follow the demo video's 
 - **Visual:** the demo PR as GitHub shows it (captured from the demo repo): `countersign/tier` failing with "changes requested by Toivo", Required; "Merging is blocked".
 - **Speaker note:** The status is posted by a dedicated GitHub App; branch protection requires it from that App, enforced for admins. An agent can post a green status from a workflow, but not as the App.
 
-## 7. A record no one can quietly edit
+## 7. You read it, then you sign
+
+- **Message:** Before the owner can sign, a read check asks two questions drawn from the evidence: which requirement was refused, and why the tests can't prove the fix. The sign buttons unlock only after both are right.
+- **Visual:** the two questions with the right answers marked; the Request changes button unlocked; the ledger entry records the read check (2 of 2).
+- **Speaker note:** A signature alone proves who signed which pack, not that they understood it. The read check makes the owner prove they read the evidence. Try it on the site: "Be the owner" (sign.html).
+
+## 8. A record no one can quietly edit
 
 - **Message:** Every sign-off goes into a signed, hash-chained ledger. Edit one line and the check fails; recompute the hash and the signature fails.
 - **Visual:** three steps: ledger OK (<!--n:ledger_entries-->18<!--/n--> entries) → edit one line: invalid → recompute the hash: signature does not verify.
 - **Speaker note:** Only the signer's private key can sign a new hash, and that key is not in the repo. Try it live on the tour, step 6.
 
-## 8. Measured, not claimed
+## 9. Measured, not claimed
 
 - **Message:** <!--n:history_escapes-->11<!--/n--> of <!--n:history_escapes-->11<!--/n--> later-reverted real PRs were sent to a human (replay of <!--n:history_prs-->109<!--/n--> merged PRs; the AI would clear <!--n:history_cleared-->24<!--/n-->, <!--n:history_escapes_cleared-->0<!--/n--> of the escapes). Tests and checks caught <!--n:seeded_caught_by_checks-->14<!--/n--> of <!--n:seeded_total-->18<!--/n--> planted bugs. <!--n:redteam_stopped-->35<!--/n--> of <!--n:redteam_total-->35<!--/n--> attacks on our own pipeline were stopped.
 - **Visual:** three big numbers: <!--n:history_escapes-->11<!--/n-->/<!--n:history_escapes-->11<!--/n-->, <!--n:seeded_caught_by_checks-->14<!--/n-->/<!--n:seeded_total-->18<!--/n-->, <!--n:redteam_stopped-->35<!--/n-->/<!--n:redteam_total-->35<!--/n-->.
 - **Speaker note:** The replay is real (mandate v<!--n:history_mandate-->6<!--/n-->, upstream CI credited as passed). On the <!--n:seeded_survivors-->4<!--/n--> planted bugs every check missed, a reviewer pointed at the planted line in <!--n:seeded_survivors_flagged_new-->3<!--/n--> with a finding the original did not already have. Trust over time (an area earns `notify` from agreeing spot-checks and loses it after one escape) is simulated, and marked so.
 
-## 9. It says where it stops
+## 10. Who it's for
+
+- **Message:** Engineering teams whose agents write more code than people can read, where a named person still answers for every merge: banking, public sector, healthcare.
+- **Visual:** four lines: who (teams using coding agents in accountable domains) · what they get (every merge signed: proven, refused, risk left) · what it costs (<!--n:tokens_agent_min_k-->297<!--/n-->k to <!--n:tokens_agent_max_k-->484<!--/n-->k reviewer tokens per change, about 21 s push to pack) · how it starts (one repo at ask; the AI earns clearance).
+- **Speaker note:** Adoption is a required GitHub check plus a signed mandate. Every area starts at ask, so nothing changes for the humans on day one; the AI earns notify only after 20 agreeing spot-checks in a row, and an escape drops it back. Confidential code uses self-hosted reviewers.
+
+## 11. It says where it stops
 
 - **Message:** We know where this stops working, and the pack says so every time.
 - **Visual:** four labels: can't judge intent · only as good as the requirement · net8.0 / Linux only · trust over time is simulated.
 - **Speaker note:** Judges' questions: *Not trust our output?* citations stop verifying, reviewers always agree, canaries missed, any escape. *Who owns it?* the owner of the most sensitive area, named in the signed mandate. *Scale?* humans see only what can't be proven; open-weight reviewers for confidential code.
 
-## 10. Try it
+## 12. Try it
 
 - **Message:** Try it on one repo: one area, one owner, one signed mandate.
 - **Visual:** the mark; the demo (countersign.toivo.dev) and the code (github.com/Zawaer/countersign) in large type; under them, Run `scripts/demo.sh` · Team Toivo · Rene.
