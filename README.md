@@ -85,6 +85,13 @@ Four were written by an agent (Tieto's branches). Three are small merged upstrea
 
 **More measurements** in [docs/MEASUREMENT.md](docs/MEASUREMENT.md): simulated review time and trust over time, the same-issue benchmark ([docs/BENCHMARK.md](docs/BENCHMARK.md)) and scaling cost ([docs/SCALING.md](docs/SCALING.md)).
 
+## Who it's for
+
+- **The buyer:** an engineering organisation whose coding agents now write more code than its people can read, in a domain where a named person must still answer for every merge (banking, public sector, healthcare: Tieto's customers).
+- **What they get:** accountability that survives the switch to agents. Every merge has a signed record of what was proven, what was refused and the risk left, and the AI clears only what its signed mandate allows. On this repo's history that was <!--n:history_cleared-->24<!--/n--> of <!--n:history_prs-->109<!--/n--> merged PRs with <!--n:history_escapes_cleared-->0<!--/n--> escapes; the rest went to an owner with the reason.
+- **What it costs to run:** machine cost per change is bounded and measured: <!--n:tokens_agent_min_k-->297<!--/n-->k to <!--n:tokens_agent_max_k-->484<!--/n-->k reviewer tokens per agent-written change, a few CI minutes, and about 21 s from push to pack ([docs/SCALING.md](docs/SCALING.md), [docs/COSTS.md](docs/COSTS.md)). It saves owner time only on large changes and on what the AI clears; on small changes the pack takes longer than the diff.
+- **How it's adopted:** one repo, one area, one owner. It starts at *ask* (the AI routes, a human signs everything), installs as a required GitHub check ([examples/pr-flow](examples/pr-flow/)), and the AI earns *notify* only after 20 agreeing spot-checks in a row; an escape drops it back. Self-hosted reviewers keep confidential code in-house.
+
 ## Limits
 
 - It can't judge **intent**: whether this is the change the product needs.
