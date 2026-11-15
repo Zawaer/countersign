@@ -1,4 +1,4 @@
-"""Export the pitch deck (site/pitch.html) to docs/pitch/deck.pdf: 16:9, one slide per page, notes hidden.
+"""Export the pitch deck (site/pitch.html) to docs/pitch/deck.pdf: 16:9, one slide per page, notes hidden, no footer.
 
 Run after `python3 site/build.py`, with any Python that has Playwright and Chromium:
     python docs/pitch/export_pdf.py [out.pdf]
@@ -18,9 +18,10 @@ html,body{{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 .top,.deckbar,.foot,footer,.note,.skip{{display:none!important}}
 main{{padding:0!important}}
 .slide{{display:flex!important;flex-direction:column;justify-content:center;box-sizing:border-box;height:{H}px!important;
-min-height:0!important;padding:48px 64px!important;overflow:hidden;break-after:page}}
+min-height:0!important;padding:56px 72px!important;overflow:hidden;break-after:page;position:relative}}
 .slide:last-child{{break-after:auto}}
-.slide .vis{{font-size:20px}}.slide h2{{font-size:40px}}.title-slide h1{{font-size:64px}}.punch{{font-size:32px}}.tile b{{font-size:36px}}
+.sfoot{{display:none!important}}
+.title-slide .urls,.title-slide .event{{display:none!important}}
 """
 
 with sync_playwright() as p:

@@ -10,7 +10,7 @@ eleven_multilingual_v2 only if v3 fails for his voice). Clips are cached in WORK
 import base64, hashlib, json, os, pathlib, re, subprocess, sys, urllib.error, urllib.request, uuid, wave
 
 WORK = pathlib.Path(os.environ.get("VIDEO_WORK", "/data/work/video"))
-ENV_FILE = pathlib.Path(os.environ.get("ELEVENLABS_ENV_FILE", "/data/attachments/s_G5o6eFRtoL/secrets/elevenlabs.env"))
+ENV_FILE = pathlib.Path(os.environ.get("ELEVENLABS_ENV_FILE", ".env.elevenlabs"))
 API = "https://api.elevenlabs.io/v1"
 SETTINGS = {"stability": 1.0, "similarity_boost": 0.9}  # v3 "Robust": keeps cloned voices consistent line to line
 SR = 44100
@@ -50,7 +50,7 @@ TAGS = {
 
 def tagged(lid, text):
     t = TAGS.get(lid)
-    if not t:
+    if not t or protege_mode():
         return text
     if stock_mode() and lid in STOCK_TEXT:
         return "[confident] " + text
@@ -101,6 +101,13 @@ STOCK = {"toivo": "cjVigY5qzO86Huf0OWal", "rene": "EXAVITQu4vr4xnSDxMaL"}
 STOCK_TEXT = {"b10": "Toivo signed a request for changes on GitHub. The required check fails, and the merge is blocked."}
 
 
+PROTEGE = "AesrdOgpgZSXUSHb7gw3"   # Toivo's 'Protégé narrator (clone)', as in the Datum video (multilingual_v2, defaults)
+
+
+def protege_mode():
+    return os.environ.get("V2_VOICES") == "protege"
+
+
 def stock_mode():
     return os.environ.get("V2_VOICES") == "stock"
 
@@ -109,6 +116,8 @@ def _speaker(name):
     e = _env()
     if stock_mode():
         return {"key": e["TOIVO_ELEVENLABS_KEY"], "voice": STOCK[name], "models": ["eleven_v3"]}
+    if protege_mode():
+        return {"key": e["TOIVO_ELEVENLABS_KEY"], "voice": PROTEGE, "models": ["eleven_multilingual_v2"]}
     if name == "rene":
         return {"key": e["RENE_ELEVENLABS_KEY"], "voice": e["RENE_VOICE_ID"], "models": [e.get("RENE_MODEL_ID") or "eleven_v3"]}
     return {"key": e["TOIVO_ELEVENLABS_KEY"], "voice": e["TOIVO_VOICE_ID"], "models": ["eleven_v3", "eleven_multilingual_v2"]}
@@ -203,6 +212,8 @@ def tts(speaker, text, stats):
     sp = _speaker(speaker)
     for model in sp["models"]:
         req = {"text": text, "model_id": model, "voice_settings": {"stability": 0.5, "similarity_boost": 0.75} if stock_mode() else SETTINGS}
+        if protege_mode():
+            req.pop("voice_settings")
         h = hashlib.sha256(json.dumps([speaker, sp["voice"], req], sort_keys=True).encode()).hexdigest()[:16]
         mp3, meta = adir / f"{speaker}-{h}.mp3", adir / f"{speaker}-{h}.json"
         if mp3.exists() and meta.exists():

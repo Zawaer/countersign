@@ -57,6 +57,25 @@ TITLES = {
     "overview.html": "Countersign: the numbers",
     "packs/2234/pack.html": "Countersign 2234: ask, owner Toivo",
 }
+# One tab per page the video visits (a real tab switch replaces typing URLs): window-local desktop px.
+TABS = ["index.html", "pitch.html", "tour.html", "packs/2234/pack.html", "prs.html", "overview.html"]
+TAB_X0, TAB_W = 84, 210
+TAB_CY = 24                             # window-local y of the tab titles
+TAB_GLIDE0, TAB_GLIDE1, TAB_CLICK = 0.30, 0.80, 0.84   # type entry: glide to the tab, click (page switches)
+
+
+def tab_index(url):
+    try:
+        return TABS.index(url.split("#")[0])
+    except ValueError:
+        return 0
+
+
+def tab_css(i):
+    """CSS-space point the cursor clicks on tab i (the chrome is above the viewport: y < 0)."""
+    x = TAB_X0 + TAB_W * i + 92
+    y = URL_CSS[1] + (WIN[1] + TAB_CY - URL_CY) / VPS
+    return x / VPS, y
 
 
 # ----------------------------------------------------------------------------------------- helpers
@@ -155,16 +174,18 @@ def make_background():
 
 
 def favicon(dr, D, x, y, spin=None):
+    # site/favicon.svg: Material Symbols Rounded "check_box" (filled), #1f2328
     if spin is None:
-        dr.rounded_rectangle([x * D, y * D, (x + 16) * D, (y + 16) * D], radius=4 * D, fill=ACCENT)
-        dr.line([(x + 4.2) * D, (y + 8.4) * D, (x + 7) * D, (y + 11.2) * D, (x + 12) * D, (y + 5.2) * D],
-                fill=WHITE, width=int(2 * D), joint="curve")
+        dr.rounded_rectangle([(x + 1.8) * D, (y + 1.8) * D, (x + 14.2) * D, (y + 14.2) * D], radius=1.8 * D, fill=FG)
+        dr.line([(x + 4.9) * D, (y + 8.2) * D, (x + 7.0) * D, (y + 10.3) * D, (x + 11.2) * D, (y + 6.1) * D],
+                fill=WHITE, width=int(1.75 * D), joint="curve")
     else:
         a0 = (spin * 360) % 360
         dr.arc([(x + 1) * D, (y + 1) * D, (x + 15) * D, (y + 15) * D], a0, a0 + 270, fill=ACCENT, width=int(2 * D))
 
 
-def draw_chrome(title, url, mode="show", nsel=(0, 0), typed=None, caret=False, load=0.0, load_a=0.0, spin=None):
+def draw_chrome(title, url, mode="show", nsel=(0, 0), typed=None, caret=False, load=0.0, load_a=0.0, spin=None,
+                active=0):
     """The browser's top 80 px (tab strip + toolbar), window-local, at S x."""
     D = 4
     w, h = WIN[2] - WIN[0], CHROME_H
@@ -181,26 +202,32 @@ def draw_chrome(title, url, mode="show", nsel=(0, 0), typed=None, caret=False, l
         x = 21 + 20 * i
         dr.ellipse(R(x - 6, 15, x + 6, 27), fill=b)
         dr.ellipse(R(x - 5.4, 15.6, x + 5.4, 26.4), fill=c)
-    # active tab with flared bottom corners
-    tx0, tx1 = 84, 340
+    # tab strip: one tab per page; the active one is white with flared bottom corners
+    for i in range(len(TABS)):
+        x0 = TAB_X0 + TAB_W * i
+        if i != active and i + 1 != active and i + 1 < len(TABS):
+            dr.line(R(x0 + TAB_W, 15, x0 + TAB_W, 33), fill=(196, 203, 211), width=int(1 * D))
+    tx0, tx1 = TAB_X0 + TAB_W * active, TAB_X0 + TAB_W * (active + 1)
     dr.rounded_rectangle(R(tx0, 7, tx1, 50), radius=9 * D, fill=WHITE)
     for cx, sx in ((tx0, -1), (tx1, 1)):
         dr.rectangle(R(min(cx, cx + sx * 9), 31, max(cx, cx + sx * 9), 40), fill=WHITE)
         dr.ellipse(R(cx + sx * 9 - 9, 22, cx + sx * 9 + 9, 40), fill=STRIP)
-    favicon(dr, D, tx0 + 13, 15.5, spin)
-    # title, faded out at the right edge
     f = font(13 * D, 450)
-    tl = Image.new("L", im.size, 0)
-    ImageDraw.Draw(tl).text(((tx0 + 37) * D, 24 * D), title, font=f, fill=255, anchor="lm")
-    fade_x1, fade_x0 = (tx1 - 34) * D, (tx1 - 58) * D
-    ramp = np.clip((fade_x1 - np.arange(im.size[0], dtype=np.float32)) / (fade_x1 - fade_x0), 0, 1)
-    tla = np.asarray(tl, np.float32) * ramp[None, :]
-    im.paste(FG, (0, 0), Image.fromarray(tla.astype(np.uint8), "L"))
-    # close x and new-tab +
-    cx, cy = tx1 - 20, 24
-    for a, b in (((-4, -4), (4, 4)), ((-4, 4), (4, -4))):
-        dr.line(R(cx + a[0], cy + a[1], cx + b[0], cy + b[1]), fill=MUTED, width=int(1.5 * D))
-    px = tx1 + 22
+    xs = np.arange(im.size[0], dtype=np.float32)
+    for i, page in enumerate(TABS):
+        x0, x1 = TAB_X0 + TAB_W * i, TAB_X0 + TAB_W * (i + 1)
+        favicon(dr, D, x0 + 13, 15.5, spin if i == active else None)
+        # title, faded out at the right edge (as Chrome truncates)
+        tl = Image.new("L", im.size, 0)
+        ImageDraw.Draw(tl).text(((x0 + 37) * D, TAB_CY * D), TITLES[page], font=f, fill=255, anchor="lm")
+        fade_x1, fade_x0 = (x1 - 34) * D, (x1 - 54) * D
+        ramp = np.clip((fade_x1 - xs) / (fade_x1 - fade_x0), 0, 1) * (xs >= x0 * D)
+        tla = np.asarray(tl, np.float32) * ramp[None, :]
+        im.paste(FG if i == active else (60, 66, 74), (0, 0), Image.fromarray(tla.astype(np.uint8), "L"))
+        cx, cy = x1 - 20, TAB_CY
+        for a, b in (((-4, -4), (4, 4)), ((-4, 4), (4, -4))):
+            dr.line(R(cx + a[0], cy + a[1], cx + b[0], cy + b[1]), fill=MUTED, width=int(1.5 * D))
+    px = TAB_X0 + TAB_W * len(TABS) + 22
     dr.line(R(px - 6, 24, px + 6, 24), fill=MUTED, width=int(1.6 * D))
     dr.line(R(px, 18, px, 30), fill=MUTED, width=int(1.6 * D))
     # toolbar icons: back, forward (disabled), reload
@@ -349,6 +376,7 @@ def load(timeline_path, capture_dir):
         sh.i, sh.id, sh.entry, sh.t0, sh.dur = i, s["id"], s["entry"], s["t0"], s["dur"]
         sh.url, sh.display = s["url"], s["display_url"]
         sh.title = TITLES.get(s["url"].split("#")[0], "Countersign")
+        sh.tab = tab_index(s["url"])
         sh.lines = s["lines"]
         sh.lead = lead if sh.entry == "type" else 0.0
         d = capture_dir / sh.id
@@ -367,22 +395,22 @@ def load(timeline_path, capture_dir):
         sh.ctimes = [c[0] for c in sh.cursor]
         sh.clicks = list(tr.get("clicks") or [])
         sh.highlights = tr.get("highlights") or []
+        plan_drags(sh)
         sh.notes = tr.get("notes") or []
         cam = [list(k) + (["io"] if len(k) < 5 else []) for k in (tr.get("camera") or [[0, 1.0, 640, 360, "io"]])]
         sh.camera = sorted(cam, key=lambda k: k[0])
         shots.append(sh)
 
-    # type entries: synthesise the URL-bar sequence from the previous shot's end state
+    # type entries: a tab switch. From the previous shot's end state the cursor glides to the new page's
+    # tab and clicks it; the tab becomes active and the page switches on the click (no load).
     for sh in shots:
         if sh.entry != "type" or sh.i == 0:
             continue
         prev = shots[sh.i - 1]
-        p0 = cursor_at(prev, prev.dur)
-        L_ = sh.lead
-        sh.t_click = 0.32
-        sh.t_enter = L_ - 0.2
-        sh.type_from = p0
-        sh.clicks = [[sh.t_click, URL_CSS[0], URL_CSS[1]]] + sh.clicks
+        sh.type_from = cursor_at(prev, prev.dur)
+        sh.t_click = min(TAB_CLICK, sh.lead - 0.05)
+        sh.tab_pt = tab_css(sh.tab)
+        sh.clicks = [[sh.t_click, *sh.tab_pt]] + sh.clicks
 
     plan_camera(shots)
 
@@ -562,17 +590,107 @@ def view_rect(z, cx, cy):
     return res[0], res[1], w, h
 
 
+# ------------------------------------------------------------------------------ highlighter drags
+# A highlight is a text selection, so the cursor makes it: it glides to the start of the phrase, presses,
+# drags across the words with the selection edge (same easing and duration as the sweep), and releases at
+# the end. Lines of a multi-line phrase (several boxes logged at the same time) are swept one after
+# another, the cursor hopping to the start of the next line. Before and after, the drawn cursor blends
+# from/to the captured track, so it never jumps.
+HL_PAD = 4                               # CSS px around the words (as drawn by Renderer.highlight)
+DRAG_IN, DRAG_PRESS, DRAG_HOP, DRAG_OUT, DRAG_BACK = 0.5, 0.06, 0.2, 0.25, 0.5
+
+
+def sweep_dur(w):
+    return clamp(0.3 + (w + 2 * HL_PAD) / 600, 0.45, 0.8)
+
+
+def plan_drags(sh):
+    sh.drags = []
+    groups = []
+    for hl in sorted(sh.highlights, key=lambda h: (h["t"], h["box"][1])):
+        if groups and abs(hl["t"] - groups[-1][0]["t"]) < 0.02:
+            groups[-1].append(hl)
+        else:
+            groups.append([hl])
+    for g in groups:
+        t0 = g[0]["t"]
+        t, segs = t0, []
+        for i, hl in enumerate(g):
+            x, y, w, h = hl["box"]
+            yy = y + h * 0.6
+            if i:
+                segs.append(("hop", t, t + DRAG_HOP, segs[-1][4], segs[-1][5], x - HL_PAD, yy))
+                t += DRAG_HOP
+            sd = sweep_dur(w)
+            hl["t"], hl["sd"] = round(t, 3), sd
+            segs.append(("sweep", t, t + sd, x - HL_PAD, yy, x + w + HL_PAD, yy))
+            t += sd
+        start = (segs[0][3], segs[0][4])
+        sh.drags.append({"in": t0 - DRAG_IN, "press": t0 - DRAG_PRESS, "segs": segs, "release": t,
+                         "start": start, "end": (segs[-1][5], segs[-1][6])})
+
+
+def _drag_pos(sh, t, base):
+    for d in getattr(sh, "drags", ()):
+        if t < d["in"] or t > d["release"] + DRAG_OUT + DRAG_BACK:
+            continue
+        if t < d["press"]:
+            e = min_jerk((t - d["in"]) / (d["press"] - d["in"]))
+            return base[0] + (d["start"][0] - base[0]) * e, base[1] + (d["start"][1] - base[1]) * e
+        if t <= d["segs"][0][1]:
+            return d["start"]
+        for kind, a, b, x0, y0, x1, y1 in d["segs"]:
+            if a <= t <= b:
+                e = ease_io((t - a) / (b - a)) if kind == "sweep" else min_jerk((t - a) / (b - a))
+                return x0 + (x1 - x0) * e, y0 + (y1 - y0) * e
+        if t <= d["release"] + DRAG_OUT:
+            return d["end"]
+        e = min_jerk((t - d["release"] - DRAG_OUT) / DRAG_BACK)
+        return d["end"][0] + (base[0] - d["end"][0]) * e, d["end"][1] + (base[1] - d["end"][1]) * e
+    return base
+
+
+def min_jerk(u):
+    u = clamp(u, 0.0, 1.0)
+    return u * u * u * (10 - 15 * u + 6 * u * u)
+
+
+def pressed(sh, t):
+    """0..1: how far the button is held down (a drag), for the cursor's press feedback."""
+    for d in getattr(sh, "drags", ()):
+        if d["press"] - 0.08 <= t <= d["release"] + 0.1:
+            return min(clamp((t - d["press"] + 0.08) / 0.08, 0, 1), clamp((d["release"] + 0.1 - t) / 0.1, 0, 1))
+    return 0.0
+
+
 def cursor_at(sh, t):
-    """Cursor CSS position at shot time t (track, or the synthesised URL-bar move of a type entry)."""
+    """Cursor CSS position at shot time t (track, or the synthesised URL-bar move of a type entry), with
+    the highlighter drags laid over it."""
+    p = _cursor_track(sh, t)
+    return p if p is None else _drag_pos(sh, t, p)
+
+
+def _cursor_track(sh, t):
     if sh.entry == "type" and hasattr(sh, "type_from") and t < sh.lead:
         x0, y0 = sh.type_from
-        x1, y1 = URL_CSS
-        u = clamp((t - 0.02) / 0.3, 0, 1)
-        e = u * u * u * (10 - 15 * u + 6 * u * u)
+        x1, y1 = sh.tab_pt
+        e = min_jerk((t - TAB_GLIDE0) / (TAB_GLIDE1 - TAB_GLIDE0))
         dx, dy = x1 - x0, y1 - y0
         dist = math.hypot(dx, dy) or 1
         arc = math.sin(math.pi * e) * min(40, dist * 0.07)
         return x0 + dx * e - dy / dist * arc, y0 + dy * e + dx / dist * arc
+    p = _cursor_log(sh, t)
+    if p is not None and sh.entry == "type" and hasattr(sh, "tab_pt") and t < sh.lead + TAB_BACK:
+        # the capture logs the cursor at the URL bar at type_lead: blend from the tab into the logged track
+        k = 1 - min_jerk((t - sh.lead) / TAB_BACK)
+        p = (p[0] + (sh.tab_pt[0] - URL_CSS[0]) * k, p[1] + (sh.tab_pt[1] - URL_CSS[1]) * k)
+    return p
+
+
+TAB_BACK = 0.5
+
+
+def _cursor_log(sh, t):
     c = sh.cursor
     if not c:
         return None
@@ -619,30 +737,9 @@ class Renderer:
     def chrome(self, sh, t):
         prev = self.shots[sh.i - 1] if sh.i else None
         st = dict(title=sh.title, url=sh.display)
-        if sh.entry == "type" and prev is not None and t < sh.lead + 0.35:
-            L_ = sh.lead
-            url = sh.display
-            if t < sh.t_click:
-                st = dict(title=prev.title, url=prev.display)
-            elif t < sh.t_click + 0.12:
-                st = dict(title=prev.title, url=prev.display, mode="select", nsel=(0, len(prev.display)))
-            elif t < sh.t_enter:
-                # typing at ~40 chars/s; from the 3rd char Chrome's inline autocomplete fills in the rest
-                n = min(len(url), 1 + int((t - sh.t_click - 0.12) * 40))
-                if n < 3:
-                    st = dict(title=prev.title, url=url[:n], mode="type", typed=n, caret=True)
-                else:
-                    st = dict(title=prev.title, url=url, mode="type", nsel=(n, len(url)), typed=n,
-                              caret=n >= len(url))
-            else:
-                lt = t - sh.t_enter
-                if t < L_:
-                    load, la = 0.15 + 0.55 * (1 - (1 - lt / (L_ - sh.t_enter)) ** 2), 1.0
-                else:
-                    u = (t - L_) / 0.35
-                    load, la = min(1.0, 0.7 + 0.3 * u / 0.5), clamp(1 - (u - 0.5) / 0.5, 0, 1)
-                st = dict(title=prev.title if t < L_ else sh.title, url=url, load=round(load, 2), load_a=round(la, 2),
-                          spin=(round(lt * 1.6, 2) if t < L_ + 0.12 else None))
+        st["active"] = sh.tab
+        if sh.entry == "type" and prev is not None and t < sh.t_click:
+            st = dict(title=prev.title, url=prev.display, active=prev.tab)
         key = tuple(sorted((k, v if not isinstance(v, list) else tuple(v)) for k, v in st.items()))
         im = self._chrome.get(key)
         if im is None:
@@ -664,8 +761,10 @@ class Renderer:
         content = base.copy()
         # page
         prev = self.shots[sh.i - 1] if sh.i else None
-        if sh.entry == "type" and prev is not None and t < sh.lead:
+        if sh.entry == "type" and prev is not None and t < sh.t_click:
             page = self.page_image(prev, prev.dur + 1)
+        elif sh.entry == "type" and prev is not None:
+            page = self.page_image(sh, max(t, sh.lead))    # the tab switch: the new page at once
         else:
             page = self.page_image(sh, t)
         place(content, page, (*to_out(VP[0], VP[1]), *to_out(VP[2], VP[3])))
@@ -686,7 +785,8 @@ class Renderer:
         t0, t1 = hl["t"], hl.get("until", hl["t"] + 3)
         if t < t0 or t > t1 + 0.3:
             return
-        prog = ease_io((t - t0) / 0.35) if t < t0 + 0.35 else 1.0
+        sd = hl.get("sd", 0.35)
+        prog = ease_io((t - t0) / sd) if t < t0 + sd else 1.0
         alpha = 0.34 * (1 - clamp((t - t1) / 0.3, 0, 1))
         x, y, w, h = hl["box"]
         p = 4
@@ -780,6 +880,7 @@ class Renderer:
                 if dt < 0.35:
                     rx, ry = to_out(*css_to_desk(c[1], c[2]))
                     ripple(img, rx, ry, dt / 0.35, size / 30)
+        scale = min(scale, 1 - 0.12 * pressed(sh, t))   # button held during a highlighter drag
         kk = size * scale / self.cur_h      # sub-pixel position and continuous size: no stepping
         paste_scaled(img, self.cur_master, ox - self.cur_hot[0] * kk, oy - self.cur_hot[1] * kk, kk)
 

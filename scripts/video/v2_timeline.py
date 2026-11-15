@@ -17,18 +17,18 @@ GAP = 0.35               # pause between two lines in one shot
 TAIL = 0.40
 SHOTS = [
     # id,   entry,  url (relative to site/ unless it starts with '/'), display URL, extra lead, extra tail
-    ("s01", "cold", "index.html",            "zawaer.github.io/countersign/",                     0.0, 0.35),
-    ("s02", "whip", "pitch.html#3",          "zawaer.github.io/countersign/pitch.html#3",        0.0, 0.0),
-    ("s03", "type", "tour.html#3",           "zawaer.github.io/countersign/tour.html#3",         0.0, 0.0),
-    ("s04", "whip", "index.html",            "zawaer.github.io/countersign/",                     0.5, 0.2),
-    ("s05", "type", "tour.html#2",           "zawaer.github.io/countersign/tour.html#2",         0.0, 0.0),
-    ("s06", "type", "packs/2234/pack.html",  "zawaer.github.io/countersign/packs/2234/pack.html", 0.9, 0.3),
-    ("s07", "type", "tour.html#5",           "zawaer.github.io/countersign/tour.html#5",         0.0, 0.2),
-    ("s08", "whip", "prs.html",              "zawaer.github.io/countersign/prs.html",            0.2, 0.2),
-    ("s09", "type", "pitch.html#5",          "zawaer.github.io/countersign/pitch.html#5",        0.0, 0.6),
-    ("s10", "type", "tour.html#6",           "zawaer.github.io/countersign/tour.html#6",         0.0, 0.5),
-    ("s11", "whip", "overview.html",         "zawaer.github.io/countersign/overview.html",       0.0, 0.3),
-    ("s12", "whip", "pitch.html#1",          "zawaer.github.io/countersign/pitch.html#1",        0.0, 2.2),
+    ("s01", "cold", "index.html",            "countersign.toivo.dev/",                     0.0, 0.35),
+    ("s02", "whip", "pitch.html#3",          "countersign.toivo.dev/pitch.html#3",        0.0, 0.0),
+    ("s03", "type", "tour.html#3",           "countersign.toivo.dev/tour.html#3",         0.0, 0.0),
+    ("s04", "whip", "index.html",            "countersign.toivo.dev/",                     0.5, 0.2),
+    ("s05", "type", "tour.html#2",           "countersign.toivo.dev/tour.html#2",         0.0, 0.0),
+    ("s06", "type", "packs/2234/pack.html",  "countersign.toivo.dev/packs/2234/pack.html", 0.9, 0.3),
+    ("s07", "type", "tour.html#5",           "countersign.toivo.dev/tour.html#5",         0.0, 0.2),
+    ("s08", "whip", "prs.html",              "countersign.toivo.dev/prs.html",            0.2, 0.2),
+    ("s09", "type", "pitch.html#5",          "countersign.toivo.dev/pitch.html#5",        0.0, 0.6),
+    ("s10", "type", "tour.html#6",           "countersign.toivo.dev/tour.html#6",         0.0, 0.5),
+    ("s11", "whip", "overview.html",         "countersign.toivo.dev/overview.html",       0.0, 0.3),
+    ("s12", "whip", "pitch.html#1",          "countersign.toivo.dev/pitch.html#1",        0.0, 2.2),
 ]
 
 

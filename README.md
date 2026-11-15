@@ -1,6 +1,6 @@
-# Countersign
+# Countersign (by Toivo & Rene, Junction 2026, Tieto challenge)
 
-**Demo:** open [site/index.html](site/index.html) in a browser.
+**Demo:** [countersign.toivo.dev](https://countersign.toivo.dev/) (or open [site/index.html](site/index.html) locally) · **Video:** [youtu.be/t8haHBFe9_E](https://youtu.be/t8haHBFe9_E) · **Live PR flow:** [Zawaer/countersign-messagepack-demo](https://github.com/Zawaer/countersign-messagepack-demo/pulls?q=is%3Apr) (workflows in [examples/pr-flow](examples/pr-flow/)) · **Deck:** [docs/pitch/deck.pdf](docs/pitch/deck.pdf)
 
 > **AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.**
 
@@ -18,6 +18,16 @@
 - **Mandate:** a signed, versioned file per repo that says, area by area, how far the AI may go alone and who owns each area.
 - **Tier:** where a change goes. `silent` (the AI clears it, logged), `notify` (the AI clears it and tells the owner), `ask` (the owner must sign), `block` (fix or split first).
 - **Escape:** a change that was merged and later needed a revert or a follow-up fix.
+
+## Verify it yourself
+
+From a fresh clone (Python 3.11+ and [uv](https://docs.astral.sh/uv/); no API keys):
+
+- `uv run countersign verify-ledger` → ends with `ledger OK: 14 entries, hash chain intact, every signature verifies` (the warnings above it flag packs edited after Toivo signed them).
+- Forge one line in a temp copy: `T=$(mktemp -d) && cp -r mandate requirements packs ledger keys $T && sed -i '3s/"version": "3"/"version": "4"/' $T/ledger/ledger.jsonl && uv run countersign verify-ledger --root $T` → `LEDGER INVALID`, `line 3: content does not match its hash (entry edited after it was written)`, exit code 1.
+- `scripts/demo.sh` → routes the changes; 2234 comes out `ask` to `Toivo` with its verified finding.
+- `python3 scripts/sync_numbers.py --check` → silent, exit code 0: every headline number matches its result file.
+- Live merge gate: [demo PR #2](https://github.com/Zawaer/countersign-messagepack-demo/pull/2) shows `countersign/tier` failing with "changes requested by Toivo (ledger #3)" and merging blocked; [PR #11](https://github.com/Zawaer/countersign-messagepack-demo/pull/11), a docs fix the AI cleared, is merged.
 
 ## How it works
 
@@ -82,6 +92,7 @@ Four were written by an agent (Tieto's branches). Three are small merged upstrea
 - **Breadth equals the checks.** We have checks for a C# library on net8.0/Linux. Frontend, performance and other targets fall back to humans and are listed as not checked.
 - **Reviewers share blind spots.** On the original 2283, all three reviewers said REQ-2283-F3 was met, though no test exercises the guard it depends on.
 - **The merge gate is owned by a dedicated App.** Our triage found that any GitHub Actions workflow could post the required status (T1). Closed Sat 11:30: the status is posted by the "Countersign Gate" GitHub App, whose key only `main`'s workflows can read, and branch protection accepts it from that App only ([docs/security/TRIAGE.md](docs/security/TRIAGE.md)).
+- **A signature is not attention.** It proves who signed which evidence pack and what that pack said (proven, refused, risk left); it does not measure whether the signer read or understood it.
 - Gemini adjudicates only disputes, and only <!--n:gemini_adjudicated-->6<!--/n--> changes had one (<!--n:gemini_real_changes-->2234 and 2283<!--/n-->, plus <!--n:gemini_variants-->4<!--/n--> generated benchmark variants). Key rotation and revocation are out of scope.
 
 ## Run it

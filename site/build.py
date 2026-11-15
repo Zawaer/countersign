@@ -730,68 +730,125 @@ def parse_deck(text: str) -> list[dict]:
     return slides
 
 
+DEMO_URL = "https://countersign.toivo.dev/"
+# demo PR #11 (demo-docs1, tier notify): opened 14:04:15, merged 14:04:55 UTC, from the GitHub API; docs/MEASUREMENT.md
+DOCS_FIX_PR, DOCS_FIX_SECONDS = 11, 40
+
+
 def build_pitch(D: Data, n: dict) -> str:
-    """One message and one visual per slide. The deck's own message and speaker note are the notes (N)."""
+    """One idea per slide, in the order the demo video tells it. The deck's own message and speaker note are the notes (N).
+
+    Slots 1, 3 and 5 are also filmed by scripts/video (v2_scenes_*.py): keep the title's repo URL, the mandate's
+    heading and .pipe chips (facts first, reviewers second), and the .chg chips with their tier .badge."""
+    import scene  # site/scene.py: the same story data and cited hunk as the landing page
     slides = {s["n"]: s for s in parse_deck(rt("docs/pitch/deck.md"))}
     rows = D.change_rows()
-    f = D.facts.get("2234") or {}
+    sv = scene.sync_values()
     p = D.packs.get("2234") or {}
-    ch = {c["id"]: c for c in f.get("checks", [])}
-    full = ch.get("tests.full_suite", {})
-    s_pass, s_tot = num(r"(\d+) passed", full.get("summary")), num(r"(\d+) tests", full.get("summary"))
-    cv = (D.reviews.get(("2234", "codex")) or {}).get("requirement_verdicts", [])
-    c_met = sum(v["verdict"] == "met" for v in cv)
-    d = f.get("diff", {})
-    seeded = seeded_rows(D)
-    surv = [s for s in seeded if not s["failed"]]
-    v2, cl = n.get("codex_v2"), n.get("claude_v2")
+    sd = scene.story_data()
+    owner = p.get("owner") or "the owner"
+    mark = icon("check_box", "sig", fill=1)
+    repo, demo = REPO_URL.replace("https://", ""), DEMO_URL.replace("https://", "").rstrip("/")
 
-    def tile(label, big, st=""):
-        return f'<div class="tile {st}"><span>{label}</span><b>{big}</b></div>'
+    def link(url, text):
+        return f'<a href="{url}">{e(text)}</a>'
 
     V = {}
-    V[1] = ("Countersign", "")
-    V[2] = ("Don't ask who read it. Ask who signed.",
-            f'<div class="two"><div class="greyed"><b class="mono">+{d.get("insertions", "?")} −{d.get("deletions", "?")}</b><p>2234, agent-written</p></div>'
-            '<ol class="signs"><li>checked</li><li>not checked</li><li>risk left</li></ol></div>')
+    # 2 green CI, wrong bug
+    ticks = []
+    if sd["builds"]:
+        ticks.append("Builds")
+    if sd["tests"]:
+        ticks.append(f'{sd["tests"]} tests pass')
+    if sd["allmet"]:
+        ticks.append("AI reviewer: requirements met")
+    V[2] = ("An AI agent wrote this fix.",
+            f'<p class="issue">#2234 {e(sd["title"])}</p>'
+            '<ul class="ticks">' + "".join(f'<li>{icon("pass", "g")}<span>{e(t)}</span></li>' for t in ticks) + "</ul>"
+            + (f'<p class="wrong">{icon("fail", "g")}<span>It fixes the wrong bug.</span></p>' if sd["finding"] else ""))
+    # 3 the mandate
     V[3] = ("A signed mandate decides what AI may clear.",
-            "<div class='pipe'>" + "".join(f"<span>{x}</span>" for x in ["facts", "reviewers", "decide", "owner signs"]) + "</div>")
-    V[4] = ("Green CI. AI says met. Wrong bug.",
-            '<div class="tiles3">' + tile("CI", f'{icon("pass")}{s_pass}/{s_tot}', "ok") + tile("AI review", f'{icon("pass")}{c_met}/{len(cv)} met', "ok")
-            + tile("Countersign", f'{icon("ask")}{e(str(p.get("tier", "")).upper())}{icon("arrow_forward", "arr")}{e(p.get("owner", ""))}', "bad") + "</div>")
+            "<div class='pipe'>" + "".join(f"<span>{x}</span>" for x in ["facts", "three reviewers", "citations re-checked", "decide", "owner signs"]) + "</div>"
+            f'<div class="split"><div>{tier("silent")} {tier("notify")}<p>the AI may clear</p></div>'
+            f'<div>{tier("ask")} {tier("block")}<p>a named human signs</p></div></div>')
+    # 4 the line the fix never touches
+    h = scene.where_hunk(scene.Code(), sd)
+    vis = ""
+    if h:
+        pin = f'<div class="pin" role="note">{icon("fail", "g")}<span>Untouched by the fix</span></div>' if h["touched"] else ""
+        edits = (f'<div class="r gap"><span class="n"></span><span class="c">⋯ the fix edits lines {h["edits"][0]}–{h["edits"][1]} instead</span></div>'
+                 if h["touched"] and h["edits"] else "")
+        vis = f'<div class="hunk"><div class="file">{e(h["file"].rsplit("/", 1)[-1])}</div>{scene.code_rows(h["rows"], h["pin"], pin)}{edits}</div>'
+    facts = []
+    if sv.get("t2234_pass_without_fix") and sv.get("t2234_new_tests"):
+        facts.append(("partial", "warn", f'{sv["t2234_pass_without_fix"]} of {sv["t2234_new_tests"]} new tests pass without the fix'))
+    if (p.get("reproduced") or {}).get("claude:C2") == "reproduced":
+        facts.append(("fail", "bad", "Still crashes on Key(null): reproduced"))
+    V[4] = ("The reported bug is on a line the fix never touches.",
+            vis + '<ul class="facts">' + "".join(f'<li class="{c}">{icon(g, "g")}<span>{e(t)}</span></li>' for g, c, t in facts) + "</ul>"
+            + (f'<p class="out"><span class="pill {e(p["tier"])}">{icon(TIER_ICON.get(p["tier"], "unknown"))}<b>{e(p["tier"].upper())}</b>'
+               f'{icon("arrow_forward", "arr")}{e(owner)}</span></p>' if p.get("tier") else ""))
+    # 5 depth follows risk; the docs fix that cleared
     real = [r for r in D.results.get("changes", []) if not r.get("mutant") and not r["change"].startswith("var-")] or [{"change": r["change"], "tier": r["tier"]} for r in rows]
     cleared = [r for r in real if r.get("tier") not in HUMAN_TIERS]
+    docs = next((r for r in real if r["change"] == "demo-docs1" and r.get("tier") not in HUMAN_TIERS), None)
     V[5] = ("Every change says why. Low risk can clear." if cleared else "Every change reached a human, with a reason.",
-            '<div class="tiers">' + "".join(f'<span class="chg"><code>{e(r["change"])}</code>{tier(r.get("tier"))}</span>' for r in real) + "</div>")
-    nums = []
-    if n.get("h_cleared") is not None:
-        nums.append(tile(f'past PRs cleared; {n["h_esc_cleared"]} of {n["h_esc"]} escapes among them', f'{n["h_cleared"]}/{n["h_n"]}'))
+            '<div class="tiers">' + "".join(f'<span class="chg"><code>{e(r["change"])}</code>{tier(r.get("tier"))}</span>' for r in real) + "</div>"
+            + (f'<p class="out ok">{icon("pass", "g")}<span>A docs fix: cleared by the AI alone, merged in {DOCS_FIX_SECONDS} s</span>'
+               f'<span class="src">demo PR #{DOCS_FIX_PR}</span></p>' if docs else ""))
+    # 6 the owner signs on GitHub
+    cap = rj("site/data/pr-capture.json") or {}
+    pr = next((x for x in cap.get("prs", []) if x.get("number") == 2), None)
+    if pr:
+        app = (pr.get("sticky_comment") or {}).get("app") or {}
+        V[6] = (f"{owner} signs on GitHub. The merge is blocked.",
+                f'<div class="ghpr"><p class="prt">{e(pr["title"])} <span class="muted">#{pr["number"]}</span></p>'
+                f'{pr_merge_box(pr, app.get("name") or "GitHub App")}</div>')
+    # 7 the ledger
+    nled = len(D.ledger or [])
+    V[7] = ("Every sign-off is signed and chained.",
+            '<ol class="chain">'
+            f'<li class="ok">{icon("pass", "g")}<b>Ledger OK</b><span>{nled} entries, every signature verifies</span></li>'
+            f'<li class="bad">{icon("fail", "g")}<b>Edit one line</b><span>invalid: hash mismatch</span></li>'
+            f'<li class="bad">{icon("fail", "g")}<b>Recompute the hash</b><span>invalid: signature fails</span></li></ol>')
+    # 8 the numbers (the same three as overview.html)
+    big = []
+    if n.get("h_esc") is not None:
+        big.append((n["h_esc"] - n["h_esc_cleared"], n["h_esc"], "later-reverted real PRs sent to a human"))
     if n.get("mut_checks") is not None:
-        nums.append(tile("seeded changes a check caught", f'{n["mut_checks"]}/{n["mut_total"]}'))
-    if surv:
-        nums.append(tile("test survivors a reviewer newly flagged", f'{new_flags(D, surv)}/{len(surv)}'))
-    V[6] = ("Measured where we can, simulated where marked.", '<div class="tiles3">' + "".join(nums) + "</div>")
-    V[7] = ("One reviewer's “all good” clears nothing.",
-            '<div class="tiles3">' + (tile("Codex", f'{v2["met"]}/{v2["of"]} met, {v2["findings"]} findings') if v2 else "")
-            + (tile("Claude", f'{cl["findings"]} findings', "bad") if cl else "") + "</div>")
-    V[8] = ("It says where it stops.",
-            '<div class="tiers lim">' + "".join(f"<span>{x}</span>" for x in ["intent", "requirement quality", "net8.0 / Linux only", "simulated trust"]) + "</div>")
-    V[9] = ("Try it on one repo.",
-            '<div class="tiles3">' + tile("Run", "scripts/demo.sh") + tile("Team", "Toivo · Rene") + "</div>"
-            + f'<p class="repo mono"><a href="{REPO_URL}">{e(REPO_URL.replace("https://", ""))}</a></p>')
+        big.append((n["mut_checks"], n["mut_total"], "planted bugs caught by tests and checks"))
+    if n.get("rt_total"):
+        big.append((n["rt_stopped"], n["rt_total"], "attacks on its own pipeline stopped"))
+    V[8] = ("Measured, not claimed.",
+            '<div class="bigs">' + "".join(f'<div><b>{a}<small>/{b}</small></b><span>{e(c)}</span></div>' for a, b, c in big) + "</div>")
+    # 9 limits
+    V[9] = ("It says where it stops.",
+            '<div class="tiers lim">' + "".join(f"<span>{x}</span>" for x in ["can't judge intent", "only as good as the requirement", "net8.0 / Linux only", "trust over time is simulated"]) + "</div>")
+    # 10 try it
+    V[10] = ("Try it on one repo.",
+             '<p class="sub">One area, one owner, one signed mandate.</p>'
+             f'<p class="urls stack"><span>Demo {link(DEMO_URL, demo)}</span><span>Code {link(REPO_URL, repo)}</span></p>'
+             '<p class="urls"><span>Run <code>scripts/demo.sh</code></span><span>Team <b>Toivo · Rene</b></span></p>')
 
     out = []
+    N = len(slides)
     for i, k in enumerate(sorted(slides)):
         s = slides[k]
         head, vis = V.get(k, (re.sub(r"<[^>]+>", "", md_inline(s["message"])), ""))
         note = f'<p><b>{md_inline(s["message"])}</b></p><p>{md_inline(s["note"])}</p>'
+        foot = f'<p class="sfoot"><span>{mark}Countersign</span><span>{e(demo)}</span><span>{i + 1} / {N}</span></p>'
         if k == 1:
             punch = "AI clears what it can prove. A named human signs the rest."
-            out.append(f'<section class="slide title-slide" data-i="{i}"><div class="sl"><h1>{icon("check_box", "sig", fill=0)}Countersign</h1>'
-                       f'<p class="punch">{punch}</p><p class="muted">{REPO_URL.replace("https://", "")}</p></div>'
+            out.append(f'<section class="slide title-slide" data-i="{i}"><div class="sl"><h1>{mark}Countersign</h1>'
+                       f'<p class="punch">{punch}</p><p class="urls"><span>Demo {link(DEMO_URL, demo)}</span><span>Code {link(REPO_URL, repo)}</span></p>'
+                       f'<p class="event">Junction 2026 · Tieto: Earned Trust in AI Code</p></div>'
                        f'<aside class="note">{note}<p>{hero_line(n)}</p></aside></section>')
             continue
-        out.append(f'<section class="slide" data-i="{i}"><div class="sl"><h2>{e(head)}</h2><div class="vis">{vis}</div></div>'
+        if k == max(slides):
+            head = f"{mark}{e(head)}"
+        else:
+            head = e(head)
+        out.append(f'<section class="slide s{k}" data-i="{i}"><div class="sl"><h2>{head}</h2><div class="vis">{vis}</div></div>{foot}'
                    f'<aside class="note">{note}</aside></section>')
     body = f"""<div class="deck" id="deck">{''.join(out)}</div>
 <div class="deckbar"><button class="btn" id="dprev" type="button" aria-label="Previous slide">{icon("arrow_back")}</button><span id="dpos" class="muted"></span>
@@ -936,32 +993,59 @@ pre.diff{margin:0;border:0;border-radius:0;font-size:13px;line-height:1.6;white-
 .lline{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:baseline;padding:6px 0;border-top:1px solid var(--border)}.lline details{display:contents}
 .lline summary{cursor:pointer;color:var(--accent);font-size:13px;white-space:nowrap}.lline textarea{grid-column:1/-1}
 code.q1{font-size:12px}code.nwc{white-space:nowrap}.nw{white-space:nowrap;font-size:12px}
-/* pitch */
+/* pitch: one idea per slide, centred, in the landing page's big type */
 body.pitch .foot{display:none}body.pitch main{padding:0}
 .deck{position:relative}
-.slide{display:none;min-height:calc(100vh - 57px - 56px);padding:32px 16px}
+.slide{display:none;min-height:calc(100vh - 57px - 56px);padding:32px 24px;position:relative}
 .slide.on{display:flex;flex-direction:column;justify-content:center}
-.sl{max-width:1040px;width:100%;margin:0 auto}
-.slide h2{font-size:clamp(22px,3.2vw,40px);max-width:32ch;margin-bottom:24px}
-.slide .vis{font-size:clamp(15px,1.5vw,20px)}
-.slide .vis table{font-size:clamp(13px,1.2vw,17px)}
-.title-slide h1{font-size:clamp(32px,5vw,64px);display:flex;align-items:center;gap:16px}
-.title-slide .i.sig{width:1.1em;height:1.1em}.deckbar .btn .i{width:18px;height:18px}
-.punch{font-size:clamp(20px,2.6vw,32px);max-width:36ch;line-height:1.35}
+.sl{max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center}
+.slide h2{font-size:clamp(26px,3.6vw,46px);line-height:1.15;max-width:24ch;margin:0 0 28px;text-wrap:balance;display:flex;align-items:center;justify-content:center;gap:.3em}
+.slide h2 .i.sig{width:1em;height:1em;flex:none}
+.slide .vis{font-size:clamp(16px,1.6vw,22px);width:100%;display:flex;flex-direction:column;align-items:center;gap:22px}
+.title-slide h1{font-size:clamp(40px,6.4vw,84px);display:flex;align-items:center;gap:.2em;margin:0 0 12px;letter-spacing:-.02em}
+.i.sig{width:1em;height:1em}.deckbar .btn .i{width:18px;height:18px}
+.punch{font-size:clamp(22px,2.8vw,36px);max-width:28ch;line-height:1.3;margin:0 0 36px;text-wrap:balance}
+.urls{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 40px;margin:0 0 24px;font-size:clamp(16px,1.7vw,22px);color:var(--muted)}
+.urls a{font:600 1em var(--mono);margin-left:.4em}
+.urls.stack{flex-direction:column;align-items:center;gap:14px;font-size:clamp(18px,2vw,26px);margin:8px 0 0}.urls code{font:600 1em var(--mono);border:0;background:none;color:var(--fg);margin-left:.4em}.urls b{margin-left:.4em;color:var(--fg)}
+.event{color:var(--muted);font-size:clamp(14px,1.3vw,17px);margin:0}
+.slide .sub{font-size:1.15em;margin:-12px 0 4px;color:var(--muted)}
+.sfoot{display:none;position:absolute;left:48px;right:48px;bottom:20px;margin:0;grid-template-columns:1fr auto 1fr;color:var(--muted);font-size:14px}.sfoot span:last-child{text-align:right}
+.sfoot span:first-child{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--fg)}.sfoot .i.sig{width:18px;height:18px}
 .note{display:none;max-width:1040px;margin:24px auto 0;width:100%;border-top:1px dashed var(--border);padding-top:12px;color:var(--muted);font-size:15px}
 body.notes .note{display:block}
 .deckbar{position:sticky;bottom:0;display:flex;gap:8px;justify-content:center;align-items:center;padding:8px;border-top:1px solid var(--border);background:var(--bg)}
-.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
-.pipe span{border:1px solid var(--border);border-radius:6px;padding:6px 12px;font:14px var(--mono);background:var(--bg2)}
+.pipe{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;align-items:center}
+.pipe span{border:1px solid var(--border);border-radius:8px;padding:10px 16px;font:1em var(--mono);background:var(--bg2)}
 .pipe span+span::before{content:"→ ";color:var(--muted)}
-.tiers{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tiers .sep{width:16px}
-.mlist li{margin-bottom:12px}
-ul.cols{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-ul.cols>li{border:1px solid var(--border);border-radius:6px;padding:16px;margin:0}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
-.greyed{border:1px dashed var(--border);border-radius:6px;padding:24px;color:var(--muted)}.greyed .big{color:var(--muted)}
-.signs{font-size:1.2em}.signs li{margin-bottom:12px;padding-left:4px}
-
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:760px}
+.split>div{border:1px solid var(--border);border-radius:10px;padding:18px}.split p{margin:10px 0 0}
+.split .badge,.chg .badge{font-size:.8em;line-height:1.6}.split .badge .i,.chg .badge .i{width:1.1em;height:1.1em}
+.tiers{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;align-items:center;max-width:960px}
+.chg{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:1em}
+.lim span{border:1px dashed var(--border);border-radius:8px;padding:12px 20px;font-size:1.1em}
+.slide .ticks{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px 32px;font-size:1.3em;font-weight:600}
+.slide .ticks li{display:inline-flex;align-items:center;gap:.35em}.slide .ticks .g{color:var(--ok)}
+.slide .i.g{width:1.15em;height:1.15em;flex:none}
+.slide .issue{margin:-14px 0 0;color:var(--muted);font-size:.9em}
+.slide .wrong{margin:10px 0 0;font-size:clamp(34px,5vw,64px);font-weight:800;line-height:1.15;color:var(--bad);display:inline-flex;align-items:center;gap:.3em}
+.slide .wrong .g{width:1em;height:1em}
+.slide .hunk{width:100%;max-width:820px;text-align:left;margin:0}
+.facts{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 32px;font-weight:600}
+.facts li{display:inline-flex;align-items:center;gap:.35em}.facts .warn .g{color:var(--warn)}.facts .bad .g{color:var(--bad)}
+.out{margin:0;display:inline-flex;align-items:center;gap:.4em}.out.ok{font-weight:600}.out.ok .g{color:var(--ok)}
+.out .src{color:var(--muted);font-weight:400;font-size:.8em;margin-left:.4em}
+.slide .pill{font-size:1.1em}
+.ghpr{width:100%;max-width:760px;text-align:left}.ghpr .prt{font-size:1.05em;margin:0 0 4px}.ghpr .ghs{font-size:.8em}.ghpr .ghs .muted{font-size:1em}
+.chain{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:1000px;counter-reset:c}
+.chain li{display:flex;flex-direction:column;align-items:center;gap:8px;border:1px solid;border-radius:12px;padding:24px 16px}
+.chain li .g{width:1.8em;height:1.8em}.chain li b{font-size:1.15em}.chain li span{color:var(--muted);font-size:.9em}
+.chain li.ok{border-color:var(--ok);background:var(--ok-bg)}.chain li.ok .g{color:var(--ok)}
+.chain li.bad{border-color:var(--bad);background:var(--bad-bg)}.chain li.bad .g{color:var(--bad)}
+.bigs{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;width:100%}
+.bigs div{display:flex;flex-direction:column;align-items:center;gap:12px}
+.bigs b{font:700 clamp(64px,9vw,120px)/1 var(--sans);letter-spacing:-.03em}.bigs b small{font-size:.45em;color:var(--muted);font-weight:600}
+.bigs span{color:var(--muted);max-width:20ch;font-size:1.05em}
 /* numbers page */
 .fold-hero{min-height:calc(100vh - 57px);display:flex;flex-direction:column;justify-content:center;padding-top:0}
 .small{font-size:14px}
@@ -987,13 +1071,9 @@ details.more[open] summary{margin-bottom:8px}
 .tstep .lead{font-size:20px;max-width:60ch}
 .ledger{margin-top:8px}
 /* pitch visuals */
-.tiles3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
-.tile{border:1px solid var(--border);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:8px}
-.tile span{color:var(--muted);font-size:.9em}.tile b{font:600 clamp(22px,2.6vw,36px)/1.2 var(--mono);display:inline-flex;align-items:center;gap:.25em;flex-wrap:wrap}.tile b .i.arr{width:.8em;height:.8em;opacity:.8}
-.slide .repo{margin-top:24px;font-size:1.3em}.tile.ok{border-color:var(--ok)}.tile.ok b{color:var(--ok)}.tile.bad{border-color:var(--bad);background:var(--bad-bg)}.tile.bad b{color:var(--bad)}
-.chg{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:1.1em}
-.lim span{border:1px dashed var(--border);border-radius:6px;padding:8px 14px}
-.greyed b{font-size:clamp(28px,4vw,48px)}
+.tiles3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;width:100%}
+.tile{border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.tile span{color:var(--muted);font-size:.85em}.tile b{font:600 1.05em/1.3 var(--mono);overflow-wrap:anywhere}.tile b a{color:var(--accent)}
 /* small screens */
 @media (max-width:860px){.story{grid-template-columns:1fr}.stat{border-left:0;border-top:1px solid var(--border)}.stat:first-child{border-top:0}}
 @media (max-width:600px){.hero{padding-top:24px}.lead{font-size:16px}section.wrap{padding-top:32px}
