@@ -932,13 +932,24 @@ def build_pitch(D: Data, n: dict) -> str:
              '<li><b>What they get</b><span>every merge signed: proven, refused, risk left</span></li>'
              f'<li><b>What it costs</b><span>{n.get("tok_min", 297)}k to {n.get("tok_max", 484)}k reviewer tokens per change; about 21 s from push to pack</span></li>'
              '<li><b>How it starts</b><span>one repo at <i>ask</i>; the AI earns clearance</span></li></ol>')
-    V[11] = ("It says where it stops.",
+    # 11 built with
+    tools = [("Nemotron", "reviewer in CI; flagged both hidden security downgrades, tests caught one"),
+             ("Gemini", "the adjudicator: another vendor, can never clear"),
+             ("Codex", "reviewer; its security review found holes in our pipeline"),
+             ("CRACI", "deny-by-default CI; its trace exposed ~2,900 denied revocation lookups"),
+             ("Verda", "self-hosted reviewer: about $0.04 and 60 s per review"),
+             ("Gemma", "self-hosted adjudicator for confidential code")]
+    V[11] = ("Built with.",
+             '<ol class="chain who" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:none">'
+             + "".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in tools) + "</ol>")
+    V[12] = ("It says where it stops.",
             '<div class="tiers lim">' + "".join(f"<span>{x}</span>" for x in ["can't judge intent", "only as good as the requirement", "net8.0 / Linux only", "trust over time is simulated"]) + "</div>")
     # 10 try it
-    V[12] = ("Try it on one repo.",
+    V[13] = ("Try it on one repo.",
              '<p class="sub">One area, one owner, one signed mandate.</p>'
              f'<p class="urls stack"><span>Demo {link(DEMO_URL, demo)}</span><span>Code {link(REPO_URL, repo)}</span></p>'
-             '<p class="urls"><span>Run <code>scripts/demo.sh</code></span><span>Team <b>Toivo · Rene</b></span></p>')
+             '<p class="urls"><span>Run <code>scripts/demo.sh</code></span><span>Verify <code>uv run countersign verify-ledger</code></span></p>'
+             '<p class="urls"><span>Team <b>Toivo · Rene</b></span></p>')
 
     out = []
     N = len(slides)

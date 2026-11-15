@@ -64,13 +64,19 @@ One idea per slide: one scene, a few labels. The slides follow the demo video's 
 - **Visual:** four lines: who (teams using coding agents in accountable domains) · what they get (every merge signed: proven, refused, risk left) · what it costs (<!--n:tokens_agent_min_k-->297<!--/n-->k to <!--n:tokens_agent_max_k-->484<!--/n-->k reviewer tokens per change, about 21 s push to pack) · how it starts (one repo at ask; the AI earns clearance).
 - **Speaker note:** Adoption is a required GitHub check plus a signed mandate. Every area starts at ask, so nothing changes for the humans on day one; the AI earns notify only after 20 agreeing spot-checks in a row, and an escape drops it back. Confidential code uses self-hosted reviewers.
 
-## 11. It says where it stops
+## 11. Built with
+
+- **Message:** Six partner tools, one job each.
+- **Visual:** six cards: Nemotron (a reviewer in CI; flagged both hidden security downgrades, tests caught one) · Gemini (the adjudicator: other vendor, can never clear) · Codex (a reviewer; its security review found holes in our pipeline) · CRACI (deny-by-default CI; the trace exposed ~2,900 denied certificate-revocation lookups) · Verda (self-hosted reviewer: about $0.04 and 60 s per review) · Gemma (self-hosted adjudicator for confidential code).
+- **Speaker note:** Each tool has a job no other could do: three vendors so no reviewer grades itself, an adjudicator from a fourth, CI whose own evidence becomes review evidence, and open weights on our own GPU for code that can't leave.
+
+## 12. It says where it stops
 
 - **Message:** We know where this stops working, and the pack says so every time.
 - **Visual:** four labels: can't judge intent · only as good as the requirement · net8.0 / Linux only · trust over time is simulated.
 - **Speaker note:** Judges' questions: *Not trust our output?* citations stop verifying, reviewers always agree, canaries missed, any escape. *Who owns it?* the owner of the most sensitive area, named in the signed mandate. *Scale?* humans see only what can't be proven; open-weight reviewers for confidential code.
 
-## 12. Try it
+## 13. Try it
 
 - **Message:** Try it on one repo: one area, one owner, one signed mandate.
 - **Visual:** the mark; the demo (countersign.toivo.dev) and the code (github.com/Zawaer/countersign) in large type; under them, Run `scripts/demo.sh` · Team Toivo · Rene.
