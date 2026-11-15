@@ -19,6 +19,7 @@ Missing inputs never become invented numbers: the page says "not recorded yet" i
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import html
 import json
 import re
@@ -485,6 +486,102 @@ def build_index(D: Data, n: dict) -> str:
 
 
 # ---------------------------------------------------------------- attack.html (moved into the main screen)
+
+# ---------------------------------------------------------------- sign.html: be the owner (a read check before the signature)
+
+def build_sign(D: Data) -> str | None:
+    """The judge plays the owner of change 2234: two questions from the pack, then the Sign buttons. Nothing is stored."""
+    p = D.packs.get("2234") or {}
+    f = D.facts.get("2234") or {}
+    if not p or not f:
+        return None
+    ch = {c["id"]: c for c in f.get("checks", [])}
+    fwf = ch.get("tests.fail_without_fix") or {}
+    ft = [t for t in fwf.get("tests", []) if t.get("new", True)]
+    still = sum(t["outcome"] == "passed" for t in ft)
+    finds = {x.get("reviewer", "") + ":" + x.get("id", ""): x for x in p.get("findings", [])}
+    c1, c2 = finds.get("claude:C1"), finds.get("claude:C2")
+    reqs = {r["id"]: r for r in p.get("requirements", [])}
+    refused = (p.get("refused") or {}).get("clauses", [])
+    n1 = next((c for c in refused if any(d.get("source") == "refused clause" and d.get("id") == c["id"] and "not_met" in d.get("codes", [])
+                                         for d in p.get("drivers", []))), None)
+    refused_ids = {c["id"] for c in refused}
+    proven = [r for r in reqs.values() if r["id"] not in refused_ids]
+    if not (c1 and c2 and n1 and ft and len(proven) >= 2):
+        return None
+    owner = p.get("owner") or "the owner"
+    title = re.sub(r"^(?:Agent-written )?change for #2234:\s*", "", (p.get("story") or {}).get("headline", ""), flags=re.I)
+    pk = "packs/2234/pack.html"
+    so = next((x for x in reversed(D.ledger) if x.get("type") == "signoff" and (x.get("payload") or {}).get("change") == "2234"), None)
+    pl = (so or {}).get("payload") or {}
+    sha = pl.get("pack_sha256") or hashlib.sha256((ROOT / "packs/2234/pack.json").read_bytes()).hexdigest()
+    repro = (p.get("reproduced") or {}).get("claude:C2") == "reproduced"
+
+    # Q1: the clause a reviewer said is not met, against the clauses the AI did not refuse
+    cv = (n1.get("verdicts") or {})
+    nm = next(((k, v) for k, v in cv.items() if v.get("verdict") == "not_met"), (None, {}))
+    basis = nm[1].get("basis", "")
+    line1 = next((s.strip() for s in re.split(r"(?<=\.)\s+", basis) if "not every" in s.lower()), "") or c2["title"]
+    who = (nm[0] or "a reviewer").capitalize()
+    q1 = dict(q="Which requirement did the AI refuse to call met?",
+              opts=[(r["text"], False) for r in proven[:2]] + [(n1["text"], True)],
+              ev=f'{n1["id"]}, {who}: “{line1}” {c2["title"]}' + (" (reproduced)" if repro else ""),
+              href=f"{pk}#chain-{n1['id']}", label=f"pack: {n1['id']}")
+    q1["opts"] = [q1["opts"][0], q1["opts"][2], q1["opts"][1]]
+    # Q2: why the new tests can't prove the fix (distractors are claims the facts contradict)
+    q2 = dict(q="Why can't the new tests prove the fix?",
+              opts=[("The build failed", False), (f"{still} of {len(ft)} new tests pass without the fix", True), ("The new tests were never run", False)],
+              ev=f'Revert the source, keep the tests: “{fwf.get("summary", "")}”',
+              href=f"{pk}#checks", label="pack: checks")
+
+    def question(i, q):
+        opts = "".join(f'<li><button type="button" class="opt" data-ok="{1 if ok else 0}">{e(t)}</button></li>' for t, ok in q["opts"])
+        return (f'<fieldset class="q" id="q{i}"><legend><span class="qn">{i}</span>{e(q["q"])}</legend><ul class="opts">{opts}</ul>'
+                f'<p class="why" hidden role="status">{icon("fail", "g")}<span><b>Not quite.</b> {e(q["ev"])} '
+                f'<a href="{e(q["href"])}">{e(q["label"])}</a> Try again.</span></p>'
+                f'<p class="got" hidden role="status">{icon("pass", "g")}<span>Right.</span></p></fieldset>')
+
+    facts = (f'<li>{icon("fail", "g")}<span>{e(c1["title"])} <a href="{pk}#f-claude-C1">C1</a></span></li>'
+             f'<li>{icon("fail", "g")}<span>{still} of {len(ft)} new tests pass without the fix {src("evidence/2234/facts.json", "facts")}</span></li>'
+             f'<li>{icon("fail", "g")}<span>{e(c2["title"])}{" (reproduced)" if repro else ""} <a href="{pk}#f-claude-C2">C2</a></span></li>')
+    body = f"""
+<section class="wrap own" aria-labelledby="h-own">
+<h1 id="h-own">Be the owner</h1>
+<p class="muted">You are {e(owner)}. Read, then sign.</p>
+<div class="owncard">
+ <p class="ownt"><a href="{e((p.get('story') or {}).get('issue') or pk)}">#2234</a> {e(title)}</p>
+ <p><span class="badge warn">{icon("ask")}ASK{icon("arrow_forward", "arr")}you</span></p>
+ <ul class="ownf">{facts}</ul>
+ <p class="foot-note"><a href="{pk}">Evidence pack</a></p>
+</div>
+<h2 class="ownh">Read check</h2>
+{question(1, q1)}
+{question(2, q2)}
+<h2 class="ownh">Sign</h2>
+<p class="ctas"><button class="btn primary" type="button" id="s-approve" data-d="accept" disabled>Approve</button><button class="btn" type="button" id="s-changes" data-d="request-changes" disabled>Request changes</button></p>
+<p class="muted" id="s-hint">Answer both questions to sign.</p>
+<div id="s-out" hidden>
+ <p class="prevlab">{icon("warning", "g")}<span>Preview: nothing is stored. The real flow signs with the owner&#39;s Ed25519 key (see <a href="{REPO_URL}/pull/2">PR #2</a>).</span></p>
+ <pre class="ledger" id="s-entry" tabindex="0" aria-label="Ledger entry preview"></pre>
+ <p class="override" id="s-over" hidden>{icon("person", "g")}<span>The owner may override the AI. The override is logged, and counts against trust only if the bug later escapes.</span></p>
+</div>
+</section>"""
+    js = """(function(){var done={};var B=[].slice.call(document.querySelectorAll('#s-approve,#s-changes'));
+[].forEach.call(document.querySelectorAll('fieldset.q'),function(fs){var why=fs.querySelector('.why'),got=fs.querySelector('.got');
+[].forEach.call(fs.querySelectorAll('.opt'),function(b){b.addEventListener('click',function(){
+[].forEach.call(fs.querySelectorAll('.opt'),function(o){o.classList.remove('no');o.removeAttribute('aria-pressed')});
+b.setAttribute('aria-pressed','true');
+if(b.dataset.ok==='1'){b.classList.add('yes');why.hidden=true;got.hidden=false;done[fs.id]=1;
+[].forEach.call(fs.querySelectorAll('.opt'),function(o){o.disabled=true});
+if(done.q1&&done.q2){B.forEach(function(x){x.disabled=false});document.getElementById('s-hint').textContent='Both right. Your call.';}}
+else{b.classList.add('no');why.hidden=false;}})})});
+B.forEach(function(b){b.addEventListener('click',function(){var o={type:'signoff',signer:%s,ts:new Date().toISOString().replace(/\\.\\d+Z$/,'Z'),
+payload:{change:'2234',decision:b.dataset.d,tier:'ask',pack_path:'packs/2234/pack.json',pack_sha256:%s,read_check:'2 of 2'},sig:'(Ed25519, made by the real flow)'};
+document.getElementById('s-entry').textContent=JSON.stringify(o,null,2);document.getElementById('s-out').hidden=false;
+document.getElementById('s-over').hidden=b.dataset.d!=='accept';B.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+document.getElementById('s-entry').focus();})});})();""" % (json.dumps(owner), json.dumps(sha))
+    return page("sign.html", "Be the owner · Countersign", body, js=js, desc="Play the owner of change 2234: a two-question read check, then the signature.")
+
 
 def build_attack(D: Data, n: dict) -> str:
     return """<!doctype html>
@@ -1131,6 +1228,25 @@ th,td{padding:6px 8px}}
 .marks{list-style:none;padding:0;margin:0;display:grid;gap:6px;font-size:17px}.marks li{display:flex;gap:8px;align-items:flex-start}.marks .i{width:1.15em;height:1.15em;margin-top:.17em}.marks .m-ok .i{color:var(--ok)}.marks .m-bad .i{color:var(--bad)}.marks .m-warn .i{color:var(--warn)}
 @media (max-width:720px){.bignums{grid-template-columns:1fr;gap:8px;min-height:0;padding-top:16px}.big{padding:20px 8px}.big span{font-size:18px}
 .vlist li{grid-template-columns:20px 90px 1fr;font-size:16px}.vlist .muted{display:none}.hunk{font-size:12.5px;line-height:20px}.hunk .r{grid-template-columns:40px 1fr}.hunk .pin{margin-left:40px}}
+/* sign.html: be the owner */
+.own{max-width:720px;padding-bottom:48px}.own [hidden]{display:none!important}.own h1{margin-bottom:4px}
+.owncard{border:1px solid var(--border);border-radius:6px;padding:16px;margin:16px 0 24px;background:var(--bg2)}
+.owncard p{margin:0 0 8px}.ownt{font-weight:600}
+.ownf{list-style:none;margin:8px 0;padding:0;display:grid;gap:8px}.ownf li,.why,.got,.prevlab,.override{display:flex;gap:8px;align-items:flex-start}
+.ownf .g,.why .g{color:var(--bad);flex:none;margin-top:3px}.got .g{color:var(--ok);flex:none;margin-top:3px}
+.prevlab .g{color:var(--warn);flex:none;margin-top:3px}.override .g{color:var(--accent);flex:none;margin-top:3px}
+.ownh{font-size:20px;margin:24px 0 8px}
+fieldset.q{border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin:0 0 16px;min-width:0}
+fieldset.q legend{font-weight:600;padding:0 4px;display:flex;gap:8px;align-items:baseline}
+.qn{font:600 12px/20px var(--mono);border:1px solid var(--border);border-radius:6px;padding:0 6px}
+.opts{list-style:none;margin:8px 0;padding:0;display:grid;gap:8px}
+.opt{box-sizing:border-box;width:100%;overflow-wrap:anywhere;text-align:left;font:400 15px/1.4 var(--sans);padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--muted)}.opt:disabled{cursor:default}.opt:disabled:not(.yes){opacity:.6}
+.opt.yes{border-color:var(--ok);background:var(--ok-bg)}.opt.no{border-color:var(--bad);background:var(--bad-bg)}
+.opt:focus-visible,.btn:focus-visible,.ledger:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.why,.got{margin:4px 0 0;font-size:14px}.why a{white-space:nowrap}
+.ledger{font:13px/1.45 var(--mono);border:1px dashed var(--border);border-radius:6px;padding:12px;overflow-x:auto;background:var(--bg2);white-space:pre}
+.prevlab,.override{font-size:14px;margin:12px 0 8px}
 """
 
 
@@ -1368,6 +1484,9 @@ def main() -> None:
     prs = build_prs(D)
     if prs:
         pages["prs.html"] = prs
+    sign = build_sign(D)
+    if sign:
+        pages["sign.html"] = sign
     for name, htm in pages.items():
         (SITE / name).write_text(htm, encoding="utf-8")
     (SITE / ".nojekyll").write_text("", encoding="utf-8")

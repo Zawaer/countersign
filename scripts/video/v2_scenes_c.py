@@ -159,6 +159,69 @@ async def s08(r, s):
 s08.prep = _prep_s08
 
 
+# ---------------------------------------------------------------- s08b sign.html: be the owner (read check, then sign)
+async def _prep_s08b(r, s):
+    await _prep_type(r, s)
+    # start on the read check: its heading just under the sticky site header
+    await r.page.evaluate("""() => { const h = document.getElementById('q1');
+        window.scrollTo(0, h.getBoundingClientRect().top + scrollY - 112); }""")
+    await r.page.wait_for_timeout(200)
+
+
+async def s08b(r, s):
+    a1 = await r.box("#q1 .opt[data-ok='1']")
+    r.cam(0.0, 1.0, 640, 360)
+    r.cam(1.0, 1.0, 640, 360)
+    r.cam(2.4, 1.12, 640, 330)
+    # into the page, toward question 1
+    await enter_from_urlbar(r, a1[0] + a1[2] * 0.7, a1[1] - 30, dur=0.75)
+    # "checks I actually read it": answer question 1 (the right option, a real click)
+    t1 = r.cue("read")
+    await r.at(t1 - 0.5)
+    await r.move(*mid(a1, 0.34, 0.6), dur=0.45)
+    await r.at(t1 + 0.05)
+    await r.click()
+    # "two questions from the evidence": answer question 2
+    t2 = r.cue("evidence")
+    await r.at(t2 - 0.55)
+    a2 = await r.box("#q2 .opt[data-ok='1']")   # measured now: the "Right." line under question 1 moved it
+    await r.move(*mid(a2, 0.3, 0.6), dur=0.5)
+    await r.at(t2 + 0.05)
+    await r.click()
+    await r.page.wait_for_function("() => !document.getElementById('s-changes').disabled")
+    # the buttons unlock: scroll them up into view (inertia), push in on them
+    await r.page.wait_for_timeout(60)
+    rc = await r.box("#s-changes")
+    want = rc[1] - 420
+    if want > 4:
+        await r.scroll_by(want, dur=0.4)
+    rc = await r.box("#s-changes")
+    r.cam(t2 + 0.5, 1.12, 640, 330)
+    r.cam(t2 + 1.0, 1.3, rc[0] + rc[2] * 0.3, rc[1] - 60)
+    # "only then can I sign": hover "Request changes", click on "sign"
+    await r.at(max(r.now(), r.cue("only") - 0.3))
+    await r.move(*mid(rc, 0.55, 0.62), dur=0.45)
+    t_s = r.cue("sign", nth=1)
+    await r.at(t_s)
+    await r.click()
+    await r.page.wait_for_function("() => !document.getElementById('s-out').hidden")
+    await r.page.wait_for_timeout(60)
+    # the ledger-entry preview (the page scrolls it into view when it takes focus): show it whole
+    ex, ey, ew, eh = await r.box("#s-entry")
+    r.cam(t_s + 0.15, 1.3, rc[0] + rc[2] * 0.3, rc[1] - 60)
+    r.cam(t_s + 0.7, 1.12, ex + ew * 0.5, ey + min(eh, 560) * 0.5)
+    r.cam(s["dur"], 1.14, ex + ew * 0.5, ey + min(eh, 560) * 0.5 + 4, "lin")
+    try:
+        rcb = await tbox(r, "#s-entry", '"read_check": "2 of 2"')
+        await r.highlight(rcb, until=s["dur"])
+    except AssertionError:
+        pass
+    await r.drift(40, 16, dur=0.6)
+
+
+s08b.prep = _prep_s08b
+
+
 # ---------------------------------------------------------------- s09 pitch.html#5: docs fix cleared
 NOTE_S09 = "PR #11 · docs fix · opened 14:04:15 · merged 14:04:55 (40 s)"
 

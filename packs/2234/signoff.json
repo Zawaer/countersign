@@ -1,13 +1,13 @@
 {
-  "seq": 11,
-  "ts": "2026-11-14T10:15:45+00:00",
+  "seq": 15,
+  "ts": "2026-11-15T06:49:54+00:00",
   "type": "signoff",
   "payload": {
     "change": "2234",
     "pack_path": "packs/2234/pack.json",
     "pack_sha256": "e0052021c2ed666efcd4dca40dcf9f492f89d23e6c2b405a9439aab45bedb897",
     "decision": "request-changes",
-    "note": "Fixes a different bug than #2234 (the 3.1.1 regression isn't on this base); Key(null) still crashes the analyzer (reproduced). Re-signed Sat 12:20 after new evidence (mutation testing, Gemini adjudication, CRACI network trace); decision and ratings unchanged.",
+    "note": "Fixes a different bug than #2234 (the 3.1.1 regression isn't on this base); Key(null) still crashes the analyzer (reproduced). Re-signed Sun 15 Nov 09:00: packs rebuilt by later pipeline fixes; decision and ratings unchanged.",
     "tier": "ask",
     "ai_cleared": false,
     "areas": [
@@ -84,8 +84,8 @@
     ],
     "simulated": false
   },
-  "prev": "48498e3bfa77b0ff4f25689b8c4c62cabec3657246e1ab869333507ec4e322ef",
+  "prev": "c789255bd4dad08621983abcf1ced333357e7dffeae8403e0c097d1819d50d6d",
   "signer": "Toivo",
-  "hash": "278cfd7161082c0659ecb73c65841d214afbaf713ad5c26b16aea38956fbf507",
-  "sig": "C9oxpm8nWZARGBPSBM8ARuJohA+NY4Bycs5mae5tAG619nuMmOsxm6HWMepa8y627JEyMBCiE6F9MfoOb+aqDg=="
+  "hash": "47ba0e109d9eb19b98b9e5fd45f0570a7176235033101baf461c170dc462bcec",
+  "sig": "MYbH06hEyURjUhHQkSaQBw5EsnZq2HHjueTFPcj7D4wNWn+H3OVoRci9/TLuzdfozCJ5aBHF6BBigHYSMZJECw=="
 }

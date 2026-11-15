@@ -1,6 +1,7 @@
 import json
 
 from countersign import keys, ledger
+from countersign.ledger import canonical, sha256_hex
 from countersign.cli import main
 
 
@@ -75,6 +76,20 @@ def test_pack_changed_after_signing_is_flagged(ws):
     p.write_text(json.dumps(data))
     _, warnings = ledger.verify(ws)
     assert any("changed since Toivo signed it" in w for w in warnings)
+
+
+def test_re_signing_the_changed_pack_supersedes_the_stale_sign_off(ws):
+    signed(ws)
+    p = ws.pack_dir("9001") / "pack.json"
+    data = json.loads(p.read_text())
+    data["tier"] = "silent"
+    p.write_text(json.dumps(data))
+    assert any("changed since" in w for w in ledger.verify(ws)[1])
+    # a newer sign-off of the same pack, covering its current content (written directly: `sign` refuses edited packs)
+    old = json.loads(lines(ws)[-1])["payload"]
+    ledger.append(ws, "signoff", {**old, "note": "re-signed", "pack_sha256": sha256_hex(canonical(data))}, "Toivo")
+    problems, warnings = ledger.verify(ws)
+    assert problems == [] and warnings == []   # the older sign-off is superseded, not stale
 
 
 def test_only_the_named_owner_may_sign(ws, capsys):

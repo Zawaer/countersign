@@ -1,38 +1,37 @@
-# Best use of Nemotron: the open-weights reviewer that checks the others
+# Best use of Nemotron: the reviewer that caught the hidden security downgrades
 
-**Model.** Nemotron 3.5 Super VL (`nvidia/nemotron-3.5-super-vl-120b-a12b`, 120B total, 12B active), via NVIDIA's
-OpenAI-compatible API from CI.
+**Best result.** We hid two quiet security downgrades inside otherwise reasonable fixes ([BENCHMARK.md](../BENCHMARK.md)).
+Reviewing blind, Nemotron flagged both on the exact line with verified findings (<!--n:bench_downgrades_flagged-->2<!--/n--> of <!--n:bench_downgrades-->2<!--/n-->): a blocker on
+`HashCollisionResistant = false`, and a major on a depth limit raised 500 to 5000 that passes every test. The tests
+caught <!--n:bench_downgrades_tests_caught-->1<!--/n--> of <!--n:bench_downgrades-->2<!--/n-->. On a third seeded downgrade (`2283-sec1`) every check passed and its blind review still
+pointed at the planted line.
 
-**What it does.** In Countersign it is the third reviewer beside Claude and Codex, live on all <!--n:real_changes-->8<!--/n--> real changes. A clause
-is proven only if all three say met with verified evidence. It also reviews blind: <!--n:seeded_reviewed-->17<!--/n--> seeded changes and <!--n:bench_variants-->8<!--/n--> fix
-variants of the same issues.
+**Model.** Nemotron 3.5 Super VL (`nvidia/nemotron-3.5-super-vl-120b-a12b`, 120B, 12B active) runs live in CI on
+every change via NVIDIA's API: all <!--n:real_changes-->8<!--/n--> real changes, <!--n:seeded_reviewed-->17<!--/n--> seeded ones, <!--n:bench_variants-->8<!--/n--> fix variants. Nemotron 3.5 Lightning
+30B is the self-hosted variant, on a Verda A100 ([verda.md](verda.md)).
+
+**What it does.** One of three reviewers (with Claude and Codex) judging each clause against the diff. A clause is
+proven only if all three say met with verified evidence.
 
 **Why it matters.**
-- A different vendor disagrees differently. It flagged the planted line in <!--n:nemotron_seeded_flagged-->13<!--/n--> of the <!--n:nemotron_seeded_of-->15<!--/n--> seeded changes it reviewed,
-  and in <!--n:nemotron_survivors_flagged-->3<!--/n--> of the <!--n:nemotron_survivors_reviewed-->4<!--/n--> that passed every check.
-- It flagged both hidden security downgrades on the exact line (<!--n:bench_downgrades_flagged-->2<!--/n--> of <!--n:bench_downgrades-->2<!--/n-->), including a depth limit raised 500 to
-  5000 that passes every test. The tests caught <!--n:bench_downgrades_tests_caught-->1<!--/n--> of <!--n:bench_downgrades-->2<!--/n-->.
-- Open weights: a repo marked confidential may use only self-hostable reviewers, so Nemotron is the one that can
-  read confidential code on our own server (Lightning 30B on a Verda A100, see [verda.md](verda.md)).
+- **The only reviewer family allowed on confidential code.** A repo marked confidential may use only open-weights
+  reviewers, so Lightning 30B reads it on our own server and nothing goes to a vendor.
+- **A different vendor disagrees differently.** It flagged the planted line in <!--n:nemotron_seeded_flagged-->13<!--/n--> of <!--n:nemotron_seeded_of-->15<!--/n--> seeded changes, and in
+  <!--n:nemotron_survivors_flagged-->3<!--/n--> of the <!--n:nemotron_survivors_reviewed-->4<!--/n--> that passed every check.
 
 **How we improved its outputs.**
-- **Strict JSON schema, one repair turn.** Fences and `<think>` are stripped; malformed output gets one retry.
-- **Machine-verified citations.** Every quote, test and check is re-checked; unsupported claims
-  are rejected: <!--n:nemotron_verified-->63<!--/n--> findings verified, <!--n:nemotron_rejected-->1<!--/n--> rejected.
-- **Blind context.** Seeding notes and benchmark keys are stripped, and the runner refuses to send a context that
-  still names them.
-- **Room to finish.** 16k output tokens cut a review off (reasoning counts), so `max_tokens` is 32k.
-- **Context budget and a "what you were not given" list.** Files shrink to windows around the hunks; the model is
-  told what it did not get, so it refuses instead of guessing (<!--n:nemotron_refusals-->48<!--/n--> refusals, each shown to the owner).
-- **Unanimity.** On 2283 it said met beside Codex while Claude's reproduced objection stood; the clause stayed
-  refused. Its "all good" never clears alone.
+- **Strict JSON schema, one repair turn**; fences and `<think>` stripped.
+- **Machine-verified citations**: <!--n:nemotron_verified-->63<!--/n--> findings verified, <!--n:nemotron_rejected-->1<!--/n--> rejected.
+- **Blind context**: seeding notes and benchmark keys stripped; the runner refuses a context that names them.
+- **Room to finish**: `max_tokens` 32k, since 16k cut reviews off.
+- **A "what you were not given" list**, so it refuses instead of guessing (<!--n:nemotron_refusals-->48<!--/n--> refusals, shown to the owner).
+- **Unanimity**: on 2283 it said met while Claude's reproduced objection stood; the clause stayed refused.
 
-**Limits.** The owner accepted <!--n:nemotron_accepted-->8<!--/n--> of the <!--n:nemotron_rated-->10<!--/n--> findings he rated. It missed one surviving mutant and
-called one variant a root-cause fix although the bug does not occur on that base.
+**Limits.** The owner accepted <!--n:nemotron_accepted-->8<!--/n--> of the <!--n:nemotron_rated-->10<!--/n--> findings he rated. It missed one surviving mutant and called
+one variant a root-cause fix although the bug does not occur on that base.
 
-**Cost.** <!--n:nemotron_call_min_k-->38<!--/n--> to <!--n:nemotron_call_max_k-->71<!--/n-->k tokens per review call (<!--n:nemotron_seeded_min_k-->51<!--/n--> to <!--n:nemotron_seeded_max_k-->70<!--/n-->k on seeded changes); $0 on NVIDIA's
-free tier, each call logged in `measurement/costs.yaml`.
+**Cost.** <!--n:nemotron_call_min_k-->38<!--/n--> to <!--n:nemotron_call_max_k-->71<!--/n-->k tokens per review call; $0 on NVIDIA's free tier, logged in `measurement/costs.yaml`.
 
 Code: github.com/Zawaer/countersign (`countersign/llm.py`, `reviews/*/nemotron.json`)
 
-<sub>2,386 characters</sub>
+<sub>2,363 characters</sub>

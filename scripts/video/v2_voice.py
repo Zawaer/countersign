@@ -35,6 +35,14 @@ LINES = [
     ("b14", "s12", "toivo", "Countersign. AI clears what it can prove, refuses what it can't, and a named human countersigns the rest."),
 ]
 
+# Extra lines recorded separately (one MP3 each, env V2_EXTRA_<ID>=<mp3>): (line id, shot id, speaker, text, after).
+# They are not part of the 14-line take: with the env var set, extend() inserts the line into lines.json after `after`.
+EXTRA = [
+    ("b08b", "s08b", "toivo", "And before I sign, Countersign checks I actually read it: two questions from the evidence, "
+                              "and only then can I sign.", "b08"),
+]
+WHISPER_PY = os.environ.get("WHISPER_PY", "/data/work/spk/venv/bin/python")
+
 # Eleven v3 audio tags for Toivo's lines (Toivo, board 17:28Z: persuasive and confident). Sent to TTS only;
 # captions and word timings use the untagged text.
 TAGS = {
@@ -78,6 +86,8 @@ CAPTIONS = {
     "b07": ["Undo the fix,", "and 4 of its 8 new tests", "still pass.", "They prove nothing."],
     "b10": ["That's me.", "On GitHub, I signed", "a request for changes.", "The required check fails,", "and the merge is blocked."],
     "b12": ["Every sign-off goes into", "a signed, hash-chained ledger.", "Edit one line,", "and the check fails."],
+    "b08b": ["And before I sign,", "Countersign checks I actually read it:", "two questions from the evidence,",
+             "and only then can I sign."],
     "b13": ["Measured: 11 of 11", "later-reverted real pull requests", "were sent to a human.", "Tests and checks caught",
             "14 of 18 planted bugs.", "And 35 attacks on our own pipeline:", "all 35 stopped."],
 }
@@ -286,6 +296,86 @@ def words(chars, starts, ends):
     return out
 
 
+def _whisper_align(mp3, text):
+    """Word timings for one clip by local Whisper, matched to the script words (same per-character format as
+    split_take.py writes): words Whisper misses are interpolated between their neighbours."""
+    import difflib, tempfile
+    with tempfile.TemporaryDirectory() as d:
+        out = pathlib.Path(d) / "w.json"
+        subprocess.run([WHISPER_PY, str(pathlib.Path(__file__).with_name("whisper_words.py")), str(mp3), str(out)], check=True)
+        W = json.loads(out.read_text())
+    norm = lambda x: re.sub(r"[^a-z0-9]", "", x.lower())
+    script = text.split()
+    times = [None] * len(script)
+    sm = difflib.SequenceMatcher(a=[norm(w) for w in script], b=[norm(w[0]) for w in W], autojunk=False)
+    for a, b, n in sm.get_matching_blocks():
+        for i in range(n):
+            times[a + i] = (W[b + i][1], W[b + i][2])
+    idx = [i for i, t in enumerate(times) if t]
+    print(f"  whisper matched {len(idx)} of {len(script)} words in {pathlib.Path(mp3).name}")
+    for i in range(len(times)):
+        if times[i] is None:
+            p = max([j for j in idx if j < i], default=None); q = min([j for j in idx if j > i], default=None)
+            t0 = times[p][1] if p is not None else 0.0
+            times[i] = (t0, times[q][0] if q is not None else t0 + 0.4)
+    chars, st, en = [], [], []
+    for n, (w, (t0, t1)) in enumerate(zip(script, times)):
+        if n:
+            chars.append(" "); st.append(t0); en.append(t0)
+        for c in w:
+            chars.append(c); st.append(max(0.0, t0)); en.append(max(0.0, t1))
+    return {"characters": chars, "character_start_times_seconds": st, "character_end_times_seconds": en,
+            "source": "whisper-small.en"}
+
+
+def extra_line(lid, sid, speaker, text, src):
+    """One separately recorded line: word timings from local Whisper (or a side <clip>.align.json, e.g. for a
+    silent placeholder), cached by content; loudness matched like the other clips."""
+    src = pathlib.Path(src)
+    adir = WORK / "audio" / "takes"
+    adir.mkdir(parents=True, exist_ok=True)
+    h = hashlib.sha256(src.read_bytes() + text.encode()).hexdigest()[:16]
+    mp3, meta = adir / f"{lid}-{h}.mp3", adir / f"{lid}-{h}.json"
+    if not meta.exists():
+        mp3.write_bytes(src.read_bytes())
+        side = src.with_suffix(".align.json")
+        al = json.loads(side.read_text()) if side.exists() else _whisper_align(mp3, text)
+        meta.write_text(json.dumps({"speaker": "take", "model": "website", "text": text, "alignment": al}))
+    wav = mp3.with_suffix(".wav")
+    if not wav.exists():
+        gain = TARGET_LUFS - lufs(mp3)
+        gain = gain if abs(gain) < 60 else 0.0   # a silent placeholder has no measurable loudness
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(mp3), "-af", f"volume={gain:.2f}dB,alimiter=limit=0.95",
+                        "-ac", "1", "-ar", str(SR), str(wav)], check=True)
+    with wave.open(str(wav)) as w:
+        dur = w.getnframes() / w.getframerate()
+    al = json.loads(meta.read_text())["alignment"]
+    ws = words(al["characters"], al["character_start_times_seconds"], al["character_end_times_seconds"])
+    assert [w for w, _, _ in ws] == text.split(), lid
+    end = speech_end(wav, dur)
+    speech = ws[-1][2] + 0.1 if end < ws[-1][2] - 0.5 else min(end, ws[-1][2] + 0.1)   # silent placeholder: word times
+    line = {"id": lid, "shot": sid, "speaker": speaker, "model": "website", "text": text, "wav": str(wav),
+            "clip": round(dur, 3), "speech": round(speech, 3), "words": [[w, round(a, 3), round(b, 3)] for w, a, b in ws]}
+    if lid in CAPTIONS:
+        assert " ".join(CAPTIONS[lid]).split() == text.split(), lid
+        line["chunks"] = [len(c.split()) for c in CAPTIONS[lid]]
+    return line
+
+
+def extend(lines):
+    """lines (the 14 from lines.json) plus every EXTRA line whose V2_EXTRA_<ID> env var names an MP3, each inserted
+    after its `after` line. Without the env var the line is left out (and an old copy of it dropped)."""
+    ids = {e[0] for e in EXTRA}
+    out = [l for l in lines if l["id"] not in ids]
+    for lid, sid, speaker, text, after in EXTRA:
+        src = os.environ.get(f"V2_EXTRA_{lid.upper()}")
+        if not src:
+            continue
+        k = next(i for i, l in enumerate(out) if l["id"] == after)
+        out.insert(k + 1, extra_line(lid, sid, speaker, text, src))
+    return out
+
+
 def build(stats=None):
     stats = stats if stats is not None else {}
     if os.environ.get("V2_VOICE_FULL"):
@@ -315,7 +405,7 @@ if __name__ == "__main__":
     if "--count" in sys.argv:
         sys.exit()
     stats = {}
-    res = build(stats)
+    res = extend(build(stats))
     out = WORK / "v2" / "voice" / "lines.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(res, indent=1))

@@ -1,13 +1,13 @@
 {
-  "seq": 14,
-  "ts": "2026-11-14T10:15:45+00:00",
+  "seq": 18,
+  "ts": "2026-11-15T06:50:07+00:00",
   "type": "signoff",
   "payload": {
     "change": "2297",
     "pack_path": "packs/2297/pack.json",
     "pack_sha256": "39321d2e9240861a680c9055bed31da872f98bdb3dc3fe4ba033fec4348c0b1e",
     "decision": "request-changes",
-    "note": "Split the change; the #if premise is wrong (the attribute exists on netstandard2.0 and .NET Framework). Re-signed Sat 12:20 after new evidence (mutation testing, Gemini adjudication, CRACI network trace); decision and ratings unchanged.",
+    "note": "Split the change; the #if premise is wrong (the attribute exists on netstandard2.0 and .NET Framework). Re-signed Sun 15 Nov 09:00: packs rebuilt by later pipeline fixes; decision and ratings unchanged.",
     "tier": "block",
     "ai_cleared": false,
     "areas": [
@@ -49,8 +49,8 @@
     ],
     "simulated": false
   },
-  "prev": "15d0b04247d17a1abbdfd6e245030188669c1ef790d0cbfec469843146cbe9b7",
+  "prev": "561d0b57754ded72bdfd87e68c37c666b27b6759388774125a479d4c0be7259d",
   "signer": "Toivo",
-  "hash": "c789255bd4dad08621983abcf1ced333357e7dffeae8403e0c097d1819d50d6d",
-  "sig": "ZmUCFhjP8mWXuA26XEa4U/0u/wms7tViIhhfBYtyTmcUEPDOZoDz8NRrFUjptUrvUGzcvrv2Jz1Z39fsmVIOCw=="
+  "hash": "420458274d4cf46f296af49ded3e84b303824c46feca8a6c34aad2ba42ee340c",
+  "sig": "H6xb2YIOHSibA45rss+PZiVtt0nOnHZE7qeloLSrFdUB63UaLAxOKAhYtjYZenapYvJZIqB7D5vRvYGAAWPVCA=="
 }

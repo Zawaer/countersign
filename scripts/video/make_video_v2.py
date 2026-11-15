@@ -84,7 +84,8 @@ def build_audio(tl, path):
 
 def contact_sheet(video, tl, out):
     """9 frames: the middle of shots 1, 2, 4, 6, 8, 9, 10, 11, 12."""
-    picks = [s["t0"] + s["dur"] * 0.62 for i, s in enumerate(tl["shots"]) if i in (0, 1, 3, 5, 7, 8, 9, 10, 11)]
+    want = ("s01", "s02", "s04", "s06", "s08", "s09", "s10", "s11", "s12")
+    picks = [s["t0"] + s["dur"] * 0.62 for s in tl["shots"] if s["id"] in want]
     inputs, chains = [], []
     for k, t in enumerate(picks):
         inputs += ["-ss", f"{t:.2f}", "-i", str(video)]
@@ -112,8 +113,12 @@ def main():
     stats = {"chars": 0}
     if args.reuse_voice:
         lines = json.loads((V2 / "voice" / "lines.json").read_text())
+        n0 = len(lines)
+        lines = v2_voice.extend(lines)   # + b08b when V2_EXTRA_B08B=<mp3> (the 14 lines stay as they are)
+        if len(lines) != n0:
+            (V2 / "voice" / "lines.json").write_text(json.dumps(lines, indent=1))
     else:
-        lines = v2_voice.build(stats)
+        lines = v2_voice.extend(v2_voice.build(stats))
         (V2 / "voice").mkdir(exist_ok=True)
         (V2 / "voice" / "lines.json").write_text(json.dumps(lines, indent=1))
     tl = v2_timeline.build(lines)

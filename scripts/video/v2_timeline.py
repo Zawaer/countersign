@@ -25,6 +25,7 @@ SHOTS = [
     ("s06", "type", "packs/2234/pack.html",  "countersign.toivo.dev/packs/2234/pack.html", 0.9, 0.3),
     ("s07", "type", "tour.html#5",           "countersign.toivo.dev/tour.html#5",         0.0, 0.2),
     ("s08", "whip", "prs.html",              "countersign.toivo.dev/prs.html",            0.2, 0.2),
+    ("s08b", "type", "sign.html",            "countersign.toivo.dev/sign.html",           0.0, 0.9),
     ("s09", "type", "pitch.html#5",          "countersign.toivo.dev/pitch.html#5",        0.0, 0.6),
     ("s10", "type", "tour.html#6",           "countersign.toivo.dev/tour.html#6",         0.0, 0.5),
     ("s11", "whip", "overview.html",         "countersign.toivo.dev/overview.html",       0.0, 0.3),

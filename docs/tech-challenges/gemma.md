@@ -4,9 +4,9 @@
 what the AI could not prove. When reviewers disagree, an adjudicator rules on each dispute. It is advisory by
 construction: it can only route to a human, never clear.
 
-**Why open weights matter here.** Our hosted adjudicator is Gemini. For confidential code, a vendor API is not an
-option: the code may only go to a model on a server we run. Gemma is Google's open-weights answer to that: the same
-role, on our own GPU, with the code never leaving an SSH tunnel.
+**A governance choice, not a cost one.** For a confidential repo the signed mandate may forbid sending code to any
+vendor API. Then the adjudicator must run on our own GPU, with the code never leaving an SSH tunnel. Gemma is the
+open-weights model for that role; hosted Gemini stays the adjudicator everywhere else.
 
 **What ran.**
 - `google/gemma-4-31B-it-qat-w4a16-ct` (4-bit weights, so a 31B fits easily) on vLLM 0.27.1, one A100 80GB at
@@ -21,7 +21,7 @@ role, on our own GPU, with the code never leaving an SSH tunnel.
   diagnostic regressions" (2283); the location filter does drop diagnostics (2283, Claude's C1).
 - It differed on side claims: it accepted one broad claim Gemini rejected, and on 2283 it backed C1 in one ruling
   while rejecting the same point in another.
-- Both routed every dispute to the area owner; neither tried to clear anything.
+- Gemma routed every dispute to the area owner and never tried to clear anything; so did Gemini.
 
 **Cost.** 0.048 GPU-hours, about $0.12 at $2.386 per A100-hour, for both adjudications (121 s and 53 s; hosted
 Gemini took 16 s and 20 s).

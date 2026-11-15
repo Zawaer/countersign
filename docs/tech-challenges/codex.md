@@ -1,35 +1,38 @@
-# Best use of Codex: a second vendor that checks our reviewers and our pipeline
+# Best use of Codex: it found security holes in our own pipeline
 
 **Countersign** reviews agent-written changes: deterministic checks, three AI reviewers (Claude, Codex, Nemotron),
-and a named human countersigns what the AI could not prove. Codex had three jobs; every run is in
-[CODEX_LOG.md](../CODEX_LOG.md).
+then a named human countersigns what the AI could not prove.
 
-**1. Second-vendor reviewer.** Codex reviewed every real change read-only, same brief and schema as the others; the
-engine re-checks each citation. Its second pass, given the passing tests, said all <!--n:codex_v2_met-->11<!--/n--> of <!--n:codex_v2_clauses-->11<!--/n-->
-clauses were met and found nothing: <!--n:codex_verified-->0<!--/n--> verified findings, and it missed <!--n:codex_missed_majors-->6<!--/n--> verified majors the others found. That
-rubber stamp taught us the core rule: one reviewer's "all good" never clears. A clause is proven only if every
-reviewer says met with verified evidence, so the stamp cleared nothing; on 2283 the pack shows "Codex said
-met without verified evidence" beside Claude's reproduced objection.
+**Security holes in our pipeline** ([TRIAGE.md](../security/TRIAGE.md)). One read-only Codex run over our workflows,
+signatures, ledger, and whether model output can make a clause proven. Every finding was checked against the code:
+evidence could cite any path at any revision (confirmed, fixed), loose review-schema validation (confirmed, fixed),
+prompt injection from diff content (confirmed, fix described), and signoff replay onto another PR (exploit fails as
+stated, but the PR-binding gap behind it was real; fixed). Following its report we found four more, all fixed. The
+worst: any workflow in the demo repo could forge the merge-gate status (High). Now only our "Countersign Gate"
+GitHub App posts it, and branch protection accepts it from that App alone.
 
-**2. Security review of our own pipeline.** One read-only run over the workflows, signatures, ledger, and whether
-model output can make a clause proven. It reported signoff replay, evidence from any path, a loose
-review schema and prompt injection. Triage (`docs/security/TRIAGE.md`): the replay exploit fails as stated, but
-the PR binding gap behind it was real and is fixed; path and schema are fixed; the injection fix is described. Codex
-missed four that triage found: any workflow could forge the merge status (High; now posted only by a dedicated
-GitHub App), trivial evidence counting toward "met" (High), `git show` option injection from a model-supplied
-revision (Medium), ledger input hardening (Low). All four fixed.
+**What Codex did** ([CODEX_LOG.md](../CODEX_LOG.md)):
 
-**3. Development.** In write mode Codex finished the blind review of seeded changes (the runner hides the seeding
-and refuses a context that names it), hardened the adjudicator's code excerpts (5d66189) and built the demo screen,
-checked with screenshots at 390 and 1280 px (5c00775).
+| Run | Task | Result |
+|---|---|---|
+| Review, read-only | 4 real changes | first pass, kept as `codex.v1` |
+| Review, read-only | same 4, with the test facts | all <!--n:codex_v2_met-->11<!--/n--> of <!--n:codex_v2_clauses-->11<!--/n--> clauses met, no findings |
+| Review, read-only | 3 upstream control changes | all met, every citation verifies |
+| Security, read-only | our own pipeline | 4 findings, above |
+| Write mode | blind seeded-review runner, `_code_excerpt` hardening | 139 tests pass |
+| Write mode | demo screen | checked at 390 and 1280 px |
+| Review, read-only | demo-docs1 | both clauses met |
 
-**What went wrong.** Two earlier `codex exec` runs failed: Codex's sandbox cannot create a namespace
-inside our container, so no command ran. Our script still committed, so two commits (5e366b5, 32eeaa0) were
-labelled as Codex work that was not. CODEX_LOG records the correction.
+**The rubber stamp.** Given the passing tests, its second pass said every clause was met: <!--n:codex_verified-->0<!--/n--> verified findings,
+missing <!--n:codex_missed_majors-->6<!--/n--> verified majors the others found. That is why one reviewer can never clear: a clause is proven only
+if every reviewer says met with verified evidence. On 2283 the pack shows "Codex said met without verified
+evidence" beside Claude's reproduced objection.
 
-**Tokens.** About <!--n:codex_tokens_k-->1,076<!--/n-->k in the <!--n:codex_runs-->5<!--/n--> read-only runs (three reviews, one security review), 19k in the
-failed ones (`measurement/costs.yaml`).
+**What went wrong.** Two `codex exec` runs did nothing (its sandbox cannot create a namespace in our container), yet
+our script committed; CODEX_LOG corrects the two mislabelled commits.
+
+**Tokens.** About <!--n:codex_tokens_k-->1,076<!--/n-->k over the <!--n:codex_runs-->5<!--/n--> read-only runs (`measurement/costs.yaml`).
 
 Code: github.com/Zawaer/countersign (`reviews/*/codex.json`, `docs/security/`)
 
-<sub>2,479 characters</sub>
+<sub>2,369 characters</sub>

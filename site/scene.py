@@ -289,7 +289,8 @@ def build() -> tuple[str, str]:
              '<p class="caught reveal r1">Countersign caught it with a second AI reviewer.</p>' if d["finding"] else "")
     actions = (f'<p class="decide reveal r2">{icon("ask", "g")}<span>{e(owner)}, its owner, must decide.</span></p>'
                '<p class="acts reveal r3"><a class="btn primary" href="#where">Show me where</a>'
-               + ('<a class="btn" href="#sneak">Try to sneak a bug in</a>' if bugs else "") + "</p>")
+               + ('<a class="btn" href="#sneak">Try to sneak a bug in</a>' if bugs else "")
+               + ('<a class="owner-link" href="sign.html">Be the owner: read, then sign</a>' if (SITE / "sign.html").exists() else "") + "</p>")
     home = (f'<section class="view home" id="home" aria-labelledby="h-home">'
             f'<h1 id="h-home"><span class="lead">An AI agent wrote this fix.</span>'
             f'<a class="issue" href="{e(d["issue"] or "#")}">#{STORY} {e(d["title"])}</a></h1>'
@@ -386,6 +387,7 @@ h1,h2,.say,.wrong,.decide{text-wrap:balance}
 .wrong .g{width:1em;height:1em}.decide .g{color:var(--muted)}.result .g{width:1.05em;height:1.05em}
 .decide{margin:0;font-size:clamp(22px,4vw,34px);font-weight:600}
 .acts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:4px 0 0}
+.acts{position:relative}.owner-link{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:14px;white-space:nowrap;font-size:15px}
 .btn{display:inline-block;padding:14px 26px;border-radius:10px;border:2px solid var(--fg);color:var(--fg);text-decoration:none;font-size:18px;font-weight:600;background:var(--bg)}
 .btn.primary{background:var(--fg);color:var(--bg)}
 .btn:hover{border-color:var(--accent)}

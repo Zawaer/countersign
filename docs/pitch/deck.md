@@ -43,7 +43,7 @@ One idea per slide: one scene, a few labels. The slides follow the demo video's 
 ## 7. A record no one can quietly edit
 
 - **Message:** Every sign-off goes into a signed, hash-chained ledger. Edit one line and the check fails; recompute the hash and the signature fails.
-- **Visual:** three steps: ledger OK (<!--n:ledger_entries-->14<!--/n--> entries) → edit one line: invalid → recompute the hash: signature does not verify.
+- **Visual:** three steps: ledger OK (<!--n:ledger_entries-->18<!--/n--> entries) → edit one line: invalid → recompute the hash: signature does not verify.
 - **Speaker note:** Only the signer's private key can sign a new hash, and that key is not in the repo. Try it live on the tour, step 6.
 
 ## 8. Measured, not claimed

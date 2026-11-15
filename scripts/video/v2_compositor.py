@@ -56,10 +56,11 @@ TITLES = {
     "prs.html": "PR flow: what the reviewer sees on GitHub",
     "overview.html": "Countersign: the numbers",
     "packs/2234/pack.html": "Countersign 2234: ask, owner Toivo",
+    "sign.html": "Be the owner: sign change 2234",
 }
 # One tab per page the video visits (a real tab switch replaces typing URLs): window-local desktop px.
-TABS = ["index.html", "pitch.html", "tour.html", "packs/2234/pack.html", "prs.html", "overview.html"]
-TAB_X0, TAB_W = 84, 210
+TABS = ["index.html", "pitch.html", "tour.html", "packs/2234/pack.html", "prs.html", "sign.html", "overview.html"]
+TAB_X0, TAB_W = 84, 196                 # 7 tabs + the "+" fit the 1536 px window
 TAB_CY = 24                             # window-local y of the tab titles
 TAB_GLIDE0, TAB_GLIDE1, TAB_CLICK = 0.30, 0.80, 0.84   # type entry: glide to the tab, click (page switches)
 

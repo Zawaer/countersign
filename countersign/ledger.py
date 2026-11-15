@@ -52,6 +52,7 @@ def append(ws: Workspace, type_: str, payload: dict, signer: str) -> dict:
 def verify(ws: Workspace) -> tuple[list[str], list[str]]:
     """Returns (problems, warnings). Problems mean the ledger cannot be trusted from that line on."""
     problems, warnings = [], []
+    stale: dict[str, str] = {}   # pack_path -> warning for the latest sign-off of that pack, if it no longer matches
     if not ws.ledger_path.exists():
         return problems, ["no ledger yet"]
     prev = GENESIS
@@ -93,5 +94,8 @@ def verify(ws: Workspace) -> tuple[list[str], list[str]]:
             except (OSError, ValueError):
                 current = "unreadable"
             if current is not None and current != p.get("pack_sha256"):
-                warnings.append(f"line {n}: {p['pack_path']} changed since {e.get('signer')} signed it (re-review needed)")
+                stale[str(p["pack_path"])] = f"line {n}: {p['pack_path']} changed since {e.get('signer')} signed it (re-review needed)"
+            else:
+                stale.pop(str(p["pack_path"]), None)   # a newer sign-off covers the current pack: older ones are superseded
+    warnings.extend(stale.values())
     return problems, warnings

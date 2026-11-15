@@ -1,8 +1,7 @@
 # Best use of Gemini API: the adjudicator that can never clear
 
 **Countersign** reviews agent-written changes: deterministic checks, three AI reviewers (Claude, Codex, Nemotron),
-and a named human countersigns what the AI could not prove. Gemini (`gemini-4-hydrogen`, Google's
-OpenAI-compatible endpoint) is the adjudicator.
+and a named human countersigns what the AI could not prove. Gemini (`gemini-4-hydrogen`) is the adjudicator.
 
 **Its job.** Only when reviewers disagree, or a major finding has no second reviewer, Gemini gets each dispute:
 both sides' claims and citations, the engine's verification of each, and the code around each cited line. It says
@@ -12,7 +11,10 @@ which claims the evidence supports, which not, what would settle it, and which o
 the failure unanimity exists to prevent. So it audits evidence instead of voting: a tested engine rule
 (`decide.apply_adjudication`) lets it only add reasons and route to a human. A refused clause stays refused.
 
-**What it ruled** (CI, `reviews/<change>/adjudication.gemini.json`):
+**Why Gemini.** A different vendor from all three reviewers, so it never grades its own work. And fast: 16.0 s and
+19.9 s per adjudication call on 2234 and 2283, against 121.4 s and 53.0 s for self-hosted Gemma on the same changes.
+
+**What it ruled.** <!--n:gemini_calls-->6<!--/n--> calls, 12 rulings, from two CI runs (`reviews/<change>/adjudication.gemini.json`; run URLs in `measurement/costs.yaml`):
 - **2283:** Claude objected that the fix drops an analyzer warning, with a reproduction; Codex and Nemotron said met.
   Gemini backed Claude, and found that the others' "all diagnostics keep working" went beyond the passing suite.
 - **2234:** the duplicate-key crash fix is supported; Codex's broad "invalid contracts no longer crash" is not, and a
@@ -20,16 +22,12 @@ the failure unanimity exists to prevent. So it audits evidence instead of voting
 - **<!--n:gemini_variants-->4<!--/n--> benchmark variants:** on both hidden security downgrades it confirmed the cited line (hash-collision protection
   off; object depth 500 to 5000 against the file's own stack-overflow warning) and routed to the security owner.
 
-**In the pack.** The owner sees it beside the refusal: "Gemini on N1: Claude's objection is supported; backs 1 of 2
-claims for 'not met', 2 of 4 for 'met' (advisory)", then the unsupported claims and what would settle it.
+A small sample: two real changes, four variants, one run each.
 
-**Cost.** <!--n:gemini_calls-->6<!--/n--> calls: <!--n:gemini_tokens-->31,671<!--/n--> tokens, $<!--n:gemini_usd-->0.08<!--/n--> in total;
-<!--n:gemini_call_tokens_min-->3,234<!--/n--> to <!--n:gemini_call_tokens_max-->7,012<!--/n--> tokens and $<!--n:gemini_call_usd_min-->0.007<!--/n--> to $<!--n:gemini_call_usd_max-->0.018<!--/n--> per call. Each call
-appends a row to `measurement/costs.yaml` from the API's usage field, with the run URL.
+**Cost.** <!--n:gemini_tokens-->31,671<!--/n--> tokens, $<!--n:gemini_usd-->0.08<!--/n--> in total; at most $<!--n:gemini_call_usd_max-->0.018<!--/n--> per call. Each call logs
+its API usage.
 
-**Confidential code.** Gemini is hosted, so a repo marked confidential cannot send it code. Gemma (open weights, our
-A100) ran on the shared disputes and agreed; adopting it is a signed mandate change ([gemma.md](gemma.md)).
+**Confidential code.** Gemini is hosted, so a repo marked confidential cannot send it code. Gemma on our own GPU
+is the path there; adopting it is a signed mandate change ([gemma.md](gemma.md)).
 
 Code: github.com/Zawaer/countersign (`countersign/decide.py`, `prompts/adjudicate-v1.md`)
-
-<sub>2,453 characters</sub>
