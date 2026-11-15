@@ -27,3 +27,5 @@ H200) is a budget choice, not a technical one.
 - Box bill, setup and idle included: 1.13 h = $2.70; the A100 was released right after the run
 
 Code: github.com/Zawaer/countersign (`scripts/selfhost/`, `countersign/llm.py`)
+
+**Path to scale.** About $0.04 and 60 s per review on one A100, so one GPU covers roughly 1,400 reviews a day for a team; more confidential repos means more instances behind the same tunnel, not new code.
