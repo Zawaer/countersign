@@ -1,6 +1,6 @@
 # Countersign (by Toivo & Rene, Junction 2026, Tieto challenge)
 
-**Demo:** [countersign.toivo.dev](https://countersign.toivo.dev/) (or open [site/index.html](site/index.html) locally) · **Video:** [youtu.be/t8haHBFe9_E](https://youtu.be/t8haHBFe9_E) · **Live PR flow:** [Zawaer/countersign-messagepack-demo](https://github.com/Zawaer/countersign-messagepack-demo/pulls?q=is%3Apr) (workflows in [examples/pr-flow](examples/pr-flow/)) · **Deck:** [docs/pitch/deck.pdf](docs/pitch/deck.pdf)
+**Demo:** [countersign.toivo.dev](https://countersign.toivo.dev/) (or open [site/index.html](site/index.html) locally) · **Video:** [youtu.be/we4yNkFmorg](https://youtu.be/we4yNkFmorg) · **Live PR flow:** [Zawaer/countersign-messagepack-demo](https://github.com/Zawaer/countersign-messagepack-demo/pulls?q=is%3Apr) (workflows in [examples/pr-flow](examples/pr-flow/)) · **Deck:** [docs/pitch/deck.pdf](docs/pitch/deck.pdf)
 
 > **AI reviews agent-written code under a mandate. It clears what it can prove, refuses what it can't, and a named human countersigns the rest.**
 
